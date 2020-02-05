@@ -209,7 +209,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
           if ( ! $force && $user_meta != $sanitized_user_meta ) {
             throw new \Exception( 'ERROR: Refused to save different value for option: ' . $key );
           }
-          return self::maybe_update_usermeta( $key, self::crypt( $sanitized_user_meta, 'e' ), $object_id );
+          return self::maybe_update_usermeta( $key, $sanitized_user_meta, $object_id );
 
         case self::ASANA_WORKSPACE_GID:
         case self::ASANA_TAG_GID:

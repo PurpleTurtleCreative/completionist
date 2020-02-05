@@ -3,12 +3,7 @@
  * Asana Interface class
  *
  * Loads the Asana API client and translates common interactions between Asana
- * and WordPress. These functions are expected to use API calls. This class's
- * primary use is to refresh locally stored data that is found to be expired.
- *
- * @see Data_Store To work with loaded data.
- *
- * @see Options To find expiry times.
+ * and WordPress. Most of these functions are expected to use API calls.
  *
  * @since 1.0.0
  */
@@ -25,7 +20,10 @@ defined( 'ABSPATH' ) || die();
 if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
   /**
    * A static class that translates interactions between the loaded Asana API
-   * instance and WordPress.
+   * instance and WordPress. Note that this is a singleton class to reduce API
+   * calls. Therefore, the only client used by this class is the one
+   * authenticated by the current user. The current WordPress user should never
+   * use the API through someone else's authentication!
    */
   class Asana_Interface {
 
@@ -183,9 +181,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
       if ( '' === $workspace_gid ) {
         $workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
-        if ( '' === $workspace_gid ) {
-          return [];
-        }
+      } else {
+        $workspace_gid = Options::sanitize( 'gid', $workspace_gid );
+      }
+
+      if ( '' === $workspace_gid ) {
+        return [];
       }
 
       $params = [ 'opt_fields' => 'email' ];
@@ -204,6 +205,84 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
       }
 
       return $wp_users;
+
+    }
+
+    /**
+     * Test if a WordPress user has successfully connected their Asana account.
+     *
+     * @since 1.0.0
+     *
+     * @param int $user_id Optional. The WordPress user's ID. Default 0 to use
+     * current user's ID.
+     *
+     * @return bool If the user is successfully authorized to use Asana. Note
+     * that any API errors will cause FALSE to be returned.
+     */
+    static function has_connected_asana( int $user_id = 0 ) : bool {
+
+      $asana_personal_access_token = Options::get( Options::ASANA_PAT, $user_id );
+      if (
+        FALSE === $asana_personal_access_token
+        || '' === $asana_personal_access_token
+      ) {
+        return FALSE;
+      }
+
+      global $ptc_completionist;
+      require_once $ptc_completionist->plugin_path . '/vendor/autoload.php';
+      $asana = \Asana\Client::accessToken( $asana_personal_access_token );
+
+      try {
+        $asana->users->me();
+      } catch ( \Exception $e ) {
+        return FALSE;
+      }
+
+      return TRUE;
+
+    }
+
+    /**
+     * Get the external link to a user's task list in Asana for the chosen
+     * workspace.
+     *
+     * @since 1.0.0
+     *
+     * @param int $user_id Optional. The WordPress user's ID. Default 0 to use
+     * current user's ID.
+     *
+     * @return string The link to the task list on Asana. Default ''.
+     */
+    static function get_task_list_external_link( int $user_id = 0 ) : string {
+
+      $user_gid = Options::get( Options::ASANA_USER_GID, $user_id );
+      $workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
+      if ( '' === $workspace_gid || '' === $user_gid ) {
+        return '';
+      }
+
+      try {
+
+        $asana = self::get_client();
+        $params = [
+          'workspace' => $workspace_gid,
+          'opt_fields' => 'gid',
+        ];
+
+        $user_task_list = $asana->user_task_lists->findByUser( $user_gid, $params );
+        $user_task_list_gid = Options::sanitize( 'gid', $user_task_list->gid );
+        if ( empty( $user_task_list_gid ) ) {
+          return '';
+        }
+
+        return 'https://app.asana.com/0/' . $user_task_list_gid . '/list';
+
+      } catch ( \Exception $e ) {
+        error_log( 'Failed to retrieve user\'s task list link. Error ' . $e->getCode() . ': ' . $e->getMessage() );
+      }
+
+      return '';
 
     }
 

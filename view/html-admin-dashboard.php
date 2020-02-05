@@ -95,12 +95,12 @@ try {
             <?php
           } else {
             ?>
-            <p class="nothing-to-see">A workspace has not been assigned to this site. Please ask an administrator to set an Asana workspace to begin collaborating on site tasks.</p>
+            <p class="nothing-to-see">A workspace has not been assigned to this site. Please ask an <a href="<?php echo esc_url( admin_url( 'users.php?role=administrator' ) ); ?>" target="_blank">administrator</a> to set an Asana workspace to begin collaborating on site tasks.</p>
             <?php
           }
         } elseif ( ! $is_workspace_member ) {
           ?>
-          <p class="nothing-to-see">You are unauthorized to collaborate on this site's tasks. Please ask an administrator to invite you to this site's workspace in Asana.</p>
+          <p class="nothing-to-see">You are unauthorized to collaborate on this site's tasks. Please ask an <a href="<?php echo esc_url( admin_url( 'users.php?role=administrator' ) ); ?>" target="_blank">administrator</a> to invite you to this site's workspace in Asana.</p>
           <?php
         } else {
 
@@ -111,13 +111,9 @@ try {
             <p class="nothing-to-see">No collaborators were found by email.</p>
             <?php
           } else {
-
-            //TODO: Elegantly list found collaborator details including if authenticated and link to user in Asana workspace.
-
-            echo '<pre>';
-            var_dump( $workspace_users );
-            echo '</pre>';
-
+            foreach ( $workspace_users as $user ) {
+              display_collaborator_row( $user );
+            }
           }//end if empty collaborators
         }//end list recognized collaborators
       } else {
@@ -181,3 +177,59 @@ try {
   <?php
 
 }//end try catch asana client
+
+/* HELPERS */
+
+function display_collaborator_row( \WP_User $user ) : void {
+
+  $gravatar = get_avatar( $user->ID, 30, 'mystery' );
+  $name = $user->display_name;
+  $roles_csv = implode( ',', $user->roles );
+  $email = $user->user_email;
+  $has_connected_asana = Asana_Interface::has_connected_asana( $user->ID );
+  $asana_user_link = Asana_Interface::get_task_list_external_link( $user->ID );
+  ?>
+  <div class="ptc-asana-collaborator-row" data-user-id="<?php echo esc_attr( $user->ID ); ?>">
+
+    <div class="identity">
+      <?php echo $gravatar; ?>
+      <p><?php echo esc_html( $name ); ?></p>
+    </div>
+
+    <div class="roles">
+      <p><?php echo esc_html( $roles_csv ); ?></p>
+    </div>
+
+    <div class="email">
+      <p><a href="<?php echo esc_attr( "mailto:$email" ); ?>"><?php echo esc_html( $email ); ?></a></p>
+    </div>
+
+    <div class="connection-status" data-status="<?php echo $has_connected_asana ? 'yes' : 'no'; ?>">
+      <p>
+        <?php
+        if ( $has_connected_asana ) {
+          echo '<i class="fas fa-check-circle"></i>Connected Asana';
+        } else {
+          echo '<i class="fas fa-times-circle"></i>Not Connected';
+        }
+        ?>
+      </p>
+    </div>
+
+    <div class="view-in-asana">
+      <p>
+        <?php
+        if ( ! empty( $asana_user_link ) ) {
+          echo  '<a href="' . esc_url( $asana_user_link ) . '" target="_blank">' .
+                  'View in Asana<i class="fas fa-external-link-alt"></i>' .
+                '</a>';
+        } else {
+          echo 'Unable to View';
+        }
+        ?>
+      </p>
+    </div>
+
+  </div>
+  <?php
+}

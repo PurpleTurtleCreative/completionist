@@ -78,6 +78,7 @@ if (
   && isset( $_POST['asana_workspace'] )
   && isset( $_POST['asana_workspace_save_nonce'] )
   && wp_verify_nonce( $_POST['asana_workspace_save_nonce'], 'asana_workspace_save' ) !== FALSE
+  && current_user_can( 'manage_options' )
 ) {
 
   try {
