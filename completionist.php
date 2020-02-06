@@ -78,7 +78,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
     function register() {
 
       add_action( 'admin_menu', [ $this, 'add_admin_pages' ] );
-      // add_action( 'admin_enqueue_scripts', [ $this, 'register_scripts' ] );
+      add_action( 'admin_enqueue_scripts', [ $this, 'register_scripts' ] );
 
       // add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
       // add_action( 'wp_ajax_refresh_page_relatives', [ $this, 'related_content_metabox_html_ajax_refresh' ] );
@@ -107,7 +107,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
           }
         },
         'dashicons-yes-alt',
-        3 /* Pages menu item is priority 20, see https://developer.wordpress.org/reference/functions/add_menu_page/#default-bottom-of-menu-structure */
+        3 /* For default priorities, see https://developer.wordpress.org/reference/functions/add_menu_page/#default-bottom-of-menu-structure */
       );
 
     }//end add_admin_pages()
@@ -151,67 +151,41 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
     //   require_once $this->plugin_path . 'src/ajax-refresh-metabox-page-relatives.php';
     // }
 
-    // /**
-    //  * Register and enqueue plugin CSS and JS.
-    //  *
-    //  * @since 1.0.0
-    //  *
-    //  * @ignore
-    //  */
-    // function register_scripts( $hook_suffix ) {
+    /**
+     * Register and enqueue plugin CSS and JS.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    function register_scripts( $hook_suffix ) {
 
-    //   wp_register_style(
-    //     'fontawesome-5',
-    //     plugins_url( '/assets/fonts/fontawesome-free-5.12.0-web/css/all.min.css', __FILE__ ),
-    //     [],
-    //     '5.12.0'
-    //   );
+      wp_register_style(
+        'fontawesome-5',
+        'https://kit.fontawesome.com/02ab9ff442.js',
+        [],
+        '5.12.1'
+      );
 
-    //   switch ( $hook_suffix ) {
-    //     case 'toplevel_page_ptc-grouped-content':
-    //       wp_enqueue_style(
-    //         'ptc-grouped-content_view-groups-css',
-    //         plugins_url( 'assets/css/view-groups.css', __FILE__ ),
-    //         [ 'fontawesome-5' ],
-    //         '1.0.0'
-    //       );
-    //       break;
-    //     case 'post.php' && get_post_type() === 'page':
-    //       wp_enqueue_style(
-    //         'ptc-grouped-content_metabox-page-relatives-css',
-    //         plugins_url( 'assets/css/metabox_page-relatives.css', __FILE__ ),
-    //         [ 'fontawesome-5' ],
-    //         '1.0.0'
-    //       );
-    //       wp_enqueue_script(
-    //         'ptc-grouped-content_metabox-page-relatives-js',
-    //         plugins_url( 'assets/js/metabox-page-relatives.js', __FILE__ ),
-    //         [ 'jquery' ],
-    //         '0.0.1'
-    //       );
-    //       wp_localize_script(
-    //         'ptc-grouped-content_metabox-page-relatives-js',
-    //         'ptc_page_relatives',
-    //         [ 'nonce' => wp_create_nonce( 'ptc_page_relatives' ) ]
-    //       );
-    //       break;
-    //     case 'groups_page_ptc-grouped-content_generator':
-    //       wp_enqueue_style(
-    //         'ptc-grouped-content_content-generator-css',
-    //         plugins_url( 'assets/css/content-generator.css', __FILE__ ),
-    //         [ 'fontawesome-5' ],
-    //         '1.0.0'
-    //       );
-    //       wp_enqueue_script(
-    //         'ptc-grouped-content_content-generator-js',
-    //         plugins_url( 'assets/js/content-generator.js', __FILE__ ),
-    //         [ 'jquery' ],
-    //         '1.0.0'
-    //       );
-    //       break;
-    //   }
+      wp_register_style(
+        'ptc-completionist_admin-theme-css',
+        plugins_url( 'assets/css/admin-theme.css', __FILE__ ),
+        [ 'fontawesome-5' ],
+        '0.0.0'
+      );
 
-    // }//end register_scripts()
+      switch ( $hook_suffix ) {
+        case 'toplevel_page_ptc-completionist':
+          wp_enqueue_style(
+            'ptc-completionist_connect-asana-css',
+            plugins_url( 'assets/css/connect-asana.css', __FILE__ ),
+            [ 'ptc-completionist_admin-theme-css' ],
+            '0.0.0'
+          );
+          break;
+      }
+
+    }//end register_scripts()
 
   }//end class
 

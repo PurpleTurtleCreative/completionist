@@ -15,7 +15,6 @@ defined( 'ABSPATH' ) || die();
 global $ptc_completionist;
 require_once $ptc_completionist->plugin_path . 'src/class-asana-interface.php';
 
-echo '<h1>Completionist &ndash; Settings</h1>';
 require_once $ptc_completionist->plugin_path . 'src/script-save-settings.php';
 
 try {
@@ -149,9 +148,19 @@ try {
 
     <form method="POST">
       <div class="field-group">
-        <label for="asana-pat"><i class="fas fa-key"></i>Personal Access Token:</label>
-        <input id="asana-pat" name="asana_pat" type="password">
-        <p class="asana-pat-info"><i class="fas fa-question"></i>You may generate an access token from <a href="https://app.asana.com/0/developer-console" target="_blank">your Asana developer console</a>. Be sure to name it something identifiable like <em>My <?php echo esc_html( get_bloginfo( 'name', 'display' ) ); ?> WordPress Site</em>.</p>
+        <label for="asana-pat">Personal Access Token:</label>
+        <div class="icon-input-field">
+          <i class="fas fa-key"></i>
+          <input id="asana-pat" name="asana_pat" type="password" autofocus>
+        </div>
+        <p class="help-link"><a href="https://app.asana.com/0/developer-console" target="_blank">Visit your Asana developer console.</a></p>
+      </div>
+      <div class="field-group">
+        <p id="connection-agreement-text">
+          I understand that I am granting this application, Completionist by Purple Turtle Creative, access to my Asana account so that it can perform actions on my behalf.
+        </p>
+        <input id="connection-agreement" name="connection_agreement" type="checkbox" value="yes" required>
+        <label for="connection-agreement">I agree.</label>
       </div>
       <div class="field-group">
         <input type="hidden" name="asana_connect_nonce" value="<?php echo esc_attr( wp_create_nonce( 'connect_asana' ) ); ?>">
@@ -160,8 +169,19 @@ try {
     </form>
 
     <div class="additional-info">
-      <p class="security"><i class="fas fa-lock"></i>Personal Access Tokens authenticate access to your Asana account just like a username and password, so we encrypt it when saving.</p>
-      <p class="privacy"><i class="fas fa-mask"></i>Your personal data will not be stored. Completionist only works on your behalf via Asana's API when you are logged into this site.</p>
+      <div class="note-box info">
+        <i class="fas fa-question"></i>
+        <p>Visit <a href="https://app.asana.com/0/developer-console" target="_blank">your Asana developer console</a> to <b>generate a Personal Access Token.</b> Be sure to name it something memorable like <em>My <?php echo esc_html( get_bloginfo( 'name', 'display' ) ); ?> WordPress Site</em> in case you want to revoke it later.</p>
+      </div>
+      <div class="note-box">
+        <i class="fas fa-lock"></i>
+        <p class="security">Personal Access Tokens authenticate access to your Asana account just like a username and password, so <b>we encrypt it when saving.</b></p>
+      </div>
+      <div class="note-box">
+        <i class="fas fa-mask"></i>
+        <p class="privacy"><b>Your personal data will not be stored.</b> Completionist only acts on your behalf via Asana's API when you are logged into this site.</p>
+      </div>
+      <p class="footnote">**Completionist by Purple Turtle Creative is not associated with Asana. Asana is a trademark and service mark of Asana, Inc., registered in the U.S. and in other countries.</p>
     </div>
 
   </section><!--close section#ptc-asana-connect-->

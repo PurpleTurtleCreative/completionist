@@ -18,9 +18,15 @@ require_once $ptc_completionist->plugin_path . 'src/class-asana-interface.php';
 if (
   isset( $_POST['asana_connect'] )
   && isset( $_POST['asana_pat'] )
+  && isset( $_POST['connection_agreement'] )
   && isset( $_POST['asana_connect_nonce'] )
   && wp_verify_nonce( $_POST['asana_connect_nonce'], 'connect_asana' ) !== FALSE
 ) {
+
+  if ( 'yes' !== sanitize_text_field( wp_unslash( $_POST['connection_agreement'] ) ) ) {
+    echo '<p class="notice notice-error">To use Completionist, you must accept the agreement.</p>';
+    return;
+  }
 
   try {
     $did_save_pat = Options::save( Options::ASANA_PAT, $_POST['asana_pat'] );
