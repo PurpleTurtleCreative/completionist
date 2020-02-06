@@ -26,6 +26,7 @@ if (
     $did_save_pat = Options::save( Options::ASANA_PAT, $_POST['asana_pat'] );
   } catch ( \Exception $e ) {
     echo '<p class="notice notice-error">' . esc_html( $e->getMessage() ) . '</p>';
+    $did_save_pat = FALSE;
   }
 
   if ( $did_save_pat === TRUE ) {
@@ -38,6 +39,7 @@ if (
       $did_delete_gid = FALSE;
     } catch ( \Exception $e ) {
       echo '<p class="notice notice-error">' . esc_html( $e->getMessage() ) . '</p>';
+      $did_save_gid = FALSE;
       $did_delete_pat = Options::delete( Options::ASANA_PAT );
       $did_delete_gid = Options::delete( Options::ASANA_USER_GID );
     }
@@ -85,6 +87,7 @@ if (
     $did_save_workspace = Options::save( Options::ASANA_WORKSPACE_GID, $_POST['asana_workspace'] );
   } catch ( \Exception $e ) {
     echo '<p class="notice notice-error">' . esc_html( $e->getMessage() ) . '</p>';
+    $did_save_workspace = FALSE;
   }
 
   if ( $did_save_workspace ) {

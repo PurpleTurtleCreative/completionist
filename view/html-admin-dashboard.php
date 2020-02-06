@@ -137,10 +137,9 @@ try {
   </section><!--close section#ptc-asana-workspace-->
   <?php
 
-} catch ( \Exception $e ) {
+} catch ( \PTC_Completionist\Errors\NoAuthorization $e ) {
 
   /* User is not authenticated for API usage. */
-  // TODO: Create custom Exceptions to know if an authentication error occurred or if this was some other client error such as a rate limit or server issue.
   ?>
   <section id="ptc-asana-connect">
 
@@ -166,15 +165,14 @@ try {
     </div>
 
   </section><!--close section#ptc-asana-connect-->
-
-  <footer>
-    <p>You are viewing this page because...</p>
-    <pre class="error-output">
-      <p class="error-code"><?php echo esc_html( $e->getCode() ); ?></p>
-      <p class="error-message"><?php echo esc_html( $e->getMessage() ); ?></p>
-    </pre>
-  </footer>
   <?php
+
+} catch ( \Exception $e ) {
+
+  echo '<section class="ptc-asana-error">';
+  echo '<h3>Error ' . esc_html( $e->getCode() ) . '</h3>';
+  echo '<p>' . esc_html( $e->getMessage() ) . '</p>';
+  echo '</section>';
 
 }//end try catch asana client
 

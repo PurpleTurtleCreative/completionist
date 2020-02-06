@@ -14,6 +14,7 @@ namespace PTC_Completionist;
 
 global $ptc_completionist;
 require_once $ptc_completionist->plugin_path . 'src/class-options.php';
+require_once $ptc_completionist->plugin_path . 'src/errors.php';
 
 defined( 'ABSPATH' ) || die();
 
@@ -102,14 +103,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      */
     private static function maybe_load_client() : \Asana\Client {
 
-      // TODO: Create custom Exceptions to know if an authentication error occurred or if this was some other client error such as a rate limit or server issue.
-
       $asana_personal_access_token = Options::get( Options::ASANA_PAT );
       if (
         FALSE === $asana_personal_access_token
         || '' === $asana_personal_access_token
       ) {
-        throw new \Exception( 'No Asana authentication provided. Please save a valid personal access token in Completionist\'s settings.' );
+        throw new Errors\NoAuthorization( 'No Asana authentication provided. Please save a valid personal access token in Completionist\'s settings.' );
       }
 
       global $ptc_completionist;
@@ -120,13 +119,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
         self::$me = $asana->users->me();
       } catch ( \Asana\Errors\NoAuthorizationError $e ) {
         Options::delete( Options::ASANA_PAT );
-        throw new \Exception( 'Asana authorization failed. Please provide a new personal access token in Completionist\'s settings.' );
-      } catch ( \AccessTokenDispatcher $e ) {
-        Options::delete( Options::ASANA_PAT );
-        throw new \Exception( 'Missing Asana authentication token. Please save a valid personal access token in Completionist\'s settings.' );
+        throw new Errors\NoAuthorization( 'Asana authorization failed. Please provide a new personal access token in Completionist\'s settings.' );
       } catch ( \Exception $e ) {
         /* Don't delete option here because could be server error or API limit... */
-        throw new \Exception( 'Asana authorization failure ' . $e->getCode() . ': ' . $e->getMessage() );
+        $error_code = esc_html( $e->getCode() );
+        $error_msg = esc_html( $e->getMessage() );
+        throw new \Exception( "Asana authorization failure {$error_code}: {$error_msg}" );
       }
 
       return $asana;
