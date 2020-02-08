@@ -37,8 +37,12 @@ try {
     <form class="ptc-asana-disconnect" method="POST">
       <div class="field-group">
         <input type="hidden" name="asana_disconnect_nonce" value="<?php echo esc_attr( wp_create_nonce( 'disconnect_asana' ) ); ?>">
-        <input type="submit" name="asana_disconnect" value="Deauthorize">
-        <p class="disconnect-notice"><i class="fas fa-ban"></i>This will remove your Personal Access Token from this site, thus deauthorizing access to your Asana account. Until connecting your Asana account again, you will not have access to use Completionist's features or be recognized on tasks.</p>
+        <div class="note-box note-box-error">
+          <p class="disconnect-notice">
+            <input class="error" type="submit" name="asana_disconnect" value="Deauthorize">
+            This will remove your encrypted Personal Access Token and Asana user id from this site, thus deauthorizing access to your Asana account. Until connecting your Asana account again, you will not have access to use Completionist's features or be recognized on tasks.
+          </p>
+        </div>
       </div>
     </form>
   </section><!--close section#ptc-asana-user-->
@@ -78,10 +82,10 @@ try {
               }
               ?>
             </select>
-          </div>
-          <div class="field-group">
+            <?php if ( $can_manage_options ) { ?>
             <input type="hidden" name="asana_workspace_save_nonce" value="<?php echo esc_attr( wp_create_nonce( 'asana_workspace_save' ) ); ?>">
             <input type="submit" name="asana_workspace_save" value="Save">
+            <?php }//end if can_manage_options show submit button ?>
           </div>
         </form>
 
@@ -90,16 +94,16 @@ try {
         if ( $chosen_workspace_gid === '' ) {
           if ( $can_manage_options ) {
             ?>
-            <p class="nothing-to-see">A workspace has not been assigned to this site. Please choose an Asana workspace from the dropdown above to start collaborating on site tasks.</p>
+            <p class="nothing-to-see">A workspace has not been assigned to this site.<br>Please choose an Asana workspace from the dropdown above to start collaborating on site tasks.</p>
             <?php
           } else {
             ?>
-            <p class="nothing-to-see">A workspace has not been assigned to this site. Please ask an <a href="<?php echo esc_url( admin_url( 'users.php?role=administrator' ) ); ?>" target="_blank">administrator</a> to set an Asana workspace to begin collaborating on site tasks.</p>
+            <p class="nothing-to-see">A workspace has not been assigned to this site.<br>Please ask an <a href="<?php echo esc_url( admin_url( 'users.php?role=administrator' ) ); ?>" target="_blank">administrator</a> to set an Asana workspace to begin collaborating on site tasks.</p>
             <?php
           }
         } elseif ( ! $is_workspace_member ) {
           ?>
-          <p class="nothing-to-see">You are unauthorized to collaborate on this site's tasks. Please ask an <a href="<?php echo esc_url( admin_url( 'users.php?role=administrator' ) ); ?>" target="_blank">administrator</a> to invite you to this site's workspace in Asana.</p>
+          <p class="nothing-to-see">You are unauthorized to collaborate on this site's tasks.<br>Please ask an <a href="<?php echo esc_url( admin_url( 'users.php?role=administrator' ) ); ?>" target="_blank">administrator</a> to invite you to this site's workspace in Asana.</p>
           <?php
         } else {
 
@@ -118,18 +122,20 @@ try {
       } else {
         /* User is unable to view workspace details */
         ?>
-        <p id="ptc-asana-workspace-unauthorized"><i class="fas fa-ban"></i><strong>Unauthorized.</strong> To view workspace details, you must be a member of the designated Asana workspace or have administrative capabilities to manage options.</p>
+        <div id="ptc-asana-workspace-unauthorized" class="note-box note-box-error">
+          <i class="fas fa-ban"></i>
+          <p><strong>Unauthorized.</strong> To view workspace details, you must be a member of the designated Asana workspace or have administrative capabilities to manage options.</p>
+        </div>
         <?php
       }//end if can view workspace details
 
     } catch ( \Exception $e ) {
       /* An Asana API client exception occurred */
       ?>
-      <p id="ptc-asana-workspace-error"><i class="fas fa-ban"></i><strong>Error.</strong> Unable to load workspace details.</p>
-      <pre class="error-output">
-        <p class="error-code"><?php echo esc_html( $e->getCode() ); ?></p>
-        <p class="error-message"><?php echo esc_html( $e->getMessage() ); ?></p>
-      </pre>
+      <div id="ptc-asana-workspace-error" class="note-box note-box-error">
+        <i class="fas fa-times"></i>
+        <p><strong>Error <?php echo esc_html( $e->getCode() ); ?>.</strong><br>Unable to load workspace details: <?php echo esc_html( $e->getMessage() ); ?></p>
+      </div>
       <?php
     }
     ?>
@@ -169,9 +175,9 @@ try {
     </form>
 
     <div class="additional-info">
-      <div class="note-box info">
+      <div class="note-box note-box-info">
         <i class="fas fa-question"></i>
-        <p>Visit <a href="https://app.asana.com/0/developer-console" target="_blank">your Asana developer console</a> to <b>generate a Personal Access Token.</b> Be sure to name it something memorable like <em>My <?php echo esc_html( get_bloginfo( 'name', 'display' ) ); ?> WordPress Site</em> in case you want to revoke it later.</p>
+        <p>Visit <a href="https://app.asana.com/0/developer-console" target="_blank">your Asana developer console</a> to <b>create a Personal Access Token.</b> Be sure to name it something memorable like <em>My <?php echo esc_html( get_bloginfo( 'name', 'display' ) ); ?> WordPress Site</em> in case you want to revoke it later.</p>
       </div>
       <div class="note-box">
         <i class="fas fa-lock"></i>
@@ -188,12 +194,12 @@ try {
   <?php
 
 } catch ( \Exception $e ) {
-
-  echo '<section class="ptc-asana-error">';
-  echo '<h3>Error ' . esc_html( $e->getCode() ) . '</h3>';
-  echo '<p>' . esc_html( $e->getMessage() ) . '</p>';
-  echo '</section>';
-
+  ?>
+  <div id="ptc-asana-dashboard-error" class="note-box note-box-error">
+    <i class="fas fa-times"></i>
+    <p><strong>Error <?php echo esc_html( $e->getCode() ); ?>.</strong> <?php echo esc_html( $e->getMessage() ); ?></p>
+  </div>
+  <?php
 }//end try catch asana client
 
 /* HELPERS */
@@ -209,13 +215,12 @@ function display_collaborator_row( \WP_User $user ) : void {
   ?>
   <div class="ptc-asana-collaborator-row" data-user-id="<?php echo esc_attr( $user->ID ); ?>">
 
-    <div class="identity">
+    <div class="user">
       <?php echo $gravatar; ?>
-      <p><?php echo esc_html( $name ); ?></p>
-    </div>
-
-    <div class="roles">
-      <p><?php echo esc_html( $roles_csv ); ?></p>
+      <div class="identity">
+        <p><?php echo esc_html( $name ); ?></p>
+        <p class="roles"><?php echo esc_html( $roles_csv ); ?></p>
+      </div>
     </div>
 
     <div class="email">
@@ -230,19 +235,11 @@ function display_collaborator_row( \WP_User $user ) : void {
         } else {
           echo '<i class="fas fa-times-circle"></i>Not Connected';
         }
-        ?>
-      </p>
-    </div>
 
-    <div class="view-in-asana">
-      <p>
-        <?php
         if ( ! empty( $asana_user_link ) ) {
-          echo  '<a href="' . esc_url( $asana_user_link ) . '" target="_blank">' .
+          echo  '<a class="ptc-button" href="' . esc_url( $asana_user_link ) . '" target="_blank">' .
                   'View in Asana<i class="fas fa-external-link-alt"></i>' .
                 '</a>';
-        } else {
-          echo 'Unable to View';
         }
         ?>
       </p>

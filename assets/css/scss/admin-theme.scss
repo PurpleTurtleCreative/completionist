@@ -49,10 +49,35 @@ a:focus, a:hover, a:active {
   color: #3E4C59;
 }
 
+.ptc-asana-error {
+  max-width: 700px;
+  margin: 7px auto;
+  box-sizing: border-box;
+}
+
+.ptc-asana-error {
+  padding: 30px;
+}
+
+.ptc-asana-error h3 {
+  color: #E12D39;
+  margin: 0 0 7px;
+}
+
+.ptc-asana-error p {
+  margin: 0;
+}
+
 section {
   background: #F9FBFD;
   border: 2px solid #DCDFE4;
   border-radius: 7px;
+  max-width: 700px;
+  padding: 80px 80px 100px;
+  margin: 7px auto;
+  box-shadow: 0 10px 7px -7px #CBD2D9;
+  text-align: center;
+  box-sizing: border-box;
 }
 
 label {
@@ -130,6 +155,36 @@ form input[type=submit]:active {
   background: #0ca285;
 }
 
+form input[type=submit].error {
+  background: #E12D39;
+  text-shadow: 1px 2px 2px #AB091E;
+  border-color: #AB091E;
+}
+
+form input[type=submit].error:hover,
+form input[type=submit].error:active {
+  background: #CF1124;
+}
+
+a.ptc-button {
+  display: inline-block;
+  background: #627D98;
+  border-radius: 999px;
+  border: 1px solid #486581;
+  text-shadow: 1px 2px 2px #486581;
+  text-decoration: none;
+  color: #FFF;
+  font-size: 0.9em;
+  padding: 0.2em 1.2em 0.2em;
+  font-weight: 400;
+  margin-top: 0.15em;
+}
+
+a.ptc-button:hover,
+a.ptc-button:active {
+  background: #486581;
+}
+
 div.note-box {
   display: flex;
   background: #e9eff7;
@@ -160,14 +215,25 @@ div.note-box p {
   border-radius: 0 5px 5px 0;
   color: #486581;
   text-align: left;
+  flex: 1;
 }
 
-div.note-box.info i {
+div.note-box.note-box-info i {
   background: #1992D4;
 }
 
-div.note-box.info p {
+div.note-box.note-box-info p {
   background: #daf0ff;
   color: #2D83AE;
   border-color: #7CC1E4;
+}
+
+div.note-box.note-box-error i {
+  background: #E12D39;
+}
+
+div.note-box.note-box-error p {
+  background: #FFEEEE;
+  color: #D64545;
+  border-color: #F29B9B;
 }

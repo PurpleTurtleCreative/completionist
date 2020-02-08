@@ -182,6 +182,12 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
             [ 'ptc-completionist_admin-theme-css' ],
             '0.0.0'
           );
+          wp_enqueue_style(
+            'ptc-completionist_admin-dashboard-css',
+            plugins_url( 'assets/css/admin-dashboard.css', __FILE__ ),
+            [ 'ptc-completionist_admin-theme-css' ],
+            '0.0.0'
+          );
           break;
       }
 
