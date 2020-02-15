@@ -284,6 +284,45 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
     }
 
+    /**
+     * Extracts a task gid from a copied task link.
+     *
+     * @param string $task_link The task link provided by clicking the chainlink
+     * icon, "Copy task link", on a task in Asana.
+     *
+     * @return string The task gid. Default '' on failure.
+     */
+    static function get_task_gid_from_task_link( string $task_link ) : string {
+
+      $task_link = filter_var(
+            wp_unslash( $task_link ),
+            FILTER_SANITIZE_URL
+          );
+
+      if (
+        preg_match( '/\/([0-9]+)\/.$/', $task_link, $matches ) === 1
+        && isset( $matches[1] )
+        && ! empty( $matches[1] )
+      ) {
+        return Options::sanitize( 'gid', $matches[1] );
+      }
+
+      return '';
+
+    }
+
+    static function get_assigned_pins( int $user_id = 0 ) : array {
+
+      // get user's gid
+
+      // get user's assigned tasks in Asana workspace
+
+      // build query WHERE meta_value IN( [returned Asana gids] )
+
+      // return arr[ post_id ][ task_gid ]
+
+    }
+
     static function remote_create_task() : bool {}
     static function remote_update_task() : bool {}
     static function remote_delete_task() : bool {}

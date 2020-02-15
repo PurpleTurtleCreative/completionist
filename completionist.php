@@ -80,8 +80,8 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       add_action( 'admin_menu', [ $this, 'add_admin_pages' ] );
       add_action( 'admin_enqueue_scripts', [ $this, 'register_scripts' ] );
 
-      // add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
-      // add_action( 'wp_ajax_refresh_page_relatives', [ $this, 'related_content_metabox_html_ajax_refresh' ] );
+      add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
+      add_action( 'wp_ajax_ptc_pin_task', [ $this, 'metabox_pin_task' ] );
 
     }
 
@@ -112,44 +112,44 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
 
     }//end add_admin_pages()
 
-    // /**
-    //  * Add metaboxes.
-    //  *
-    //  * @since 1.0.0
-    //  *
-    //  * @ignore
-    //  */
-    // function add_meta_boxes() {
-    //   add_meta_box(
-    //     'ptc-grouped-content',
-    //     'Page Relatives',
-    //     [ $this, 'related_content_metabox_html' ],
-    //     'page',
-    //     'side'
-    //   );
-    // }
+    /**
+     * Add metaboxes.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    function add_meta_boxes() {
+      add_meta_box(
+        'ptc-completionist_pinned-tasks',
+        'Tasks',
+        [ $this, 'pinned_tasks_metabox_html' ],
+        NULL,
+        'side'
+      );
+    }
 
-    // /**
-    //  * Content for the Page Relatives metabox.
-    //  *
-    //  * @since 1.0.0
-    //  *
-    //  * @ignore
-    //  */
-    // function related_content_metabox_html() {
-    //   include_once $this->plugin_path . 'view/html-metabox-page-relatives.php';
-    // }
+    /**
+     * Content for the Pinned Tasks metabox.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    function pinned_tasks_metabox_html() {
+      include_once $this->plugin_path . 'view/html-metabox-pinned-tasks.php';
+    }
 
-    // /**
-    //  * AJAX handler for refreshing the Page Relatives metabox in Gutenberg.
-    //  *
-    //  * @since 1.2.0
-    //  *
-    //  * @ignore
-    //  */
-    // function related_content_metabox_html_ajax_refresh() {
-    //   require_once $this->plugin_path . 'src/ajax-refresh-metabox-page-relatives.php';
-    // }
+    /**
+     * AJAX handler to pin a task.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    function metabox_pin_task() {
+      require_once $this->plugin_path . 'src/ajax-metabox-pin-task.php';
+    }
 
     /**
      * Register and enqueue plugin CSS and JS.
@@ -175,6 +175,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       );
 
       switch ( $hook_suffix ) {
+
         case 'toplevel_page_ptc-completionist':
           wp_enqueue_style(
             'ptc-completionist_connect-asana-css',
@@ -189,7 +190,25 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
             '0.0.0'
           );
           break;
-      }
+
+        case 'post.php':
+          wp_enqueue_script(
+            'ptc-completionist_metabox-pinned-tasks-js',
+            plugins_url( 'assets/js/metabox-pinned-tasks.js', __FILE__ ),
+            [ 'jquery' ],
+            '0.0.0'
+          );
+          wp_localize_script(
+            'ptc-completionist_metabox-pinned-tasks-js',
+            'ptc_completionist_pinned_tasks',
+            [
+              'post_id' => get_the_ID(),
+              'nonce' => wp_create_nonce( 'ptc_completionist_pinned_tasks' ),
+            ]
+          );
+          break;
+
+      }//end switch hook suffix
 
     }//end register_scripts()
 

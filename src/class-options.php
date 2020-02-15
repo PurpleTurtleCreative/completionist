@@ -51,14 +51,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
     const ASANA_WORKSPACE_GID = '_ptc_asana_workspace_gid';
 
     /**
-     * The option key name for the Asana tag's GID linking tasks to this blog.
+     * The postmeta key name for an Asana task GID pinned to the post. Multiple
+     * tasks may be pinned to a single post resulting in multiple rows per post.
      * This key's value should be of type string and contain only digits.
      *
      * @since 1.0.0
      *
-     * @var string ASANA_TAG_GID
+     * @var string PINNED_TASK_GID
      */
-    const ASANA_TAG_GID = '_ptc_asana_tag_gid';
+    const PINNED_TASK_GID = '_ptc_asana_task_gid';
 
     /**
      * The option key name for number of seconds to consider local data to be
@@ -125,18 +126,35 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
           $user_meta = get_user_meta( $object_id, $key, TRUE );
           $sanitized_user_meta = self::sanitize( $key, $user_meta );
           if ( $user_meta != $sanitized_user_meta ) {
-            error_log( 'ALERT: Sanitization occurred. Saved meta is corrupt for: ' . $key );
+            error_log( "ALERT: Sanitization occurred. Saved meta is corrupt for user $object_id: $key" );
           }
           return (string) $sanitized_user_meta;
 
         case self::ASANA_WORKSPACE_GID:
-        case self::ASANA_TAG_GID:
           $asana_gid = get_option( $key, '' );
           $sanitized_asana_gid = self::sanitize( $key, $asana_gid );
           if ( $asana_gid != $sanitized_asana_gid ) {
             error_log( 'ALERT: Sanitization occurred. Saved option is corrupt for: ' . $key );
           }
           return (string) $sanitized_asana_gid;
+
+        case self::PINNED_TASK_GID:
+          if ( $object_id === 0 ) {
+            $object_id = get_the_ID();
+            if ( $object_id === 0 || $object_id === FALSE ) {
+              error_log( 'Could not identify post to get value for: ' . $key );
+              return [];
+            }
+          }
+          $pinned_task_gids = get_post_meta( $object_id, $key, FALSE );
+          foreach ( $pinned_task_gids as $i => $task_gid ) {
+            $sanitized_task_gid = self::sanitize( $key, $task_gid );
+            if ( $task_gid != $sanitized_task_gid ) {
+              error_log( "ALERT: Sanitization occurred. Saved meta is corrupt for post $object_id: $key" );
+            }
+            $pinned_task_gids[ $i ] = $sanitized_task_gid;
+          }
+          return $pinned_task_gids;
 
         case self::LOCAL_EXPIRY:
           $local_expiry = get_option( $key, '' );
@@ -207,18 +225,25 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
           $user_meta = $value;
           $sanitized_user_meta = self::sanitize( $key, $user_meta );
           if ( ! $force && $user_meta != $sanitized_user_meta ) {
-            throw new \Exception( 'ERROR: Refused to save different value for option: ' . $key );
+            throw new \Exception( 'ERROR: Refused to save different value for usermeta: ' . $key );
           }
           return self::maybe_update_usermeta( $key, $sanitized_user_meta, $object_id );
 
         case self::ASANA_WORKSPACE_GID:
-        case self::ASANA_TAG_GID:
           $asana_gid = $value;
           $sanitized_asana_gid = self::sanitize( $key, $asana_gid );
           if ( ! $force && $asana_gid != $sanitized_asana_gid ) {
             throw new \Exception( 'ERROR: Refused to save different value for option: ' . $key );
           }
           return self::maybe_update_option( $key, $sanitized_asana_gid, TRUE );
+
+        case self::PINNED_TASK_GID:
+          $post_meta = $value;
+          $sanitized_post_meta = self::sanitize( $key, $post_meta );
+          if ( ! $force && $post_meta != $sanitized_post_meta ) {
+            throw new \Exception( 'ERROR: Refused to save different value for postmeta: ' . $key );
+          }
+          return self::maybe_add_postmeta( $key, $sanitized_post_meta, $object_id );
 
         case self::LOCAL_EXPIRY:
           $local_expiry = $value;
@@ -306,6 +331,55 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
     }
 
     /**
+     * Inserts the postmeta value only if it does not already exist.
+     *
+     * @since 1.0.0
+     *
+     * @param string $key The meta key name.
+     *
+     * @param string $value The value to be saved.
+     *
+     * @param int $user_id Optional. The post's id. Default 0 for current post.
+     *
+     * @return bool Returns TRUE if the post's meta value was inserted
+     * successfully or already exists.
+     */
+    private static function maybe_add_postmeta( string $key, string $value, int $post_id = 0 ) : bool {
+
+      if ( $post_id === 0 ) {
+        $post_id = get_the_ID();
+        if ( $post_id === 0 || $post_id === FALSE ) {
+          return FALSE;
+        }
+      }
+
+      if ( $post_id < 1 || $post_id === FALSE ) {
+        return FALSE;
+      }
+
+      global $wpdb;
+      $res = $wpdb->get_row( $wpdb->prepare(
+          "
+          SELECT meta_id
+          FROM $wpdb->postmeta
+          WHERE post_id = %d
+            AND meta_key = %s
+            AND meta_value = %s
+          ",
+          $post_id,
+          $key,
+          $value
+        ) );
+
+      if ( $res === NULL || empty( $res ) ) {
+        return add_post_meta( $post_id, $key, $value ) ? TRUE : FALSE;
+      }
+
+      return TRUE;
+
+    }
+
+    /**
      * Deletes an option of this class.
      *
      * @since 1.0.0
@@ -317,22 +391,36 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
      * delete the key. Set to -1 to delete for all objects. Default 0 to delete
      * for current object, if available.
      *
+     * @param string $value Optional. The meta value to be deleted. If provided,
+     * only metadata entries matching the key and value will be deleted.
+     * Default '' to delete all key entries, regardless of value.
+     *
      * @return bool If the option was deleted. FALSE if key is not a
      * member of this class.
      */
-    static function delete( string $key, int $object_id = 0 ) : bool {
+    static function delete( string $key, int $object_id = 0, string $value = '' ) : bool {
 
       switch ( $key ) {
         case self::ASANA_PAT:
         case self::ASANA_USER_GID:
           if ( $object_id === -1 ) {
-            /* If user id not specified, delete for all users */
+            /* delete for all users */
             return delete_metadata( 'user', 0, $key, '', TRUE );
           } elseif ( $object_id === 0 && get_current_user_id() !== 0 ) {
             return delete_user_meta( get_current_user_id(), $key );
+          } else {
+            return delete_user_meta( $object_id, $key );
+          }
+        case self::PINNED_TASK_GID:
+          if ( $object_id === -1 ) {
+            /* delete all for all posts */
+            return delete_metadata( 'post', 0, $key, '', TRUE );
+          } elseif ( $object_id === 0 && get_the_ID() !== FALSE ) {
+            return delete_post_meta( get_the_ID(), $key, $value );
+          } else {
+            return delete_post_meta( $object_id, $key, $value );
           }
         case self::ASANA_WORKSPACE_GID:
-        case self::ASANA_TAG_GID:
         case self::LOCAL_EXPIRY:
         case self::LOCAL_LAST_UPDATED:
           return delete_option( $key );
@@ -387,7 +475,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
         case 'gid':
         case self::ASANA_USER_GID:
         case self::ASANA_WORKSPACE_GID:
-        case self::ASANA_TAG_GID:
+        case self::PINNED_TASK_GID:
         case self::LOCAL_EXPIRY:
           $filtered_integer_string = filter_var(
             $value,
