@@ -1,5 +1,40 @@
 jQuery(function($) {
 
+  list_pinned_tasks();
+
+  /* LIST PINNED TASKS */
+  function list_pinned_tasks() {
+
+    var taskContainer = $('div#task-list');
+
+    if(taskContainer.data('if-list-tasks')) {
+
+      var post_id = ptc_completionist_pinned_tasks.post_id;
+
+      if(post_id === undefined || post_id < 1) {
+        alert('Error: Could not identify the current post. Failed to load tasks.');
+        return false;
+      }
+
+      var data = {
+        'action': 'ptc_list_tasks',
+        'nonce': ptc_completionist_pinned_tasks.nonce_list,
+        'post_id': post_id,
+      };
+
+      taskContainer.html('<p><i class="fas fa-circle-notch fa-spin"></i>Loading tasks from Asana...</p>');
+
+      $.post(ajaxurl, data, function(res) {
+        $('div#task-list').html(res);
+      }, 'html')
+        .fail(function() {
+          taskContainer.html('<p><i class="fas fa-exclamation-triangle"></i>Failed to request task data.</p>');
+        })
+
+    }//end if list tasks
+
+  }//end function list_pinned_tasks()
+
   /* PIN EXISTING TASK FROM ASANA TASK LINK */
   $('#ptc-completionist_pinned-tasks #pin-existing-task button#submit-pin-existing').on('click', function() {
 
@@ -24,7 +59,7 @@ jQuery(function($) {
 
       var data = {
         'action': 'ptc_pin_task',
-        'nonce': ptc_completionist_pinned_tasks.nonce,
+        'nonce': ptc_completionist_pinned_tasks.nonce_pin,
         'post_id': post_id,
         'task_link': input,
       };
@@ -34,8 +69,7 @@ jQuery(function($) {
       $.post(ajaxurl, data, function(res) {
 
         if(res.status == 'success') {
-          // TODO: trigger reloading task list
-          alert('Woohoo!');
+          list_pinned_tasks();
           inputField.val('');
         } else {
           alert(res.data);
@@ -62,4 +96,4 @@ jQuery(function($) {
 
   });//end submit pin existing
 
-});
+});//end document ready

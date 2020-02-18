@@ -8,7 +8,7 @@
  *
  * Plugin Name:       Completionist - Asana Task Management for WordPress
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
- * Description:       Manage site-specific Asana tasks in relevant areas of your WordPress admin.
+ * Description:       Pin and manage Asana tasks in relevant areas of your WordPress admin.
  * Version:           1.0.0
  * Requires PHP:      7.0
  * Author:            Purple Turtle Creative
@@ -82,6 +82,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
 
       add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
       add_action( 'wp_ajax_ptc_pin_task', [ $this, 'metabox_pin_task' ] );
+      add_action( 'wp_ajax_ptc_list_tasks', [ $this, 'metabox_list_tasks' ] );
 
     }
 
@@ -152,6 +153,17 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
     }
 
     /**
+     * AJAX handler to load task list HTML.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    function metabox_list_tasks() {
+      require_once $this->plugin_path . 'view/html-metabox-pinned-tasks-listing.php';
+    }
+
+    /**
      * Register and enqueue plugin CSS and JS.
      *
      * @since 1.0.0
@@ -203,7 +215,8 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
             'ptc_completionist_pinned_tasks',
             [
               'post_id' => get_the_ID(),
-              'nonce' => wp_create_nonce( 'ptc_completionist_pinned_tasks' ),
+              'nonce_pin' => wp_create_nonce( 'ptc_completionist_pin_task' ),
+              'nonce_list' => wp_create_nonce( 'ptc_completionist_list_tasks' ),
             ]
           );
           break;

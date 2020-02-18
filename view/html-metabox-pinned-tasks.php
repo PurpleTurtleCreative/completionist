@@ -17,16 +17,13 @@ require_once $ptc_completionist->plugin_path . 'src/class-asana-interface.php';
 require_once $ptc_completionist->plugin_path . 'src/class-options.php';
 
 $pinned_task_gids = Options::get( Options::PINNED_TASK_GID, get_the_ID() );
+$do_list_tasks = ( is_array( $pinned_task_gids ) && ! empty( $pinned_task_gids ) ) ? 'true' : 'false';
 
 ?>
-<div id="task-list">
+<div id="task-list" data-if-list-tasks="<?php echo esc_attr( $do_list_tasks ); ?>">
   <?php
   if ( is_array( $pinned_task_gids ) && ! empty( $pinned_task_gids ) ) {
-    echo '<ol>';
-    foreach ( $pinned_task_gids as $task_gid ) {
-      echo '<li>' . esc_html( $task_gid ) . '</li>';
-    }
-    echo '</ol>';
+    echo '<p><i class="fas fa-circle-notch fa-spin"></i>Waiting to load tasks...</p>';
   } else {
     echo '<p><i class="fas fa-clipboard-check"></i>There are no pinned tasks!</p>';
   }
@@ -57,4 +54,3 @@ $pinned_task_gids = Options::get( Options::PINNED_TASK_GID, get_the_ID() );
   </div>
 
 </div>
-<?php

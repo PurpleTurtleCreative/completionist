@@ -3,7 +3,7 @@
  * Asana Interface class
  *
  * Loads the Asana API client and translates common interactions between Asana
- * and WordPress. Most of these functions are expected to use API calls.
+ * and WordPress.
  *
  * @since 1.0.0
  */
@@ -203,6 +203,34 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
       }
 
       return $wp_users;
+
+    }
+
+    /**
+     * Get a WordPress user ID by Asana user GID. Note that a user's GID is
+     * stored as long as the user is successfully authorized.
+     *
+     * @param string $user_gid The Asana user GID for searching.
+     *
+     * @return int The WordPress user's ID. Default 0.
+     */
+    static function get_user_id_by_gid( string $user_gid ) : int {
+
+      $user_gid = Options::sanitize( 'gid', $user_gid );
+
+      $query_args = [
+        'meta_key' => Options::ASANA_USER_GID,
+        'meta_value' => $user_gid,
+        'fields' => 'ID',
+      ];
+
+      $id = (int) get_users( $query_args )[0];
+
+      if ( $id > 0 ) {
+        return (int) $id;
+      }
+
+      return 0;
 
     }
 
