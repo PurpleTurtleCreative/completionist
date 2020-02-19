@@ -5,7 +5,7 @@ jQuery(function($) {
   /* LIST PINNED TASKS */
   function list_pinned_tasks() {
 
-    var taskContainer = $('div#task-list');
+    var taskContainer = $('#task-list');
 
     if(taskContainer.data('if-list-tasks')) {
 
@@ -25,7 +25,8 @@ jQuery(function($) {
       taskContainer.html('<p><i class="fas fa-circle-notch fa-spin"></i>Loading tasks from Asana...</p>');
 
       $.post(ajaxurl, data, function(res) {
-        $('div#task-list').html(res);
+        $('#task-list').html(res);
+        apply_task_list_listeners();
       }, 'html')
         .fail(function() {
           taskContainer.html('<p><i class="fas fa-exclamation-triangle"></i>Failed to request task data.</p>');
@@ -34,6 +35,27 @@ jQuery(function($) {
     }//end if list tasks
 
   }//end function list_pinned_tasks()
+
+  function apply_task_list_listeners() {
+
+    /* TOGGLE DESCRIPTION VISIBILITY */
+    $('#ptc-completionist_pinned-tasks .ptc-completionist-task button.view-task-notes').on('click', function() {
+      $(this).closest('.ptc-completionist-task').find('.description').toggle();
+    });//end toggle description
+
+  }//end apply_task_list_listeners()
+
+  /* TOGGLE NEW TASK FORM VISIBILITY */
+  $('#ptc-completionist_pinned-tasks #pin-a-task button#toggle-create-new').on('click', function() {
+    var thisButton = $(this);
+    thisButton.siblings('#pin-existing-task').toggle();
+    var formIsVisible = thisButton.siblings('#pin-new-task').toggle().is( ":visible" );
+    if(formIsVisible) {
+      thisButton.html('<i class="fas fa-ban"></i>Cancel');
+    } else {
+      thisButton.html('<i class="fas fa-plus"></i>New Task');
+    }
+  });//end toggle new task form
 
   /* PIN EXISTING TASK FROM ASANA TASK LINK */
   $('#ptc-completionist_pinned-tasks #pin-existing-task button#submit-pin-existing').on('click', function() {

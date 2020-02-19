@@ -26,7 +26,7 @@ try {
   $do_list_tasks = ( is_array( $pinned_task_gids ) && ! empty( $pinned_task_gids ) ) ? 'true' : 'false';
 
   ?>
-  <div id="task-list" data-if-list-tasks="<?php echo esc_attr( $do_list_tasks ); ?>">
+  <main id="task-list" data-if-list-tasks="<?php echo esc_attr( $do_list_tasks ); ?>">
     <?php
     if ( is_array( $pinned_task_gids ) && ! empty( $pinned_task_gids ) ) {
       echo '<p><i class="fas fa-circle-notch fa-spin"></i>Waiting to load tasks...</p>';
@@ -34,9 +34,9 @@ try {
       echo '<p><i class="fas fa-clipboard-check"></i>There are no pinned tasks!</p>';
     }
     ?>
-  </div>
+  </main>
 
-  <div id="pin-a-task">
+  <aside id="pin-a-task">
 
     <div id="pin-existing-task">
       <input id="asana-task-link-url" name="asana_task_link_url" type="url" placeholder="Paste a task link...">
@@ -59,7 +59,7 @@ try {
       <button id="submit-create-new" class="ptc-icon-button" type="button"><i class="fas fa-plus"></i>Create Task</button>
     </div>
 
-  </div>
+  </aside>
   <?php
 } catch ( \PTC_Completionist\Errors\NoAuthorization $e ) {
   /* User is not authenticated for API usage. */

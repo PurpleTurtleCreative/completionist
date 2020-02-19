@@ -82,7 +82,7 @@ function maybe_display_task_row( string $task_gid, int $post_id ) : void {
     $assignee_gravatar = '';
   } else {
     $assignee_id = Asana_Interface::get_user_id_by_gid( $task->assignee->gid );
-    $assignee_gravatar = get_avatar( $assignee_id, 30, 'mystery' );
+    $assignee_gravatar = get_avatar( $assignee_id, 20, 'mystery' );
     $user_info = get_userdata( $assignee_id );
     if (
       FALSE === $user_info
@@ -103,7 +103,7 @@ function maybe_display_task_row( string $task_gid, int $post_id ) : void {
   }
 
   ?>
-  <div class="ptc-completionist-task" data-task-gid="<?php echo esc_attr( $task_gid ); ?>">
+  <section class="ptc-completionist-task" data-task-gid="<?php echo esc_attr( $task_gid ); ?>">
 
     <div class="mark-complete" data-task-completed="<?php echo esc_attr( $task->completed ); ?>">
       <?php echo ( $task->completed == 'true' ) ? '<i class="fas fa-check"></i>' : ''; ?>
@@ -139,7 +139,7 @@ function maybe_display_task_row( string $task_gid, int $post_id ) : void {
       </div>
     </div>
 
-    <div class="description">
+    <div class="description" style="display:none;">
       <?php
       if ( ! empty( $task->notes ) ) {
         echo esc_html( $task->notes );
@@ -147,6 +147,6 @@ function maybe_display_task_row( string $task_gid, int $post_id ) : void {
       ?>
     </div>
 
-  </div>
+  </section>
   <?php
 }
