@@ -16,41 +16,65 @@ global $ptc_completionist;
 require_once $ptc_completionist->plugin_path . 'src/class-asana-interface.php';
 require_once $ptc_completionist->plugin_path . 'src/class-options.php';
 
-$pinned_task_gids = Options::get( Options::PINNED_TASK_GID, get_the_ID() );
-$do_list_tasks = ( is_array( $pinned_task_gids ) && ! empty( $pinned_task_gids ) ) ? 'true' : 'false';
+try {
 
-?>
-<div id="task-list" data-if-list-tasks="<?php echo esc_attr( $do_list_tasks ); ?>">
-  <?php
-  if ( is_array( $pinned_task_gids ) && ! empty( $pinned_task_gids ) ) {
-    echo '<p><i class="fas fa-circle-notch fa-spin"></i>Waiting to load tasks...</p>';
-  } else {
-    echo '<p><i class="fas fa-clipboard-check"></i>There are no pinned tasks!</p>';
-  }
+  $asana = Asana_Interface::get_client();
+
+  /* User is authenticated for API usage. */
+
+  $pinned_task_gids = Options::get( Options::PINNED_TASK_GID, get_the_ID() );
+  $do_list_tasks = ( is_array( $pinned_task_gids ) && ! empty( $pinned_task_gids ) ) ? 'true' : 'false';
+
   ?>
-</div>
-
-<div id="pin-a-task">
-
-  <div id="pin-existing-task">
-    <input id="asana-task-link-url" name="asana_task_link_url" type="url" placeholder="Paste a task link...">
-    <button id="submit-pin-existing" class="ptc-icon-button" type="button"><i class="fas fa-thumbtack"></i></button>
+  <div id="task-list" data-if-list-tasks="<?php echo esc_attr( $do_list_tasks ); ?>">
+    <?php
+    if ( is_array( $pinned_task_gids ) && ! empty( $pinned_task_gids ) ) {
+      echo '<p><i class="fas fa-circle-notch fa-spin"></i>Waiting to load tasks...</p>';
+    } else {
+      echo '<p><i class="fas fa-clipboard-check"></i>There are no pinned tasks!</p>';
+    }
+    ?>
   </div>
 
-  <button id="toggle-create-new" class="ptc-icon-button" type="button"><i class="fas fa-plus"></i>New Task</button>
+  <div id="pin-a-task">
 
-  <div id="pin-new-task" style="display:none;">
-    <label>Title:</label>
-    <input type="text">
-    <label>Description:</label>
-    <textarea></textarea>
-    <label>Due:</label>
-    <input type="date">
-    <label>Assignee:</label>
-    <select>
-      <option>Placeholder</option>
-    </select>
-    <button id="submit-create-new" class="ptc-icon-button" type="button"><i class="fas fa-plus"></i>Create Task</button>
+    <div id="pin-existing-task">
+      <input id="asana-task-link-url" name="asana_task_link_url" type="url" placeholder="Paste a task link...">
+      <button id="submit-pin-existing" class="ptc-icon-button" type="button"><i class="fas fa-thumbtack"></i></button>
+    </div>
+
+    <button id="toggle-create-new" class="ptc-icon-button" type="button"><i class="fas fa-plus"></i>New Task</button>
+
+    <div id="pin-new-task" style="display:none;">
+      <label>Title:</label>
+      <input type="text">
+      <label>Description:</label>
+      <textarea></textarea>
+      <label>Due:</label>
+      <input type="date">
+      <label>Assignee:</label>
+      <select>
+        <option>Placeholder</option>
+      </select>
+      <button id="submit-create-new" class="ptc-icon-button" type="button"><i class="fas fa-plus"></i>Create Task</button>
+    </div>
+
   </div>
-
-</div>
+  <?php
+} catch ( \PTC_Completionist\Errors\NoAuthorization $e ) {
+  /* User is not authenticated for API usage. */
+  $settings_url = $ptc_completionist->settings_url;
+  ?>
+  <div id="ptc-asana-dashboard-error" class="note-box note-box-error">
+    <i class="fas fa-times"></i>
+    <p><strong>Not authorized.</strong> Please connect your Asana account to use Completionist.<a href="<?php echo esc_url( $settings_url ); ?>">Go to Settings<i class="fas fa-long-arrow-alt-right"></i></a></p>
+  </div>
+  <?php
+} catch ( \Exception $e ) {
+  ?>
+  <div id="ptc-asana-dashboard-error" class="note-box note-box-error">
+    <i class="fas fa-times"></i>
+    <p><strong>Error <?php echo esc_html( $e->getCode() ); ?>.</strong> <?php echo esc_html( $e->getMessage() ); ?></p>
+  </div>
+  <?php
+}//end try catch asana client

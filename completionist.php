@@ -53,6 +53,15 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      */
     public $plugin_url;
 
+    /**
+     * The full url to this plugin's admin page.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    public $settings_url;
+
     /* Plugin Initialization */
 
     /**
@@ -66,6 +75,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       $this->plugin_title = plugin_basename( __FILE__ );
       $this->plugin_path = plugin_dir_path( __FILE__ );
       $this->plugin_url = plugins_url( '', __FILE__ );
+      $this->settings_url = admin_url( 'admin.php?page=ptc-completionist' );
     }
 
     /**

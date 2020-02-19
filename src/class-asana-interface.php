@@ -224,7 +224,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
         'fields' => 'ID',
       ];
 
-      $id = (int) get_users( $query_args )[0];
+      $id = (int) get_users( $query_args );
 
       if ( $id > 0 ) {
         return (int) $id;
