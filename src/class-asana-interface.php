@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace PTC_Completionist;
 
+defined( 'ABSPATH' ) || die();
+
 global $ptc_completionist;
 require_once $ptc_completionist->plugin_path . 'src/class-options.php';
 require_once $ptc_completionist->plugin_path . 'src/errors.php';
-
-defined( 'ABSPATH' ) || die();
 
 if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
   /**
@@ -210,6 +210,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      * Get a WordPress user ID by Asana user GID. Note that a user's GID is
      * stored as long as the user is successfully authorized.
      *
+     * @since 1.0.0
+     *
      * @param string $user_gid The Asana user GID for searching.
      *
      * @return int The WordPress user's ID. Default 0.
@@ -315,6 +317,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
     /**
      * Extracts a task gid from a copied task link.
      *
+     * @since 1.0.0
+     *
      * @param string $task_link The task link provided by clicking the chainlink
      * icon, "Copy task link", on a task in Asana.
      *
@@ -336,6 +340,64 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
       }
 
       return '';
+
+    }
+
+
+    /**
+     * Attempt to retrieve task data to use for display. Providing the post id
+     * of the provided pinned task gid will also attempt data self-healing.
+     *
+     * @since 1.0.0
+     *
+     * @param string $task_gid The gid of the task to retrieve.
+     *
+     * @param string $opt_fields A csv of task fields to retrieve.
+     *
+     * @param int $post_id Optional. The post ID on which the task belongs to
+     * attempt self-healing on certain error responses. Default 0 to take no
+     * action on failure.
+     *
+     * @return \stdClass The task data returned from Asana.
+     *
+     * @throws \Exception The Asana client may not be authenticated or the API
+     * request may fail. Additional custom exceptions are:
+     * * 400: Invalid task gid - The provided task gid is invalid.
+     * * 410: Unpinned task - The API returned 404, so the task was unpinned.
+     * * 0: Failed to get task data - This is presumably unreachable.
+     */
+    static function maybe_get_task_data( string $task_gid, string $opt_fields, int $post_id = 0 ) : \stdClass {
+
+      $task_gid = Options::sanitize( 'gid', $task_gid );
+      if ( empty( $task_gid ) ) {
+        throw new \Exception( 'Invalid task gid', 400 );
+      }
+
+      /* Get the task */
+      try {
+        $asana = self::get_client();
+        $task = $asana->tasks->findById( $task_gid, [ 'opt_fields' => $opt_fields ] );
+        return $task;
+      } catch ( \Exception $e ) {
+        $error_code = $e->getCode();
+        $error_msg = $e->getMessage();
+        if (
+          404 == $error_code
+          && $post_id > 0
+        ) {
+          if ( $task_gid != '' && Options::delete( Options::PINNED_TASK_GID, $post_id, $task_gid ) ) {
+            error_log( "Unpinned [404: Not Found] pinned task on post $post_id." );
+            throw new \Exception( 'Unpinned Task', 410 );
+          }
+        } elseif (
+          'Forbidden' !== $error_msg
+        ) {
+          error_log( "Failed to fetch task data, error $error_code: $error_msg" );
+        }
+        throw $e;
+      }
+
+      throw new \Exception( 'Failed to get task data', 0 );
 
     }
 

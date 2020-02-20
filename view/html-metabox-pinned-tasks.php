@@ -1,7 +1,6 @@
 <?php
 /**
- * The content of the Pinned Tasks metabox with functions to view, create, pin,
- * unpin, and delete tasks for the current post.
+ * The content of the Pinned Tasks metabox.
  *
  * @since 1.0.0
  */
@@ -21,29 +20,18 @@ try {
   $asana = Asana_Interface::get_client();
 
   /* User is authenticated for API usage. */
-
-  $pinned_task_gids = Options::get( Options::PINNED_TASK_GID, get_the_ID() );
-  $do_list_tasks = ( is_array( $pinned_task_gids ) && ! empty( $pinned_task_gids ) ) ? 'true' : 'false';
-
   ?>
-  <main id="task-list" data-if-list-tasks="<?php echo esc_attr( $do_list_tasks ); ?>">
-    <?php
-    if ( is_array( $pinned_task_gids ) && ! empty( $pinned_task_gids ) ) {
-      echo '<p><i class="fas fa-circle-notch fa-spin"></i>Waiting to load tasks...</p>';
-    } else {
-      echo '<p><i class="fas fa-clipboard-check"></i>There are no pinned tasks!</p>';
-    }
-    ?>
+  <main id="task-list">
+    <p><i class="fas fa-circle-notch fa-spin"></i>Waiting to load tasks...</p>
   </main>
 
   <aside id="pin-a-task">
 
-    <div id="pin-existing-task">
+    <div id="task-toolbar">
       <input id="asana-task-link-url" name="asana_task_link_url" type="url" placeholder="Paste a task link...">
-      <button id="submit-pin-existing" class="ptc-icon-button" type="button"><i class="fas fa-thumbtack"></i></button>
+      <button id="submit-pin-existing" type="button"><i class="fas fa-thumbtack"></i></button>
+      <button id="toggle-create-new" type="button"><i class="fas fa-plus"></i></button>
     </div>
-
-    <button id="toggle-create-new" class="ptc-icon-button" type="button"><i class="fas fa-plus"></i>New Task</button>
 
     <div id="pin-new-task" style="display:none;">
       <label>Title:</label>
@@ -51,12 +39,12 @@ try {
       <label>Description:</label>
       <textarea></textarea>
       <label>Due:</label>
-      <input type="date">
+      <input type="date" pattern="\d\d\d\d-\d\d-\d\d" placeholder="yyyy-mm-dd" id="new-task-due-on" name="new_task_due_on">
       <label>Assignee:</label>
       <select>
         <option>Placeholder</option>
       </select>
-      <button id="submit-create-new" class="ptc-icon-button" type="button"><i class="fas fa-plus"></i>Create Task</button>
+      <button id="submit-create-new" type="button"><i class="fas fa-plus"></i>Create Task</button>
     </div>
 
   </aside>

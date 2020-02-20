@@ -1,6 +1,6 @@
 <?php
 /**
- * Pin an existing task or a newly created task to the provided post.
+ * Pin an existing task to the provided post.
  *
  * @since 1.0.0
  */
@@ -14,29 +14,27 @@ defined( 'ABSPATH' ) || die();
 global $ptc_completionist;
 require_once $ptc_completionist->plugin_path . 'src/class-asana-interface.php';
 require_once $ptc_completionist->plugin_path . 'src/class-options.php';
+require_once $ptc_completionist->plugin_path . 'src/class-html-builder.php';
 
-$data['status'] = 'error';
-$data['data'] = 'Invalid submission.';
+$res['status'] = 'error';
+$res['code'] = 400;
+$res['message'] = 'Invalid submission';
+$res['data'] = '';
 
 try {
-
   if (
     isset( $_POST['task_link'] )
     && isset( $_POST['post_id'] )
     && isset( $_POST['nonce'] )
-    && wp_verify_nonce( $_POST['nonce'], 'ptc_completionist_pin_task' ) !== FALSE
+    && wp_verify_nonce( $_POST['nonce'], 'ptc_completionist_pin_task' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
   ) {
 
-    /* PIN AN EXISTING TASK */
-
-    $task_gid = Asana_Interface::get_task_gid_from_task_link( $_POST['task_link'] );
-
+    $task_gid = Asana_Interface::get_task_gid_from_task_link( $_POST['task_link'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     if ( $task_gid === '' ) {
       throw new \Exception('Failed to get task from the submitted task link.');
     }
 
-    $the_post_id = (int) Options::sanitize( 'gid', $_POST['post_id'] );
-
+    $the_post_id = (int) Options::sanitize( 'gid', $_POST['post_id'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     if ( $the_post_id < 1 ) {
       throw new \Exception('Invalid post identifier.');
     }
@@ -51,15 +49,18 @@ try {
       throw new \Exception("Failed to pin the existing task to post $the_post_id.");
     }
 
-    $data['status'] = 'success';
-    $data['data'] = "Successfully pinned task $task_gid to post $the_post_id.";
+    $res['status'] = 'success';
+    $res['code'] = 200;
+    $res['message'] = "Successfully pinned task $task_gid to post $the_post_id.";
+    $res['data'] = $task_gid;
 
-  }
-
+  }//end validate form submission
 } catch ( \Exception $e ) {
-  $data['status'] = 'fail';
-  $data['data'] = $e->getMessage();
+  $res['status'] = 'error';
+  $res['code'] = $e->getCode();
+  $res['message'] = $e->getMessage();
+  $res['data'] = HTML_Builder::format_error_box( $e, 'Failed to pin task. ' );
 }
 
-echo json_encode( $data );
+echo json_encode( $res );
 wp_die();

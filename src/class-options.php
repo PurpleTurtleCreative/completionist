@@ -393,7 +393,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
      *
      * @param string $value Optional. The meta value to be deleted. If provided,
      * only metadata entries matching the key and value will be deleted.
-     * Default '' to delete all key entries, regardless of value.
+     * Default '' to delete all key entries, regardless of value. TAKE CAUTION
+     * WHEN PASSING A VARIABLE. FIRST CHECK IF EMPTY TO AVOID UNEXPECTED
+     * DELETION OF ALL KEY INSTANCES.
      *
      * @return bool If the option was deleted. FALSE if key is not a
      * member of this class.
@@ -404,7 +406,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
         case self::ASANA_PAT:
         case self::ASANA_USER_GID:
           if ( $object_id === -1 ) {
-            /* delete for all users */
             return delete_metadata( 'user', 0, $key, '', TRUE );
           } elseif ( $object_id === 0 && get_current_user_id() !== 0 ) {
             return delete_user_meta( get_current_user_id(), $key );
@@ -413,7 +414,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
           }
         case self::PINNED_TASK_GID:
           if ( $object_id === -1 ) {
-            /* delete all for all posts */
             return delete_metadata( 'post', 0, $key, '', TRUE );
           } elseif ( $object_id === 0 && get_the_ID() !== FALSE ) {
             return delete_post_meta( get_the_ID(), $key, $value );

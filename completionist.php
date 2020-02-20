@@ -92,7 +92,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
 
       add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
       add_action( 'wp_ajax_ptc_pin_task', [ $this, 'metabox_pin_task' ] );
-      add_action( 'wp_ajax_ptc_list_tasks', [ $this, 'metabox_list_tasks' ] );
+      add_action( 'wp_ajax_ptc_list_task', [ $this, 'metabox_list_task' ] );
 
     }
 
@@ -169,7 +169,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      *
      * @ignore
      */
-    function metabox_list_tasks() {
+    function metabox_list_task() {
       require_once $this->plugin_path . 'view/html-metabox-pinned-tasks-listing.php';
     }
 
@@ -220,11 +220,13 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
             [ 'jquery' ],
             '0.0.0'
           );
+          require_once $this->plugin_path . 'src/class-options.php';
           wp_localize_script(
             'ptc-completionist_metabox-pinned-tasks-js',
             'ptc_completionist_pinned_tasks',
             [
               'post_id' => get_the_ID(),
+              'pinned_task_gids' => \PTC_Completionist\Options::get( \PTC_Completionist\Options::PINNED_TASK_GID, get_the_ID() ),
               'nonce_pin' => wp_create_nonce( 'ptc_completionist_pin_task' ),
               'nonce_list' => wp_create_nonce( 'ptc_completionist_list_tasks' ),
             ]
