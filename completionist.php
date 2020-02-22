@@ -93,6 +93,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
       add_action( 'wp_ajax_ptc_pin_task', [ $this, 'metabox_pin_task' ] );
       add_action( 'wp_ajax_ptc_list_task', [ $this, 'metabox_list_task' ] );
+      add_action( 'wp_ajax_ptc_create_task', [ $this, 'metabox_create_task' ] );
 
     }
 
@@ -159,18 +160,29 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      * @ignore
      */
     function metabox_pin_task() {
-      require_once $this->plugin_path . 'src/ajax-metabox-pin-task.php';
+      require_once $this->plugin_path . 'src/ajax-pin-task.php';
     }
 
     /**
-     * AJAX handler to load task list HTML.
+     * AJAX handler to load task HTML.
      *
      * @since 1.0.0
      *
      * @ignore
      */
     function metabox_list_task() {
-      require_once $this->plugin_path . 'view/html-metabox-pinned-tasks-listing.php';
+      require_once $this->plugin_path . 'src/ajax-list-task.php';
+    }
+
+    /**
+     * AJAX handler to create and pin a new task.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    function metabox_create_task() {
+      require_once $this->plugin_path . 'src/ajax-create-task.php';
     }
 
     /**
@@ -214,13 +226,13 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
           break;
 
         case 'post.php':
+          require_once $this->plugin_path . 'src/class-options.php';
           wp_enqueue_script(
             'ptc-completionist_metabox-pinned-tasks-js',
             plugins_url( 'assets/js/metabox-pinned-tasks.js', __FILE__ ),
             [ 'jquery' ],
             '0.0.0'
           );
-          require_once $this->plugin_path . 'src/class-options.php';
           wp_localize_script(
             'ptc-completionist_metabox-pinned-tasks-js',
             'ptc_completionist_pinned_tasks',
@@ -228,7 +240,8 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
               'post_id' => get_the_ID(),
               'pinned_task_gids' => \PTC_Completionist\Options::get( \PTC_Completionist\Options::PINNED_TASK_GID, get_the_ID() ),
               'nonce_pin' => wp_create_nonce( 'ptc_completionist_pin_task' ),
-              'nonce_list' => wp_create_nonce( 'ptc_completionist_list_tasks' ),
+              'nonce_list' => wp_create_nonce( 'ptc_completionist_list_task' ),
+              'nonce_create' => wp_create_nonce( 'ptc_completionist_create_task' ),
             ]
           );
           break;

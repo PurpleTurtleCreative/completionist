@@ -21,33 +21,66 @@ try {
 
   /* User is authenticated for API usage. */
   ?>
-  <main id="task-list">
-    <p><i class="fas fa-circle-notch fa-spin"></i>Waiting to load tasks...</p>
-  </main>
-
   <aside id="pin-a-task">
 
     <div id="task-toolbar">
-      <input id="asana-task-link-url" name="asana_task_link_url" type="url" placeholder="Paste a task link...">
+
+      <input id="asana-task-link-url" type="url" placeholder="Paste a task link...">
       <button id="submit-pin-existing" type="button"><i class="fas fa-thumbtack"></i></button>
+
       <button id="toggle-create-new" type="button"><i class="fas fa-plus"></i></button>
+
     </div>
 
     <div id="pin-new-task" style="display:none;">
-      <label>Title:</label>
-      <input type="text">
-      <label>Description:</label>
-      <textarea></textarea>
-      <label>Due:</label>
-      <input type="date" pattern="\d\d\d\d-\d\d-\d\d" placeholder="yyyy-mm-dd" id="new-task-due-on" name="new_task_due_on">
-      <label>Assignee:</label>
-      <select>
-        <option>Placeholder</option>
+
+      <input id="ptc-new-task_name" type="text" placeholder="Write a task name...">
+
+      <label for="ptc-new-task_assignee">Assignee</label>
+      <select id="ptc-new-task_assignee">
+        <option value="">None (Unassigned)</option>
+        <?php
+        $workspace_users = Asana_Interface::find_workspace_users();
+        foreach ( $workspace_users as $user_gid => $wp_user ) {
+          echo  '<option value="' . esc_attr( $user_gid ) . '">' .
+                  esc_html( $wp_user->display_name ) . '</option>';
+        }
+        ?>
       </select>
-      <button id="submit-create-new" type="button"><i class="fas fa-plus"></i>Create Task</button>
+
+      <label for="ptc-new-task_due_on">Due Date</label>
+      <input id="ptc-new-task_due_on" type="date" pattern="\d\d\d\d-\d\d-\d\d" placeholder="yyyy-mm-dd">
+
+      <label for="ptc-new-task_project">Project</label>
+      <select id="ptc-new-task_project">
+        <option value="">None (Private Task)</option>
+        <?php
+        $asana = Asana_Interface::get_client();
+        $params = [
+          'workspace' => Options::get( Options::ASANA_WORKSPACE_GID ),
+          'archived' => FALSE,
+          'opt_fields' => 'gid,name',
+        ];
+        $projects = $asana->projects->findAll( $params );
+        foreach ( $projects as $project ) {
+          echo  '<option value="' . esc_attr( $project->gid ) . '">' .
+                  esc_html( $project->name ) . '</option>';
+        }
+        ?>
+      </select>
+
+      <label for="ptc-new-task_notes">Description</label>
+      <textarea id="ptc-new-task_notes"></textarea>
+
+      <button id="submit-create-new" type="button"><i class="fas fa-plus"></i>Add Task</button>
+
     </div>
 
   </aside>
+
+  <main id="task-list">
+    <p><i class="fas fa-circle-notch fa-spin"></i>Waiting to load tasks...</p>
+  </main>
   <?php
 } catch ( \PTC_Completionist\Errors\NoAuthorization $e ) {
   /* User is not authenticated for API usage. */

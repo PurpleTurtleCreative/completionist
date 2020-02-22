@@ -62,26 +62,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
     const PINNED_TASK_GID = '_ptc_asana_task_gid';
 
     /**
-     * The option key name for number of seconds to consider local data to be
-     * expired. This key's value should be of type integer.
-     *
-     * @since 1.0.0
-     *
-     * @var string LOCAL_EXPIRY
-     */
-    const LOCAL_EXPIRY = '_ptc_asana_local_expiry';
-
-    /**
-     * The option key name for the SQL DateTime that local data was loaded.
-     * This key's value should be of type \DateTime in 'Y-m-d H:i:s' formatting.
-     *
-     * @since 1.0.0
-     *
-     * @var string LOCAL_LAST_UPDATED
-     */
-    const LOCAL_LAST_UPDATED = '_ptc_asana_local_last_updated';
-
-    /**
      * Gets a sanitized value for an option of this class returned in the key's
      * format as documented on this class's constants.
      *
@@ -156,31 +136,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
           }
           return $pinned_task_gids;
 
-        case self::LOCAL_EXPIRY:
-          $local_expiry = get_option( $key, '' );
-          $sanitized_local_expiry = self::sanitize( $key, $local_expiry );
-          if ( $local_expiry != $sanitized_local_expiry ) {
-            error_log( 'ALERT: Sanitization occurred. Saved option is corrupt for: ' . $key );
-          }
-          return (int) $sanitized_local_expiry;
-
-        case self::LOCAL_LAST_UPDATED:
-          $local_last_updated = get_option( $key, '' );
-          $sanitized_local_last_updated = self::sanitize( $key, $local_last_updated );
-          if ( $local_last_updated != $sanitized_local_last_updated ) {
-            error_log( 'ALERT: Sanitization occurred. Saved option is corrupt for: ' . $key );
-          }
-          $local_last_updated_datetime = date_create_from_format( 'Y-m-d H:i:s', $sanitized_local_last_updated);
-          if (
-            FALSE === $local_last_updated_datetime
-            || ! is_object( $local_last_updated_datetime )
-            || ! ( $local_last_updated_datetime instanceof \DateTime )
-          ) {
-            error_log( 'ERROR: Failed to retrieve DateTime object for:' . $key );
-            return '';
-          }
-          return $local_last_updated_datetime;
-
       }
 
       error_log( 'Invalid key to get value: ' . $key );
@@ -244,30 +199,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
             throw new \Exception( 'ERROR: Refused to save different value for postmeta: ' . $key );
           }
           return self::maybe_add_postmeta( $key, $sanitized_post_meta, $object_id );
-
-        case self::LOCAL_EXPIRY:
-          $local_expiry = $value;
-          $sanitized_local_expiry = self::sanitize( $key, $local_expiry );
-          if ( ! $force && $local_expiry != $sanitized_local_expiry ) {
-            throw new \Exception( 'ERROR: Refused to save different value for option: ' . $key );
-          }
-          return self::maybe_update_option( $key, $sanitized_local_expiry, TRUE );
-
-        case self::LOCAL_LAST_UPDATED:
-          $local_last_updated = $value;
-          $sanitized_local_last_updated = self::sanitize( $key, $local_last_updated );
-          if ( ! $force && $local_last_updated != $sanitized_local_last_updated ) {
-            throw new \Exception( 'ERROR: Refused to save different value for option: ' . $key );
-          }
-          $local_last_updated_datetime = date_create_from_format( 'Y-m-d H:i:s', $sanitized_local_last_updated);
-          if (
-            FALSE === $local_last_updated_datetime
-            || ! is_object( $local_last_updated_datetime )
-            || ! ( $local_last_updated_datetime instanceof \DateTime )
-          ) {
-            throw new \Exception( 'ERROR: Refused to save invalid DateTime for:' . $key );
-          }
-          return self::maybe_update_option( $key, $sanitized_local_last_updated, TRUE );
 
       }
 
@@ -339,12 +270,34 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
      *
      * @param string $value The value to be saved.
      *
-     * @param int $user_id Optional. The post's id. Default 0 for current post.
+     * @param int $post_id Optional. The post's id. Default 0 for current post.
      *
-     * @return bool Returns TRUE if the post's meta value was inserted
-     * successfully or already exists.
+     * @return bool Returns TRUE if the post's meta value was inserted.
      */
     private static function maybe_add_postmeta( string $key, string $value, int $post_id = 0 ) : bool {
+
+      if ( ! self::postmeta_exists( $key, $value, $post_id ) ) {
+        return add_post_meta( $post_id, $key, $value ) ? TRUE : FALSE;
+      }
+
+      return FALSE;
+
+    }
+
+    /**
+     * Checks if a postmeta key-value pair exists for the specified post.
+     *
+     * @since 1.0.0
+     *
+     * @param string $key The meta key name.
+     *
+     * @param string $value The value to search.
+     *
+     * @param int $post_id Optional. The post's id. Default 0 for current post.
+     *
+     * @return bool Returns TRUE if the post's meta key-value pair exists.
+     */
+    static function postmeta_exists( string $key, string $value, int $post_id = 0 ) : bool {
 
       if ( $post_id === 0 ) {
         $post_id = get_the_ID();
@@ -372,7 +325,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
         ) );
 
       if ( $res === NULL || empty( $res ) ) {
-        return add_post_meta( $post_id, $key, $value ) ? TRUE : FALSE;
+        return FALSE;
       }
 
       return TRUE;
@@ -421,8 +374,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
             return delete_post_meta( $object_id, $key, $value );
           }
         case self::ASANA_WORKSPACE_GID:
-        case self::LOCAL_EXPIRY:
-        case self::LOCAL_LAST_UPDATED:
           return delete_option( $key );
       }
 
@@ -476,7 +427,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
         case self::ASANA_USER_GID:
         case self::ASANA_WORKSPACE_GID:
         case self::PINNED_TASK_GID:
-        case self::LOCAL_EXPIRY:
           $filtered_integer_string = filter_var(
             $value,
             FILTER_SANITIZE_NUMBER_INT
@@ -485,22 +435,34 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
           return (string) $sanitized_integer_string;
 
         case 'datetime':
-        case self::LOCAL_LAST_UPDATED:
-          $filtered_local_last_updated = filter_var(
+          $filtered_datetime = filter_var(
             $value,
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
           );
-          $sanitized_local_last_updated = preg_replace( '/[^0-9:\- ]+/', '', $filtered_local_last_updated );
+          $sanitized_datetime = preg_replace( '/[^0-9:\- ]+/', '', $filtered_datetime );
           /* should be string in format Y-m-d H:i:s */
-          $matched = preg_match( '/[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/', $sanitized_local_last_updated, $matches );
-          if ( $matched === 1 ) {
-            return (string) $sanitized_local_last_updated;
-          } elseif ( isset( $matches[0] ) && ! empty( $matches[0] ) ) {
-            error_log( "ALERT: Using matched substring from sanitized date for $context context with passed value: $value" );
-            return (string) $matches[0];
+          $dt = \DateTime::createFromFormat( 'Y-m-d H:i:s', $date );
+          if ( $dt !== FALSE && array_sum( $dt::getLastErrors() ) > 0 ) {
+            $dt_string = $dt->format('Y-m-d H:i:s');
+            return ( $dt_string !== FALSE ) ? $dt_string : '';
           } else {
-            error_log( "ERROR: No proper date format matched from sanitized date for $context context with passed value: $value" );
+            return '';
+          }
+
+        case 'date':
+          $filtered_date = filter_var(
+            $value,
+            FILTER_SANITIZE_STRING,
+            FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
+          );
+          $sanitized_date = preg_replace( '/[^0-9\-]+/', '', $filtered_date );
+          /* should be string in format yyyy-mm-dd */
+          $dt = \DateTime::createFromFormat( 'Y-m-d', $sanitized_date );
+          if ( $dt !== FALSE && array_sum( $dt::getLastErrors() ) > 0 ) {
+            $dt_string = $dt->format('Y-m-d');
+            return ( $dt_string !== FALSE ) ? $dt_string : '';
+          } else {
             return '';
           }
 
