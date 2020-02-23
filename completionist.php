@@ -92,6 +92,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
 
       add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
       add_action( 'wp_ajax_ptc_pin_task', [ $this, 'metabox_pin_task' ] );
+      add_action( 'wp_ajax_ptc_unpin_task', [ $this, 'metabox_unpin_task' ] );
       add_action( 'wp_ajax_ptc_list_task', [ $this, 'metabox_list_task' ] );
       add_action( 'wp_ajax_ptc_create_task', [ $this, 'metabox_create_task' ] );
 
@@ -161,6 +162,17 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      */
     function metabox_pin_task() {
       require_once $this->plugin_path . 'src/ajax-pin-task.php';
+    }
+
+    /**
+     * AJAX handler to unpin a task.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    function metabox_unpin_task() {
+      require_once $this->plugin_path . 'src/ajax-unpin-task.php';
     }
 
     /**

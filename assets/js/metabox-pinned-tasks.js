@@ -40,29 +40,18 @@ jQuery(function($) {
             if(completion_count === total_tasks) {
               $('#task-list .task-loader').remove();
             }
+            if(taskContainer.html() == '') {
+              taskContainer.html('<p><i class="fas fa-eye-slash"></i>There are no visible tasks!</p>');
+            }
           });
       });//end forEach pinned task gid
 
     } else {
-      taskContainer.html('<p><i class="fas fa-clipboard-check"></i>There are no pinned tasks!</p>');
+      taskContainer.html('');
+      display_if_empty_list();
     }
 
   }//end function list_pinned_tasks()
-
-  function apply_task_list_listeners( task_gid = 0 ) {
-
-    if ( task_gid < 1 ) {
-      var parentRow = $('#ptc-completionist_pinned-tasks .ptc-completionist-task');
-    } else {
-      var parentRow = $('#ptc-completionist_pinned-tasks .ptc-completionist-task[data-task-gid="' + task_gid + '"]');
-    }
-
-    /* TOGGLE DESCRIPTION VISIBILITY */
-    parentRow.find('button.view-task-notes').on('click', function() {
-      $(this).closest('.ptc-completionist-task').find('.description').toggle();
-    });//end toggle description
-
-  }//end apply_task_list_listeners()
 
   /* TOGGLE NEW TASK FORM VISIBILITY */
   $('#ptc-completionist_pinned-tasks #pin-a-task button#toggle-create-new').on('click', function() {
@@ -87,6 +76,7 @@ jQuery(function($) {
 
     var thisButton = $(this);
     thisButton.css('pointer-events', 'none');//disable while currently processing
+    thisButton.prop('disabled', true);//disable while currently processing
 
     var buttonIcon = thisButton.find('i.fas');
 
@@ -126,19 +116,21 @@ jQuery(function($) {
           alert('Failed to pin task.');
         })
         .always(function() {
+          inputField.prop('disabled', false);
+          thisButton.css('pointer-events', 'auto');
+          thisButton.prop('disabled', false);
           buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
         });
 
     } else {
       // invalid submission, notify of issue
       alert("Failed to pin existing task. Invalid input.\r\n\r\nPlease provide a copied task link from Asana to pin an existing task. To create a new task to pin, click the green [ + ] button.");
+      thisButton.css('pointer-events', 'auto');
+      thisButton.prop('disabled', false);
       inputField.prop('disabled', false);
       inputField.val('');
       inputField.focus();
     }
-
-    inputField.prop('disabled', false);
-    thisButton.css('pointer-events', 'auto');
 
   });//end submit pin existing
 
@@ -205,20 +197,80 @@ jQuery(function($) {
         alert('Failed to create task.');
       }).always(function() {
 
-        thisButton.css('pointer-events', 'auto');//disable while currently processing
-        thisButton.prop('disabled', false);//disable while currently processing
+        thisButton.css('pointer-events', 'auto');
+        thisButton.prop('disabled', false);
 
-        inputFields.css('pointer-events', 'auto');//disable while currently processing
-        inputFields.prop('disabled', false);//disable while currently processing
+        inputFields.css('pointer-events', 'auto');
+        inputFields.prop('disabled', false);
 
-        toggleButton.css('pointer-events', 'auto');//disable while currently processing
-        toggleButton.prop('disabled', false);//disable while currently processing
+        toggleButton.css('pointer-events', 'auto');
+        toggleButton.prop('disabled', false);
 
         thisButton.html(buttonHTML);
 
       });
 
   });//end submit pin new
+
+  function apply_task_list_listeners( task_gid = 0 ) {
+
+    if ( task_gid < 1 ) {
+      var parentRow = $('#ptc-completionist_pinned-tasks .ptc-completionist-task');
+    } else {
+      var parentRow = $('#ptc-completionist_pinned-tasks .ptc-completionist-task[data-task-gid="' + task_gid + '"]');
+    }
+
+    /* TOGGLE DESCRIPTION VISIBILITY */
+    parentRow.find('button.view-task-notes').on('click', function() {
+      $(this).closest('.ptc-completionist-task').find('.description').toggle();
+    });//end toggle description
+
+    /* UNPIN TASK FROM POST */
+    parentRow.find('button.unpin-task').on('click', function() {
+
+      var thisButton = $(this);
+      thisButton.css('pointer-events', 'none');//disable while currently processing
+      thisButton.prop('disabled', true);//disable while currently processing
+
+      var buttonIcon = thisButton.find('i.fas');
+
+      var post_id = ptc_completionist_pinned_tasks.post_id;
+      if(post_id === undefined || post_id < 1) {
+        alert('Error: Could not identify the current post. Pinning has been disabled.');
+        return false;
+      }
+
+      var data = {
+        'action': 'ptc_unpin_task',
+        'nonce': ptc_completionist_pinned_tasks.nonce_pin,
+        'post_id': post_id,
+        'task_gid': thisButton.data('task-gid'),
+      };
+
+      buttonIcon.removeClass('fa-thumbtack').addClass('fa-circle-notch fa-spin');
+
+      $.post(ajaxurl, data, function(res) {
+
+        if(res.status == 'success' && res.data != '') {
+          remove_task_row(data.task_gid);
+        } else {
+          alert('Error '+res.code+': '+res.message);
+          thisButton.css('pointer-events', 'auto');//disable while currently processing
+          thisButton.prop('disabled', false);//disable while currently processing
+          buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
+        }
+
+      }, 'json')
+        .fail(function() {
+          alert('Failed to pin task.');
+          thisButton.css('pointer-events', 'auto');//disable while currently processing
+          thisButton.prop('disabled', false);//disable while currently processing
+          buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
+        });
+
+    });//end submit unpin task
+
+  }//end apply_task_list_listeners()
 
   function load_task(task_gid, post_id) {
 
@@ -231,12 +283,29 @@ jQuery(function($) {
 
     $.post(ajaxurl, data, function(res) {
       if(res.status == 'success' && res.data != '') {
-        $('#ptc-completionist_pinned-tasks #task-list').append(res.data);
+        var taskContainer = $('#ptc-completionist_pinned-tasks #task-list');
+        taskContainer.append(res.data);
         apply_task_list_listeners(data.task_gid);
+        taskContainer.children(':not(.ptc-completionist-task):not(.task-loader)').remove();
       }
     }, 'json');
 
   }//end load_task()
+
+  function remove_task_row(task_gid) {
+    $('#ptc-completionist_pinned-tasks .ptc-completionist-task[data-task-gid="' + task_gid + '"]')
+      .fadeOut(800, function() {
+        $(this).remove();
+        display_if_empty_list();
+      });
+  }
+
+  function display_if_empty_list() {
+    var taskContainer = $('#ptc-completionist_pinned-tasks #task-list');
+    if(taskContainer.html().trim() == '') {
+      taskContainer.html('<p><i class="fas fa-clipboard-check"></i>There are no pinned tasks!</p>');
+    }
+  }
 
   function display_alert( note_box_html ) {}
 
