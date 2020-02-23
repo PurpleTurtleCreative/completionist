@@ -1,11 +1,11 @@
 jQuery(function($) {
 
+  var taskContainer = $('#ptc-completionist_pinned-tasks #task-list');
+
   list_pinned_tasks();
 
   /* LIST PINNED TASKS */
   function list_pinned_tasks() {
-
-    var taskContainer = $('#ptc-completionist_pinned-tasks #task-list');
 
     if(ptc_completionist_pinned_tasks.pinned_task_gids.length > 0) {
 
@@ -186,6 +186,7 @@ jQuery(function($) {
         $('#ptc-completionist_pinned-tasks #task-list').prepend(res.data);
         var task_gid = jQuery('#task-list .ptc-completionist-task:first-of-type').data('task-gid');
         apply_task_list_listeners(task_gid);
+        taskContainer.children(':not(.ptc-completionist-task):not(.task-loader)').remove();
         thisButton.siblings(':input').val('');
         thisButton.siblings('select').prop('selectedIndex',0);
         $('#ptc-completionist_pinned-tasks #pin-a-task button#toggle-create-new').click();
@@ -283,7 +284,6 @@ jQuery(function($) {
 
     $.post(ajaxurl, data, function(res) {
       if(res.status == 'success' && res.data != '') {
-        var taskContainer = $('#ptc-completionist_pinned-tasks #task-list');
         taskContainer.append(res.data);
         apply_task_list_listeners(data.task_gid);
         taskContainer.children(':not(.ptc-completionist-task):not(.task-loader)').remove();
@@ -298,14 +298,13 @@ jQuery(function($) {
         $(this).remove();
         display_if_empty_list();
       });
-  }
+  }//end remove_task_row()
 
   function display_if_empty_list() {
-    var taskContainer = $('#ptc-completionist_pinned-tasks #task-list');
     if(taskContainer.html().trim() == '') {
       taskContainer.html('<p><i class="fas fa-clipboard-check"></i>There are no pinned tasks!</p>');
     }
-  }
+  }//end display_if_empty_list()
 
   function display_alert( note_box_html ) {}
 
