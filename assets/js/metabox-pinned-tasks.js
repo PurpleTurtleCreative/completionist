@@ -1,6 +1,11 @@
 jQuery(function($) {
 
   var taskContainer = $('#ptc-completionist_pinned-tasks #task-list');
+  var post_id = ptc_completionist_pinned_tasks.post_id;
+  if(post_id === undefined || post_id < 1) {
+    alert('Error: Could not identify the current post for task management.');
+    return false;
+  }
 
   list_pinned_tasks();
 
@@ -8,13 +13,6 @@ jQuery(function($) {
   function list_pinned_tasks() {
 
     if(ptc_completionist_pinned_tasks.pinned_task_gids.length > 0) {
-
-      var post_id = ptc_completionist_pinned_tasks.post_id;
-
-      if(post_id === undefined || post_id < 1) {
-        alert('Error: Could not identify the current post. Failed to load tasks.');
-        return;
-      }
 
       var total_tasks = ptc_completionist_pinned_tasks.pinned_task_gids.length;
       var completion_count = 0;
@@ -84,12 +82,6 @@ jQuery(function($) {
     inputField.prop('disabled', true);//disable while currently processing
 
     var input = inputField.val();
-    var post_id = ptc_completionist_pinned_tasks.post_id;
-
-    if(post_id === undefined || post_id < 1) {
-      alert('Error: Could not identify the current post. Pinning has been disabled.');
-      return false;
-    }
 
     if(/https:\/\/app\.asana\.com\/.\/[0-9]+\/[0-9]+\/./.test( input )) {
 
@@ -153,19 +145,13 @@ jQuery(function($) {
 
     /* Validate Input */
 
-    var post_id = ptc_completionist_pinned_tasks.post_id;
-    if(post_id === undefined || post_id < 1) {
-      alert('Error: Could not identify the current post. Pinning has been disabled.');
-      return false;
-    }
-
     var name = thisButton.siblings('#ptc-new-task_name').val();//string,required
     var assignee_gid = thisButton.siblings('#ptc-new-task_assignee').val();//numeric
     var due_on = thisButton.siblings('#ptc-new-task_due_on').val();//yyyy-mm-dd
     var project_gid = thisButton.siblings('#ptc-new-task_project').val();//numeric
     var notes = thisButton.siblings('#ptc-new-task_notes').val();//string
 
-    //TODO: Validate inputs... focus field, display error, and return... if good, clear error
+    //TODO: Validate inputs... focus field, display error, and return... if good, remove error
 
     var data = {
       'action': 'ptc_create_task',
@@ -235,12 +221,6 @@ jQuery(function($) {
 
       var buttonIcon = thisButton.find('i.fas');
 
-      var post_id = ptc_completionist_pinned_tasks.post_id;
-      if(post_id === undefined || post_id < 1) {
-        alert('Error: Could not identify the current post. Pinning has been disabled.');
-        return false;
-      }
-
       var data = {
         'action': 'ptc_unpin_task',
         'nonce': ptc_completionist_pinned_tasks.nonce_pin,
@@ -253,25 +233,66 @@ jQuery(function($) {
       $.post(ajaxurl, data, function(res) {
 
         if(res.status == 'success' && res.data != '') {
-          remove_task_row(data.task_gid);
+          remove_task_row(res.data);
         } else {
           alert('Error '+res.code+': '+res.message);
-          thisButton.css('pointer-events', 'auto');//disable while currently processing
-          thisButton.prop('disabled', false);//disable while currently processing
+          thisButton.css('pointer-events', 'auto');
+          thisButton.prop('disabled', false);
           buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
         }
 
       }, 'json')
         .fail(function() {
           alert('Failed to pin task.');
-          thisButton.css('pointer-events', 'auto');//disable while currently processing
-          thisButton.prop('disabled', false);//disable while currently processing
+          thisButton.css('pointer-events', 'auto');
+          thisButton.prop('disabled', false);
           buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
         });
 
     });//end submit unpin task
 
+    /* DELETE TASK */
+    parentRow.find('button.delete-task').on('click', function() {
+
+      var thisButton = $(this);
+      thisButton.css('pointer-events', 'none');//disable while currently processing
+      thisButton.prop('disabled', true);//disable while currently processing
+
+      var buttonIcon = thisButton.find('i.fas');
+
+      var data = {
+        'action': 'ptc_delete_task',
+        'nonce': ptc_completionist_pinned_tasks.nonce_delete,
+        'post_id': post_id,
+        'task_gid': thisButton.data('task-gid'),
+      };
+
+      buttonIcon.removeClass('fa-trash-alt').addClass('fa-circle-notch fa-spin');
+
+      $.post(ajaxurl, data, function(res) {
+
+        if(res.status == 'success' && res.data != '') {
+          remove_task_row(res.data);
+        } else {
+          alert('Error '+res.code+': '+res.message);
+          thisButton.css('pointer-events', 'auto');
+          thisButton.prop('disabled', false);
+          buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-trash-alt');
+        }
+
+      }, 'json')
+        .fail(function() {
+          alert('Failed to pin task.');
+          thisButton.css('pointer-events', 'auto');
+          thisButton.prop('disabled', false);
+          buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-trash-alt');
+        });
+
+    });//end submit delete task
+
   }//end apply_task_list_listeners()
+
+  /* HELPERS */
 
   function load_task(task_gid, post_id) {
 
@@ -306,6 +327,8 @@ jQuery(function($) {
     }
   }//end display_if_empty_list()
 
-  function display_alert( note_box_html ) {}
+  function display_alert_html( note_box_html ) {}
+
+  function display_alert( status, message ) {}
 
 });//end document ready

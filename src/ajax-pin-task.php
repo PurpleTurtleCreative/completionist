@@ -32,12 +32,12 @@ try {
 
     $task_gid = Asana_Interface::get_task_gid_from_task_link( $_POST['task_link'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     if ( $task_gid === '' ) {
-      throw new \Exception('Failed to get task from the submitted task link.');
+      throw new \Exception( 'Failed to get task from the submitted task link.', 400 );
     }
 
     $the_post_id = (int) Options::sanitize( 'gid', $_POST['post_id'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     if ( $the_post_id < 1 ) {
-      throw new \Exception('Invalid post identifier.');
+      throw new \Exception( 'Invalid post identifier.', 400 );
     }
 
     if ( Options::postmeta_exists( Options::PINNED_TASK_GID, $task_gid, $the_post_id ) ) {
