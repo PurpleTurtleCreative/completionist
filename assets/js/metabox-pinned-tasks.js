@@ -1,5 +1,6 @@
 jQuery(function($) {
 
+  /* Get globals */
   var taskContainer = $('#ptc-completionist_pinned-tasks #task-list');
   var post_id = ptc_completionist_pinned_tasks.post_id;
   if(post_id === undefined || post_id < 1) {
@@ -7,49 +8,13 @@ jQuery(function($) {
     return false;
   }
 
+  /* Insert metabox reload button */
+  $('<button id="reload-task-list" type="button"><i class="fas fa-sync-alt"></i>Reload</button>')
+    .insertAfter('#ptc-completionist_pinned-tasks button.handlediv');
+  var reloadButton = $('#ptc-completionist_pinned-tasks button#reload-task-list');
+
+  /* Load task data */
   list_pinned_tasks();
-
-  /* LIST PINNED TASKS */
-  function list_pinned_tasks() {
-
-    if(ptc_completionist_pinned_tasks.pinned_task_gids.length > 0) {
-
-      var total_tasks = ptc_completionist_pinned_tasks.pinned_task_gids.length;
-      var completion_count = 0;
-
-      taskContainer.html('<section class="task-loader"><p><i class="fas fa-circle-notch fa-spin"></i>Loading tasks from Asana...</p></section>');
-      ptc_completionist_pinned_tasks.pinned_task_gids.forEach(function (task_gid) {
-
-        var data = {
-          'action': 'ptc_list_task',
-          'nonce': ptc_completionist_pinned_tasks.nonce_list,
-          'post_id': post_id,
-          'task_gid': task_gid,
-        };
-
-        $.post(ajaxurl, data, function(res) {
-          if(res.data != '') {
-            $(res.data).insertBefore('#task-list .task-loader');
-            apply_task_list_listeners(data.task_gid);
-          }
-        }, 'json')
-          .always(function() {
-            ++completion_count;
-            if(completion_count === total_tasks) {
-              $('#task-list .task-loader').remove();
-            }
-            if(taskContainer.html() == '') {
-              taskContainer.html('<p><i class="fas fa-eye-slash"></i>There are no visible tasks!</p>');
-            }
-          });
-      });//end forEach pinned task gid
-
-    } else {
-      taskContainer.html('');
-      display_if_empty_list();
-    }
-
-  }//end function list_pinned_tasks()
 
   /* TOGGLE NEW TASK FORM VISIBILITY */
   $('#ptc-completionist_pinned-tasks #pin-a-task button#toggle-create-new').on('click', function() {
@@ -57,17 +22,49 @@ jQuery(function($) {
     var newTaskForm = thisButton.closest('#pin-a-task').find('#pin-new-task');
     var formIsVisible = newTaskForm.toggle().is( ":visible" );
     if(formIsVisible) {
-      thisButton.siblings('input#asana-task-link-url').prop('disabled', true);
-      thisButton.siblings('button#submit-pin-existing').prop('disabled', true);
+      disable_element(thisButton.siblings('input#asana-task-link-url'), true);
+      disable_element(thisButton.siblings('button#submit-pin-existing'), true);
       thisButton.html('<i class="fas fa-ban"></i>');
       newTaskForm.find('input:first-of-type').focus();
     } else {
-      thisButton.siblings('input#asana-task-link-url').prop('disabled', false);
-      thisButton.siblings('button#submit-pin-existing').prop('disabled', false);
+      disable_element(thisButton.siblings('input#asana-task-link-url'), false);
+      disable_element(thisButton.siblings('button#submit-pin-existing'), false);
       thisButton.html('<i class="fas fa-plus"></i>');
       newTaskForm.find(':focusable').blur();
     }
   });//end toggle new task form
+
+  /* RELOAD TASK LIST */
+  reloadButton.on('click', function() {
+
+    disable_element(reloadButton, true);
+    reloadButton.html('<i class="fas fa-sync-alt fa-spin"></i>Loading...');
+
+    var data = {
+      'action': 'ptc_get_pins',
+      'nonce': ptc_completionist_pinned_tasks.nonce_list,
+      'post_id': post_id,
+    };
+
+    $.post(ajaxurl, data, function(res) {
+
+      if(res.status == 'success' && res.data != '') {
+        ptc_completionist_pinned_tasks.pinned_task_gids = res.data;
+        list_pinned_tasks();
+      } else {
+        alert('Error '+res.code+': '+res.message);
+        reloadButton.html('<i class="fas fa-sync-alt"></i>Reload');
+        disable_element(reloadButton, false);
+      }
+
+    }, 'json')
+      .fail(function() {
+        alert('Failed to reload task list.');
+        reloadButton.html('<i class="fas fa-sync-alt"></i>Reload');
+        disable_element(reloadButton, false);
+      });
+
+  });//end reload task list
 
   /* PIN EXISTING TASK FROM ASANA TASK LINK */
   $('#ptc-completionist_pinned-tasks #task-toolbar button#submit-pin-existing').on('click', function() {
@@ -106,9 +103,8 @@ jQuery(function($) {
           alert('Failed to pin task.');
         })
         .always(function() {
-          inputField.prop('disabled', false);
-          thisButton.css('pointer-events', 'auto');
-          thisButton.prop('disabled', false);
+          disable_element(thisButton, false);
+          disable_element(inputField, false);
           buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
         });
 
@@ -186,6 +182,55 @@ jQuery(function($) {
       });
 
   });//end submit pin new
+
+  /* -------- HELPERS -------- */
+
+  function list_pinned_tasks() {
+
+    if(ptc_completionist_pinned_tasks.pinned_task_gids.length > 0) {
+
+      var total_tasks = ptc_completionist_pinned_tasks.pinned_task_gids.length;
+      var completion_count = 0;
+
+      taskContainer.html('<section class="task-loader"><p><i class="fas fa-circle-notch fa-spin"></i>Loading tasks from Asana...</p></section>');
+
+      disable_element(reloadButton, true);
+      reloadButton.html('<i class="fas fa-sync-alt fa-spin"></i>Loading...');
+
+      ptc_completionist_pinned_tasks.pinned_task_gids.forEach(function (task_gid) {
+
+        var data = {
+          'action': 'ptc_list_task',
+          'nonce': ptc_completionist_pinned_tasks.nonce_list,
+          'post_id': post_id,
+          'task_gid': task_gid,
+        };
+
+        $.post(ajaxurl, data, function(res) {
+          if(res.data != '') {
+            $(res.data).insertBefore('#task-list .task-loader');
+            apply_task_list_listeners(data.task_gid);
+          }
+        }, 'json')
+          .always(function() {
+            ++completion_count;
+            if(completion_count === total_tasks) {
+              $('#task-list .task-loader').remove();
+              reloadButton.html('<i class="fas fa-sync-alt"></i>Reload');
+              disable_element(reloadButton, false);
+            }
+            if(taskContainer.html() == '') {
+              taskContainer.html('<p><i class="fas fa-eye-slash"></i>There are no visible tasks!</p>');
+            }
+          });
+      });//end forEach pinned task gid
+
+    } else {
+      taskContainer.html('');
+      display_if_empty_list();
+    }
+
+  }//end function list_pinned_tasks()
 
   function apply_task_list_listeners( task_gid = 0 ) {
 
@@ -313,8 +358,6 @@ jQuery(function($) {
 
   }//end apply_task_list_listeners()
 
-  /* -------- HELPERS -------- */
-
   function load_task(task_gid, post_id) {
 
     var data = {
@@ -358,8 +401,8 @@ jQuery(function($) {
     }
   }//end disable_element()
 
-  function display_alert_html( note_box_html ) {}
+  // function display_alert_html( note_box_html ) {}
 
-  function display_alert( status, message ) {}
+  // function display_alert( status, message ) {}
 
 });//end document ready

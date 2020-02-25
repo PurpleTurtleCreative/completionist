@@ -1,6 +1,6 @@
 <?php
 /**
- * Create a new task in Asana and pin to the provided post, if applicable.
+ * Delete a task in Asana and unpin it.
  *
  * @since 1.0.0
  */
