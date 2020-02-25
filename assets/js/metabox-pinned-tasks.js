@@ -73,13 +73,11 @@ jQuery(function($) {
   $('#ptc-completionist_pinned-tasks #task-toolbar button#submit-pin-existing').on('click', function() {
 
     var thisButton = $(this);
-    thisButton.css('pointer-events', 'none');//disable while currently processing
-    thisButton.prop('disabled', true);//disable while currently processing
-
     var buttonIcon = thisButton.find('i.fas');
-
     var inputField = thisButton.siblings('input#asana-task-link-url');
-    inputField.prop('disabled', true);//disable while currently processing
+
+    disable_element(thisButton, true);
+    disable_element(inputField, true);
 
     var input = inputField.val();
 
@@ -117,9 +115,8 @@ jQuery(function($) {
     } else {
       // invalid submission, notify of issue
       alert("Failed to pin existing task. Invalid input.\r\n\r\nPlease provide a copied task link from Asana to pin an existing task. To create a new task to pin, click the green [ + ] button.");
-      thisButton.css('pointer-events', 'auto');
-      thisButton.prop('disabled', false);
-      inputField.prop('disabled', false);
+      disable_element(thisButton, false);
+      disable_element(inputField, false);
       inputField.val('');
       inputField.focus();
     }
@@ -130,16 +127,12 @@ jQuery(function($) {
   $('#ptc-completionist_pinned-tasks #pin-new-task button#submit-create-new').on('click', function() {
 
     var thisButton = $(this);
-    thisButton.css('pointer-events', 'none');//disable while currently processing
-    thisButton.prop('disabled', true);//disable while currently processing
-
     var inputFields = thisButton.siblings(':input');
-    inputFields.css('pointer-events', 'none');//disable while currently processing
-    inputFields.prop('disabled', true);//disable while currently processing
-
     var toggleButton = $('#ptc-completionist_pinned-tasks #pin-a-task button#toggle-create-new');
-    toggleButton.css('pointer-events', 'none');//disable while currently processing
-    toggleButton.prop('disabled', true);//disable while currently processing
+
+    disable_element(thisButton, true);
+    disable_element(inputFields, true);
+    disable_element(toggleButton, true);
 
     var buttonHTML = thisButton.html();
 
@@ -184,14 +177,9 @@ jQuery(function($) {
         alert('Failed to create task.');
       }).always(function() {
 
-        thisButton.css('pointer-events', 'auto');
-        thisButton.prop('disabled', false);
-
-        inputFields.css('pointer-events', 'auto');
-        inputFields.prop('disabled', false);
-
-        toggleButton.css('pointer-events', 'auto');
-        toggleButton.prop('disabled', false);
+        disable_element(thisButton, false);
+        disable_element(inputFields, false);
+        disable_element(toggleButton, false);
 
         thisButton.html(buttonHTML);
 
@@ -216,8 +204,7 @@ jQuery(function($) {
     parentRow.find('button.mark-complete').on('click', function() {
 
       var thisButton = $(this);
-      thisButton.css('pointer-events', 'none');//disable while currently processing
-      thisButton.prop('disabled', true);//disable while currently processing
+      disable_element(thisButton, true);
 
       var buttonIcon = thisButton.find('i.fas');
 
@@ -239,16 +226,14 @@ jQuery(function($) {
           apply_task_list_listeners(data.task_gid);
         } else {
           alert('Error '+res.code+': '+res.message);
-          thisButton.css('pointer-events', 'auto');
-          thisButton.prop('disabled', false);
+          disable_element(thisButton, false);
           buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
         }
 
       }, 'json')
         .fail(function() {
           alert('Failed to update task.');
-          thisButton.css('pointer-events', 'auto');
-          thisButton.prop('disabled', false);
+          disable_element(thisButton, false);
           buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
         });
 
@@ -258,8 +243,7 @@ jQuery(function($) {
     parentRow.find('button.unpin-task').on('click', function() {
 
       var thisButton = $(this);
-      thisButton.css('pointer-events', 'none');//disable while currently processing
-      thisButton.prop('disabled', true);//disable while currently processing
+      disable_element(thisButton, true);
 
       var buttonIcon = thisButton.find('i.fas');
 
@@ -278,16 +262,14 @@ jQuery(function($) {
           remove_task_row(res.data);
         } else {
           alert('Error '+res.code+': '+res.message);
-          thisButton.css('pointer-events', 'auto');
-          thisButton.prop('disabled', false);
+          disable_element(thisButton, false);
           buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
         }
 
       }, 'json')
         .fail(function() {
           alert('Failed to pin task.');
-          thisButton.css('pointer-events', 'auto');
-          thisButton.prop('disabled', false);
+          disable_element(thisButton, false);
           buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
         });
 
@@ -297,8 +279,7 @@ jQuery(function($) {
     parentRow.find('button.delete-task').on('click', function() {
 
       var thisButton = $(this);
-      thisButton.css('pointer-events', 'none');//disable while currently processing
-      thisButton.prop('disabled', true);//disable while currently processing
+      disable_element(thisButton, true);
 
       var buttonIcon = thisButton.find('i.fas');
 
@@ -317,16 +298,14 @@ jQuery(function($) {
           remove_task_row(res.data);
         } else {
           alert('Error '+res.code+': '+res.message);
-          thisButton.css('pointer-events', 'auto');
-          thisButton.prop('disabled', false);
+          disable_element(thisButton, false);
           buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-trash-alt');
         }
 
       }, 'json')
         .fail(function() {
           alert('Failed to pin task.');
-          thisButton.css('pointer-events', 'auto');
-          thisButton.prop('disabled', false);
+          disable_element(thisButton, false);
           buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-trash-alt');
         });
 
@@ -334,7 +313,7 @@ jQuery(function($) {
 
   }//end apply_task_list_listeners()
 
-  /* HELPERS */
+  /* -------- HELPERS -------- */
 
   function load_task(task_gid, post_id) {
 
@@ -368,6 +347,16 @@ jQuery(function($) {
       taskContainer.html('<p><i class="fas fa-clipboard-check"></i>There are no pinned tasks!</p>');
     }
   }//end display_if_empty_list()
+
+  function disable_element(jquery_obj, if_disable = true) {
+    if(if_disable) {
+      jquery_obj.css('pointer-events', 'none');
+      jquery_obj.prop('disabled', true);
+    } else {
+      jquery_obj.css('pointer-events', 'auto');
+      jquery_obj.prop('disabled', false);
+    }
+  }//end disable_element()
 
   function display_alert_html( note_box_html ) {}
 
