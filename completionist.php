@@ -96,6 +96,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       add_action( 'wp_ajax_ptc_list_task', [ $this, 'metabox_list_task' ] );
       add_action( 'wp_ajax_ptc_create_task', [ $this, 'metabox_create_task' ] );
       add_action( 'wp_ajax_ptc_delete_task', [ $this, 'metabox_delete_task' ] );
+      add_action( 'wp_ajax_ptc_update_task', [ $this, 'metabox_update_task' ] );
 
     }
 
@@ -210,6 +211,17 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
     }
 
     /**
+     * AJAX handler to update a task.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    function metabox_update_task() {
+      require_once $this->plugin_path . 'src/ajax-update-task.php';
+    }
+
+    /**
      * Register and enqueue plugin CSS and JS.
      *
      * @since 1.0.0
@@ -267,6 +279,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
               'nonce_list' => wp_create_nonce( 'ptc_completionist_list_task' ),
               'nonce_create' => wp_create_nonce( 'ptc_completionist_create_task' ),
               'nonce_delete' => wp_create_nonce( 'ptc_completionist_delete_task' ),
+              'nonce_update' => wp_create_nonce( 'ptc_completionist_update_task' ),
             ]
           );
           break;

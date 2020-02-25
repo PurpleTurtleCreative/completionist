@@ -413,9 +413,5 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
     }
 
-    static function remote_create_task() : bool {}
-    static function remote_update_task() : bool {}
-    static function remote_delete_task() : bool {}
-
   }//end class
 }//end if class_exists

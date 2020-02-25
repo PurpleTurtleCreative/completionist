@@ -92,7 +92,7 @@ try {
     $task = $asana->tasks->create( $params );
 
     if ( ! isset( $task->gid ) ) {
-      throw new Exception( 'Unrecognized API response.', 409 );
+      throw new Exception( 'Unrecognized API response to create task.', 409 );
     }
 
     if ( isset( $the_post_id ) ) {
@@ -148,7 +148,7 @@ try {
   $res['status'] = 'error';
   $res['code'] = $e->getCode();
   $res['message'] = $e->getMessage();
-  $res['data'] = HTML_Builder::format_error_box( $e );
+  $res['data'] = HTML_Builder::format_error_box( $e, 'Failed to create task. ' );
 }
 
 echo json_encode( $res );

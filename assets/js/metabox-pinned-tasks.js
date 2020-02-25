@@ -170,7 +170,7 @@ jQuery(function($) {
       if(res.status == 'success' && res.data != '') {
         //TODO: Check for code == 201, task was created but not pinned
         $('#ptc-completionist_pinned-tasks #task-list').prepend(res.data);
-        var task_gid = jQuery('#task-list .ptc-completionist-task:first-of-type').data('task-gid');
+        var task_gid = jQuery('#task-list .ptc-completionist-task:first-of-type').data('gid');
         apply_task_list_listeners(task_gid);
         taskContainer.children(':not(.ptc-completionist-task):not(.task-loader)').remove();
         thisButton.siblings(':input').val('');
@@ -204,13 +204,55 @@ jQuery(function($) {
     if ( task_gid < 1 ) {
       var parentRow = $('#ptc-completionist_pinned-tasks .ptc-completionist-task');
     } else {
-      var parentRow = $('#ptc-completionist_pinned-tasks .ptc-completionist-task[data-task-gid="' + task_gid + '"]');
+      var parentRow = $('#ptc-completionist_pinned-tasks .ptc-completionist-task[data-gid="' + task_gid + '"]');
     }
 
     /* TOGGLE DESCRIPTION VISIBILITY */
     parentRow.find('button.view-task-notes').on('click', function() {
-      $(this).closest('.ptc-completionist-task').find('.description').toggle();
+      parentRow.find('.description').toggle();
     });//end toggle description
+
+    /* MARK COMPLETE */
+    parentRow.find('button.mark-complete').on('click', function() {
+
+      var thisButton = $(this);
+      thisButton.css('pointer-events', 'none');//disable while currently processing
+      thisButton.prop('disabled', true);//disable while currently processing
+
+      var buttonIcon = thisButton.find('i.fas');
+
+      var completed = (parentRow.data('completed') === false) ? true : false;
+
+      var data = {
+        'action': 'ptc_update_task',
+        'nonce': ptc_completionist_pinned_tasks.nonce_update,
+        'task_gid': parentRow.data('gid'),
+        'completed': completed,
+      };
+
+      buttonIcon.removeClass('fa-check').addClass('fa-circle-notch fa-spin');
+
+      $.post(ajaxurl, data, function(res) {
+
+        if(res.status == 'success' && res.data != '') {
+          parentRow.replaceWith(res.data);
+          apply_task_list_listeners(data.task_gid);
+        } else {
+          alert('Error '+res.code+': '+res.message);
+          thisButton.css('pointer-events', 'auto');
+          thisButton.prop('disabled', false);
+          buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
+        }
+
+      }, 'json')
+        .fail(function() {
+          alert('Failed to update task.');
+          thisButton.css('pointer-events', 'auto');
+          thisButton.prop('disabled', false);
+          buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
+        });
+
+    });//end submit mark complete
 
     /* UNPIN TASK FROM POST */
     parentRow.find('button.unpin-task').on('click', function() {
@@ -225,7 +267,7 @@ jQuery(function($) {
         'action': 'ptc_unpin_task',
         'nonce': ptc_completionist_pinned_tasks.nonce_pin,
         'post_id': post_id,
-        'task_gid': thisButton.data('task-gid'),
+        'task_gid': thisButton.closest('.ptc-completionist-task').data('gid'),
       };
 
       buttonIcon.removeClass('fa-thumbtack').addClass('fa-circle-notch fa-spin');
@@ -264,7 +306,7 @@ jQuery(function($) {
         'action': 'ptc_delete_task',
         'nonce': ptc_completionist_pinned_tasks.nonce_delete,
         'post_id': post_id,
-        'task_gid': thisButton.data('task-gid'),
+        'task_gid': thisButton.closest('.ptc-completionist-task').data('gid'),
       };
 
       buttonIcon.removeClass('fa-trash-alt').addClass('fa-circle-notch fa-spin');
@@ -314,7 +356,7 @@ jQuery(function($) {
   }//end load_task()
 
   function remove_task_row(task_gid) {
-    $('#ptc-completionist_pinned-tasks .ptc-completionist-task[data-task-gid="' + task_gid + '"]')
+    $('#ptc-completionist_pinned-tasks .ptc-completionist-task[data-gid="' + task_gid + '"]')
       .fadeOut(800, function() {
         $(this).remove();
         display_if_empty_list();

@@ -32,12 +32,12 @@ try {
 
     $task_gid = Options::sanitize( 'gid', $_POST['task_gid'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     if ( $task_gid === '' ) {
-      throw new \Exception('Invalid task gid.', 400 );
+      throw new \Exception( 'Invalid task gid.', 400 );
     }
 
     $the_post_id = (int) Options::sanitize( 'gid', $_POST['post_id'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     if ( $the_post_id < 1 ) {
-      throw new \Exception('Invalid post identifier.', 400 );
+      throw new \Exception( 'Invalid post identifier.', 400 );
     }
 
     try {

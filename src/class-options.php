@@ -443,7 +443,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
           $sanitized_datetime = preg_replace( '/[^0-9:\- ]+/', '', $filtered_datetime );
           /* should be string in format Y-m-d H:i:s */
           $dt = \DateTime::createFromFormat( 'Y-m-d H:i:s', $date );
-          if ( $dt !== FALSE && array_sum( $dt::getLastErrors() ) > 0 ) {
+          if ( $dt !== FALSE && array_sum( $dt::getLastErrors() ) === 0 ) {
             $dt_string = $dt->format('Y-m-d H:i:s');
             return ( $dt_string !== FALSE ) ? $dt_string : '';
           } else {
@@ -459,12 +459,20 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
           $sanitized_date = preg_replace( '/[^0-9\-]+/', '', $filtered_date );
           /* should be string in format yyyy-mm-dd */
           $dt = \DateTime::createFromFormat( 'Y-m-d', $sanitized_date );
-          if ( $dt !== FALSE && array_sum( $dt::getLastErrors() ) > 0 ) {
+          if ( $dt !== FALSE && array_sum( $dt::getLastErrors() ) === 0 ) {
             $dt_string = $dt->format('Y-m-d');
             return ( $dt_string !== FALSE ) ? $dt_string : '';
           } else {
             return '';
           }
+
+        case 'string':
+          $filtered_value = filter_var(
+            $value,
+            FILTER_SANITIZE_STRING,
+            FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
+          );
+          return ( $filtered_value !== FALSE ) ? $filtered_value : '';
 
       }
 

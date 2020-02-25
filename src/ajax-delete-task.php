@@ -67,7 +67,7 @@ try {
   $res['status'] = 'error';
   $res['code'] = $e->getCode();
   $res['message'] = $e->getMessage();
-  $res['data'] = HTML_Builder::format_error_box( $e );
+  $res['data'] = HTML_Builder::format_error_box( $e, 'Failed to delete task. ' );
 }
 
 echo json_encode( $res );
