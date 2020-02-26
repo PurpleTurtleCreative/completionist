@@ -157,7 +157,6 @@ jQuery(function($) {
 
     $.post(ajaxurl, data, function(res) {
       if(res.status == 'success' && res.data != '') {
-        //TODO: Check for code == 201, task was created but not pinned
         $('#ptc-completionist_pinned-tasks #task-list').prepend(res.data);
         var task_gid = jQuery('#task-list .ptc-completionist-task:first-of-type').data('gid');
         apply_task_list_listeners(task_gid);
@@ -172,16 +171,30 @@ jQuery(function($) {
       .fail(function() {
         alert('Failed to create task.');
       }).always(function() {
-
         disable_element(thisButton, false);
         disable_element(inputFields, false);
         disable_element(toggleButton, false);
-
         thisButton.html(buttonHTML);
-
       });
 
   });//end submit pin new
+
+  /* INPUT FIELD KEYPRESS SUBMISSIONS */
+  $('#ptc-completionist_pinned-tasks input#asana-task-link-url').on('keypress', function(e) {
+    var code = e.keyCode || e.which;
+    if(code == 13) {
+      e.preventDefault();
+      $('#ptc-completionist_pinned-tasks #task-toolbar button#submit-pin-existing').click();
+    }
+  });//end pin existing task keypress
+
+  $('#ptc-completionist_pinned-tasks #pin-new-task :input:not(button)').on('keypress', function(e) {
+    var code = e.keyCode || e.which;
+    if(code == 13) {
+      e.preventDefault();
+      $('#ptc-completionist_pinned-tasks #pin-new-task button#submit-create-new').click();
+    }
+  });//end create new task keypress
 
   /* -------- HELPERS -------- */
 
