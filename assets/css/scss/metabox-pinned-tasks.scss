@@ -1,0 +1,292 @@
+#ptc-completionist_pinned-tasks .inside {
+  padding: 0;
+  margin: 0;
+}
+
+#ptc-completionist_pinned-tasks .inside button {
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  font-size: 0.9em;
+  padding: 0;
+  border-radius: 999px;
+  outline: none;
+  box-shadow: none;
+  border: 1px solid #486581;
+  cursor: pointer;
+}
+
+#ptc-completionist_pinned-tasks .inside button[disabled],
+#ptc-completionist_pinned-tasks .inside input[disabled],
+#ptc-completionist_pinned-tasks .inside select[disabled],
+#ptc-completionist_pinned-tasks .inside textarea[disabled] {
+  background: #F5F7FA !important;
+  border-color: #9FB3C8 !important;
+  color: #9FB3C8 !important;
+  text-shadow: none !important;
+}
+
+#ptc-completionist_pinned-tasks .inside button[disabled] {
+  background: #D9E2EC !important;
+}
+
+#ptc-completionist_pinned-tasks .inside input,
+#ptc-completionist_pinned-tasks .inside select,
+#ptc-completionist_pinned-tasks .inside textarea {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#ptc-completionist_pinned-tasks .inside input::placeholder {
+  color: #9AA5B1;
+}
+
+/* Reload Task List Button */
+#ptc-completionist_pinned-tasks button#reload-task-list {
+  display: block;
+  float: right;
+  margin: 6px 0px;
+  width: auto;
+  height: calc(36px - (6px * 2));
+  background: #627D98;
+  border-radius: 3px;
+  border: 1px solid #486581;
+  text-shadow: 1px 2px 2px #486581;
+  text-decoration: none;
+  color: #FFF;
+  font-size: 0.9em;
+  padding: 0 1.2em;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+#ptc-completionist_pinned-tasks button#reload-task-list i {
+  margin-right: 0.4em;
+}
+
+#ptc-completionist_pinned-tasks button#reload-task-list[disabled] {
+  background: #F5F7FA;
+  border-color: #9FB3C8;
+  color: #9FB3C8;
+  text-shadow: none;
+}
+
+/* Pin a Task Toolbar */
+#ptc-completionist_pinned-tasks aside#pin-a-task {
+  background: #F5F7FA;
+  border-bottom: 1px solid #CBD2D9;
+  padding: 7px 10px;
+}
+
+#ptc-completionist_pinned-tasks aside#pin-a-task #task-toolbar {
+  display: flex;
+  align-items: center;
+}
+
+#ptc-completionist_pinned-tasks aside#pin-a-task #task-toolbar button {
+  width: 2em;
+  height: 2em;
+  font-size: 1em;
+  margin-left: 5px;
+}
+
+#ptc-completionist_pinned-tasks aside#pin-a-task #task-toolbar input#asana-task-link-url {
+  flex: 1;
+  display: inline-block;
+  height: 2em;
+  min-height: 0;
+  padding: 0 2.3em 0 1em;
+  border-radius: 999px;
+  border: 1px solid #1992D4;
+}
+
+#ptc-completionist_pinned-tasks aside#pin-a-task #task-toolbar button#submit-pin-existing {
+  margin-left: -2em;
+  background: #40C3F7;
+  border-color: #2BB0ED;
+  color: #035388;
+}
+
+#ptc-completionist_pinned-tasks aside#pin-a-task #task-toolbar button#toggle-create-new {
+  background: #6CD410;
+  border-color: #399709;
+  color: #1E5303;
+}
+
+#ptc-completionist_pinned-tasks aside#pin-a-task #task-toolbar button#toggle-create-new.open {
+  background: #E12D39;
+  border-color: #8A041A;
+  color: #610316;
+}
+
+/* New Task Form */
+#ptc-completionist_pinned-tasks aside#pin-a-task #pin-new-task {
+  margin: 1em 0 0;
+}
+
+#ptc-completionist_pinned-tasks aside#pin-a-task #pin-new-task::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+#ptc-completionist_pinned-tasks aside#pin-a-task #pin-new-task .form-group {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+input#ptc-new-task_name {
+  width: 100%;
+}
+
+#ptc-completionist_pinned-tasks aside#pin-a-task #pin-new-task .form-group label {
+  width: 5rem;
+  display: block;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#ptc-completionist_pinned-tasks aside#pin-a-task #pin-new-task .form-group input,
+#ptc-completionist_pinned-tasks aside#pin-a-task #pin-new-task .form-group select,
+#ptc-completionist_pinned-tasks aside#pin-a-task #pin-new-task .form-group textarea {
+  flex: 1;
+  max-width: calc( 100% - 5rem);
+}
+
+#ptc-completionist_pinned-tasks aside#pin-a-task #pin-new-task button#submit-create-new {
+  width: auto;
+  height: auto;
+  font-size: 1em;
+  background: #6CD410;
+  border-radius: 999px;
+  border: 1px solid #399709;
+  text-decoration: none;
+  color: #1E5303;
+  font-size: 0.9em;
+  padding: 0.3em 0.75em 0.35em;
+  font-weight: 600;
+  margin: 0.3em 0;
+  float: right;
+}
+
+#ptc-completionist_pinned-tasks aside#pin-a-task #pin-new-task button#submit-create-new i {
+  margin-right: 0.4em;
+}
+
+/* Task List */
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task {
+  padding: 10px 12px;
+  border-bottom: 1px solid #CBD2D9;
+  display: flex;
+  color: #323F4B;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task button.mark-complete {
+  background: #F0F4F8;
+  border-color: #9FB3C8;
+  color: #829AB1;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body {
+  flex: 1;
+  margin-left: 7px;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .name {
+  font-size: 1.05em;
+  line-height: 1.25rem;
+  font-weight: 500;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .name i.fa-sticky-note {
+  color: #F0B429;
+  font-weight: 400;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .details {
+  display: flex;
+  align-items: center;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .details .assignee,
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .details .due {
+  margin: 3px 7px 0 0;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .details .assignee {
+  display: flex;
+  align-items: center;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .details .assignee img {
+  border-radius: 999px;
+  margin: 1px 3px 0 0;
+  border: 1px solid #9AA5B1;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task[data-due-status=past] > div.body .details .due {
+  color: #CF1124;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task[data-due-status=today] > div.body .details .due {
+  color: #F35627;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task[data-due-status=soon] > div.body .details .due {
+  color: #17B897;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .description {
+  margin: 7px 0 10px;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .task-actions {
+  margin: 7px 0 3px;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .task-actions,
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .description {
+  display: none;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body:hover .task-actions,
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body:hover .description {
+  display: block;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .task-actions a {
+  text-decoration: none !important;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .task-actions button.view-task {
+  background: #BCCCDC;
+  border-color: #627D98;
+  color: #334E68;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .task-actions button.unpin-task {
+  background: #40C3F7;
+  border-color: #127FBF;
+  color: #035388;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .task-actions button.delete-task {
+  background: #EF4E4E;
+  border-color: #8A041A;
+  color: #610316;
+}
+
+/* Completed Tasks */
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task[data-completed=true] > div.body .name {
+  text-decoration: line-through;
+  color: #9AA5B1;
+  font-weight: 400;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task[data-completed=true] button.mark-complete {
+  background: #8EEDD1;
+  border-color: #079A82;
+  color: #048271;
+}

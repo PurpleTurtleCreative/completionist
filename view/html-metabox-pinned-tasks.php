@@ -36,41 +36,49 @@ try {
 
       <input id="ptc-new-task_name" type="text" placeholder="Write a task name...">
 
-      <label for="ptc-new-task_assignee">Assignee</label>
-      <select id="ptc-new-task_assignee">
-        <option value="">None (Unassigned)</option>
-        <?php
-        $workspace_users = Asana_Interface::find_workspace_users();
-        foreach ( $workspace_users as $user_gid => $wp_user ) {
-          echo  '<option value="' . esc_attr( $user_gid ) . '">' .
-                  esc_html( $wp_user->display_name ) . '</option>';
-        }
-        ?>
-      </select>
+      <div class="form-group">
+        <label for="ptc-new-task_assignee">Assignee</label>
+        <select id="ptc-new-task_assignee">
+          <option value="">None (Unassigned)</option>
+          <?php
+          $workspace_users = Asana_Interface::find_workspace_users();
+          foreach ( $workspace_users as $user_gid => $wp_user ) {
+            echo  '<option value="' . esc_attr( $user_gid ) . '">' .
+                    esc_html( $wp_user->display_name ) . '</option>';
+          }
+          ?>
+        </select>
+      </div>
 
-      <label for="ptc-new-task_due_on">Due Date</label>
-      <input id="ptc-new-task_due_on" type="date" pattern="\d\d\d\d-\d\d-\d\d" placeholder="yyyy-mm-dd">
+      <div class="form-group">
+        <label for="ptc-new-task_due_on">Due Date</label>
+        <input id="ptc-new-task_due_on" type="date" pattern="\d\d\d\d-\d\d-\d\d" placeholder="yyyy-mm-dd">
+      </div>
 
-      <label for="ptc-new-task_project">Project</label>
-      <select id="ptc-new-task_project">
-        <option value="">None (Private Task)</option>
-        <?php
-        $asana = Asana_Interface::get_client();
-        $params = [
-          'workspace' => Options::get( Options::ASANA_WORKSPACE_GID ),
-          'archived' => FALSE,
-          'opt_fields' => 'gid,name',
-        ];
-        $projects = $asana->projects->findAll( $params );
-        foreach ( $projects as $project ) {
-          echo  '<option value="' . esc_attr( $project->gid ) . '">' .
-                  esc_html( $project->name ) . '</option>';
-        }
-        ?>
-      </select>
+      <div class="form-group">
+        <label for="ptc-new-task_project">Project</label>
+        <select id="ptc-new-task_project">
+          <option value="">None (Private Task)</option>
+          <?php
+          $asana = Asana_Interface::get_client();
+          $params = [
+            'workspace' => Options::get( Options::ASANA_WORKSPACE_GID ),
+            'archived' => FALSE,
+            'opt_fields' => 'gid,name',
+          ];
+          $projects = $asana->projects->findAll( $params );
+          foreach ( $projects as $project ) {
+            echo  '<option value="' . esc_attr( $project->gid ) . '">' .
+                    esc_html( $project->name ) . '</option>';
+          }
+          ?>
+        </select>
+      </div>
 
-      <label for="ptc-new-task_notes">Description</label>
-      <textarea id="ptc-new-task_notes"></textarea>
+      <div class="form-group">
+        <label for="ptc-new-task_notes">Description</label>
+        <textarea id="ptc-new-task_notes"></textarea>
+      </div>
 
       <button id="submit-create-new" type="button"><i class="fas fa-plus"></i>Add Task</button>
 

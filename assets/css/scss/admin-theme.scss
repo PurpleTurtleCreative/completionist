@@ -185,6 +185,13 @@ a.ptc-button:active {
   background: #486581;
 }
 
+a.ptc-button[disabled] {
+  background: #F5F7FA;
+  border-color: #9FB3C8;
+  color: #9FB3C8;
+  text-shadow: none;
+}
+
 div.note-box {
   display: flex;
   background: #e9eff7;

@@ -2,6 +2,7 @@ jQuery(function($) {
 
   /* Get globals */
   var taskContainer = $('#ptc-completionist_pinned-tasks #task-list');
+  var pinNewTaskForm = $('#ptc-completionist_pinned-tasks #pin-new-task');
   var post_id = ptc_completionist_pinned_tasks.post_id;
   if(post_id === undefined || post_id < 1) {
     alert('Error: Could not identify the current post for task management.');
@@ -24,11 +25,13 @@ jQuery(function($) {
     if(formIsVisible) {
       disable_element(thisButton.siblings('input#asana-task-link-url'), true);
       disable_element(thisButton.siblings('button#submit-pin-existing'), true);
+      thisButton.addClass('open');
       thisButton.html('<i class="fas fa-ban"></i>');
       newTaskForm.find('input:first-of-type').focus();
     } else {
       disable_element(thisButton.siblings('input#asana-task-link-url'), false);
       disable_element(thisButton.siblings('button#submit-pin-existing'), false);
+      thisButton.removeClass('open');
       thisButton.html('<i class="fas fa-plus"></i>');
       newTaskForm.find(':focusable').blur();
     }
@@ -123,7 +126,7 @@ jQuery(function($) {
   $('#ptc-completionist_pinned-tasks #pin-new-task button#submit-create-new').on('click', function() {
 
     var thisButton = $(this);
-    var inputFields = thisButton.siblings(':input');
+    var inputFields = pinNewTaskForm.find(':input');
     var toggleButton = $('#ptc-completionist_pinned-tasks #pin-a-task button#toggle-create-new');
 
     disable_element(thisButton, true);
@@ -134,11 +137,11 @@ jQuery(function($) {
 
     /* Validate Input */
 
-    var name = thisButton.siblings('#ptc-new-task_name').val();//string,required
-    var assignee_gid = thisButton.siblings('#ptc-new-task_assignee').val();//numeric
-    var due_on = thisButton.siblings('#ptc-new-task_due_on').val();//yyyy-mm-dd
-    var project_gid = thisButton.siblings('#ptc-new-task_project').val();//numeric
-    var notes = thisButton.siblings('#ptc-new-task_notes').val();//string
+    var name = pinNewTaskForm.find('#ptc-new-task_name').val();//string,required
+    var assignee_gid = pinNewTaskForm.find('#ptc-new-task_assignee').val();//numeric
+    var due_on = pinNewTaskForm.find('#ptc-new-task_due_on').val();//yyyy-mm-dd
+    var project_gid = pinNewTaskForm.find('#ptc-new-task_project').val();//numeric
+    var notes = pinNewTaskForm.find('#ptc-new-task_notes').val();//string
 
     //TODO: Validate inputs... focus field, display error, and return... if good, remove error
 
@@ -157,12 +160,12 @@ jQuery(function($) {
 
     $.post(ajaxurl, data, function(res) {
       if(res.status == 'success' && res.data != '') {
-        $('#ptc-completionist_pinned-tasks #task-list').prepend(res.data);
+        $('#ptc-completionist_pinned-tasks #task-list').append(res.data);
         var task_gid = jQuery('#task-list .ptc-completionist-task:first-of-type').data('gid');
         apply_task_list_listeners(task_gid);
         taskContainer.children(':not(.ptc-completionist-task):not(.task-loader)').remove();
-        thisButton.siblings(':input').val('');
-        thisButton.siblings('select').prop('selectedIndex',0);
+        inputFields.val('');
+        inputFields.prop('selectedIndex',0);
         $('#ptc-completionist_pinned-tasks #pin-a-task button#toggle-create-new').click();
       } else {
         alert('Error '+res.code+': '+res.message);
@@ -252,11 +255,6 @@ jQuery(function($) {
     } else {
       var parentRow = $('#ptc-completionist_pinned-tasks .ptc-completionist-task[data-gid="' + task_gid + '"]');
     }
-
-    /* TOGGLE DESCRIPTION VISIBILITY */
-    parentRow.find('button.view-task-notes').on('click', function() {
-      parentRow.find('.description').toggle();
-    });//end toggle description
 
     /* MARK COMPLETE */
     parentRow.find('button.mark-complete').on('click', function() {

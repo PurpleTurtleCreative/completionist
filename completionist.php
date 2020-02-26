@@ -294,6 +294,12 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
               'nonce_update' => wp_create_nonce( 'ptc_completionist_update_task' ),
             ]
           );
+          wp_enqueue_style(
+            'ptc-completionist_metabox-pinned-tasks-css',
+            plugins_url( 'assets/css/metabox-pinned-tasks.css', __FILE__ ),
+            [],
+            '0.0.0'
+          );
           break;
 
       }//end switch hook suffix

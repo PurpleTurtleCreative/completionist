@@ -158,42 +158,50 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
           <i class="fas fa-check"></i>
         </button>
 
-        <div class="name">
-          <?php echo esc_html( $task_name ); ?>
-          <a href="<?php echo esc_url( $task_url ); ?>" target="_asana" title="View in Asana" class="view-task">
-            <i class="fas fa-external-link-alt"></i>
-          </a>
-        </div>
+        <div class="body">
 
-        <div class="details">
-          <div class="assignee">
-            <?php echo $assignee_gravatar;//phpcs:ignore WordPress.Security.EscapeOutput ?>
-            <?php echo esc_html( $assignee_name ); ?>
+          <div class="name">
+            <?php echo esc_html( $task_name ); ?>
+            <?php if ( ! empty( $task_notes ) ) { ?>
+              <i class="fas fa-sticky-note"></i>
+            <?php }//end if not empty task notes ?>
           </div>
-          <div class="due">
+
+          <div class="details">
+            <?php if ( ! empty( $assignee_name ) ) { ?>
+            <div class="assignee">
+              <?php echo $assignee_gravatar;//phpcs:ignore WordPress.Security.EscapeOutput ?>
+              <?php echo esc_html( $assignee_name ); ?>
+            </div>
+            <?php }//end if not empty assignee ?>
             <?php if ( ! empty( $due_date ) ) { ?>
-              <i class="fas fa-clock"></i>
-              <?php echo esc_html( $due_date ); ?>
+            <div class="due">
+                <i class="fas fa-clock"></i>
+                <?php echo esc_html( $due_date ); ?>
+            </div>
             <?php }//end if not empty task due ?>
           </div>
-        </div>
 
-        <div class="task-actions">
           <?php if ( ! empty( $task_notes ) ) { ?>
-            <button title="Notes" class="view-task-notes" type="button">
-              <i class="fas fa-sticky-note"></i>
-            </button>
+          <div class="description">
+            <?php echo esc_html( $task_notes ); ?>
+          </div>
           <?php }//end if not empty task notes ?>
-          <button title="Unpin" class="unpin-task" type="button">
-            <i class="fas fa-thumbtack"></i>
-          </button>
-          <button title="Delete" class="delete-task" type="button">
-            <i class="fas fa-trash-alt"></i>
-          </button>
-        </div>
 
-        <div class="description" style="display:none;">
-          <?php echo esc_html( $task_notes ); ?>
+          <div class="task-actions">
+            <a href="<?php echo esc_url( $task_url ); ?>" target="_asana">
+              <button title="View in Asana" class="view-task" type="button">
+                <i class="fas fa-link"></i>
+              </button>
+            </a>
+            <button title="Unpin" class="unpin-task" type="button">
+              <i class="fas fa-thumbtack"></i>
+            </button>
+            <button title="Delete" class="delete-task" type="button">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+
         </div>
 
       </section>

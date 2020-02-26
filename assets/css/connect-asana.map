@@ -1,0 +1,12 @@
+{
+	"version": 3,
+	"file": "scss/connect-asana.css",
+	"sources": [
+		"scss/connect-asana.scss"
+	],
+	"sourcesContent": [
+		".notice,\n#ptc-asana-dashboard-error {\n  max-width: 700px;\n  margin: 7px auto;\n  box-sizing: border-box;\n}\n\nsection#ptc-asana-connect img[title=\"Asana\"] {\n  width: 66%;\n  margin-bottom: 20px;\n}\n\nsection#ptc-asana-connect h2 {\n  font-weight: 800;\n  letter-spacing: 0.03em;\n  color: #243B53;\n}\n\nsection#ptc-asana-connect h2 + p {\n  margin-top: 0.5em;\n}\n\nsection#ptc-asana-connect form {\n  margin: 30px 0 30px;\n}\n\nsection#ptc-asana-connect form div.icon-input-field {\n  width: 66%;\n  text-align: right;\n}\n\nsection#ptc-asana-connect form div.icon-input-field input {\n  width: calc( 100% - 2.1em);\n}\n\nsection#ptc-asana-connect form p#connection-agreement-text {\n  margin: 0.5em 0;\n}\n\nsection#ptc-asana-connect form label[for=\"connection-agreement\"] {\n  display: inline-block;\n}\n"
+	],
+	"mappings": ";AAAA,AAAA,OAAO;AACP,AAAA,0BAA0B,CAAC;EACzB,SAAS,EAAE,KAAM;EACjB,MAAM,EAAE,QAAS;EACjB,UAAU,EAAE,UAAW;CACxB;;;AAED,AAA2C,OAApC,AAAA,kBAAkB,CAAC,GAAG,CAAA,AAAA,KAAC,CAAM,OAAO,AAAb,EAAe;EAC3C,KAAK,EAAE,GAAI;EACX,aAAa,EAAE,IAAK;CACrB;;;AAED,AAA0B,OAAnB,AAAA,kBAAkB,CAAC,EAAE,CAAC;EAC3B,WAAW,EAAE,GAAI;EACjB,cAAc,EAAE,MAAO;EACvB,KAAK,EAAE,OAAQ;CAChB;;;AAED,AAA+B,OAAxB,AAAA,kBAAkB,CAAC,EAAE,GAAG,CAAC,CAAC;EAC/B,UAAU,EAAE,KAAM;CACnB;;;AAED,AAA0B,OAAnB,AAAA,kBAAkB,CAAC,IAAI,CAAC;EAC7B,MAAM,EAAE,WAAY;CACrB;;;AAED,AAAkC,OAA3B,AAAA,kBAAkB,CAAC,IAAI,CAAC,GAAG,AAAA,iBAAiB,CAAC;EAClD,KAAK,EAAE,GAAI;EACX,UAAU,EAAE,KAAM;CACnB;;;AAED,AAAoD,OAA7C,AAAA,kBAAkB,CAAC,IAAI,CAAC,GAAG,AAAA,iBAAiB,CAAC,KAAK,CAAC;EACxD,KAAK,EAAE,mBAAI;CACZ;;;AAED,AAAgC,OAAzB,AAAA,kBAAkB,CAAC,IAAI,CAAC,CAAC,AAAA,0BAA0B,CAAC;EACzD,MAAM,EAAE,OAAQ;CACjB;;;AAED,AAA+D,OAAxD,AAAA,kBAAkB,CAAC,IAAI,CAAC,KAAK,CAAA,AAAA,GAAC,CAAI,sBAAsB,AAA1B,EAA4B;EAC/D,OAAO,EAAE,YAAa;CACvB",
+	"names": []
+}
