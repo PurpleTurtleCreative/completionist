@@ -121,18 +121,28 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
           $dt = \DateTime::createFromFormat( 'Y-m-d', $due_date );
           if ( $dt !== FALSE && array_sum( $dt::getLastErrors() ) === 0 ) {
 
-            $dt_today = new \DateTime( date( 'Y-m-d' ) );
+            $dt_today = new \DateTime( 'today' );
+            $dt->setTime( 0, 0 );
+            $dt_today->setTime( 0, 0 );
             $days_diff = $dt_today->diff( $dt )->days;
 
             if ( $dt < $dt_today && $days_diff !== 0 ) {
-              $dt_string = "$days_diff days ago";
+              if ( $days_diff === 1 ) {
+                $dt_string = 'Yesterday';
+              } else {
+                $dt_string = "$days_diff days ago";
+              }
               $due_status = 'past';
             } else {
               if ( $days_diff === 0 ) {
                 $dt_string = 'Today';
                 $due_status = 'today';
               } elseif ( $days_diff < 7 ) {
-                $dt_string = $dt->format('l');
+                if ( $days_diff === 1 ) {
+                  $dt_string = 'Tomorrow';
+                } else {
+                  $dt_string = $dt->format('l');
+                }
                 $due_status = 'soon';
               } else {
                 $dt_string = $dt->format('M j');
