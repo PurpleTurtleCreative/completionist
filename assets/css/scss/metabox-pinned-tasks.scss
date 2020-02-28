@@ -41,6 +41,20 @@
   color: #9AA5B1;
 }
 
+/* Task Loader Message */
+#ptc-completionist_pinned-tasks main#task-list p.task-loader,
+#ptc-completionist_pinned-tasks main#task-list p.nothing-to-see {
+  padding: 12px;
+  color: #829AB1;
+  text-align: center;
+  margin: 0;
+}
+
+#ptc-completionist_pinned-tasks main#task-list p.task-loader i,
+#ptc-completionist_pinned-tasks main#task-list p.nothing-to-see i {
+  margin-right: 0.35em;
+}
+
 /* Reload Task List Button */
 #ptc-completionist_pinned-tasks button#reload-task-list {
   display: block;
@@ -208,14 +222,15 @@ input#ptc-new-task_name {
 #ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .details {
   display: flex;
   align-items: center;
-}
-
-#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .details .assignee,
-#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .details .due {
-  margin: 3px 7px 0 0;
+  flex-wrap: wrap;
 }
 
 #ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .details .assignee {
+  margin: 3px 8px 0 0;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .details .assignee {
+  line-height: 1.1;
   display: flex;
   align-items: center;
 }
@@ -224,6 +239,10 @@ input#ptc-new-task_name {
   border-radius: 999px;
   margin: 1px 3px 0 0;
   border: 1px solid #9AA5B1;
+}
+
+#ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task > div.body .details .due {
+  margin: 3px 0 0 2px;
 }
 
 #ptc-completionist_pinned-tasks main#task-list section.ptc-completionist-task[data-due-status=past] > div.body .details .due {
@@ -289,4 +308,55 @@ input#ptc-new-task_name {
   background: #8EEDD1;
   border-color: #079A82;
   color: #048271;
+}
+
+/* Alert Banners */
+#ptc-completionist_pinned-tasks .inside div.note-box {
+  display: flex;
+  background: #e9eff7;
+  border-radius: 0;
+  margin: 0;
+}
+
+#ptc-completionist_pinned-tasks .inside div.note-box div.note-box-dismiss {
+  text-align: center;
+  padding: 7px 10px;
+  background: #486581;
+  color: #FFF;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+#ptc-completionist_pinned-tasks .inside div.note-box p {
+  padding: 10px 12px;
+  margin: 0;
+  line-height: 1.5em;
+  border: 1px solid #BCCCDC;
+  border-radius: 0;
+  color: #486581;
+  text-align: left;
+  flex: 1;
+}
+
+#ptc-completionist_pinned-tasks .inside div.note-box p strong {
+  font-weight: 700;
+  font-size: 1.1em;
+  display: inline-block;
+  margin: 0 0 7px;
+}
+
+#ptc-completionist_pinned-tasks .inside div.note-box.note-box-error div.note-box-dismiss {
+  background: #E12D39;
+}
+
+#ptc-completionist_pinned-tasks .inside div.note-box.note-box-error div.note-box-dismiss:hover {
+  background: #AB091E;
+}
+
+#ptc-completionist_pinned-tasks .inside div.note-box.note-box-error p {
+  background: #FFEEEE;
+  color: #D64545;
+  border-color: #F29B9B;
 }

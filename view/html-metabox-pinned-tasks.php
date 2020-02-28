@@ -26,9 +26,9 @@ try {
     <div id="task-toolbar">
 
       <input id="asana-task-link-url" type="url" placeholder="Paste a task link...">
-      <button id="submit-pin-existing" type="button"><i class="fas fa-thumbtack"></i></button>
+      <button id="submit-pin-existing" title="Pin existing Asana task" type="button"><i class="fas fa-thumbtack"></i></button>
 
-      <button id="toggle-create-new" type="button"><i class="fas fa-plus"></i></button>
+      <button id="toggle-create-new" title="Add a new task" type="button"><i class="fas fa-plus"></i></button>
 
     </div>
 
@@ -87,7 +87,7 @@ try {
   </aside>
 
   <main id="task-list">
-    <p><i class="fas fa-circle-notch fa-spin"></i>Waiting to load tasks...</p>
+    <p class="task-loader"><i class="fas fa-circle-notch fa-spin"></i>Waiting to load tasks...</p>
   </main>
   <?php
 } catch ( \PTC_Completionist\Errors\NoAuthorization $e ) {

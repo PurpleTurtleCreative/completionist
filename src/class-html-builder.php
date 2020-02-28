@@ -236,11 +236,13 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
       ob_start();
       ?>
       <div class="note-box note-box-error">
-        <i class="fas fa-times"></i>
         <p>
           <strong>Error <?php echo esc_html( $e->getCode() ); ?>.</strong>
           <br><?php echo esc_html( $context_message . $e->getMessage() ); ?>
         </p>
+        <div class="note-box-dismiss">
+          <i class="fas fa-times"></i>
+        </div>
       </div>
       <?php
       $html = ob_get_clean();

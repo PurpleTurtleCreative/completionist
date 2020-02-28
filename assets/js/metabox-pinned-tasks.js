@@ -1,8 +1,9 @@
 jQuery(function($) {
 
   /* Get globals */
-  var taskContainer = $('#ptc-completionist_pinned-tasks #task-list');
-  var pinNewTaskForm = $('#ptc-completionist_pinned-tasks #pin-new-task');
+  var metaboxContainer = $('#ptc-completionist_pinned-tasks .inside');
+  var taskContainer = metaboxContainer.find('#task-list');
+  var pinNewTaskForm = metaboxContainer.find('#pin-new-task');
   var post_id = ptc_completionist_pinned_tasks.post_id;
   if(post_id === undefined || post_id < 1) {
     alert('Error: Could not identify the current post for task management.');
@@ -17,6 +18,13 @@ jQuery(function($) {
   /* Load task data */
   list_pinned_tasks();
 
+  /* ALERT BANNER DISMISSAL */
+  metaboxContainer.on('click', 'div.note-box-dismiss', function() {
+    $(this).closest('.note-box').fadeOut(400, function() {
+      $(this).remove();
+    });
+  });
+
   /* TOGGLE NEW TASK FORM VISIBILITY */
   $('#ptc-completionist_pinned-tasks #pin-a-task button#toggle-create-new').on('click', function() {
     var thisButton = $(this);
@@ -27,7 +35,7 @@ jQuery(function($) {
       disable_element(thisButton.siblings('button#submit-pin-existing'), true);
       thisButton.addClass('open');
       thisButton.html('<i class="fas fa-ban"></i>');
-      newTaskForm.find('input:first-of-type').focus();
+      newTaskForm.find(':focusable:first').focus();
     } else {
       disable_element(thisButton.siblings('input#asana-task-link-url'), false);
       disable_element(thisButton.siblings('button#submit-pin-existing'), false);
@@ -54,6 +62,10 @@ jQuery(function($) {
       if(res.status == 'success' && res.data != '') {
         ptc_completionist_pinned_tasks.pinned_task_gids = res.data;
         list_pinned_tasks();
+      } else if(res.status == 'error' && res.data != '') {
+        display_alert_html(res.data);
+        reloadButton.html('<i class="fas fa-sync-alt"></i>Reload');
+        disable_element(reloadButton, false);
       } else {
         alert('Error '+res.code+': '+res.message);
         reloadButton.html('<i class="fas fa-sync-alt"></i>Reload');
@@ -96,6 +108,9 @@ jQuery(function($) {
 
         if(res.status == 'success' && res.data != '') {
           load_task(res.data, data.post_id);
+          inputField.val('');
+        } else if(res.status == 'error' && res.data != '') {
+          display_alert_html(res.data);
           inputField.val('');
         } else {
           alert('Error '+res.code+': '+res.message);
@@ -162,11 +177,12 @@ jQuery(function($) {
       if(res.status == 'success' && res.data != '') {
         $('#ptc-completionist_pinned-tasks #task-list').append(res.data);
         var task_gid = jQuery('#task-list .ptc-completionist-task:first-of-type').data('gid');
-        apply_task_list_listeners(task_gid);
         taskContainer.children(':not(.ptc-completionist-task):not(.task-loader)').remove();
         inputFields.val('');
         inputFields.prop('selectedIndex',0);
         $('#ptc-completionist_pinned-tasks #pin-a-task button#toggle-create-new').click();
+      } else if(res.status == 'error' && res.data != '') {
+        display_alert_html(res.data);
       } else {
         alert('Error '+res.code+': '+res.message);
       }
@@ -199,6 +215,128 @@ jQuery(function($) {
     }
   });//end create new task keypress
 
+  /* MARK COMPLETE */
+  metaboxContainer.on('click', '.ptc-completionist-task[data-gid] button.mark-complete', function() {
+
+    var thisButton = $(this);
+    disable_element(thisButton, true);
+
+    var buttonIcon = thisButton.find('i.fas');
+
+    var completed = (thisButton.closest('.ptc-completionist-task').data('completed') === false) ? true : false;
+
+    var data = {
+      'action': 'ptc_update_task',
+      'nonce': ptc_completionist_pinned_tasks.nonce_update,
+      'task_gid': thisButton.closest('.ptc-completionist-task').data('gid'),
+      'completed': completed,
+    };
+
+    buttonIcon.removeClass('fa-check').addClass('fa-circle-notch fa-spin');
+
+    $.post(ajaxurl, data, function(res) {
+
+      if(res.status == 'success' && res.data != '') {
+        thisButton.closest('.ptc-completionist-task').replaceWith(res.data);
+      } else if(res.status == 'error' && res.data != '') {
+        display_alert_html(res.data);
+        disable_element(thisButton, false);
+        buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
+      } else {
+        alert('Error '+res.code+': '+res.message);
+        disable_element(thisButton, false);
+        buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
+      }
+
+    }, 'json')
+      .fail(function() {
+        alert('Failed to update task.');
+        disable_element(thisButton, false);
+        buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
+      });
+
+  });//end submit mark complete
+
+  /* UNPIN TASK FROM POST */
+  metaboxContainer.on('click', '.ptc-completionist-task[data-gid] button.unpin-task', function() {
+
+    var thisButton = $(this);
+    disable_element(thisButton, true);
+
+    var buttonIcon = thisButton.find('i.fas');
+
+    var data = {
+      'action': 'ptc_unpin_task',
+      'nonce': ptc_completionist_pinned_tasks.nonce_pin,
+      'post_id': post_id,
+      'task_gid': thisButton.closest('.ptc-completionist-task').data('gid'),
+    };
+
+    buttonIcon.removeClass('fa-thumbtack').addClass('fa-circle-notch fa-spin');
+
+    $.post(ajaxurl, data, function(res) {
+
+      if(res.status == 'success' && res.data != '') {
+        remove_task_row(res.data);
+      } else if(res.status == 'error' && res.data != '') {
+        display_alert_html(res.data);
+        disable_element(thisButton, false);
+        buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
+      } else {
+        alert('Error '+res.code+': '+res.message);
+        disable_element(thisButton, false);
+        buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
+      }
+
+    }, 'json')
+      .fail(function() {
+        alert('Failed to pin task.');
+        disable_element(thisButton, false);
+        buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
+      });
+
+  });//end submit unpin task
+
+  /* DELETE TASK */
+  metaboxContainer.on('click', '.ptc-completionist-task[data-gid] button.delete-task', function() {
+
+    var thisButton = $(this);
+    disable_element(thisButton, true);
+
+    var buttonIcon = thisButton.find('i.fas');
+
+    var data = {
+      'action': 'ptc_delete_task',
+      'nonce': ptc_completionist_pinned_tasks.nonce_delete,
+      'post_id': post_id,
+      'task_gid': thisButton.closest('.ptc-completionist-task').data('gid'),
+    };
+
+    buttonIcon.removeClass('fa-minus').addClass('fa-circle-notch fa-spin');
+
+    $.post(ajaxurl, data, function(res) {
+
+      if(res.status == 'success' && res.data != '') {
+        remove_task_row(res.data);
+      } else if(res.status == 'error' && res.data != '') {
+        display_alert_html(res.data);
+        disable_element(thisButton, false);
+        buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-minus');
+      } else {
+        alert('Error '+res.code+': '+res.message);
+        disable_element(thisButton, false);
+        buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-minus');
+      }
+
+    }, 'json')
+      .fail(function() {
+        alert('Failed to pin task.');
+        disable_element(thisButton, false);
+        buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-minus');
+      });
+
+  });//end submit delete task
+
   /* -------- HELPERS -------- */
 
   function list_pinned_tasks() {
@@ -208,7 +346,7 @@ jQuery(function($) {
       var total_tasks = ptc_completionist_pinned_tasks.pinned_task_gids.length;
       var completion_count = 0;
 
-      taskContainer.html('<section class="task-loader"><p><i class="fas fa-circle-notch fa-spin"></i>Loading tasks from Asana...</p></section>');
+      taskContainer.html('<p class="task-loader"><i class="fas fa-circle-notch fa-spin"></i>Loading tasks from Asana...</p>');
 
       disable_element(reloadButton, true);
       reloadButton.html('<i class="fas fa-sync-alt fa-spin"></i>Loading...');
@@ -223,9 +361,10 @@ jQuery(function($) {
         };
 
         $.post(ajaxurl, data, function(res) {
-          if(res.data != '') {
+          if(res.status == 'success' && res.data != '') {
             $(res.data).insertBefore('#task-list .task-loader');
-            apply_task_list_listeners(data.task_gid);
+          } else if(res.status == 'error' && res.data != '') {
+            display_alert_html(res.data);
           }
         }, 'json')
           .always(function() {
@@ -236,7 +375,7 @@ jQuery(function($) {
               disable_element(reloadButton, false);
             }
             if(taskContainer.html() == '') {
-              taskContainer.html('<p><i class="fas fa-eye-slash"></i>There are no visible tasks!</p>');
+              taskContainer.html('<p class="nothing-to-see"><i class="fas fa-eye-slash"></i>There are no visible tasks!</p>');
             }
           });
       });//end forEach pinned task gid
@@ -247,127 +386,6 @@ jQuery(function($) {
     }
 
   }//end function list_pinned_tasks()
-
-  function apply_task_list_listeners( task_gid = 0 ) {
-
-    if ( task_gid < 1 ) {
-      var parentRow = $('#ptc-completionist_pinned-tasks .ptc-completionist-task');
-    } else {
-      var parentRow = $('#ptc-completionist_pinned-tasks .ptc-completionist-task[data-gid="' + task_gid + '"]');
-    }
-
-    /* MARK COMPLETE */
-    parentRow.find('button.mark-complete').on('click', function() {
-
-      var thisButton = $(this);
-      disable_element(thisButton, true);
-
-      var buttonIcon = thisButton.find('i.fas');
-
-      var completed = (parentRow.data('completed') === false) ? true : false;
-
-      var data = {
-        'action': 'ptc_update_task',
-        'nonce': ptc_completionist_pinned_tasks.nonce_update,
-        'task_gid': parentRow.data('gid'),
-        'completed': completed,
-      };
-
-      buttonIcon.removeClass('fa-check').addClass('fa-circle-notch fa-spin');
-
-      $.post(ajaxurl, data, function(res) {
-
-        if(res.status == 'success' && res.data != '') {
-          parentRow.replaceWith(res.data);
-          apply_task_list_listeners(data.task_gid);
-        } else {
-          alert('Error '+res.code+': '+res.message);
-          disable_element(thisButton, false);
-          buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
-        }
-
-      }, 'json')
-        .fail(function() {
-          alert('Failed to update task.');
-          disable_element(thisButton, false);
-          buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
-        });
-
-    });//end submit mark complete
-
-    /* UNPIN TASK FROM POST */
-    parentRow.find('button.unpin-task').on('click', function() {
-
-      var thisButton = $(this);
-      disable_element(thisButton, true);
-
-      var buttonIcon = thisButton.find('i.fas');
-
-      var data = {
-        'action': 'ptc_unpin_task',
-        'nonce': ptc_completionist_pinned_tasks.nonce_pin,
-        'post_id': post_id,
-        'task_gid': thisButton.closest('.ptc-completionist-task').data('gid'),
-      };
-
-      buttonIcon.removeClass('fa-thumbtack').addClass('fa-circle-notch fa-spin');
-
-      $.post(ajaxurl, data, function(res) {
-
-        if(res.status == 'success' && res.data != '') {
-          remove_task_row(res.data);
-        } else {
-          alert('Error '+res.code+': '+res.message);
-          disable_element(thisButton, false);
-          buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
-        }
-
-      }, 'json')
-        .fail(function() {
-          alert('Failed to pin task.');
-          disable_element(thisButton, false);
-          buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
-        });
-
-    });//end submit unpin task
-
-    /* DELETE TASK */
-    parentRow.find('button.delete-task').on('click', function() {
-
-      var thisButton = $(this);
-      disable_element(thisButton, true);
-
-      var buttonIcon = thisButton.find('i.fas');
-
-      var data = {
-        'action': 'ptc_delete_task',
-        'nonce': ptc_completionist_pinned_tasks.nonce_delete,
-        'post_id': post_id,
-        'task_gid': thisButton.closest('.ptc-completionist-task').data('gid'),
-      };
-
-      buttonIcon.removeClass('fa-trash-alt').addClass('fa-circle-notch fa-spin');
-
-      $.post(ajaxurl, data, function(res) {
-
-        if(res.status == 'success' && res.data != '') {
-          remove_task_row(res.data);
-        } else {
-          alert('Error '+res.code+': '+res.message);
-          disable_element(thisButton, false);
-          buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-trash-alt');
-        }
-
-      }, 'json')
-        .fail(function() {
-          alert('Failed to pin task.');
-          disable_element(thisButton, false);
-          buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-trash-alt');
-        });
-
-    });//end submit delete task
-
-  }//end apply_task_list_listeners()
 
   function load_task(task_gid, post_id) {
 
@@ -381,8 +399,9 @@ jQuery(function($) {
     $.post(ajaxurl, data, function(res) {
       if(res.status == 'success' && res.data != '') {
         taskContainer.append(res.data);
-        apply_task_list_listeners(data.task_gid);
         taskContainer.children(':not(.ptc-completionist-task):not(.task-loader)').remove();
+      } else if(res.status == 'error' && res.data != '') {
+        display_alert_html(res.data);
       }
     }, 'json');
 
@@ -412,8 +431,9 @@ jQuery(function($) {
     }
   }//end disable_element()
 
-  // function display_alert_html( note_box_html ) {}
-
-  // function display_alert( status, message ) {}
+  function display_alert_html(note_box_html) {
+    var alertBanner = $(note_box_html);
+    alertBanner.insertAfter('#ptc-completionist_pinned-tasks #pin-a-task');
+  }//end display_alert_html()
 
 });//end document ready

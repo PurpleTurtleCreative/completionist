@@ -1,6 +1,6 @@
 <?php
 /**
- * Create a new task in Asana and pin to the provided post, if applicable.
+ * Update a task in Asana using provided parameters.
  *
  * @since 1.0.0
  */
