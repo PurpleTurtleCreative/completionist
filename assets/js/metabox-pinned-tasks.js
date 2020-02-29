@@ -5,18 +5,18 @@ jQuery(function($) {
 
   var taskContainer = metaboxContainer.find('#task-list');
   if(taskContainer.length < 1) {
-    return false;
+    return;
   }
 
   var pinNewTaskForm = metaboxContainer.find('#pin-new-task');
   if(pinNewTaskForm.length < 1) {
-    return false;
+    return;
   }
 
   var post_id = ptc_completionist_pinned_tasks.post_id;
   if(post_id === undefined || post_id < 1) {
     alert('[Completionist] Error: Could not identify the current post for task management.');
-    return false;
+    return;
   }
 
   /* Insert metabox reload button */

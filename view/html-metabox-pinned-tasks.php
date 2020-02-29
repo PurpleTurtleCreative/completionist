@@ -20,6 +20,19 @@ try {
 
   $asana = Asana_Interface::get_client();
 
+  if ( ! Asana_Interface::is_workspace_member() ) {
+    throw new \Exception( 'You are not a member of the assigned Asana Workspace.', 403 );
+  }
+
+  $workspace_users = Asana_Interface::find_workspace_users();
+
+  $params = [
+    'workspace' => Options::get( Options::ASANA_WORKSPACE_GID ),
+    'archived' => FALSE,
+    'opt_fields' => 'gid,name',
+  ];
+  $projects = $asana->projects->findAll( $params );
+
   /* User is authenticated for API usage. */
   ?>
   <aside id="pin-a-task">
@@ -42,7 +55,6 @@ try {
         <select id="ptc-new-task_assignee">
           <option value="">None (Unassigned)</option>
           <?php
-          $workspace_users = Asana_Interface::find_workspace_users();
           foreach ( $workspace_users as $user_gid => $wp_user ) {
             echo  '<option value="' . esc_attr( $user_gid ) . '">' .
                     esc_html( $wp_user->display_name ) . '</option>';
@@ -61,13 +73,6 @@ try {
         <select id="ptc-new-task_project">
           <option value="">None (Private Task)</option>
           <?php
-          $asana = Asana_Interface::get_client();
-          $params = [
-            'workspace' => Options::get( Options::ASANA_WORKSPACE_GID ),
-            'archived' => FALSE,
-            'opt_fields' => 'gid,name',
-          ];
-          $projects = $asana->projects->findAll( $params );
           foreach ( $projects as $project ) {
             echo  '<option value="' . esc_attr( $project->gid ) . '">' .
                     esc_html( $project->name ) . '</option>';

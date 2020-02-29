@@ -40,7 +40,7 @@ try {
         <div class="note-box note-box-error">
           <p class="disconnect-notice">
             <input class="error" type="submit" name="asana_disconnect" value="Deauthorize">
-            This will remove your encrypted Personal Access Token and Asana user id from this site, thus deauthorizing access to your Asana account. Until connecting your Asana account again, you will not have access to use Completionist's features or be recognized on tasks.
+            This will remove your encrypted Personal Access Token and Asana user id from this site, thus deauthorizing access to your Asana account. Until connecting your Asana account again, you will not have access to use Completionist's features.
           </p>
         </div>
       </div>
