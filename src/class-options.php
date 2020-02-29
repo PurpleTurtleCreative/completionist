@@ -350,8 +350,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
      * WHEN PASSING A VARIABLE. FIRST CHECK IF EMPTY TO AVOID UNEXPECTED
      * DELETION OF ALL KEY INSTANCES.
      *
-     * @return bool If the option was deleted. FALSE if key is not a
-     * member of this class.
+     * @return bool If the option was deleted. FALSE if key is invalid.
      */
     static function delete( string $key, int $object_id = 0, string $value = '' ) : bool {
 

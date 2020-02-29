@@ -40,8 +40,12 @@ try {
       throw new \Exception( 'Invalid post identifier.', 400 );
     }
 
+    if ( ! Asana_Interface::is_workspace_task( $task_gid ) ) {
+      throw new \Exception( 'Task does not belong to this site\'s assigned workspace.', 409 );
+    }
+
     if ( Options::postmeta_exists( Options::PINNED_TASK_GID, $task_gid, $the_post_id ) ) {
-      throw new \Exception( "Task $task_gid is already pinned to post $the_post_id.", 409 );
+      throw new \Exception( "Task is already pinned to post $the_post_id.", 409 );
     }
 
     try {

@@ -352,7 +352,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      *
      * @param string $task_gid The gid of the task to retrieve.
      *
-     * @param string $opt_fields A csv of task fields to retrieve.
+     * @param string $opt_fields A csv of task fields to retrieve, excluding
+     * 'workspace', which is required for data healing.
      *
      * @param int $post_id Optional. The post ID on which the task belongs to
      * attempt self-healing on certain error responses. Default 0 to take no
@@ -364,6 +365,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      * request may fail. Additional custom exceptions are:
      * * 400: Invalid task gid - The provided task gid is invalid.
      * * 410: Unpinned task - The API returned 404, so the task was unpinned.
+     * * 410: Unpinned Foreign Task - The task does not belong to the assigned
+     * workspace, so it was unpinned.
      * * 0: Failed to get task data - This is presumably unreachable.
      */
     static function maybe_get_task_data( string $task_gid, string $opt_fields, int $post_id = 0 ) : \stdClass {
@@ -373,31 +376,97 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
         throw new \Exception( 'Invalid task gid', 400 );
       }
 
-      /* Get the task */
       try {
+
         $asana = self::get_client();
-        $task = $asana->tasks->findById( $task_gid, [ 'opt_fields' => $opt_fields ] );
+        $task = $asana->tasks->findById( $task_gid, [ 'opt_fields' => $opt_fields . ',workspace' ] );
+
+        if (
+          isset( $task->workspace->gid )
+          && $task->workspace->gid !== Options::get( Options::ASANA_WORKSPACE_GID )
+          && $post_id > 0
+        ) {
+          if ( $task_gid != '' && Options::delete( Options::PINNED_TASK_GID, $post_id, $task_gid ) ) {
+            error_log( "Unpinned foreign task from post $post_id." );
+            throw new \Exception( 'Unpinned Foreign Task', 410 );
+          }
+        }
+
         return $task;
+
       } catch ( \Exception $e ) {
+
         $error_code = $e->getCode();
         $error_msg = $e->getMessage();
+
         if (
           404 == $error_code
           && $post_id > 0
         ) {
           if ( $task_gid != '' && Options::delete( Options::PINNED_TASK_GID, $post_id, $task_gid ) ) {
-            error_log( "Unpinned [404: Not Found] pinned task on post $post_id." );
+            error_log( "Unpinned [404: Not Found] task from post $post_id." );
             throw new \Exception( 'Unpinned Task', 410 );
           }
         } elseif (
           'Forbidden' !== $error_msg
+          && 410 !== $error_code
         ) {
           error_log( "Failed to fetch task data, error $error_code: $error_msg" );
         }
+
         throw $e;
+
       }
 
       throw new \Exception( 'Failed to get task data', 0 );
+
+    }
+
+    /**
+     * Determines if a task belongs to a workspace.
+     *
+     * @since 1.0.0
+     *
+     * @param string $task_gid
+     *
+     * @return bool If the task belongs to the workspace. Note that any API
+     * errors will cause FALSE to be returned.
+     *
+     * @throws \Exception If a parameter is invalid, a 400 error will be thrown:
+     * * 400: Invalid task gid
+     * * 400: Invalid workspace gid
+     */
+    static function is_workspace_task( string $task_gid, string $workspace_gid = '' ) : bool {
+
+      $task_gid = Options::sanitize( 'gid', $task_gid );
+      if ( empty( $task_gid ) ) {
+        throw new \Exception( 'Invalid task gid', 400 );
+      }
+
+      if ( '' === $workspace_gid ) {
+        $workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
+      } else {
+        $workspace_gid = Options::sanitize( 'gid', $workspace_gid );
+      }
+
+      if ( empty( $workspace_gid ) ) {
+        throw new \Exception( 'Invalid workspace gid', 400 );
+      }
+
+      try {
+        $asana = self::get_client();
+        $task = $asana->tasks->findById( $task_gid, [ 'opt_fields' => 'workspace' ] );
+        if (
+          isset( $task->workspace->gid )
+          && $task->workspace->gid === $workspace_gid
+        ) {
+          return TRUE;
+        }
+      } catch ( \Exception $e ) {
+        return FALSE;
+      }
+
+      return FALSE;
 
     }
 

@@ -87,6 +87,7 @@ try {
             <input type="submit" name="asana_workspace_save" value="Save">
             <?php }//end if can_manage_options show submit button ?>
           </div>
+          <p class="warning-note"><i class="fas fa-exclamation-triangle"></i><strong>WARNING:</strong> Changing workspaces will remove all currently pinned tasks from this site.</p>
         </form>
 
         <div id="ptc-asana-workspace-users">

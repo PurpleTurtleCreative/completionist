@@ -166,6 +166,19 @@ form input[type=submit].error:active {
   background: #CF1124;
 }
 
+form p.warning-note {
+  color: #E67635;
+  background: #FFFBEA;
+  border: 1px solid #FFD3BA;
+  border-radius: 3px;
+  padding: 0.5em 1em;
+  margin: 7px 0;
+}
+
+form p.warning-note i {
+  margin-right: 0.3em;
+}
+
 a.ptc-button {
   display: inline-block;
   background: #627D98;

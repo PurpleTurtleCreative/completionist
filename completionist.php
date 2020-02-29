@@ -271,6 +271,12 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
             [ 'ptc-completionist_admin-theme-css' ],
             '0.0.0'
           );
+          wp_enqueue_script(
+            'ptc-completionist_admin-dashboard-js',
+            plugins_url( 'assets/js/admin-dashboard.js', __FILE__ ),
+            [ 'jquery' ],
+            '0.0.0'
+          );
           break;
 
         case 'post.php':

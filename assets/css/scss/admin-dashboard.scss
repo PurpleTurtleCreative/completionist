@@ -94,6 +94,10 @@ section#ptc-asana-workspace form input[type=submit] {
   margin: 0;
 }
 
+section#ptc-asana-workspace form .warning-note {
+  display: none;
+}
+
 section#ptc-asana-workspace div.ptc-asana-collaborator-row {
   display: flex;
   justify-content: space-between;

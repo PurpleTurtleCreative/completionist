@@ -20,10 +20,10 @@ if (
   && isset( $_POST['asana_pat'] )
   && isset( $_POST['connection_agreement'] )
   && isset( $_POST['asana_connect_nonce'] )
-  && wp_verify_nonce( $_POST['asana_connect_nonce'], 'connect_asana' ) !== FALSE
+  && wp_verify_nonce( $_POST['asana_connect_nonce'], 'connect_asana' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 ) {
 
-  if ( 'yes' !== sanitize_text_field( wp_unslash( $_POST['connection_agreement'] ) ) ) {
+  if ( ! filter_var( wp_unslash( $_POST['connection_agreement'] ), FILTER_VALIDATE_BOOLEAN ) ) {
     echo '<p class="notice notice-error">To use Completionist, you must accept the agreement.</p>';
     return;
   }
@@ -63,7 +63,7 @@ if (
 if (
   isset( $_POST['asana_disconnect'] )
   && isset( $_POST['asana_disconnect_nonce'] )
-  && wp_verify_nonce( $_POST['asana_disconnect_nonce'], 'disconnect_asana' ) !== FALSE
+  && wp_verify_nonce( $_POST['asana_disconnect_nonce'], 'disconnect_asana' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 ) {
 
   $did_delete_pat = Options::delete( Options::ASANA_PAT );
@@ -85,7 +85,7 @@ if (
   isset( $_POST['asana_workspace_save'] )
   && isset( $_POST['asana_workspace'] )
   && isset( $_POST['asana_workspace_save_nonce'] )
-  && wp_verify_nonce( $_POST['asana_workspace_save_nonce'], 'asana_workspace_save' ) !== FALSE
+  && wp_verify_nonce( $_POST['asana_workspace_save_nonce'], 'asana_workspace_save' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
   && current_user_can( 'manage_options' )
 ) {
 
@@ -98,6 +98,9 @@ if (
 
   if ( $did_save_workspace ) {
     echo '<p class="notice notice-success">This site\'s workspace was updated successfully.</p>';
+    if ( Options::delete( Options::PINNED_TASK_GID, -1 ) ) {
+      echo '<p class="notice notice-success">All pinned tasks were removed from this site.</p>';
+    }
   }
 
 }//end if asana_workspace_save
