@@ -2,11 +2,20 @@ jQuery(function($) {
 
   /* Get globals */
   var metaboxContainer = $('#ptc-completionist_pinned-tasks .inside');
+
   var taskContainer = metaboxContainer.find('#task-list');
+  if(taskContainer.length < 1) {
+    return false;
+  }
+
   var pinNewTaskForm = metaboxContainer.find('#pin-new-task');
+  if(pinNewTaskForm.length < 1) {
+    return false;
+  }
+
   var post_id = ptc_completionist_pinned_tasks.post_id;
   if(post_id === undefined || post_id < 1) {
-    alert('Error: Could not identify the current post for task management.');
+    alert('[Completionist] Error: Could not identify the current post for task management.');
     return false;
   }
 
@@ -67,14 +76,14 @@ jQuery(function($) {
         reloadButton.html('<i class="fas fa-sync-alt"></i>Reload');
         disable_element(reloadButton, false);
       } else {
-        alert('Error '+res.code+': '+res.message);
+        alert('[Completionist] Error '+res.code+': '+res.message);
         reloadButton.html('<i class="fas fa-sync-alt"></i>Reload');
         disable_element(reloadButton, false);
       }
 
     }, 'json')
       .fail(function() {
-        alert('Failed to reload task list.');
+        alert('[Completionist] Failed to reload task list.');
         reloadButton.html('<i class="fas fa-sync-alt"></i>Reload');
         disable_element(reloadButton, false);
       });
@@ -113,12 +122,12 @@ jQuery(function($) {
           display_alert_html(res.data);
           inputField.val('');
         } else {
-          alert('Error '+res.code+': '+res.message);
+          alert('[Completionist] Error '+res.code+': '+res.message);
         }
 
       }, 'json')
         .fail(function() {
-          alert('Failed to pin task.');
+          alert('[Completionist] Failed to pin task.');
         })
         .always(function() {
           disable_element(thisButton, false);
@@ -128,7 +137,7 @@ jQuery(function($) {
 
     } else {
       // invalid submission, notify of issue
-      alert("Failed to pin existing task. Invalid input.\r\n\r\nPlease provide a copied task link from Asana to pin an existing task. To create a new task to pin, click the green [ + ] button.");
+      alert("[Completionist] Failed to pin existing task. Invalid input.\r\n\r\nPlease provide a copied task link from Asana to pin an existing task. To create a new task to pin, click the green [ + ] button.");
       disable_element(thisButton, false);
       disable_element(inputField, false);
       inputField.val('');
@@ -184,11 +193,11 @@ jQuery(function($) {
       } else if(res.status == 'error' && res.data != '') {
         display_alert_html(res.data);
       } else {
-        alert('Error '+res.code+': '+res.message);
+        alert('[Completionist] Error '+res.code+': '+res.message);
       }
     }, 'json')
       .fail(function() {
-        alert('Failed to create task.');
+        alert('[Completionist] Failed to create task.');
       }).always(function() {
         disable_element(thisButton, false);
         disable_element(inputFields, false);
@@ -243,14 +252,14 @@ jQuery(function($) {
         disable_element(thisButton, false);
         buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
       } else {
-        alert('Error '+res.code+': '+res.message);
+        alert('[Completionist] Error '+res.code+': '+res.message);
         disable_element(thisButton, false);
         buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
       }
 
     }, 'json')
       .fail(function() {
-        alert('Failed to update task.');
+        alert('[Completionist] Failed to update task.');
         disable_element(thisButton, false);
         buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
       });
@@ -283,14 +292,14 @@ jQuery(function($) {
         disable_element(thisButton, false);
         buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
       } else {
-        alert('Error '+res.code+': '+res.message);
+        alert('[Completionist] Error '+res.code+': '+res.message);
         disable_element(thisButton, false);
         buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
       }
 
     }, 'json')
       .fail(function() {
-        alert('Failed to pin task.');
+        alert('[Completionist] Failed to pin task.');
         disable_element(thisButton, false);
         buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
       });
@@ -323,14 +332,14 @@ jQuery(function($) {
         disable_element(thisButton, false);
         buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-minus');
       } else {
-        alert('Error '+res.code+': '+res.message);
+        alert('[Completionist] Error '+res.code+': '+res.message);
         disable_element(thisButton, false);
         buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-minus');
       }
 
     }, 'json')
       .fail(function() {
-        alert('Failed to pin task.');
+        alert('[Completionist] Failed to pin task.');
         disable_element(thisButton, false);
         buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-minus');
       });

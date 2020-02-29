@@ -347,6 +347,24 @@ input#ptc-new-task_name {
   margin: 0 0 7px;
 }
 
+#ptc-completionist_pinned-tasks .inside div.note-box p a.note-box-cta {
+  display: inline-block;
+  margin: 7px 0 3px;
+  background: #E12D39;
+  padding: 0.3em 1em;
+  color: white;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+#ptc-completionist_pinned-tasks .inside div.note-box p a.note-box-cta:hover {
+  background: #AB091E;
+}
+
+#ptc-completionist_pinned-tasks .inside div.note-box p a.note-box-cta i {
+  margin-left: 0.5em;
+}
+
 #ptc-completionist_pinned-tasks .inside div.note-box.note-box-error div.note-box-dismiss {
   background: #E12D39;
 }

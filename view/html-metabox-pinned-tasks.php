@@ -14,6 +14,7 @@ defined( 'ABSPATH' ) || die();
 global $ptc_completionist;
 require_once $ptc_completionist->plugin_path . 'src/class-asana-interface.php';
 require_once $ptc_completionist->plugin_path . 'src/class-options.php';
+require_once $ptc_completionist->plugin_path . 'src/class-html-builder.php';
 
 try {
 
@@ -94,16 +95,18 @@ try {
   /* User is not authenticated for API usage. */
   $settings_url = $ptc_completionist->settings_url;
   ?>
-  <div id="ptc-asana-dashboard-error" class="note-box note-box-error">
-    <i class="fas fa-times"></i>
-    <p><strong>Not authorized.</strong> Please connect your Asana account to use Completionist.<a href="<?php echo esc_url( $settings_url ); ?>">Go to Settings<i class="fas fa-long-arrow-alt-right"></i></a></p>
+  <div class="note-box note-box-error">
+    <p>
+      <strong>Not authorized.</strong>
+      <br>
+      Please connect your Asana account to use Completionist.
+      <a class="note-box-cta" href="<?php echo esc_url( $settings_url ); ?>">Go to Settings<i class="fas fa-long-arrow-alt-right"></i></a>
+    </p>
+    <div class="note-box-dismiss">
+      <i class="fas fa-times"></i>
+    </div>
   </div>
   <?php
 } catch ( \Exception $e ) {
-  ?>
-  <div id="ptc-asana-dashboard-error" class="note-box note-box-error">
-    <i class="fas fa-times"></i>
-    <p><strong>Error <?php echo esc_html( $e->getCode() ); ?>.</strong> <?php echo esc_html( $e->getMessage() ); ?></p>
-  </div>
-  <?php
+  echo HTML_Builder::format_error_box( $e, 'Feature unavailable. ' );//phpcs:ignore WordPress.Security.EscapeOutput
 }//end try catch asana client
