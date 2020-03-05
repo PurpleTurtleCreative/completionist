@@ -233,11 +233,21 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
      * @return string The HTML. Default ''.
      */
     static function format_error_box( \Exception $e, string $context_message = '' ) : string {
+
+      $code = $e->getCode();
+      if (
+        0 === $code
+        && isset( $e->status )
+        && $e->status > 0
+      ) {
+        $code = $e->status;
+      }
+
       ob_start();
       ?>
       <div class="note-box note-box-error">
         <p>
-          <strong>Error <?php echo esc_html( $e->getCode() ); ?>.</strong>
+          <strong>Error <?php echo esc_html( $code ); ?>.</strong>
           <br><?php echo esc_html( $context_message . $e->getMessage() ); ?>
         </p>
         <div class="note-box-dismiss">
@@ -247,6 +257,51 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
       <?php
       $html = ob_get_clean();
       return ( $html !== FALSE && is_string( $html ) ) ? $html : '';
+    }
+
+    /**
+     * Format Exception data into a plain-text string.
+     *
+     * @since 1.0.0
+     *
+     * @param \Exception $e The exception.
+     *
+     * @param string $context_message Optional. Text to output before the
+     * exception's message. Default ''.
+     *
+     * @return string The formatted string containing the code and message.
+     */
+    static function format_error_string( \Exception $e, string $context_message = '' ) : string {
+
+      $code = $e->getCode();
+      if (
+        0 === $code
+        && isset( $e->status )
+        && $e->status > 0
+      ) {
+        $code = $e->status;
+      }
+
+      $msg = $e->getMessage();
+
+      if (
+        isset( $e->response->body->errors )
+        && ! empty( $e->response->body->errors )
+        && is_array( $e->response->body->errors )
+      ) {
+        if ( count( $e->response->body->errors ) > 1 ) {
+          $msg = json_encode( $e->response->body->errors );
+        } elseif ( isset( $e->response->body->errors[0]->message ) ) {
+          $msg = $e->response->body->errors[0]->message;
+        }
+      }
+
+      if ( '' === $context_message ) {
+        return "Error $code: $msg";
+      }
+
+      return "Error $code: $context_message $msg";
+
     }
 
     /**

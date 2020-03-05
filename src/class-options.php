@@ -51,6 +51,16 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
     const ASANA_WORKSPACE_GID = '_ptc_asana_workspace_gid';
 
     /**
+     * The option key name for the blog's designated Asana tag's GID.
+     * This key's value should be of type string and contain only digits.
+     *
+     * @since 1.0.0
+     *
+     * @var string ASANA_WORKSPACE_GID
+     */
+    const ASANA_TAG_GID = '_ptc_asana_tag_gid';
+
+    /**
      * The postmeta key name for an Asana task GID pinned to the post. Multiple
      * tasks may be pinned to a single post resulting in multiple rows per post.
      * This key's value should be of type string and contain only digits.
@@ -111,6 +121,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
           return (string) $sanitized_user_meta;
 
         case self::ASANA_WORKSPACE_GID:
+        case self::ASANA_TAG_GID:
           $asana_gid = get_option( $key, '' );
           $sanitized_asana_gid = self::sanitize( $key, $asana_gid );
           if ( $asana_gid != $sanitized_asana_gid ) {
@@ -185,6 +196,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
           return self::maybe_update_usermeta( $key, $sanitized_user_meta, $object_id );
 
         case self::ASANA_WORKSPACE_GID:
+        case self::ASANA_TAG_GID:
           $asana_gid = $value;
           $sanitized_asana_gid = self::sanitize( $key, $asana_gid );
           if ( ! $force && $asana_gid != $sanitized_asana_gid ) {
@@ -373,6 +385,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
             return delete_post_meta( $object_id, $key, $value );
           }
         case self::ASANA_WORKSPACE_GID:
+        case self::ASANA_TAG_GID:
           return delete_option( $key );
       }
 
@@ -425,6 +438,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
         case 'gid':
         case self::ASANA_USER_GID:
         case self::ASANA_WORKSPACE_GID:
+        case self::ASANA_TAG_GID:
         case self::PINNED_TASK_GID:
           $filtered_integer_string = filter_var(
             $value,
@@ -518,6 +532,131 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 
       error_log( "Invalid crypt mode '$mode'. Accepted values are 'e' and 'd'." );
       return '';
+
+    }
+
+    /**
+     * Get all pinned task entries as post id and task gid pairs.
+     *
+     * @since 1.0.0
+     *
+     * @return \stdClass[] An array of objects with post_id and task_gid.
+     */
+    static function get_all_task_pins() : array {
+
+      global $wpdb;
+      $sql = $wpdb->prepare(
+        "
+        SELECT post_id,meta_value AS 'task_gid'
+        FROM {$wpdb->postmeta}
+        WHERE meta_key = %s
+        ",
+        self::PINNED_TASK_GID
+      );
+
+      return $wpdb->get_results( $sql );//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+    }
+
+    /**
+     * Get all task gids that have been pinned.
+     *
+     * @since 1.0.0
+     *
+     * @return string[] The task gids.
+     */
+    static function get_all_pinned_tasks() : array {
+
+      global $wpdb;
+      $sql = $wpdb->prepare(
+        "
+        SELECT meta_value
+        FROM {$wpdb->postmeta}
+        WHERE meta_key = %s
+        GROUP BY meta_value
+        ",
+        self::PINNED_TASK_GID
+      );
+
+      return $wpdb->get_col( $sql );//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+    }
+
+    /**
+     * Count the number of task pins.
+     *
+     * @since 1.0.0
+     *
+     * @return int The count.
+     */
+    static function count_all_task_pins() : int {
+
+      global $wpdb;
+      $sql = $wpdb->prepare(
+        "
+        SELECT COUNT(meta_value)
+        FROM {$wpdb->postmeta}
+        WHERE meta_key = %s
+        ",
+        self::PINNED_TASK_GID
+      );
+
+      $res = $wpdb->get_var( $sql );//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+      if ( NULL === $res ) {
+        $res = 0;
+      }
+      return (int) $res;
+
+    }
+
+    /**
+     * Count the number of pinned tasks.
+     *
+     * @since 1.0.0
+     *
+     * @return int The count.
+     */
+    static function count_all_pinned_tasks() : int {
+
+      global $wpdb;
+      $sql = $wpdb->prepare(
+        "
+        SELECT COUNT( DISTINCT meta_value )
+        FROM {$wpdb->postmeta}
+        WHERE meta_key = %s
+        ",
+        self::PINNED_TASK_GID
+      );
+
+      $res = $wpdb->get_var( $sql );//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+      if ( NULL === $res ) {
+        $res = 0;
+      }
+      return (int) $res;
+
+    }
+
+    /**
+     * Count the number of pinned tasks per post id.
+     *
+     * @since 1.0.0
+     *
+     * @return \stdClass[] An array of objects with post_id and task_count.
+     */
+    static function count_all_pins_by_post() : array {
+
+      global $wpdb;
+      $sql = $wpdb->prepare(
+        "
+        SELECT post_id, COUNT(meta_value) AS 'task_count'
+        FROM wp_postmeta
+        WHERE meta_key = %s
+        GROUP BY post_id
+        ",
+        self::PINNED_TASK_GID
+      );
+
+      return $wpdb->get_results( $sql );//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
     }
 

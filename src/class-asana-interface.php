@@ -148,6 +148,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
       if ( '' === $workspace_gid ) {
         $workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
+        if ( empty( $workspace_gid ) ) {
+          return FALSE;
+        }
       }
 
       $me = self::get_me();
@@ -345,15 +348,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
 
     /**
-     * Attempt to retrieve task data to use for display. Providing the post id
-     * of the provided pinned task gid will also attempt data self-healing.
+     * Attempt to retrieve task data. Providing the post id of the provided
+     * pinned task gid will also attempt data self-healing.
      *
      * @since 1.0.0
      *
      * @param string $task_gid The gid of the task to retrieve.
      *
      * @param string $opt_fields A csv of task fields to retrieve, excluding
-     * 'workspace', which is required for data healing.
+     * 'workspace', which is appended for data healing.
      *
      * @param int $post_id Optional. The post ID on which the task belongs to
      * attempt self-healing on certain error responses. Default 0 to take no
@@ -383,7 +386,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
         if (
           isset( $task->workspace->gid )
-          && $task->workspace->gid !== Options::get( Options::ASANA_WORKSPACE_GID )
+          && $task->workspace->gid != Options::get( Options::ASANA_WORKSPACE_GID )
           && $post_id > 0
         ) {
           if ( $task_gid != '' && Options::delete( Options::PINNED_TASK_GID, $post_id, $task_gid ) ) {
@@ -397,6 +400,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
       } catch ( \Exception $e ) {
 
         $error_code = $e->getCode();
+        if (
+          0 === $error_code
+          && isset( $e->status )
+          && $e->status > 0
+        ) {
+          $error_code = $e->status;
+        }
+
         $error_msg = $e->getMessage();
 
         if (
@@ -408,8 +419,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
             throw new \Exception( 'Unpinned Task', 410 );
           }
         } elseif (
-          'Forbidden' !== $error_msg
-          && 410 !== $error_code
+          403 != $error_code
+          && 410 != $error_code
         ) {
           error_log( "Failed to fetch task data, error $error_code: $error_msg" );
         }
@@ -470,15 +481,183 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
     }
 
-    static function get_assigned_pins( int $user_id = 0 ) : array {
+    /**
+     * Attempt to retrieve task data for all pinned task gids.
+     *
+     * @since 1.0.0
+     *
+     * @param string $opt_fields A csv of task fields to retrieve, excluding
+     * 'workspace', which is appended for data healing.
+     *
+     * @return array Task data objects keyed by their task gid.
+     */
+    static function maybe_get_all_pinned_tasks( string $opt_fields ) : array {
 
-      // get user's gid
+      $tasks = [];
+      $task_pins = Options::get_all_task_pins();
 
-      // get user's assigned tasks in Asana workspace
+      // get tasks by site tag
 
-      // build query WHERE meta_value IN( [returned Asana gids] )
+      // delete pins not in that array
 
-      // return arr[ post_id ][ task_gid ]
+      foreach ( $task_pins as $task_pin ) {
+        try {
+          $task_gid = Options::sanitize( 'gid', $task_pin->task_gid );
+          $task = self::maybe_get_task_data( $task_gid, $opt_fields, (int) $task_pin->post_id );
+          $tasks[ $task_gid ] = $task;
+        } catch ( \Exception $e ) {
+          $error_code = $e->getCode();
+          $error_msg = $e->getMessage();
+          if (
+            401 == $error_code
+            || 500 == $error_code
+          ) {
+            break;
+          }
+        }
+      }
+
+      return $tasks;
+
+    }
+
+    /**
+     * Send a batch request to tag and comment on a task in Asana.
+     *
+     * @since 1.0.0
+     *
+     * @param string $task_gid The task to act on.
+     *
+     * @param string $tag_gid The tag to add.
+     *
+     * @param string $comment The comment text.
+     *
+     * @param string $opt_fields A csv of task fields to retrieve.
+     *
+     * @return \stdClass[] An array of response objects. Instance members
+     * include 'body', 'status_code', and 'headers'.
+     *
+     * @throws \Exception Authentication may fail when first loading the client
+     * or requests could fail due to request limits or server issues.
+     */
+    static function tag_and_comment( string $task_gid, string $tag_gid, string $comment, string $opt_fields ) : array {
+
+      $asana = self::get_client();
+
+      $task_gid = Options::sanitize( 'gid', $task_gid );
+      $tag_gid = Options::sanitize( 'gid', $tag_gid );
+      $comment = Options::sanitize( 'string', $comment );
+
+      $opt_fields = explode( ',', $opt_fields );
+
+      $data = [
+        'actions' => [
+          [
+            'method' => 'POST',
+            'relative_path' => sprintf( '/tasks/%s/addTag', $task_gid ),
+            'data' => [
+              'tag' => $tag_gid,
+            ],
+            'options' => [
+              'fields' => $opt_fields,
+            ],
+          ],
+          [
+            'method' => 'POST',
+            'relative_path' => sprintf( '/tasks/%s/stories', $task_gid ),
+            'data' => [
+              'text' => $comment,
+            ],
+            'options' => [
+              'fields' => $opt_fields,
+            ],
+          ],
+        ],
+      ];
+
+      return $asana->post( '/batch', $data );
+
+    }
+
+    /**
+     * Sends batch requests to tag multiple tasks.
+     *
+     * @since 1.0.0
+     *
+     * @param string[] $task_gids The tasks to tag.
+     *
+     * @param string $tag_gid The tag.
+     *
+     * @return int Count of successfully tagged tasks.
+     *
+     * @throws \Exception Authentication may fail when first loading the client
+     * or requests could fail due to request limits or server issues.
+     */
+    static function tag_all( array $task_gids, string $tag_gid ) : int {
+
+      $asana = self::get_client();
+
+      $data = [];
+      $success_count = 0;
+
+      $tag_gid = Options::sanitize( 'gid', $tag_gid );
+      if ( '' === $tag_gid ) {
+        return $success_count;
+      }
+
+      foreach ( $task_gids as $i => $task_gid ) {
+
+        $task_gid = Options::sanitize( 'gid', $task_gid );
+        if ( '' === $task_gid ) {
+          continue;
+        }
+
+        $data['actions'][] = [
+          'method' => 'POST',
+          'relative_path' => sprintf( '/tasks/%s/addTag', $task_gid ),
+          'data' => [
+            'tag' => $tag_gid,
+          ],
+        ];
+
+        if ( 10 === count( $data['actions'] ) ) {
+
+          try {
+            $res = $asana->post( '/batch', $data );
+            foreach ( $res as $obj ) {
+              if ( $obj->status_code >= 200 && $obj->status_code < 300 ) {
+                ++$success_count;
+              }
+            }
+          } catch ( \Exception $e ) {
+            $err_code = $e->getCode();
+            $err_msg = $e->getMessage();
+            error_log("Batch request failed, tag_all(). Error {$err_code}: {$err_msg}");
+          }
+
+          $data = [];
+
+        }//end if 10 actions
+
+      }//end foreach task gid
+
+      if ( ! empty( $data ) ) {
+        try {
+          $res = $asana->post( '/batch', $data );
+          foreach ( $res as $obj ) {
+            if ( $obj->status_code >= 200 && $obj->status_code < 300 ) {
+              ++$success_count;
+            }
+          }
+        } catch ( \Exception $e ) {
+          $err_code = $e->getCode();
+          $err_msg = $e->getMessage();
+          error_log("Batch request failed, tag_all(). Error {$err_code}: {$err_msg}");
+        }
+        $data = [];
+      }
+
+      return $success_count;
 
     }
 

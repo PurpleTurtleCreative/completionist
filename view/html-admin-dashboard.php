@@ -54,7 +54,9 @@ try {
       $can_manage_options = current_user_can( 'manage_options' );
       $chosen_workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
       $is_workspace_member = Asana_Interface::is_workspace_member( $chosen_workspace_gid );
+      $chosen_tag_gid = Options::get( Options::ASANA_TAG_GID );
 
+      $pinned_tasks_count = Options::count_all_pinned_tasks();
       $disabled = ( ! $can_manage_options ) ? ' disabled="disabled"' : '';
 
       if ( $can_manage_options || $is_workspace_member ) {
@@ -62,11 +64,11 @@ try {
         ?>
         <form method="POST">
           <div class="field-group">
-            <label for="asana-workspace"><i class="fas fa-building"></i>Workspace:</label>
-            <select id="asana-workspace" name="asana_workspace" <?php echo $disabled; ?>>
+            <label for="asana-workspace"><i class="fas fa-building" title="Workspace"></i></label>
+            <select id="asana-workspace" name="asana_workspace" <?php echo $disabled; ?> required="required">
               <?php
               if ( $chosen_workspace_gid === '' ) {
-                echo  '<option value="' . esc_attr( $chosen_workspace_gid ) . '" selected="selected">' .
+                echo  '<option value="" selected="selected">' .
                         'Choose a Workspace...' .
                       '</option>';
               } elseif ( ! $is_workspace_member ) {
@@ -82,12 +84,27 @@ try {
               }
               ?>
             </select>
+            <label for="asana-tag"><i class="fas fa-tag" title="Tag"></i></label>
+            <select id="asana-tag" name="asana_tag" <?php echo $disabled; ?> required="required">
+              <option value="" <?php echo ( $chosen_tag_gid === '' ) ? 'selected="selected"' : ''; ?>>Choose a Tag...</option>
+              <option value="create">(Create New Tag)</option>
+              <?php
+              if ( ! $is_workspace_member && $chosen_tag_gid !== '' ) {
+                echo  '<option value="" selected="selected">' .
+                        '(Unauthorized)' .
+                      '</option>';
+              }
+              /* Tag options loaded via JavaScript */
+              ?>
+            </select>
+            <input type="text" id="asana-tag-name" name="asana_tag_name" placeholder="Site tag name" value="website: <?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>">
             <?php if ( $can_manage_options ) { ?>
             <input type="hidden" name="asana_workspace_save_nonce" value="<?php echo esc_attr( wp_create_nonce( 'asana_workspace_save' ) ); ?>">
             <input type="submit" name="asana_workspace_save" value="Save">
             <?php }//end if can_manage_options show submit button ?>
           </div>
-          <p class="warning-note"><i class="fas fa-exclamation-triangle"></i><strong>WARNING:</strong> Changing workspaces will remove all currently pinned tasks from this site.</p>
+          <p id="asana-workspace-warning" class="warning-note"><i class="fas fa-exclamation-triangle"></i><strong>WARNING:</strong> Changing workspaces will remove all <?php echo esc_html( $pinned_tasks_count ); ?> currently pinned tasks from this site.</p>
+          <p id="asana-tag-warning" class="warning-note"><i class="fas fa-exclamation-triangle"></i><strong>WARNING:</strong> Changing the site's tag will remove any pinned tasks that do not have the new tag.</p>
         </form>
 
         <div id="ptc-asana-workspace-users">

@@ -90,14 +90,18 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       add_action( 'admin_menu', [ $this, 'add_admin_pages' ] );
       add_action( 'admin_enqueue_scripts', [ $this, 'register_scripts' ] );
 
+      add_action( 'wp_ajax_ptc_get_tag_options', [ $this, 'ajax_get_tag_options' ] );
+
       add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
-      add_action( 'wp_ajax_ptc_pin_task', [ $this, 'metabox_pin_task' ] );
-      add_action( 'wp_ajax_ptc_unpin_task', [ $this, 'metabox_unpin_task' ] );
-      add_action( 'wp_ajax_ptc_get_pins', [ $this, 'metabox_get_pins' ] );
-      add_action( 'wp_ajax_ptc_list_task', [ $this, 'metabox_list_task' ] );
-      add_action( 'wp_ajax_ptc_create_task', [ $this, 'metabox_create_task' ] );
-      add_action( 'wp_ajax_ptc_delete_task', [ $this, 'metabox_delete_task' ] );
-      add_action( 'wp_ajax_ptc_update_task', [ $this, 'metabox_update_task' ] );
+      add_action( 'wp_dashboard_setup', [ $this, 'add_dashboard_widgets' ] );
+
+      add_action( 'wp_ajax_ptc_pin_task', [ $this, 'ajax_pin_task' ] );
+      add_action( 'wp_ajax_ptc_unpin_task', [ $this, 'ajax_unpin_task' ] );
+      add_action( 'wp_ajax_ptc_get_pins', [ $this, 'ajax_get_pins' ] );
+      add_action( 'wp_ajax_ptc_list_task', [ $this, 'ajax_list_task' ] );
+      add_action( 'wp_ajax_ptc_create_task', [ $this, 'ajax_create_task' ] );
+      add_action( 'wp_ajax_ptc_delete_task', [ $this, 'ajax_delete_task' ] );
+      add_action( 'wp_ajax_ptc_update_task', [ $this, 'ajax_update_task' ] );
 
     }
 
@@ -129,6 +133,17 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
     }//end add_admin_pages()
 
     /**
+     * AJAX handler to load tag options for a workspace.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    function ajax_get_tag_options() {
+      require_once $this->plugin_path . 'src/ajax-get-tag-options.php';
+    }
+
+    /**
      * Add metaboxes.
      *
      * @since 1.0.0
@@ -157,13 +172,39 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
     }
 
     /**
+     * Add admin dashboard widgets.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    function add_dashboard_widgets() {
+      wp_add_dashboard_widget(
+        'ptc-completionist_all-pinned-tasks',
+        'Tasks',
+        [ $this, 'all_pinned_tasks_dashboard_widget_html' ]
+      );
+    }
+
+    /**
+     * Content for the Site Tasks admin dashboard widget.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    function all_pinned_tasks_dashboard_widget_html() {
+      include_once $this->plugin_path . 'view/html-dashboard-widget-all-pinned-tasks.php';
+    }
+
+    /**
      * AJAX handler to pin a task.
      *
      * @since 1.0.0
      *
      * @ignore
      */
-    function metabox_pin_task() {
+    function ajax_pin_task() {
       require_once $this->plugin_path . 'src/ajax-pin-task.php';
     }
 
@@ -174,7 +215,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      *
      * @ignore
      */
-    function metabox_unpin_task() {
+    function ajax_unpin_task() {
       require_once $this->plugin_path . 'src/ajax-unpin-task.php';
     }
 
@@ -185,7 +226,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      *
      * @ignore
      */
-    function metabox_get_pins() {
+    function ajax_get_pins() {
       require_once $this->plugin_path . 'src/ajax-get-pins.php';
     }
 
@@ -196,7 +237,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      *
      * @ignore
      */
-    function metabox_list_task() {
+    function ajax_list_task() {
       require_once $this->plugin_path . 'src/ajax-list-task.php';
     }
 
@@ -207,7 +248,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      *
      * @ignore
      */
-    function metabox_create_task() {
+    function ajax_create_task() {
       require_once $this->plugin_path . 'src/ajax-create-task.php';
     }
 
@@ -218,7 +259,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      *
      * @ignore
      */
-    function metabox_delete_task() {
+    function ajax_delete_task() {
       require_once $this->plugin_path . 'src/ajax-delete-task.php';
     }
 
@@ -229,7 +270,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      *
      * @ignore
      */
-    function metabox_update_task() {
+    function ajax_update_task() {
       require_once $this->plugin_path . 'src/ajax-update-task.php';
     }
 
@@ -276,6 +317,16 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
             plugins_url( 'assets/js/admin-dashboard.js', __FILE__ ),
             [ 'jquery' ],
             '0.0.0'
+          );
+          require_once $this->plugin_path . 'src/class-options.php';
+          wp_localize_script(
+            'ptc-completionist_admin-dashboard-js',
+            'ptc_completionist_dashboard',
+            [
+              'saved_workspace_gid' => \PTC_Completionist\Options::get( \PTC_Completionist\Options::ASANA_WORKSPACE_GID ),
+              'saved_tag_gid' => \PTC_Completionist\Options::get( \PTC_Completionist\Options::ASANA_TAG_GID ),
+              'nonce' => wp_create_nonce( 'ptc_completionist_dashboard' ),
+            ]
           );
           break;
 
