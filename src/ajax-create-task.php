@@ -29,6 +29,11 @@ try {
     && Asana_Interface::has_connected_asana()
   ) {
 
+    $site_tag_gid = Options::get( Options::ASANA_TAG_GID );
+    if ( '' === $site_tag_gid ) {
+      throw new \Exception( 'A site tag is required to pin tasks. Please set a site tag in Completionist\'s settings.', 409 );
+    }
+
     if ( isset( $_POST['post_id'] ) ) {
       /* Validate for pinning */
       $the_post_id = (int) Options::sanitize( 'gid', $_POST['post_id'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
@@ -41,6 +46,8 @@ try {
     /* Gather Input Data */
 
     $asana = Asana_Interface::get_client();
+
+    $params['tags'] = $site_tag_gid;
 
     $name = sanitize_text_field( wp_unslash( $_POST['name'] ) );
     if ( ! empty( $name ) ) {

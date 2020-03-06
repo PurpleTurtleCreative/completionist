@@ -30,6 +30,11 @@ try {
     && Asana_Interface::has_connected_asana()
   ) {
 
+    $site_tag_gid = Options::get( Options::ASANA_TAG_GID );
+    if ( '' === $site_tag_gid ) {
+      throw new \Exception( 'A site tag is required to pin tasks. Please set a site tag in Completionist\'s settings.', 409 );
+    }
+
     $task_gid = Asana_Interface::get_task_gid_from_task_link( $_POST['task_link'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     if ( $task_gid === '' ) {
       throw new \Exception( 'Failed to get task from the submitted task link.', 400 );
@@ -77,13 +82,10 @@ try {
         $comment_text .= get_site_url();
       }
 
-      $asana = Asana_Interface::get_client();
-      $asana->tasks->addComment( $task_gid, [ 'text' => $comment_text ] );
+      Asana_Interface::tag_and_comment( $task_gid, $site_tag_gid, $comment_text );
 
     } catch ( \Exception $e ) {
-      $error_code = $e->getCode();
-      $error_msg = $e->getMessage();
-      error_log( "Failed to add comment to pinned task. Error $error_code: $error_msg" );
+      error_log( HTML_Builder::format_error_string( $e, 'Failed to tag and comment pinned task.' ) );
     }
 
   }//end validate form submission

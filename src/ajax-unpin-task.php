@@ -55,6 +55,15 @@ try {
     $res['message'] = "Successfully unpinned task $task_gid from post $the_post_id.";
     $res['data'] = $task_gid;
 
+    /* Remove site tag */
+
+    try {
+      $asana = Asana_Interface::get_client();
+      $asana->tasks->removeTag( $task_gid, [ 'tag' => Options::get( Options::ASANA_TAG_GID ) ] );
+    } catch ( \Exception $e ) {
+      error_log( HTML_Builder::format_error_string( $e, 'Failed to untag an unpinned task.' ) );
+    }
+
   }//end validate form submission
 } catch ( \Exception $e ) {
   $res['status'] = 'error';

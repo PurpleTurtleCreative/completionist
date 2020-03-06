@@ -356,7 +356,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      * @param string $task_gid The gid of the task to retrieve.
      *
      * @param string $opt_fields A csv of task fields to retrieve, excluding
-     * 'workspace', which is appended for data healing.
+     * 'workspace' and 'tags', which are appended for data healing.
      *
      * @param int $post_id Optional. The post ID on which the task belongs to
      * attempt self-healing on certain error responses. Default 0 to take no
@@ -369,7 +369,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      * * 400: Invalid task gid - The provided task gid is invalid.
      * * 410: Unpinned task - The API returned 404, so the task was unpinned.
      * * 410: Unpinned Foreign Task - The task does not belong to the assigned
-     * workspace, so it was unpinned.
+     * workspace or have the site tag, so it was unpinned.
      * * 0: Failed to get task data - This is presumably unreachable.
      */
     static function maybe_get_task_data( string $task_gid, string $opt_fields, int $post_id = 0 ) : \stdClass {
@@ -382,7 +382,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
       try {
 
         $asana = self::get_client();
-        $task = $asana->tasks->findById( $task_gid, [ 'opt_fields' => $opt_fields . ',workspace' ] );
+        $task = $asana->tasks->findById( $task_gid, [ 'opt_fields' => $opt_fields . ',workspace,tags' ] );
 
         if (
           isset( $task->workspace->gid )
@@ -391,6 +391,18 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
         ) {
           if ( $task_gid != '' && Options::delete( Options::PINNED_TASK_GID, $post_id, $task_gid ) ) {
             error_log( "Unpinned foreign task from post $post_id." );
+            throw new \Exception( 'Unpinned Foreign Task', 410 );
+          }
+        }
+
+        if (
+          isset( $task->tags )
+          && is_array( $task->tags )
+          && ! self::has_tag( $task, Options::get( Options::ASANA_TAG_GID ) )
+          && $post_id > 0
+        ) {
+          if ( $task_gid != '' && Options::delete( Options::PINNED_TASK_GID, $post_id, $task_gid ) ) {
+            error_log( "Unpinned task missing site tag from post $post_id." );
             throw new \Exception( 'Unpinned Foreign Task', 410 );
           }
         }
@@ -532,7 +544,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      *
      * @param string $comment The comment text.
      *
-     * @param string $opt_fields A csv of task fields to retrieve.
+     * @param string $opt_fields Optional. A csv of task fields to retrieve.
      *
      * @return \stdClass[] An array of response objects. Instance members
      * include 'body', 'status_code', and 'headers'.
@@ -540,7 +552,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      * @throws \Exception Authentication may fail when first loading the client
      * or requests could fail due to request limits or server issues.
      */
-    static function tag_and_comment( string $task_gid, string $tag_gid, string $comment, string $opt_fields ) : array {
+    static function tag_and_comment( string $task_gid, string $tag_gid, string $comment, string $opt_fields = '' ) : array {
 
       $asana = self::get_client();
 
@@ -658,6 +670,33 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
       }
 
       return $success_count;
+
+    }
+
+    /**
+     * Determine if a task has a tag.
+     *
+     * @since 1.0.0
+     *
+     * @param \stdClass $task The task object.
+     *
+     * @param string $tag_gid The tag gid.
+     *
+     * @return bool If the task has the tag.
+     */
+    static function has_tag( \stdClass $task, string $tag_gid ) : bool {
+
+      $has_tag = FALSE;
+
+      if ( isset( $task->tags ) && is_array( $task->tags ) ) {
+        foreach ( $task->tags as $tag ) {
+          if ( isset( $tag->gid ) && $tag->gid === $tag_gid ) {
+            $has_tag = TRUE;
+          }
+        }
+      }
+
+      return $has_tag;
 
     }
 

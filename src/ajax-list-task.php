@@ -58,7 +58,7 @@ try {
   ) {
     // 400 Bad Request is the developer's fault, not the user's
     // 403 Forbidden is expected when a private task is pinned
-    // 410 Unpinned is expected when a task was deleted in response to a 404
+    // 410 Unpinned is expected when a task was automatically unpinned
     $html = HTML_Builder::format_error_box( $e, 'Failed to load task. ' );
   }
 
