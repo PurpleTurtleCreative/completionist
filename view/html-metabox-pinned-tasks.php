@@ -18,6 +18,7 @@ require_once $ptc_completionist->plugin_path . 'src/class-html-builder.php';
 
 try {
 
+  Asana_Interface::require_settings();
   $asana = Asana_Interface::get_client();
 
   if ( ! Asana_Interface::is_workspace_member() ) {

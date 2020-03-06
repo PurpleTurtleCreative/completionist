@@ -264,7 +264,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
      *
      * @since 1.0.0
      *
-     * @param \Exception $e The exception.
+     * @param \Exception $e The Exception object.
      *
      * @param string $context_message Optional. Text to output before the
      * exception's message. Default ''.
@@ -273,7 +273,30 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
      */
     static function format_error_string( \Exception $e, string $context_message = '' ) : string {
 
+      $code = self::get_error_code( $e );
+      $msg = self::get_error_message( $e );
+
+      if ( '' === $context_message ) {
+        return "Error $code: $msg";
+      }
+
+      return "Error $code: $context_message $msg";
+
+    }
+
+    /**
+     * Get the HTTP error code from an Exception.
+     *
+     * @since 1.0.0
+     *
+     * @param \Exception $e The Exception object.
+     *
+     * @return int The HTTP code if there is one, else the Exception's code.
+     */
+    static function get_error_code( \Exception $e ) : int {
+
       $code = $e->getCode();
+
       if (
         0 === $code
         && isset( $e->status )
@@ -281,6 +304,21 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
       ) {
         $code = $e->status;
       }
+
+      return (int) $code;
+
+    }
+
+    /**
+     * Get the full error message from an Exception.
+     *
+     * @since 1.0.0
+     *
+     * @param \Exception $e The Exception object.
+     *
+     * @return string The full error message.
+     */
+    static function get_error_message( \Exception $e ) : string {
 
       $msg = $e->getMessage();
 
@@ -296,11 +334,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
         }
       }
 
-      if ( '' === $context_message ) {
-        return "Error $code: $msg";
-      }
-
-      return "Error $code: $context_message $msg";
+      return $msg;
 
     }
 

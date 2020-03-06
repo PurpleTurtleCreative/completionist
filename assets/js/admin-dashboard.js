@@ -13,6 +13,7 @@ jQuery(function($) {
     } else {
       workspaceWarningNote.hide();
     }
+    $('section#ptc-asana-workspace form p.error-note').remove();
   });
   //end select workspace
 
@@ -35,11 +36,10 @@ jQuery(function($) {
     } else {
       tagWarningNote.hide();
     }
+    $('section#ptc-asana-workspace form p.error-note').remove();
   });
 
-  if(ptc_completionist_dashboard.saved_workspace_gid) {
-    load_tag_options(ptc_completionist_dashboard.saved_workspace_gid);
-  }
+  load_tag_options(selectWorkspace.val());
 
   function load_tag_options(workspace_gid) {
 
@@ -47,6 +47,11 @@ jQuery(function($) {
     $('section#ptc-asana-workspace form label[for="asana-tag"]').html('<i class="fas fa-circle-notch fa-spin">');
 
     selectTag.find('option:not(:first-of-type):not([value="create"])').remove();
+
+    if ( workspace_gid == '' ) {
+      $('section#ptc-asana-workspace form label[for="asana-tag"]').html(selectTagLabelHTML);
+      return;
+    }
 
     var data = {
       'action': 'ptc_get_tag_options',
@@ -65,15 +70,14 @@ jQuery(function($) {
         }
         disable_element(selectTag, false);
       } else if(res.status == 'error' && res.data != '') {
-        alert(res.data);
-        disable_element(workspaceFormInputs, true);
+        display_alert_note_after(res.data, tagWarningNote);
       } else {
-        alert('Failed to load tag options. The setting has been disabled.');
+        alert('Failed to load tag options.');
       }
 
     }, 'json')
       .fail(function() {
-        alert('Failed to load tag options. The setting has been disabled.');
+        alert('Failed to load tag options.');
       })
       .always(function() {
         $('section#ptc-asana-workspace form label[for="asana-tag"]').html(selectTagLabelHTML);
@@ -93,5 +97,10 @@ jQuery(function($) {
       jquery_obj.prop('disabled', false);
     }
   }//end disable_element()
+
+  function display_alert_note_after(alert_note, jquery_obj) {
+    $('<p class="error-note"><i class="fas fa-exclamation-circle"></i>'+alert_note+'</p>')
+      .insertAfter(jquery_obj);
+  }
 
 });//end document ready

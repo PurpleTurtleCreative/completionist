@@ -700,5 +700,36 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
     }
 
+    /**
+     * Confirm that required plugin settings are set and valid.
+     *
+     * @since 1.0.0
+     *
+     * @throws \Exception If settings were found to be invalid.
+     */
+    static function require_settings() : void {
+
+      $asana = self::get_client();
+
+      $saved_workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
+      $saved_tag_gid = Options::get( Options::ASANA_TAG_GID );
+
+      if ( '' === $saved_workspace_gid || '' === $saved_tag_gid ) {
+        throw new \Exception( 'Missing required settings. Please save an Asana workspace and tag.', 403 );
+      }
+
+      try {
+        $tag = $asana->tags->findById( $saved_tag_gid, [ 'opt_fields' => 'workspace' ] );
+        if ( isset( $tag->workspace->gid ) && $tag->workspace->gid !== $saved_workspace_gid ) {
+          throw new \Exception( 'Invalid workspace and tag settings. The site tag is part of a different workspace.', 409 );
+        }
+      } catch ( \Asana\Errors\NotFoundError $e ) {
+        throw new \Exception( 'Invalid site tag set.', 404 );
+      } catch ( \Asana\Errors\InvalidRequestError $e ) {
+        throw new \Exception( 'Invalid site tag or workspace set.', 400 );
+      }
+
+    }
+
   }//end class
 }//end if class_exists

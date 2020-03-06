@@ -72,7 +72,7 @@ try {
                         'Choose a Workspace...' .
                       '</option>';
               } elseif ( ! $is_workspace_member ) {
-                echo  '<option value="' . esc_attr( $chosen_workspace_gid ) . '" selected="selected">' .
+                echo  '<option value="" selected="selected">' .
                         '(Unauthorized)' .
                       '</option>';
               }
@@ -103,6 +103,15 @@ try {
             <input type="submit" name="asana_workspace_save" value="Save">
             <?php }//end if can_manage_options show submit button ?>
           </div>
+          <?php
+          try {
+            Asana_Interface::require_settings();
+          } catch ( \Exception $e ) {
+            require_once $ptc_completionist->plugin_path . 'src/class-html-builder.php';
+            $alert_msg = HTML_Builder::get_error_message( $e );
+            echo '<p class="error-note"><i class="fas fa-exclamation-circle"></i>'. esc_html( $alert_msg ) . '</p>';
+          }
+          ?>
           <p id="asana-workspace-warning" class="warning-note"><i class="fas fa-exclamation-triangle"></i><strong>WARNING:</strong> Changing workspaces will remove all <?php echo esc_html( $pinned_tasks_count ); ?> currently pinned tasks from this site.</p>
           <p id="asana-tag-warning" class="warning-note"><i class="fas fa-exclamation-triangle"></i><strong>WARNING:</strong> Changing the site's tag will remove any pinned tasks that do not have the new tag.</p>
         </form>

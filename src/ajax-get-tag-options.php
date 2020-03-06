@@ -35,21 +35,27 @@ try {
     }
 
     $asana = Asana_Interface::get_client();
-    $workspace_tags = $asana->tags->findByWorkspace( $workspace_gid, [ 'opt_fields' => 'name' ] );
 
-    $html = '';
+    try {
+      $workspace_tags = $asana->tags->findByWorkspace( $workspace_gid, [ 'opt_fields' => 'name' ] );
+      $html = '';
 
-    $saved_tag_gid = Options::get( Options::ASANA_TAG_GID );
-    $found_saved_tag = FALSE;
-    foreach ( $workspace_tags as $workspace_tag ) {
-      $selected = '';
-      if ( $saved_tag_gid === $workspace_tag->gid ) {
-        $selected = ' selected="selected"';
-        $found_saved_tag = TRUE;
+      $saved_tag_gid = Options::get( Options::ASANA_TAG_GID );
+      $found_saved_tag = FALSE;
+      foreach ( $workspace_tags as $workspace_tag ) {
+        $selected = '';
+        if ( $saved_tag_gid === $workspace_tag->gid ) {
+          $selected = ' selected="selected"';
+          $found_saved_tag = TRUE;
+        }
+        $html .=  '<option value="' . esc_attr( $workspace_tag->gid ) . '"' . $selected . '>' .
+                    esc_html( $workspace_tag->name ) .
+                  '</option>';
       }
-      $html .=  '<option value="' . esc_attr( $workspace_tag->gid ) . '"' . $selected . '>' .
-                  esc_html( $workspace_tag->name ) .
-                '</option>';
+    } catch ( \Asana\Errors\NotFoundError $e ) {
+      throw new \Exception( 'Workspace not found.', 404 );
+    } catch ( \Asana\Errors\InvalidRequestError $e ) {
+      throw new \Exception( 'Workspace invalid.', 400 );
     }
 
     if ( ! $found_saved_tag && $saved_tag_gid !== '' ) {
@@ -79,9 +85,9 @@ try {
   }//end validate form submission
 } catch ( \Exception $e ) {
   $res['status'] = 'error';
-  $res['code'] = $e->getCode();
-  $res['message'] = $e->getMessage();
-  $res['data'] = 'Error ' . $e->getCode() . ': ' . $e->getMessage();
+  $res['code'] = HTML_Builder::get_error_code( $e );
+  $res['message'] = HTML_Builder::format_error_string( $e, 'Failed to list workspace tag options.' );
+  $res['data'] = HTML_Builder::format_error_string( $e, 'Failed to list workspace tag options.' );
 }
 
 echo json_encode( $res );
