@@ -1,6 +1,6 @@
 /* CURRENT USER */
 section#ptc-asana-user {
-  padding-bottom: 80px;
+  padding-bottom: 50px;
 }
 
 section#ptc-asana-user div.asana-connected-profile-photo {
@@ -27,21 +27,6 @@ section#ptc-asana-user div.asana-connected-profile-photo i {
   position: absolute;
   bottom: -40px;
   right: 41.5%;
-}
-
-section#ptc-asana-user form.ptc-asana-disconnect {
-  margin: 2em 0 0;
-}
-
-section#ptc-asana-user form.ptc-asana-disconnect input {
-  display: block;
-  margin: 0 auto 0.75em;
-  padding: 0.4em 0.75em 0.5em;
-}
-
-section#ptc-asana-user form.ptc-asana-disconnect p.disconnect-notice {
-  text-align: center;
-  border-radius: 5px;
 }
 
 /* CHOSEN WORKSPACE */
@@ -173,4 +158,28 @@ section#ptc-asana-workspace div.ptc-asana-collaborator-row > div.connection-stat
 section#ptc-asana-workspace div.ptc-asana-collaborator-row > div.connection-status a i {
   margin-left: 0.5em;
   font-size: 0.9em;
+}
+
+/* DEAUTHORIZE ACCOUNT */
+section#ptc-disconnect-asana {
+  padding: 0;
+}
+
+section#ptc-disconnect-asana form {
+  margin: 0;
+}
+
+section#ptc-disconnect-asana form input {
+  display: block;
+  margin: 0 auto 0.75em;
+  padding: 0.4em 0.75em 0.5em;
+}
+
+section#ptc-disconnect-asana form .note-box {
+  margin: 0;
+}
+
+section#ptc-disconnect-asana form p.disconnect-notice {
+  text-align: center;
+  border-radius: 5px;
 }

@@ -33,18 +33,6 @@ try {
     </div>
     <h2>You're connected, <?php echo esc_html( $me->name ); ?>!</h2>
     <p>Your Asana account is successfully connected. Completionist is able to help you get stuff done on <?php echo esc_html( get_bloginfo( 'name', 'display' ) ); ?> as long as you are a member of this site's assigned workspace.</p>
-
-    <form class="ptc-asana-disconnect" method="POST">
-      <div class="field-group">
-        <input type="hidden" name="asana_disconnect_nonce" value="<?php echo esc_attr( wp_create_nonce( 'disconnect_asana' ) ); ?>">
-        <div class="note-box note-box-error">
-          <p class="disconnect-notice">
-            <input class="error" type="submit" name="asana_disconnect" value="Deauthorize">
-            This will remove your encrypted Personal Access Token and Asana user id from this site, thus deauthorizing access to your Asana account. Until connecting your Asana account again, you will not have access to use Completionist's features.
-          </p>
-        </div>
-      </div>
-    </form>
   </section><!--close section#ptc-asana-user-->
 
   <section id="ptc-asana-workspace">
@@ -167,6 +155,20 @@ try {
     }
     ?>
   </section><!--close section#ptc-asana-workspace-->
+
+  <section id="ptc-disconnect-asana">
+    <form method="POST">
+      <div class="field-group">
+        <input type="hidden" name="asana_disconnect_nonce" value="<?php echo esc_attr( wp_create_nonce( 'disconnect_asana' ) ); ?>">
+        <div class="note-box note-box-error">
+          <p class="disconnect-notice">
+            <input class="error" type="submit" name="asana_disconnect" value="Deauthorize">
+            This will remove your encrypted Personal Access Token and Asana user id from this site, thus deauthorizing access to your Asana account. Until connecting your Asana account again, you will not have access to use Completionist's features.
+          </p>
+        </div>
+      </div>
+    </form>
+  </section>
   <?php
 
 } catch ( \PTC_Completionist\Errors\NoAuthorization $e ) {
