@@ -71,6 +71,9 @@ jQuery(function($) {
       if(res.status == 'success' && res.data != '') {
         ptc_completionist_pinned_tasks.pinned_task_gids = res.data;
         list_pinned_tasks();
+      } else if(res.status == 'success') {
+        ptc_completionist_pinned_tasks.pinned_task_gids = [];
+        list_pinned_tasks();
       } else if(res.status == 'error' && res.data != '') {
         display_alert_html(res.data);
         reloadButton.html('<i class="fas fa-sync-alt"></i>Reload');
@@ -391,6 +394,8 @@ jQuery(function($) {
     } else {
       taskContainer.html('');
       display_if_empty_list();
+      reloadButton.html('<i class="fas fa-sync-alt"></i>Reload');
+      disable_element(reloadButton, false);
     }
 
   }//end function list_pinned_tasks()
