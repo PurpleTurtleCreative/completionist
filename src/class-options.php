@@ -297,7 +297,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
     }
 
     /**
-     * Checks if a postmeta key-value pair exists for the specified post.
+     * Checks if a postmeta key-value pair exists.
      *
      * @since 1.0.0
      *
@@ -305,11 +305,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
      *
      * @param string $value The value to search.
      *
-     * @param int $post_id Optional. The post's id. Default 0 for current post.
+     * @param int $post_id Optional. The post's id. Set to 0 to use current
+     * post. Default -1 for any post.
      *
-     * @return bool Returns TRUE if the post's meta key-value pair exists.
+     * @return bool Returns TRUE if the postmeta key-value pair exists.
      */
-    static function postmeta_exists( string $key, string $value, int $post_id = 0 ) : bool {
+    static function postmeta_exists( string $key, string $value, int $post_id = -1 ) : bool {
 
       if ( $post_id === 0 ) {
         $post_id = get_the_ID();
@@ -318,23 +319,33 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
         }
       }
 
-      if ( $post_id < 1 || $post_id === FALSE ) {
-        return FALSE;
-      }
-
       global $wpdb;
-      $res = $wpdb->get_row( $wpdb->prepare(
-          "
-          SELECT meta_id
-          FROM $wpdb->postmeta
-          WHERE post_id = %d
-            AND meta_key = %s
-            AND meta_value = %s
-          ",
-          $post_id,
-          $key,
-          $value
-        ) );
+
+      if ( $post_id < 0 ) {
+        $res = $wpdb->get_row( $wpdb->prepare(
+            "
+            SELECT meta_id
+            FROM $wpdb->postmeta
+            WHERE meta_key = %s
+              AND meta_value = %s
+            ",
+            $key,
+            $value
+          ) );
+      } else {
+        $res = $wpdb->get_row( $wpdb->prepare(
+            "
+            SELECT meta_id
+            FROM $wpdb->postmeta
+            WHERE post_id = %d
+              AND meta_key = %s
+              AND meta_value = %s
+            ",
+            $post_id,
+            $key,
+            $value
+          ) );
+      }
 
       if ( $res === NULL || empty( $res ) ) {
         return FALSE;

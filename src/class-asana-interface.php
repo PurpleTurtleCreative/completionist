@@ -494,42 +494,49 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
     }
 
     /**
-     * Attempt to retrieve task data for all pinned task gids.
+     * Attempt to retrieve task data for all site tasks.
      *
      * @since 1.0.0
      *
-     * @param string $opt_fields A csv of task fields to retrieve, excluding
-     * 'workspace', which is appended for data healing.
+     * @param string $opt_fields A csv of task fields to retrieve.
      *
-     * @return array Task data objects keyed by their task gid.
+     * @return \stdClass[] Task data objects.
+     *
+     * @throws \Exception Authentication may fail when first loading the client
+     * or requests could fail due to request limits or server issues. Also:
+     * * 409: No site tag has been saved to request site tasks
      */
-    static function maybe_get_all_pinned_tasks( string $opt_fields ) : array {
+    static function maybe_get_all_site_tasks( string $opt_fields ) : array {
+
+      $asana = self::get_client();
 
       $tasks = [];
-      $task_pins = Options::get_all_task_pins();
 
-      // get tasks by site tag
-
-      // delete pins not in that array
-
-      foreach ( $task_pins as $task_pin ) {
-        try {
-          $task_gid = Options::sanitize( 'gid', $task_pin->task_gid );
-          $task = self::maybe_get_task_data( $task_gid, $opt_fields, (int) $task_pin->post_id );
-          $tasks[ $task_gid ] = $task;
-        } catch ( \Exception $e ) {
-          $error_code = $e->getCode();
-          $error_msg = $e->getMessage();
-          if (
-            401 == $error_code
-            || 500 == $error_code
-          ) {
-            break;
-          }
-        }
+      $site_tag_gid = Options::get( Options::ASANA_TAG_GID );
+      if ( $site_tag_gid === '' ) {
+        throw new \Exception( 'Unable to retrieve site tasks when no site tag has been set.', 409 );
       }
 
-      return $tasks;
+      $params = [
+        'opt_fields' => $opt_fields,
+      ];
+
+      $options = [
+        'page_size' => 100,/* Max page_size = 100 */
+        'item_limit' => 15000,
+      ];
+
+      /*
+      ** An Asana Collection (Iterator) is returned. To actually perform the
+      ** API requests to get all the tasks, we must use the Iterator.
+      */
+      $site_tasks = $asana->tasks->findByTag( $site_tag_gid, $params, $options );
+      $all_tasks = [];
+      foreach ( $site_tasks as $task ) {
+        $all_tasks[] = $task;
+      }
+
+      return $all_tasks;
 
     }
 
@@ -728,6 +735,104 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
       } catch ( \Asana\Errors\InvalidRequestError $e ) {
         throw new \Exception( 'Invalid site tag or workspace set.', 400 );
       }
+
+    }
+
+    /**
+     * Count how many tasks are completed.
+     *
+     * @since 1.0.0
+     *
+     * @param \stdClass[] $tasks An array of task objects with the "completed"
+     * boolean member set.
+     *
+     * @return int The count.
+     */
+    static function count_completed_tasks( array $tasks ) : int {
+
+      $count = 0;
+
+      foreach ( $tasks as $task ) {
+        if ( isset( $task->completed ) && is_bool( $task->completed ) ) {
+          if ( TRUE === $task->completed ) {
+            ++$count;
+          }
+        }
+      }
+
+      return $count;
+
+    }
+
+    /**
+     * Delete all task pins except for those in the provided array.
+     *
+     * @since 1.0.0
+     *
+     * @param \stdClass[] $keep_tasks An array of task objects with the "gid"
+     * string member set to not be deleted.
+     *
+     * @return int The number of deleted task pins.
+     */
+    static function delete_pinned_tasks_except( array $keep_tasks ) : int {
+
+      if ( empty( $keep_tasks ) ) {
+        return 0;
+      }
+
+      $keep_gids = [];
+      foreach ( $keep_tasks as $task ) {
+        if ( isset( $task->gid ) ) {
+          $sanitized_gid = Options::sanitize( 'gid', $task->gid );
+          if ( $sanitized_gid === $task->gid ) {
+            $keep_gids[] = $task->gid;
+          } else {
+            return 0;
+          }
+        } else {
+          return 0;
+        }
+      }
+
+      $meta_key = Options::get( Options::ASANA_TAG_GID );
+      if ( $meta_key === '' ) {
+        return 0;
+      }
+
+      global $wpdb;
+      $format_vars[] = $meta_key;
+
+      if ( empty( $keep_gids ) ) {
+        $sql = "
+                DELETE FROM {$wpdb->postmeta}
+                WHERE meta_key = %s
+               ";
+      } else {
+        $sql = "
+                DELETE FROM {$wpdb->postmeta}
+                WHERE meta_key = %s
+                  AND meta_value NOT IN(
+               ";
+
+        $LAST_TASK_INDEX = count( $keep_gids ) - 1;
+        foreach ( $keep_gids as $i => $gid ) {
+          if ( $i < $LAST_TASK_INDEX ) {
+            $sql .= '%s,';
+          } else {
+            $sql .= '%s)';
+          }
+          $format_vars[] = $gid;
+        }
+
+      }//end if empty keep_gids
+
+      $res = $wpdb->query( $wpdb->prepare( $sql, $format_vars ) );
+
+      if ( is_numeric( $res ) && $res > 0 ) {
+        error_log( "Deleted {$unpinned_count} task pins: " . __FUNCTION__ );
+      }
+
+      return (int) $res;
 
     }
 

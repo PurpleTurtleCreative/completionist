@@ -114,51 +114,9 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
       }
 
       /* Due Date */
-      $due_status = 'none';
-      if ( isset( $task->due_on ) ) {
-        $due_date = Options::sanitize( 'date', $task->due_on );
-        if ( ! empty( $due_date ) ) {
-          $dt = \DateTime::createFromFormat( 'Y-m-d', $due_date );
-          if ( $dt !== FALSE && array_sum( $dt::getLastErrors() ) === 0 ) {
-
-            $dt_today = new \DateTime( 'today' );
-            $dt->setTime( 0, 0 );
-            $dt_today->setTime( 0, 0 );
-            $days_diff = $dt_today->diff( $dt )->days;
-
-            if ( $dt < $dt_today && $days_diff !== 0 ) {
-              if ( $days_diff === 1 ) {
-                $dt_string = 'Yesterday';
-              } else {
-                $dt_string = "$days_diff days ago";
-              }
-              $due_status = 'past';
-            } else {
-              if ( $days_diff === 0 ) {
-                $dt_string = 'Today';
-                $due_status = 'today';
-              } elseif ( $days_diff < 7 ) {
-                if ( $days_diff === 1 ) {
-                  $dt_string = 'Tomorrow';
-                } else {
-                  $dt_string = $dt->format('l');
-                }
-                $due_status = 'soon';
-              } else {
-                $dt_string = $dt->format('M j');
-                $due_status = 'later';
-              }
-            }
-
-            $due_date = ( $dt_string !== FALSE ) ? $dt_string : $due_date;
-
-          } else {
-            $due_date = '';
-          }
-        }
-      } else {
-        $due_date = '';
-      }
+      $relative_due = self::get_relative_due( $task );
+      $due_status = $relative_due->status;
+      $due_date = $relative_due->label;
 
       ob_start();
       ?>
@@ -356,6 +314,91 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
       }
 
       return '';
+
+    }
+
+    /**
+     * Get various data for a task's 'due_on' relativity to today's date.
+     *
+     * @since 1.0.0
+     *
+     * @param \stdClass $task A task object with set 'due_on' member value.
+     *
+     * @return \stdClass A standard object containing a label, status, and the
+     * days difference. Object members are:
+     * * `label`: A human-readable string for the relative time
+     * * `status`: {'past','today','soon','later'}
+     * * `days`: Negative if in the past, 0 if today, positive if future.
+     */
+    static function get_relative_due( \stdClass $task ) : \stdClass {
+
+      $relative_due = new \stdClass();
+      $relative_due->label = '';
+      $relative_due->status = '';
+      $relative_due->days = NULL;
+
+      if ( isset( $task->due_on ) ) {
+        $due_date = Options::sanitize( 'date', $task->due_on );
+        if ( ! empty( $due_date ) ) {
+          $dt = \DateTime::createFromFormat( 'Y-m-d', $due_date );
+          if ( $dt !== FALSE && array_sum( $dt::getLastErrors() ) === 0 ) {
+
+            $dt_today = new \DateTime( 'today' );
+            $dt->setTime( 0, 0 );
+            $dt_today->setTime( 0, 0 );
+            $days_diff = $dt_today->diff( $dt )->days;
+
+            if ( $dt < $dt_today && $days_diff !== 0 ) {
+
+              if ( $days_diff === 1 ) {
+                $dt_string = 'Yesterday';
+              } else {
+                $dt_string = "$days_diff days ago";
+              }
+
+              $relative_due->status = 'past';
+              $relative_due->days = $days_diff * -1;
+
+            } else {
+
+              $relative_due->days = $days_diff;
+
+              if ( $days_diff === 0 ) {
+
+                $dt_string = 'Today';
+                $relative_due->status = 'today';
+
+              } elseif ( $days_diff < 7 ) {
+
+                if ( $days_diff === 1 ) {
+                  $dt_string = 'Tomorrow';
+                } else {
+                  $dt_string = $dt->format('l');
+                }
+                $relative_due->status = 'soon';
+
+              } else {
+
+                $dt_string = $dt->format('M j');
+                $relative_due->status = 'later';
+
+              }
+
+            }
+
+            $due_date = ( $dt_string !== FALSE ) ? $dt_string : $due_date;
+
+          } else {
+            $due_date = '';
+          }
+        }
+      } else {
+        $due_date = '';
+      }
+
+      $relative_due->label = $due_date;
+
+      return $relative_due;
 
     }
 
