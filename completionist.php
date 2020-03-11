@@ -180,7 +180,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      */
     function add_dashboard_widgets() {
       wp_add_dashboard_widget(
-        'ptc-completionist_all-pinned-tasks',
+        'ptc-completionist_site-tasks',
         'Completionist Tasks',
         [ $this, 'all_pinned_tasks_dashboard_widget_html' ]
       );

@@ -36,39 +36,49 @@ if ( ! class_exists( __NAMESPACE__ . '\Task_Categorizer' ) ) {
       $this->tasks = $tasks;
     }
 
-    public function rewind() {
+    final public function rewind() {
       $this->position = 0;
     }
 
-    public function current() {
+    final public function current() {
       return $this->tasks[ $this->categorized_indices[ $this->position ] ];
     }
 
-    public function key() {
-      return $this->categorized_indices[ $this->position ];
+    final public function key() {
+      return $this->position;
     }
 
-    public function next() {
+    final public function next() {
       ++$this->position;
     }
 
-    public function valid() {
+    final public function valid() {
       return (
         isset( $this->categorized_indices[ $this->position ] )
         && isset( $this->tasks[ $this->categorized_indices[ $this->position ] ] )
       );
     }
 
-    public function get_total_count() : int {
+    final public function get_total_count() : int {
       return count( $this->categorized_indices );
     }
 
-    public function get_completed_count() : int {
+    final public function get_completed_count() : int {
       return $this->completed_count;
     }
 
-    public function get_incomplete_count() : int {
+    final public function get_incomplete_count() : int {
       return $this->incomplete_count;
+    }
+
+    final public function get_tasks_gid_array() : array {
+      $arr = [];
+      foreach ( $this as $i => $task ) {
+        if ( isset( $task->gid ) ) {
+          $arr[] = $task->gid;
+        }
+      }
+      return $arr;
     }
 
   }//end class
