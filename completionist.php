@@ -299,6 +299,29 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
 
       switch ( $hook_suffix ) {
 
+        case 'index.php':
+          wp_enqueue_script(
+            'ptc-completionist_dashboard-widget-js',
+            plugins_url( 'assets/js/dashboard-widget.js', __FILE__ ),
+            [ 'jquery' ],
+            '0.0.0'
+          );
+          wp_localize_script(
+            'ptc-completionist_dashboard-widget-js',
+            'ptc_completionist_dashboard_widget',
+            [
+              'nonce_pin' => wp_create_nonce( 'ptc_completionist_pin_task' ),
+              'nonce_list' => wp_create_nonce( 'ptc_completionist_list_task' ),
+              'nonce_create' => wp_create_nonce( 'ptc_completionist_create_task' ),
+              'nonce_delete' => wp_create_nonce( 'ptc_completionist_delete_task' ),
+              'nonce_update' => wp_create_nonce( 'ptc_completionist_update_task' ),
+              'page_size' => 5,
+              'current_category' => 'all-site-tasks',
+              'current_page' => 1,
+            ]
+          );
+          break;
+
         case 'toplevel_page_ptc-completionist':
           wp_enqueue_style(
             'ptc-completionist_connect-asana-css',

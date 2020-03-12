@@ -39,9 +39,12 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
      *
      * @param \stdClass $task An Asana task object.
      *
+     * @param bool $detailed_view Optional. If to display additional elements.
+     * Default FALSE for basic view.
+     *
      * @return string The HTML. Default ''.
      */
-    static function format_task_row( \stdClass $task ) : string {
+    static function format_task_row( \stdClass $task, bool $detailed_view = FALSE ) : string {
 
       /* Task GID */
       if ( isset( $task->gid ) ) {
@@ -118,6 +121,33 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
       $due_status = $relative_due->status;
       $due_date = $relative_due->label;
 
+      /* Post ID */
+
+      if ( $detailed_view ) {
+
+        $cta_button_link = '';
+        $cta_button_label = '';
+
+        $post_id = Options::get_task_pin_post_id( $task_gid );
+
+        if ( $post_id > 0 ) {
+          $post = get_post( $post_id );
+          if ( isset( $post->post_type ) ) {
+            $edit_post_link = get_edit_post_link( $post );
+            if ( $edit_post_link ) {
+              $cta_button_link = $edit_post_link;
+              $cta_button_label = "Edit {$post->post_type}";
+            }
+          }
+        }
+
+        if ( $cta_button_link === '' ) {
+          $cta_button_link = $task_url;
+          $cta_button_label = 'View in Asana';
+        }
+
+      }
+
       ob_start();
       ?>
       <section class="ptc-completionist-task" data-gid="<?php echo esc_attr( $task_gid ); ?>" data-completed="<?php echo esc_attr( $is_completed_val ); ?>" data-due-status="<?php echo esc_attr( $due_status ); ?>">
@@ -171,6 +201,15 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
           </div>
 
         </div>
+
+        <?php if ( $detailed_view ) { ?>
+        <div class="cta-button">
+          <a href="<?php echo esc_url( $cta_button_link ); ?>">
+            <?php echo esc_html( $cta_button_label ); ?>
+            <i class="fas fa-long-arrow-alt-right"></i>
+          </a>
+        </div>
+        <?php }//end if detailed view ?>
 
       </section>
       <?php
@@ -399,6 +438,60 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
       $relative_due->label = $due_date;
 
       return $relative_due;
+
+    }
+
+    /**
+     * Description
+     * @param array $tasks
+     * @param bool|bool $soonest_first
+     * @return type
+     */
+    static function sort_tasks_by_due( array $tasks ) : array {
+
+      if ( empty( $tasks ) ) {
+        error_log( 'Failed to sort tasks by due date: no tasks provided.' );
+        return [];
+      }
+
+      $success = usort( $tasks, function( $a, $b ) {
+
+        $a_unix = time();
+
+        if ( isset( $a->due_on ) ) {
+          $a_due_date = Options::sanitize( 'date', $a->due_on );
+          if ( ! empty( $a_due_date ) ) {
+            $a_dt = \DateTime::createFromFormat( 'Y-m-d', $a_due_date );
+            if ( $a_dt !== FALSE || array_sum( $a_dt::getLastErrors() ) === 0 ) {
+              $a_dt->setTime( 0, 0 );
+              $a_unix = $a_dt->getTimestamp();
+            }
+          }
+        }
+
+        $b_unix = time();
+
+        if ( isset( $b->due_on ) ) {
+          $b_due_date = Options::sanitize( 'date', $b->due_on );
+          if ( ! empty( $b_due_date ) ) {
+            $b_dt = \DateTime::createFromFormat( 'Y-m-d', $b_due_date );
+            if ( $b_dt !== FALSE || array_sum( $b_dt::getLastErrors() ) === 0 ) {
+              $b_dt->setTime( 0, 0 );
+              $b_unix = $b_dt->getTimestamp();
+            }
+          }
+        }
+
+        return ( $a_unix - $b_unix );
+
+      } );
+
+      if ( $success ) {
+        return $tasks;
+      }
+
+      error_log( 'Failed to sort tasks by due date.' );
+      return [];
 
     }
 

@@ -34,13 +34,19 @@ try {
   $all_tasks = Asana_Interface::maybe_get_all_site_tasks( HTML_Builder::TASK_OPT_FIELDS );
   Asana_Interface::delete_pinned_tasks_except( $all_tasks );
 
-  $all_incomplete_tasks = array_filter( $all_tasks, function( $task ) {
+  $all_incomplete_tasks = [];
+  foreach ( $all_tasks as $task ) {
     if ( isset( $task->completed ) && is_bool( $task->completed ) ) {
       if ( FALSE === $task->completed ) {
-        return TRUE;
+        $all_incomplete_tasks[] = $task;
       }
     }
-  } );
+  }
+
+  $all_incomplete_tasks = HTML_Builder::sort_tasks_by_due( $all_incomplete_tasks );
+  // if ( ! empty( $sorted_all_incompleted_tasks ) ) {
+  //   $all_incomplete_tasks = $sorted_all_incompleted_tasks;
+  // }
 
   /* Counts and Stats */
 
@@ -55,12 +61,18 @@ try {
   $critical_tasks = new Task_Categorizer\Critical( $all_incomplete_tasks );
   $my_tasks = new Task_Categorizer\My_Tasks( $all_incomplete_tasks );
 
+  /* Task List Pagination */
+
+  $items_per_page = 5;
+  $total_pages = ceil( $incomplete_tasks_count / $items_per_page );
+  $disable_next_button = ( $total_pages > 1 ) ? '' : 'disabled="disabled"';
+
   /* Display */
   ?>
 
   <header>
 
-    <button id="all-site-tasks" type="button" data-viewing-tasks="false">
+    <button id="all-site-tasks" title="View All Site Tasks" type="button" data-viewing-tasks="true">
       <div>
         <i class="fas fa-clipboard-list"></i>
       </div>
@@ -80,7 +92,7 @@ try {
 
     <div id="ptc-asana-task-categories">
 
-      <button id="pinned-tasks" type="button" data-viewing-tasks="false" data-category-task-gids='<?php echo json_encode( $pinned_tasks->get_tasks_gid_array() ); ?>'>
+      <button id="pinned-tasks" title="View Pinned Tasks" type="button" data-viewing-tasks="false" data-category-task-gids='<?php echo json_encode( $pinned_tasks->get_tasks_gid_array() ); ?>'>
         <p><?php echo esc_html( $pinned_tasks->get_incomplete_count() ); ?></p>
         <p>Pinned</p>
         <div>
@@ -88,7 +100,7 @@ try {
         </div>
       </button>
 
-      <button id="general-tasks" type="button" data-viewing-tasks="false" data-category-task-gids='<?php echo json_encode( $general_tasks->get_tasks_gid_array() ); ?>'>
+      <button id="general-tasks" title="View Generic Tasks" type="button" data-viewing-tasks="false" data-category-task-gids='<?php echo json_encode( $general_tasks->get_tasks_gid_array() ); ?>'>
         <p><?php echo esc_html( $general_tasks->get_incomplete_count() ); ?></p>
         <p>General</p>
         <div>
@@ -96,7 +108,7 @@ try {
         </div>
       </button>
 
-      <button id="critical-tasks" type="button" data-viewing-tasks="false" data-category-task-gids='<?php echo json_encode( $critical_tasks->get_tasks_gid_array() ); ?>'>
+      <button id="critical-tasks" title="View Due and Upcoming Tasks" type="button" data-viewing-tasks="false" data-category-task-gids='<?php echo json_encode( $critical_tasks->get_tasks_gid_array() ); ?>'>
         <p><?php echo esc_html( $critical_tasks->get_incomplete_count() ); ?></p>
         <p>Critical</p>
         <div>
@@ -104,7 +116,7 @@ try {
         </div>
       </button>
 
-      <button id="my-tasks" type="button" data-viewing-tasks="false" data-category-task-gids='<?php echo json_encode( $my_tasks->get_tasks_gid_array() ); ?>'>
+      <button id="my-tasks" title="View My Tasks" type="button" data-viewing-tasks="false" data-category-task-gids='<?php echo json_encode( $my_tasks->get_tasks_gid_array() ); ?>'>
         <p><?php echo esc_html( $my_tasks->get_incomplete_count() ); ?></p>
         <p>My Tasks</p>
         <div>
@@ -118,9 +130,9 @@ try {
 
   <main id="ptc-asana-task-list">
     <?php
-    foreach ( $all_tasks as $i => $task ) {
-      echo HTML_Builder::format_task_row( $task );//phpcs:ignore WordPress.Security.EscapeOutput
-      if ( $i === 19 ) {
+    foreach ( $all_incomplete_tasks as $i => $task ) {
+      echo HTML_Builder::format_task_row( $task, TRUE );//phpcs:ignore WordPress.Security.EscapeOutput
+      if ( $i === ( $items_per_page - 1 ) ) {
         break;
       }
     }
@@ -128,7 +140,23 @@ try {
   </main>
 
   <footer>
-    <ul id="ptc-asana-tasks-pagination"></ul>
+    <ul id="ptc-asana-tasks-pagination">
+      <button type="button" title="Previous Page" disabled="disabled">
+        <i class="fas fa-angle-left"></i>
+      </button>
+      <button type="button" title="Page 1" disabled="disabled">
+        1
+      </button>
+      <?php
+      for ( $i = 2; $i <= $total_pages; ++$i ) {
+        echo '<button type="button" title="Page ' . esc_attr( $i ) . '">' .
+              esc_html( $i ) . '</button>';
+      }
+      ?>
+      <button type="button" title="Next Page" <?php echo $disable_next_button; ?>>
+        <i class="fas fa-angle-right"></i>
+      </button>
+    </ul>
     <a href="<?php /* TODO: Tagged tasks list in Asana */ ?>" target="_asana">
       <button title="View All Site Tasks in Asana" class="view-task" type="button">
         <i class="fas fa-tags"></i>

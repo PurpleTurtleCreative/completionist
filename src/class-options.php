@@ -594,6 +594,43 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
     }
 
     /**
+     * Get the first post id for a pinned task gid.
+     *
+     * @since 1.0.0
+     *
+     * @param string $task_gid The task gid.
+     *
+     * @return int The post id if found. Default 0.
+     */
+    static function get_task_pin_post_id( string $task_gid ) : int {
+
+      $value = self::sanitize( self::PINNED_TASK_GID, $task_gid );
+      if ( '' === $value ) {
+        return 0;
+      }
+
+      $key = self::PINNED_TASK_GID;
+
+      global $wpdb;
+      $res = $wpdb->get_var( $wpdb->prepare(
+          "
+          SELECT post_id
+          FROM $wpdb->postmeta
+          WHERE meta_key = %s
+            AND meta_value = %s
+          ",
+          $key,
+          $value
+        ) );
+
+      if ( NULL === $res ) {
+        $res = 0;
+      }
+      return (int) $res;
+
+    }
+
+    /**
      * Count the number of task pins.
      *
      * @since 1.0.0

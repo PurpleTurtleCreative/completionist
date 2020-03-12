@@ -35,6 +35,8 @@ try {
       throw new \Exception( 'Invalid task gid.', 400 );
     }
 
+    /* TODO: If no post_id isset, then request to untag the task */
+
     $the_post_id = (int) Options::sanitize( 'gid', $_POST['post_id'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     if ( $the_post_id < 1 ) {
       throw new \Exception( 'Invalid post identifier.', 400 );

@@ -34,8 +34,14 @@ try {
 
     $task_gid = Options::sanitize( 'gid', $_POST['task_gid'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 
+    if ( isset( $_POST['detailed'] ) ) {
+      $detailed_view = filter_var( wp_unslash( $_POST['detailed'] ), FILTER_VALIDATE_BOOLEAN );
+    } else {
+      $detailed_view = FALSE;
+    }
+
     $task = Asana_Interface::maybe_get_task_data( $task_gid, HTML_Builder::TASK_OPT_FIELDS, $the_post_id );
-    $html = HTML_Builder::format_task_row( $task );
+    $html = HTML_Builder::format_task_row( $task, $detailed_view );
 
     $res['status'] = 'success';
     $res['code'] = 200;
