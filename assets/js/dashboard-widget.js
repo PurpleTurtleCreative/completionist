@@ -25,6 +25,7 @@ jQuery(function($) {
   }
 
   display_if_empty_list();
+  lock_interface(false);
 
   /* ALERT BANNER DISMISSAL */
   metaboxContainer.on('click', 'div.note-box-dismiss', function() {
@@ -202,7 +203,36 @@ jQuery(function($) {
     if(current_task_gids.length > 0) {
       lock_interface(true);
       taskContainer.html('<p class="task-loader"><i class="fas fa-circle-notch fa-spin"></i>Loading tasks from Asana...</p>');
-      load_tasks_recursive(current_task_gids, calculate_page_start_index(), calculate_page_final_index());
+
+      var final_index = calculate_page_final_index();
+      var start_index = calculate_page_start_index();
+      var task_gids_arr = [];
+      for(var i = start_index; i <= final_index; ++i ) {
+        task_gids_arr.push(current_task_gids[i]);
+      }
+
+      console.log(task_gids_arr);
+      var task_gids_str = JSON.stringify(task_gids_arr);
+      console.log(task_gids_str);
+
+      var data = {
+        'action': 'ptc_list_tasks',
+        'nonce': ptc_completionist_dashboard_widget.nonce_list,
+        'task_gids': task_gids_str,
+      };
+
+      $.post(ajaxurl, data, function(res) {
+        if(res.status == 'success' && res.data != '') {
+          $(res.data).insertBefore('#ptc-asana-task-list .task-loader');
+        } else if(res.status == 'error' && res.data != '') {
+          display_alert_html(res.data);
+        }
+      }, 'json')
+        .always(function() {
+          taskContainer.find('.task-loader').remove();
+          lock_interface(false);
+        });
+
     } else {
       taskContainer.html('');
       display_if_empty_list();
@@ -301,7 +331,12 @@ jQuery(function($) {
   }
 
   function calculate_page_final_index() {
-    return (page_size * current_page) - 1;
+    var final_index = (page_size * current_page) - 1;
+    var last_index = current_task_gids.length - 1;
+    if ( final_index > last_index ) {
+      final_index = last_index;
+    }
+    return final_index;
   }
 
 });//end document ready

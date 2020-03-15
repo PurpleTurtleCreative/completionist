@@ -29,7 +29,7 @@ try {
     && Asana_Interface::has_connected_asana()
   ) {
 
-    $task_gids = json_decode( stripslashes( $_POST['task_gids'] ), FALSE, 1, JSON_BIGINT_AS_STRING );
+    $task_gids = json_decode( stripslashes( $_POST['task_gids'] ), FALSE, 2, JSON_BIGINT_AS_STRING );
 
     if ( ! is_array( $task_gids ) || empty( $task_gids ) ) {
       throw new \Exception( 'Invalid task_gids array.', 400 );
@@ -51,9 +51,10 @@ try {
     }
 
     $html = '';
-    foreach ( $matched_tasks as $t_gid => $task ) {
-      $the_post_id = Options::get_task_pin_post_id( $t_gid );
-      $html = HTML_Builder::format_task_row( $task, $detailed_view );
+    foreach ( $task_gids as $t_gid ) {
+      if ( isset( $matched_tasks[ $t_gid ] ) && is_a( $matched_tasks[ $t_gid ], 'stdClass' ) ) {
+        $html .= HTML_Builder::format_task_row( $matched_tasks[ $t_gid ], $detailed_view );
+      }
     }
 
     $res['status'] = 'success';

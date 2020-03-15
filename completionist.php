@@ -327,7 +327,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
               'nonce_create' => wp_create_nonce( 'ptc_completionist_create_task' ),
               'nonce_delete' => wp_create_nonce( 'ptc_completionist_delete_task' ),
               'nonce_update' => wp_create_nonce( 'ptc_completionist_update_task' ),
-              'page_size' => 5,
+              'page_size' => 20,
               'current_category' => 'all-site-tasks',
               'current_page' => 1,
             ]

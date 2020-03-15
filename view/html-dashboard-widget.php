@@ -65,7 +65,7 @@ try {
 
   /* Task List Pagination */
 
-  $page_size = 5;
+  $page_size = 20;
   $total_pages = ceil( $incomplete_tasks_count / $page_size );
   $disable_next_button = ( $total_pages > 1 ) ? '' : 'disabled="disabled"';
 
