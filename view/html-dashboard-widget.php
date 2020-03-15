@@ -43,10 +43,12 @@ try {
     }
   }
 
-  $all_incomplete_tasks = HTML_Builder::sort_tasks_by_due( $all_incomplete_tasks );
-  // if ( ! empty( $sorted_all_incompleted_tasks ) ) {
-  //   $all_incomplete_tasks = $sorted_all_incompleted_tasks;
-  // }
+  /* Sort By Due */
+
+  $sorted_all_incompleted_tasks = HTML_Builder::sort_tasks_by_due( $all_incomplete_tasks );
+  if ( ! empty( $sorted_all_incompleted_tasks ) ) {
+    $all_incomplete_tasks = $sorted_all_incompleted_tasks;
+  }
 
   /* Counts and Stats */
 
@@ -63,8 +65,8 @@ try {
 
   /* Task List Pagination */
 
-  $items_per_page = 5;
-  $total_pages = ceil( $incomplete_tasks_count / $items_per_page );
+  $page_size = 5;
+  $total_pages = ceil( $incomplete_tasks_count / $page_size );
   $disable_next_button = ( $total_pages > 1 ) ? '' : 'disabled="disabled"';
 
   /* Display */
@@ -72,7 +74,7 @@ try {
 
   <header>
 
-    <button id="all-site-tasks" title="View All Site Tasks" type="button" data-viewing-tasks="true">
+    <button id="all-site-tasks" title="View All Site Tasks" type="button" data-viewing-tasks="true" data-category-task-gids='<?php echo json_encode( Asana_Interface::get_tasks_gid_array( $all_incomplete_tasks ) ); ?>'>
       <div>
         <i class="fas fa-clipboard-list"></i>
       </div>
@@ -132,7 +134,7 @@ try {
     <?php
     foreach ( $all_incomplete_tasks as $i => $task ) {
       echo HTML_Builder::format_task_row( $task, TRUE );//phpcs:ignore WordPress.Security.EscapeOutput
-      if ( $i === ( $items_per_page - 1 ) ) {
+      if ( $i === ( $page_size - 1 ) ) {
         break;
       }
     }
@@ -140,23 +142,23 @@ try {
   </main>
 
   <footer>
-    <ul id="ptc-asana-tasks-pagination">
-      <button type="button" title="Previous Page" disabled="disabled">
+    <nav id="ptc-asana-tasks-pagination">
+      <button data-page="prev" type="button" title="Previous Page" disabled="disabled">
         <i class="fas fa-angle-left"></i>
       </button>
-      <button type="button" title="Page 1" disabled="disabled">
+      <button class="page-option" data-page="1" type="button" title="Page 1" disabled="disabled">
         1
       </button>
       <?php
       for ( $i = 2; $i <= $total_pages; ++$i ) {
-        echo '<button type="button" title="Page ' . esc_attr( $i ) . '">' .
+        echo '<button class="page-option" data-page="' . esc_attr( $i ) . '" type="button" title="Page ' . esc_attr( $i ) . '">' .
               esc_html( $i ) . '</button>';
       }
       ?>
-      <button type="button" title="Next Page" <?php echo $disable_next_button; ?>>
+      <button data-page="next" type="button" title="Next Page" <?php echo $disable_next_button; ?>>
         <i class="fas fa-angle-right"></i>
       </button>
-    </ul>
+    </nav>
     <a href="<?php /* TODO: Tagged tasks list in Asana */ ?>" target="_asana">
       <button title="View All Site Tasks in Asana" class="view-task" type="button">
         <i class="fas fa-tags"></i>

@@ -99,6 +99,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       add_action( 'wp_ajax_ptc_unpin_task', [ $this, 'ajax_unpin_task' ] );
       add_action( 'wp_ajax_ptc_get_pins', [ $this, 'ajax_get_pins' ] );
       add_action( 'wp_ajax_ptc_list_task', [ $this, 'ajax_list_task' ] );
+      add_action( 'wp_ajax_ptc_list_tasks', [ $this, 'ajax_list_tasks' ] );
       add_action( 'wp_ajax_ptc_create_task', [ $this, 'ajax_create_task' ] );
       add_action( 'wp_ajax_ptc_delete_task', [ $this, 'ajax_delete_task' ] );
       add_action( 'wp_ajax_ptc_update_task', [ $this, 'ajax_update_task' ] );
@@ -194,7 +195,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      * @ignore
      */
     function all_pinned_tasks_dashboard_widget_html() {
-      include_once $this->plugin_path . 'view/html-dashboard-widget-all-pinned-tasks.php';
+      include_once $this->plugin_path . 'view/html-dashboard-widget.php';
     }
 
     /**
@@ -239,6 +240,17 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      */
     function ajax_list_task() {
       require_once $this->plugin_path . 'src/ajax-list-task.php';
+    }
+
+    /**
+     * AJAX handler to load HTML for multiple tasks.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    function ajax_list_tasks() {
+      require_once $this->plugin_path . 'src/ajax-list-tasks.php';
     }
 
     /**

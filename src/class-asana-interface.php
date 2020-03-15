@@ -765,6 +765,29 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
     }
 
     /**
+     * Get an array of task gids from an array of task objects.
+     *
+     * @since 1.0.0
+     *
+     * @param \stdClass[] $tasks The task objects.
+     *
+     * @return string[] The task gids.
+     */
+    static function get_tasks_gid_array( array $tasks ) : array {
+
+      $arr = [];
+
+      foreach ( $tasks as $task ) {
+        if ( isset( $task->gid ) ) {
+          $arr[] = $task->gid;
+        }
+      }
+
+      return $arr;
+
+    }
+
+    /**
      * Delete all task pins except for those in the provided array.
      *
      * @since 1.0.0

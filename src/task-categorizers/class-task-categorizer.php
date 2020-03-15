@@ -73,7 +73,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Task_Categorizer' ) ) {
 
     final public function get_tasks_gid_array() : array {
       $arr = [];
-      foreach ( $this as $i => $task ) {
+      foreach ( $this as $task ) {
         if ( isset( $task->gid ) ) {
           $arr[] = $task->gid;
         }

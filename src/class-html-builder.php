@@ -442,10 +442,13 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
     }
 
     /**
-     * Description
-     * @param array $tasks
-     * @param bool|bool $soonest_first
-     * @return type
+     * Sort task objects from soonest to latest date due.
+     *
+     * @since 1.0.0
+     *
+     * @param array $tasks The task objects to sort by 'due_on'.
+     *
+     * @return array The sorted task objects on success. Default empty array.
      */
     static function sort_tasks_by_due( array $tasks ) : array {
 
@@ -456,7 +459,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 
       $success = usort( $tasks, function( $a, $b ) {
 
-        $a_unix = time();
+        $a_unix = PHP_INT_MAX;
 
         if ( isset( $a->due_on ) ) {
           $a_due_date = Options::sanitize( 'date', $a->due_on );
@@ -469,7 +472,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
           }
         }
 
-        $b_unix = time();
+        $b_unix = PHP_INT_MAX;
 
         if ( isset( $b->due_on ) ) {
           $b_due_date = Options::sanitize( 'date', $b->due_on );

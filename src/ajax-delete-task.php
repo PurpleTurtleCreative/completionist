@@ -24,7 +24,6 @@ $res['data'] = '';
 try {
   if (
     isset( $_POST['task_gid'] )
-    && isset( $_POST['post_id'] )
     && isset( $_POST['nonce'] )
     && wp_verify_nonce( $_POST['nonce'], 'ptc_completionist_delete_task' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     && Asana_Interface::has_connected_asana()
@@ -35,9 +34,13 @@ try {
       throw new \Exception( 'Invalid task gid.', 400 );
     }
 
-    $the_post_id = (int) Options::sanitize( 'gid', $_POST['post_id'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-    if ( $the_post_id < 1 ) {
-      throw new \Exception( 'Invalid post identifier.', 400 );
+    if ( isset( $_POST['post_id'] ) ) {
+      $the_post_id = (int) Options::sanitize( 'gid', $_POST['post_id'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+      if ( $the_post_id < 1 ) {
+        throw new \Exception( 'Invalid post identifier.', 400 );
+      }
+    } else {
+      $the_post_id = Options::get_task_pin_post_id( $task_gid );
     }
 
     /* Delete the task */
@@ -47,14 +50,18 @@ try {
 
     /* Unpin from post */
 
-    try {
-      $did_unpin_task = Options::delete( Options::PINNED_TASK_GID, $the_post_id, $task_gid );
-    } catch ( \Exception $e ) {
-      $did_unpin_task = FALSE;
-    }
+    if ( isset( $the_post_id ) && $the_post_id > 0 ) {
 
-    if ( $did_unpin_task === FALSE ) {
-      error_log( "Failed to unpin the deleted task $task_gid from post $the_post_id." );
+      try {
+        $did_unpin_task = Options::delete( Options::PINNED_TASK_GID, $the_post_id, $task_gid );
+      } catch ( \Exception $e ) {
+        $did_unpin_task = FALSE;
+      }
+
+      if ( $did_unpin_task === FALSE ) {
+        error_log( "Failed to unpin the deleted task $task_gid from post $the_post_id." );
+      }
+
     }
 
     $res['status'] = 'success';
