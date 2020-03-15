@@ -211,10 +211,7 @@ jQuery(function($) {
         task_gids_arr.push(current_task_gids[i]);
       }
 
-      console.log(task_gids_arr);
       var task_gids_str = JSON.stringify(task_gids_arr);
-      console.log(task_gids_str);
-
       var data = {
         'action': 'ptc_list_tasks',
         'nonce': ptc_completionist_dashboard_widget.nonce_list,
