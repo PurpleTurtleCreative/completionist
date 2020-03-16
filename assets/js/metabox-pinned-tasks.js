@@ -301,7 +301,7 @@ jQuery(function($) {
 
     }, 'json')
       .fail(function() {
-        alert('[Completionist] Failed to pin task.');
+        alert('[Completionist] Failed to unpin task.');
         disable_element(thisButton, false);
         buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
       });
@@ -341,7 +341,7 @@ jQuery(function($) {
 
     }, 'json')
       .fail(function() {
-        alert('[Completionist] Failed to pin task.');
+        alert('[Completionist] Failed to delete task.');
         disable_element(thisButton, false);
         buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-minus');
       });

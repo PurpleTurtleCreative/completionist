@@ -24,6 +24,7 @@ jQuery(function($) {
     return;
   }
 
+  refresh_site_tasks_progress();
   display_if_empty_list();
   lock_interface(false);
 
@@ -35,7 +36,6 @@ jQuery(function($) {
   });
 
   /* PREV PAGE */
-
   paginationNavContainer.on('click', 'button[data-page=prev]', function() {
     if(current_page > 1) {
       --current_page;
@@ -44,7 +44,6 @@ jQuery(function($) {
   });
 
   /* NEXT PAGE */
-
   paginationNavContainer.on('click', 'button[data-page=next]', function() {
     if(current_page < calculate_page_final_index()) {
       ++current_page;
@@ -53,7 +52,6 @@ jQuery(function($) {
   });
 
   /* SELECT PAGE */
-
   paginationNavContainer.on('click', 'button.page-option', function() {
     var chosen_page = $(this).data('page');
     if(chosen_page < calculate_page_final_index() && chosen_page > 0) {
@@ -63,14 +61,14 @@ jQuery(function($) {
   });
 
   /* SELECT CATEGORY */
-
   metaboxContainer.on('click', 'header button[data-category-task-gids]', function() {
     var chosen_category = $(this).attr('id');
     if(chosen_category !== current_category) {
       metaboxContainer.find('header button[data-category-task-gids]').attr('data-viewing-tasks', false);
       $(this).attr('data-viewing-tasks', true);
-      current_task_gids = $(this).data('category-task-gids');
       current_page = 1;
+      current_category = chosen_category;
+      current_task_gids = $(this).data('category-task-gids');
       load_pagination_navigation();
       list_current_page_tasks();
     }
@@ -98,7 +96,8 @@ jQuery(function($) {
     $.post(ajaxurl, data, function(res) {
 
       if(res.status == 'success' && res.data != '') {
-        thisButton.closest('.ptc-completionist-task').replaceWith(res.data);
+        remove_task_row(data.task_gid);
+        remove_task_gid(data.task_gid, false);
       } else if(res.status == 'error' && res.data != '') {
         display_alert_html(res.data);
         disable_element(thisButton, false);
@@ -138,6 +137,7 @@ jQuery(function($) {
 
       if(res.status == 'success' && res.data != '') {
         remove_task_row(res.data);
+        remove_task_gid(res.data, true);
       } else if(res.status == 'error' && res.data != '') {
         display_alert_html(res.data);
         disable_element(thisButton, false);
@@ -150,7 +150,7 @@ jQuery(function($) {
 
     }, 'json')
       .fail(function() {
-        alert('[Completionist] Failed to pin task.');
+        alert('[Completionist] Failed to unpin task.');
         disable_element(thisButton, false);
         buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-thumbtack');
       });
@@ -177,6 +177,7 @@ jQuery(function($) {
 
       if(res.status == 'success' && res.data != '') {
         remove_task_row(res.data);
+        remove_task_gid(res.data, true);
       } else if(res.status == 'error' && res.data != '') {
         display_alert_html(res.data);
         disable_element(thisButton, false);
@@ -189,7 +190,7 @@ jQuery(function($) {
 
     }, 'json')
       .fail(function() {
-        alert('[Completionist] Failed to pin task.');
+        alert('[Completionist] Failed to delete task.');
         disable_element(thisButton, false);
         buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-minus');
       });
@@ -207,7 +208,7 @@ jQuery(function($) {
       var final_index = calculate_page_final_index();
       var start_index = calculate_page_start_index();
       var task_gids_arr = [];
-      for(var i = start_index; i <= final_index; ++i ) {
+      for(var i = start_index; i <= final_index; ++i) {
         task_gids_arr.push(current_task_gids[i]);
       }
 
@@ -233,6 +234,7 @@ jQuery(function($) {
     } else {
       taskContainer.html('');
       display_if_empty_list();
+      lock_interface(false);
     }
 
   }//end function list_current_page_tasks()
@@ -307,15 +309,15 @@ jQuery(function($) {
     paginationNavContainer.find('button.page-option:not([data-page=1])').remove();
     var total_pages = calculate_last_page_number();
     var page_option_HTML = '';
-    for ( var i = 2; i <= total_pages; ++i ) {
-      var disabled = ( i === current_page ) ? ' disabled="disabled"' : '';
+    for (var i = 2; i <= total_pages; ++i) {
+      var disabled = (i === current_page) ? ' disabled="disabled"' : '';
       page_option_HTML += '<button class="page-option" data-page="'+i+'" type="button" title="Page '+i+'"'+disabled+'>'+i+'</button>';
     }
     $(page_option_HTML).insertAfter(paginationNavContainer.find('button.page-option[data-page=1]'));
   }
 
   function calculate_last_page_number() {
-    return Math.ceil( current_task_gids.length / page_size );
+    return Math.ceil(current_task_gids.length / page_size);
   }
 
   function display_alert_html(note_box_html) {
@@ -330,10 +332,45 @@ jQuery(function($) {
   function calculate_page_final_index() {
     var final_index = (page_size * current_page) - 1;
     var last_index = current_task_gids.length - 1;
-    if ( final_index > last_index ) {
+    if (final_index > last_index) {
       final_index = last_index;
     }
     return final_index;
+  }
+
+  function remove_task_gid(task_gid, deleted = true) {
+    metaboxContainer.find('header button[data-category-task-gids]').each(function() {
+      if($(this).attr('id') === 'all-site-tasks' && deleted === true) {
+        // update total count if deleted or unpinned
+        var total_tasks_count = $(this).find('.total-tasks-count').html();
+        $(this).find('.total-tasks-count').html(--total_tasks_count);
+      }
+      var task_list = $(this).data('category-task-gids');
+      task_list = remove_array_item(task_list, task_gid);
+      $(this).find('.task-count').html(task_list.length);
+      $(this).data('category-task-gids', task_list);
+    });
+    refresh_site_tasks_progress();
+  }
+
+  function refresh_site_tasks_progress() {
+    var all_site_tasks_button = metaboxContainer.find('header button#all-site-tasks');
+    var task_list = all_site_tasks_button.data('category-task-gids');
+
+    var total_tasks_count = all_site_tasks_button.find('.total-tasks-count').html();
+    var incomplete_tasks_count = task_list.length;
+    var completed_tasks_count = total_tasks_count - incomplete_tasks_count;
+
+    all_site_tasks_button.find('.completed-tasks-count').html(completed_tasks_count);
+
+    var completion_percentage = Math.ceil((completed_tasks_count / total_tasks_count) * 100);
+    all_site_tasks_button.find('.progress-bar-wrapper .progress-bar').css('width', completion_percentage+'%');
+  }
+
+  function remove_array_item(array, remove_value) {
+    return jQuery.grep(array, function(value) {
+      return value != remove_value;
+    });
   }
 
 });//end document ready

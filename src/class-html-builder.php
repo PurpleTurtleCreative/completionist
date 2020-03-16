@@ -357,6 +357,32 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
     }
 
     /**
+     * Returns an Asana tag list URL.
+     *
+     * @since 1.0.0
+     *
+     * @param string $tag_gid Optional. The Asana tag gid. Default '' to use
+     * the site tag.
+     *
+     * @return string The Asana link. Default ''.
+     */
+    static function get_asana_tag_url( string $tag_gid = '' ) : string {
+
+      if ( $tag_gid === '' ) {
+        $tag_gid = Options::get( Options::ASANA_TAG_GID );
+      } else {
+        $tag_gid = Options::sanitize( 'gid', $tag_gid );
+      }
+
+      if ( ! empty( $tag_gid ) ) {
+        return "https://app.asana.com/0/{$tag_gid}/list";
+      }
+
+      return '';
+
+    }
+
+    /**
      * Get various data for a task's 'due_on' relativity to today's date.
      *
      * @since 1.0.0
