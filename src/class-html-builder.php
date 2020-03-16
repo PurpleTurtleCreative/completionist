@@ -136,7 +136,16 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
             $edit_post_link = get_edit_post_link( $post );
             if ( $edit_post_link ) {
               $cta_button_link = $edit_post_link;
-              $cta_button_label = "Edit {$post->post_type}";
+              $post_type_obj = get_post_type_object( $post->post_type );
+              if (
+                $post_type_obj
+                && isset( $post_type_obj->labels->singular_name )
+                && ! empty( $post_type_obj->labels->singular_name )
+              ) {
+                $cta_button_label = "Edit {$post_type_obj->labels->singular_name}";
+              } else {
+                $cta_button_label = "Edit {$post->post_type}";
+              }
             }
           }
         }

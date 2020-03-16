@@ -217,6 +217,7 @@ jQuery(function($) {
         'action': 'ptc_list_tasks',
         'nonce': ptc_completionist_dashboard_widget.nonce_list,
         'task_gids': task_gids_str,
+        'detailed': true,
       };
 
       $.post(ajaxurl, data, function(res) {

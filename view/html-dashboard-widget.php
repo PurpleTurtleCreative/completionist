@@ -65,7 +65,7 @@ try {
 
   /* Task List Pagination */
 
-  $page_size = 20;
+  $page_size = 10;
   $total_pages = ceil( $incomplete_tasks_count / $page_size );
   $disable_next_button = ( $total_pages > 1 ) ? '' : 'disabled="disabled"';
 
@@ -75,10 +75,10 @@ try {
   <header>
 
     <button id="all-site-tasks" title="View All Site Tasks" type="button" data-viewing-tasks="true" data-category-task-gids='<?php echo json_encode( Asana_Interface::get_tasks_gid_array( $all_incomplete_tasks ) ); ?>'>
-      <div>
+      <div class="task-box-icon">
         <i class="fas fa-clipboard-list"></i>
       </div>
-      <div>
+      <div class="task-box-data">
         <p><span class="task-count"><?php echo esc_html( $incomplete_tasks_count ); ?></span> Tasks</p>
         <div>
           <div class="progress-bar-wrapper">
@@ -87,39 +87,24 @@ try {
           <p><span class="completed-tasks-count"><?php echo esc_html( $completed_tasks_count ); ?></span> of <span class="total-tasks-count"><?php echo esc_html( $total_tasks_count ); ?></span></p>
         </div>
       </div>
-      <div>
-        <i class="far fa-circle"></i>
-      </div>
     </button>
 
     <div id="ptc-asana-task-categories">
 
       <button id="pinned-tasks" title="View Pinned Tasks" type="button" data-viewing-tasks="false" data-category-task-gids='<?php echo json_encode( $pinned_tasks->get_tasks_gid_array() ); ?>'>
         <p><span class="task-count"><?php echo esc_html( $pinned_tasks->get_incomplete_count() ); ?></span>Pinned</p>
-        <div>
-          <i class="far fa-circle"></i>
-        </div>
       </button>
 
       <button id="general-tasks" title="View Generic Tasks" type="button" data-viewing-tasks="false" data-category-task-gids='<?php echo json_encode( $general_tasks->get_tasks_gid_array() ); ?>'>
         <p><span class="task-count"><?php echo esc_html( $general_tasks->get_incomplete_count() ); ?></span>General</p>
-        <div>
-          <i class="far fa-circle"></i>
-        </div>
       </button>
 
       <button id="critical-tasks" title="View Due and Upcoming Tasks" type="button" data-viewing-tasks="false" data-category-task-gids='<?php echo json_encode( $critical_tasks->get_tasks_gid_array() ); ?>'>
         <p><span class="task-count"><?php echo esc_html( $critical_tasks->get_incomplete_count() ); ?></span>Critical</p>
-        <div>
-          <i class="far fa-circle"></i>
-        </div>
       </button>
 
       <button id="my-tasks" title="View My Tasks" type="button" data-viewing-tasks="false" data-category-task-gids='<?php echo json_encode( $my_tasks->get_tasks_gid_array() ); ?>'>
         <p><span class="task-count"><?php echo esc_html( $my_tasks->get_incomplete_count() ); ?></span>My Tasks</p>
-        <div>
-          <i class="far fa-circle"></i>
-        </div>
       </button>
 
     </div>
@@ -157,7 +142,7 @@ try {
     </nav>
     <a href="<?php echo esc_url( HTML_Builder::get_asana_tag_url() ); ?>" target="_asana">
       <button title="View All Site Tasks in Asana" class="view-task" type="button">
-        <i class="fas fa-tags"></i>
+        <i class="fas fa-link"></i>
       </button>
     </a>
   </footer>
