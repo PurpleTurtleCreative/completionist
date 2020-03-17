@@ -297,10 +297,10 @@ jQuery(function($) {
       disable_element(metaboxContainer.find('button'), false);
       disable_element(metaboxContainer.find('header button#'+current_category), true);
       disable_element(paginationNavContainer.find('button[data-page='+current_page+']'), true);
-      if(current_page === 1) {
+      if(current_page <= 1) {
         disable_element(paginationNavContainer.find('button[data-page=prev]'), true);
       }
-      if(current_page === calculate_last_page_number()) {
+      if(current_page >= calculate_last_page_number()) {
         disable_element(paginationNavContainer.find('button[data-page=next]'), true);
       }
     }
