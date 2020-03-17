@@ -59,7 +59,7 @@
 #ptc-completionist_pinned-tasks button#reload-task-list {
   display: block;
   float: right;
-  margin: 6px 0px;
+  margin: 6px 0;
   width: auto;
   height: calc(36px - (6px * 2));
   background: #627D98;
@@ -377,4 +377,10 @@ input#ptc-new-task_name {
   background: #FFEEEE;
   color: #D64545;
   border-color: #F29B9B;
+}
+
+/* GUTENBERG BLOCK EDITOR */
+
+body.block-editor-page #ptc-completionist_pinned-tasks button#reload-task-list {
+  margin: 12px 0;
 }
