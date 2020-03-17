@@ -1,10 +1,20 @@
 jQuery(function($) {
 
   var workspaceFormInputs = $('section#ptc-asana-workspace form :input');
+  if(workspaceFormInputs.length < 1) {
+    return;
+  }
 
   /* SELECT WORKSPACE */
   var selectWorkspace = $('section#ptc-asana-workspace select#asana-workspace');
+  if(selectWorkspace.length < 1) {
+    return;
+  }
+
   var workspaceWarningNote = selectWorkspace.closest('form').find('#asana-workspace-warning');
+  if(workspaceWarningNote.length < 1) {
+    return;
+  }
 
   selectWorkspace.on('change', function() {
     load_tag_options(selectWorkspace.val());
@@ -19,6 +29,10 @@ jQuery(function($) {
 
   /* SELECT SITE TAG */
   var selectTag = $('section#ptc-asana-workspace select#asana-tag');
+  if(selectTag.length < 1) {
+    return;
+  }
+
   var selectTagLabelHTML = $('section#ptc-asana-workspace form label[for="asana-tag"]').html();
   var inputTagName = $('section#ptc-asana-workspace input#asana-tag-name');
   var tagWarningNote = selectWorkspace.closest('form').find('#asana-tag-warning');
