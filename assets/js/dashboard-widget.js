@@ -364,7 +364,10 @@ jQuery(function($) {
 
     all_site_tasks_button.find('.completed-tasks-count').html(completed_tasks_count);
 
-    var completion_percentage = Math.ceil((completed_tasks_count / total_tasks_count) * 100);
+    var completion_percentage = 0;
+    if(total_tasks_count > 0) {
+      var completion_percentage = Math.ceil((completed_tasks_count / total_tasks_count) * 100);
+    }
     all_site_tasks_button.find('.progress-bar-wrapper .progress-bar').css('width', completion_percentage+'%');
   }
 
