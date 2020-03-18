@@ -127,7 +127,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
             wp_die('<strong>Error: Unauthorized.</strong> You must have post editing capabilities in order to use Completionist.');
           }
         },
-        'dashicons-yes-alt',
+        'data:image/svg+xml;base64,' . base64_encode('<svg width="20" height="20" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="clipboard-check" class="svg-inline--fa fa-clipboard-check fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="black" d="M336 64h-80c0-35.3-28.7-64-64-64s-64 28.7-64 64H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM192 40c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm121.2 231.8l-143 141.8c-4.7 4.7-12.3 4.6-17-.1l-82.6-83.3c-4.7-4.7-4.6-12.3.1-17L99.1 285c4.7-4.7 12.3-4.6 17 .1l46 46.4 106-105.2c4.7-4.7 12.3-4.6 17 .1l28.2 28.4c4.7 4.8 4.6 12.3-.1 17z"></path></svg>'),
         3 /* For default priorities, see https://developer.wordpress.org/reference/functions/add_menu_page/#default-bottom-of-menu-structure */
       );
 
@@ -295,7 +295,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      */
     function register_scripts( $hook_suffix ) {
 
-      wp_register_style(
+      wp_register_script(
         'fontawesome-5',
         'https://kit.fontawesome.com/02ab9ff442.js',
         [],
@@ -305,7 +305,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       wp_register_style(
         'ptc-completionist_admin-theme-css',
         plugins_url( 'assets/css/admin-theme.css', __FILE__ ),
-        [ 'fontawesome-5' ],
+        [],
         '0.0.0'
       );
 
@@ -315,7 +315,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
           wp_enqueue_script(
             'ptc-completionist_dashboard-widget-js',
             plugins_url( 'assets/js/dashboard-widget.js', __FILE__ ),
-            [ 'jquery' ],
+            [ 'jquery', 'fontawesome-5' ],
             '0.0.0'
           );
           wp_localize_script(
@@ -335,7 +335,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
           wp_enqueue_style(
             'ptc-completionist_dashboard-widget-css',
             plugins_url( 'assets/css/dashboard-widget.css', __FILE__ ),
-            [ 'fontawesome-5' ],
+            [],
             '0.0.0'
           );
           break;
@@ -356,7 +356,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
           wp_enqueue_script(
             'ptc-completionist_admin-dashboard-js',
             plugins_url( 'assets/js/admin-dashboard.js', __FILE__ ),
-            [ 'jquery' ],
+            [ 'jquery', 'fontawesome-5' ],
             '0.0.0'
           );
           require_once $this->plugin_path . 'src/class-options.php';
@@ -376,7 +376,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
           wp_enqueue_script(
             'ptc-completionist_metabox-pinned-tasks-js',
             plugins_url( 'assets/js/metabox-pinned-tasks.js', __FILE__ ),
-            [ 'jquery' ],
+            [ 'jquery', 'fontawesome-5' ],
             '0.0.0'
           );
           wp_localize_script(
@@ -395,7 +395,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
           wp_enqueue_style(
             'ptc-completionist_metabox-pinned-tasks-css',
             plugins_url( 'assets/css/metabox-pinned-tasks.css', __FILE__ ),
-            [ 'fontawesome-5' ],
+            [],
             '0.0.0'
           );
           break;

@@ -714,7 +714,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      *
      * @throws \Exception If settings were found to be invalid.
      */
-    static function require_settings() : void {
+    static function require_settings() {
 
       $asana = self::get_client();
 

@@ -233,7 +233,7 @@ try {
 
 /* HELPERS */
 
-function display_collaborator_row( \WP_User $user ) : void {
+function display_collaborator_row( \WP_User $user ) {
 
   $gravatar = get_avatar( $user->ID, 30, 'mystery' );
   $name = $user->display_name;
