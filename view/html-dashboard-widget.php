@@ -45,9 +45,11 @@ try {
 
   /* Sort By Due */
 
-  $sorted_all_incompleted_tasks = HTML_Builder::sort_tasks_by_due( $all_incomplete_tasks );
-  if ( ! empty( $sorted_all_incompleted_tasks ) ) {
-    $all_incomplete_tasks = $sorted_all_incompleted_tasks;
+  if ( ! empty( $all_incomplete_tasks ) ) {
+    $sorted_all_incompleted_tasks = HTML_Builder::sort_tasks_by_due( $all_incomplete_tasks );
+    if ( ! empty( $sorted_all_incompleted_tasks ) ) {
+      $all_incomplete_tasks = $sorted_all_incompleted_tasks;
+    }
   }
 
   /* Counts and Stats */
