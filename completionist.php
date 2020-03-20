@@ -6,10 +6,12 @@
  * @copyright         2020 Michelle Blanchette
  * @license           MIT
  *
- * Plugin Name:       Completionist - Asana Task Management for WordPress
+ * @wordpress-plugin
+ * Plugin Name:       Completionist - Manage Asana Tasks on WordPress
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
  * Description:       Pin and manage Asana tasks in relevant areas of your WordPress admin.
  * Version:           1.0.0
+ * Requires at least: 4.7
  * Requires PHP:      7.0
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
