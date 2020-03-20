@@ -78,8 +78,9 @@ jQuery(function($) {
       if(res.status == 'success') {
         if(res.data != '') {
           selectTag.append(res.data);
-          if(ptc_completionist_dashboard.saved_tag_gid) {
-            selectTag.find('option[value="'+ptc_completionist_dashboard.saved_tag_gid+'"]').prop('selected', true);
+          selected_tag_id = selectTag.find('option:selected').val();
+          if(selected_tag_id) {
+            ptc_completionist_dashboard.saved_tag_gid = selected_tag_id;
           }
         }
         disable_element(selectTag, false);
