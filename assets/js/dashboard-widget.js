@@ -276,7 +276,7 @@ jQuery(function($) {
 
   function display_if_empty_list() {
     if(taskContainer.html().trim() == '') {
-      taskContainer.html('<p class="nothing-to-see"><i class="fas fa-clipboard-check"></i>There are no tasks!</p>');
+      taskContainer.html('<p class="nothing-to-see"><i class="fas fa-clipboard-check"></i>There are no incomplete tasks!</p>');
     }
   }//end display_if_empty_list()
 
