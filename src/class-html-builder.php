@@ -254,7 +254,8 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
       <div class="note-box note-box-error">
         <p>
           <strong>Error <?php echo esc_html( $code ); ?>.</strong>
-          <br><?php echo esc_html( $context_message . $e->getMessage() ); ?>
+          <br>
+          <?php echo Options::sanitize( 'html', $context_message . $e->getMessage() ); ?>
         </p>
         <div class="note-box-dismiss">
           <i class="fas fa-times"></i>
@@ -263,6 +264,22 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
       <?php
       $html = ob_get_clean();
       return ( $html !== FALSE && is_string( $html ) ) ? $html : '';
+    }
+
+    /**
+     * Builds HTML for a note-box cta link.
+     *
+     * @since 1.0.0
+     *
+     * @param string $cta_link The link's [href].
+     *
+     * @param string $cta_text The link's text.
+     *
+     * @return string The HTML, an anchor tag element.
+     */
+    static function format_note_box_cta_button( string $cta_link, string $cta_text ) : string {
+      return '<a class="note-box-cta" href="' . esc_url( $cta_link ) . '">' .
+                esc_html( $cta_text ) . '<i class="fas fa-long-arrow-alt-right"></i></a>';
     }
 
     /**

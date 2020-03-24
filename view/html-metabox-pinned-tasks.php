@@ -106,7 +106,7 @@ try {
       <strong>Not authorized.</strong>
       <br>
       Please connect your Asana account to use Completionist.
-      <a class="note-box-cta" href="<?php echo esc_url( $settings_url ); ?>">Go to Settings<i class="fas fa-long-arrow-alt-right"></i></a>
+      <?php echo HTML_Builder::format_note_box_cta_button( $settings_url, 'Go to Settings' ); ?>
     </p>
     <div class="note-box-dismiss">
       <i class="fas fa-times"></i>

@@ -498,6 +498,29 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
           );
           return ( $filtered_value !== FALSE ) ? $filtered_value : '';
 
+        case 'html':
+          $sanitized_value = wp_kses(
+            $value,
+            [
+              'a' => [
+                'href' => [],
+                'title' => [],
+                'target' => [],
+                'id' => [],
+                'class' => [],
+              ],
+              'br' => [],
+              'em' => [],
+              'strong' => [],
+              'i' => [
+                'class' => [],
+              ],
+              'b' => [],
+            ],
+            [ 'http', 'https', 'mailto' ]
+          );
+          return $sanitized_value;
+
       }
 
       error_log( 'Invalid sanitization context: ' . $context );

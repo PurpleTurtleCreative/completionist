@@ -4,7 +4,7 @@
  *
  * @author            Michelle Blanchette
  * @copyright         2020 Michelle Blanchette
- * @license           MIT
+ * @license           https://purpleturtlecreative.com/terms-conditions/
  *
  * @wordpress-plugin
  * Plugin Name:       Completionist - Manage Asana Tasks on WordPress
@@ -15,7 +15,7 @@
  * Requires PHP:      7.0
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
- * License:           MIT
+ * License:           https://purpleturtlecreative.com/terms-conditions/
  */
 
 defined( 'ABSPATH' ) || die();
@@ -64,6 +64,24 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      */
     public $settings_url;
 
+    /**
+     * The WCAM library object.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    public $wcam;
+
+    /**
+     * The full url to this plugin's license page.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    public $license_url;
+
     /* Plugin Initialization */
 
     /**
@@ -91,6 +109,15 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
 
       add_action( 'admin_menu', [ $this, 'add_admin_pages' ] );
       add_action( 'admin_enqueue_scripts', [ $this, 'register_scripts' ] );
+
+      if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
+        require_once( plugin_dir_path( __FILE__ ) . 'wc-am-client.php' );
+      }
+
+      if ( class_exists( 'WC_AM_Client_2_7' ) ) {
+        $this->wcam = new WC_AM_Client_2_7( __FILE__, '', '1.0.0', 'plugin', 'https://www.purpleturtlecreative.com/', 'Completionist' );
+        $this->license_url = admin_url( 'admin.php?page=' . $this->wcam->wc_am_activation_tab_key );
+      }
 
       add_action( 'wp_ajax_ptc_get_tag_options', [ $this, 'ajax_get_tag_options' ] );
 
@@ -129,8 +156,8 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
             wp_die('<strong>Error: Unauthorized.</strong> You must have post editing capabilities in order to use Completionist.');
           }
         },
-        'data:image/svg+xml;base64,' . base64_encode('<svg width="20" height="20" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="clipboard-check" class="svg-inline--fa fa-clipboard-check fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="black" d="M336 64h-80c0-35.3-28.7-64-64-64s-64 28.7-64 64H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM192 40c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm121.2 231.8l-143 141.8c-4.7 4.7-12.3 4.6-17-.1l-82.6-83.3c-4.7-4.7-4.6-12.3.1-17L99.1 285c4.7-4.7 12.3-4.6 17 .1l46 46.4 106-105.2c4.7-4.7 12.3-4.6 17 .1l28.2 28.4c4.7 4.8 4.6 12.3-.1 17z"></path></svg>'),
-        3 /* For default priorities, see https://developer.wordpress.org/reference/functions/add_menu_page/#default-bottom-of-menu-structure */
+        'data:image/svg+xml;base64,' . base64_encode('<svg width="20" height="20" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="clipboard-check" class="svg-inline--fa fa-clipboard-check fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="white" d="M336 64h-80c0-35.3-28.7-64-64-64s-64 28.7-64 64H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM192 40c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm121.2 231.8l-143 141.8c-4.7 4.7-12.3 4.6-17-.1l-82.6-83.3c-4.7-4.7-4.6-12.3.1-17L99.1 285c4.7-4.7 12.3-4.6 17 .1l46 46.4 106-105.2c4.7-4.7 12.3-4.6 17 .1l28.2 28.4c4.7 4.8 4.6 12.3-.1 17z"></path></svg>'),
+        100 /* For default priorities, see https://developer.wordpress.org/reference/functions/add_menu_page/#default-bottom-of-menu-structure */
       );
 
     }//end add_admin_pages()
