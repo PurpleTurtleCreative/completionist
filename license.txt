@@ -1,21 +1,87 @@
-MIT License
+﻿Purple Turtle Creative — Terms of Service
+Last Updated: March 24, 2020
 
-Copyright (c) 2020 Michelle Blanchette
+Definitions & Contact
+“Software” is defined as software products that have been acquired or are available for sale through our website, unless otherwise stated, are licensed under the rules in these Terms of Service, the “Agreement”.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+“Users” is defined as users of the Software that have agreed to these Terms of Service (“you” and “your”).
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+“Licensed Sites” is defined as website properties that the User has an Activated license status for the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+“Purple Turtle Creative” is defined as a brand name of Michelle Blanchette’s sole-proprietorship (“we”, “our”, and “us”).
+
+The Purple Turtle Creative website address is: https://purpleturtlecreative.com/
+
+You may contact Michelle directly at: michelle@purpleturtlecreative.com
+
+I. Software Licensing
+Software licenses are rewarded to Users upon purchase where the number of allowed Licensed Sites is determined by the specific product which was purchased as expressed in the product’s listing, cart entry, and order line-item details. Acquired Softwares are protected by U.S. copyright laws, and Users are granted the following Permissions for the number of rewarded licenses as expressed in our records. Users may review their rewarded licenses in the API Keys and API Downloads sections of their Purple Turtle Creative user accounts.
+
+Permissions
+Each rewarded license grants the owner with the following Permissions:
+
+- DO use the Software on the number of licenses rewarded in your account. To see how many licenses you have been rewarded, see the API Keys tab in your Purple Turtle Creative account. Using the API Keys to activate a license on a website property helps Users keep track of their used versus rewarded licenses for the Software.
+- DO modify the Software to suite your needs on Licensed Sites in ways that do not infringe on the Restrictions.
+- DO share tips, tricks, tutorials, and code snippets that help other Users of the Software in ways that do not infringe on the Restrictions or help other Users infringe on the Restrictions in this Agreement.
+
+Restrictions
+Except for the aforementioned Permissions granted to license owners, license owners are limited by U.S. copyright laws of the Software, including the following Restrictions:
+
+- DON’T redistribute or resell the Software under any circumstances that would infringe on U.S. copyright laws. The original author of the Software, Michelle Blanchette (also known as “Purple Turtle Creative”), retains copyright ownership of the Software and chooses to sell licenses to grant Users the aforementioned Permissions.
+- DON’T use the Software on more website properties than the number of licenses rewarded to your Purple Turtle Creative account, shown in the API Keys tab of your Purple Turtle Creative account, or in purchase receipts where the Software line-item is in “good standing” (i.e. not removed, crossed out, or otherwise indicated as being revoked).
+- DON’T alter the original author of the Software or claim the Software to be your or someone else’s own creation in a way that would infringe on U.S. copyright laws.
+- DON’T attempt to transfer Software licenses. Software licenses are non-transferable and may only be used by the billed user. They may not be sold to other users of the license (such as clients) for commercial benefit. Additionally, the customer may not sublicense, to any person or entity, any rights to distribute the software or license key. Purple Turtle Creative will only provide support services to the original customer/license-holder with a legitimate license key, and consider any other uses of this license key for support queries as fraudulent.
+
+II. Warranty
+Software sold and distributed by Purple Turtle Creative are done so in the hope that they will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+Inasmuch as WordPress functions correctly on a clean install of itself as provided by official WordPress.org release download packages, Purple Turtle Creative Software is guaranteed to function on a clean install of the minimum, stable, and required version of WordPress as mentioned in the Software’s specifications. We do not guarantee that the Software will function with all third-party plugins, themes, or web browsers of any kind. We do not assume responsibility and will not be held responsible for any conflicts or compatibility issues that may occur due to third-party software. We assume no responsibility for any data loss as a result of installing or using Purple Turtle Creative Software. Should conflicts occur with third-party software, we may provide support at our discretion.
+
+Our Softwares are provided “as is” without warranty of any kind, expressed or implied. We shall not be liable for any damages, including but not limited to, direct, indirect, special, incidental or consequential damages or losses that occur due to the use or inability to use our plugins.
+
+Software is sold and distributed “as is” and with no implied meaning that it will function exactly as you would like or as displayed across the Purple Turtle Creative website.
+
+III. Support
+Support services provided by Purple Turtle Creative are only available for Users’ Software having an active subscription as reflected in our records. License statuses are displayed to Users in the Subscriptions tab of their Purple Turtle Creative account.
+
+Support services include email correspondence, refund request form submissions, and any other form of communication meant to assist the User with their qualifying Software subscription(s).
+
+Whilst we attempt to provide the best support possible for our Software, we do not guarantee that any particular support request can, or will be solved to the extent, or within a timeframe that the inquirer is completely satisfied.
+
+Termination
+Support services and Software updates are provided as long as Purple Turtle Creative is actively developing the Software. Additionally, Purple Turtle Creative will no longer be responsible for providing support for the Software if any of the following shall occur:
+
+- The Software is no longer actively developed as a viable product with Purple Turtle Creative
+Software ownership has been transferred to another party
+- The platform for which the Software was built or integrated with, such as the WordPress framework or a third-party API service, is no longer actively developed, accessible, or functional
+- Additionally, Users that we determine to be using any of our Softwares or support services in a way that is malicious or disruptive to us or other parties, may have their support services terminated despite eligibility. Purple Turtle Creative reserves the right to cease offering support services to any, otherwise qualifying, User in order to better serve our User base.
+
+IV. Refund Policy
+We take the time to develop and test quality products and appreciate you giving us the chance to develop great software for you. Not everything we develop will be the perfect solution for each User, however, so we offer a full refund for line-items in your order that didn’t work out for you. Refunds are subject to the following conditions:
+
+- Honestly complete and successfully submit our “Refund Request” form within 30 days of initial Software purchase. Renewal payments do not qualify for refunds.
+- You agree to deactivate and uninstall the Software if a refund is granted.
+- Refunds will be offered at our sole discretion. By purchasing Software from our site, you agree to this refund policy and relinquish any rights to subject it to any questions, judgment, or legal actions. We are not liable to cover any differences in exchange rates between the time you purchased and the time you are refunded.
+
+V. Website & Software Content
+All content found on the Purple Turtle Creative website and throughout the Software including images, documentation, support queries, and any other information is property of Purple Turtle Creative, unless otherwise stated, and may not be redistributed without permission or consent.
+
+Purple Turtle Creative branded assets, such as logos and the overall “look and feel” of the Purple Turtle Creative website, are protected under U.S. copyright laws. Do not use our assets in any way that suggests you are affiliated with us unless you have been given explicit consent to do so.
+
+VI. Third-Party Integrations
+Some Purple Turtle Creative Software, writings, presentations, or other contents may include mentions or displays of third-parties. We do not claim to own or be affiliated with third-party brands and their assets, and we make efforts to properly follow the brand guidelines and rules made available by the third-parties.
+
+Users must not remove, hide, or change the language of third-party disclaimer notices that may be contained in Purple Turtle Creative contents and Softwares as they are required by the third-party. Any act by the User to damage or otherwise discredit a third-party shall be disputed between the third-party and the offending User.
+
+By acquiring and using Purple Turtle Creative Softwares which utilize third-party integrations, the User agrees to the rules and regulations of using such integrations. These third-party agreements are typically found and agreed upon by the User during the setup of Softwares utilizing such integrations, such as when requesting an API access token to connect their third-party account with the Software.
+
+Purple Turtle Creative greatly appreciates and respects third-parties and their APIs which we implement. We strictly do not tolerate any User found to be abusing the third-party systems our Softwares may utilize, and we may, as such, cancel an offending User from receiving our support services, despite otherwise qualifying.
+
+VII. Price Changes
+Purple Turtle Creative reserves the right to modify, change, cancel, or upgrade a Software subscription or license key without prior notice or consent. Prices of all products are subject to change without prior notice or consent.
+
+VIII. License Agreement
+By purchasing our Software, you indicate and consent that you have read and agree to the Terms of Service listed and detailed in this document. We reserve the right to change or modify the current Terms of Service without prior notice or consent.
+
+IX. Severability
+If any part of this agreement is declared unenforceable or invalid, all remaining clauses in this agreement shall remain binding on the customer.
