@@ -1,20 +1,22 @@
 ﻿Purple Turtle Creative — Terms of Service
-Last Updated: March 24, 2020
+Last Updated: March 25, 2020
 
 Definitions & Contact
-“Software” is defined as software products that have been acquired or are available for sale through our website, unless otherwise stated, are licensed under the rules in these Terms of Service, the “Agreement”.
+“Purple Turtle Creative” is defined as a brand name of Michelle Blanchette’s sole-proprietorship (“we”, “our”, and “us”).
+
+“Software” is defined as software products by Purple Turtle Creative that have been acquired or are available for sale through our website.
 
 “Users” is defined as users of the Software that have agreed to these Terms of Service (“you” and “your”).
 
 “Licensed Sites” is defined as website properties that the User has an Activated license status for the Software.
-
-“Purple Turtle Creative” is defined as a brand name of Michelle Blanchette’s sole-proprietorship (“we”, “our”, and “us”).
 
 The Purple Turtle Creative website address is: https://purpleturtlecreative.com/
 
 You may contact Michelle directly at: michelle@purpleturtlecreative.com
 
 I. Software Licensing
+Our Softwares are licensed under the rules in these Terms of Service, the “Agreement”. A copy of the Agreement is included in our Software packages for convenience; however, the copy of the Agreement linked on our website will take precedence. A link to the official, most up-to-date version of the Agreement is also included in our said Software packages for reference. If a copy of or link to the Agreement is not found in one of our Software packages, the copy of the Agreement found on our website, which is agreed to by the Software user at checkout, shall apply.
+
 Software licenses are rewarded to Users upon purchase where the number of allowed Licensed Sites is determined by the specific product which was purchased as expressed in the product’s listing, cart entry, and order line-item details. Acquired Softwares are protected by U.S. copyright laws, and Users are granted the following Permissions for the number of rewarded licenses as expressed in our records. Users may review their rewarded licenses in the API Keys and API Downloads sections of their Purple Turtle Creative user accounts.
 
 Permissions

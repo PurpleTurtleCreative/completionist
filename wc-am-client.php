@@ -150,9 +150,6 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 				$this->wc_am_domain           = str_ireplace( array( 'http://', 'https://' ), '', home_url() ); // blog domain name
 				$this->wc_am_software_version = $this->software_version; // The software version
 
-				// Check if data has been migrated from pre-2.0.
-				$this->migrate_pre_2_0_data( $product_id, $software_title );
-
 				/**
 				 * Check for software updates
 				 */
@@ -173,59 +170,6 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 			if ( $this->plugin_or_theme == 'theme' ) {
 				add_action( 'switch_theme', array( $this, 'uninstall' ) );
 			}
-		}
-
-		/**
-		 * Migrates pre 2.0 data to prevent breaking old software activations.
-		 *
-		 * @since 2.0
-		 *
-		 * @param int    $product_id
-		 * @param string $software_title
-		 */
-		public function migrate_pre_2_0_data( $product_id, $software_title ) {
-			$upraded_postfix = strtolower( str_ireplace( array( ' ', '_', '&', '?', '-' ), '_', $product_id ) );
-			$upraded         = get_option( 'wc_client_20_ugrade_attempt_' . $upraded_postfix );
-
-			if ( $upraded != 'yes' ) {
-				$title        = is_int( $product_id ) ? strtolower( $software_title ) : strtolower( $product_id );
-				$title        = str_ireplace( array( ' ', '_', '&', '?' ), '_', $title );
-				$old_data_key = $title . '_data';
-				$data         = get_option( $old_data_key );
-				$instance     = get_option( $title . '_instance' );
-
-				if ( ! empty( $data ) && ! empty( $instance ) ) {
-					$api_key = array(
-						$this->wc_am_api_key_key => $data[ 'api_key' ],
-					);
-
-					update_option( $this->data_key, $api_key );
-					update_option( $this->wc_am_instance_key, $instance );
-					! empty( $instance ) ? update_option( $this->wc_am_deactivate_checkbox_key, 'off' ) : update_option( $this->wc_am_deactivate_checkbox_key, 'on' );
-					! empty( $instance ) ? update_option( $this->wc_am_activated_key, 'Activated' ) : update_option( $this->wc_am_activated_key, 'Deactivated' );
-					// Success!
-					update_option( 'wc_client_20_ugrade_attempt_' . $upraded_postfix, 'yes' );
-				} else {
-					if ( empty( $this->wc_am_instance_id ) ) {
-						// Failed migration. :( Cue the violins to play a sad song.
-						add_action( 'admin_notices', array( $this, 'migrate_error_notice' ) );
-					}
-				}
-			}
-		}
-
-		/**
-		 * Provides one-time instructions for customer to reactivate the API Key if the migration fails.
-		 *
-		 * @since 2.0
-		 */
-		public function migrate_error_notice() { ?>
-            <div class="notice notice-error">
-                <p>
-					<?php esc_html_e( 'Attempt to migrate data failed. Deactivate then reactive this plugin or theme, then enter your API Key on the settings screen to receive software updates. Contact support if assistance is required.', $this->text_domain ); ?>
-                </p>
-            </div>
-			<?php
 		}
 
 		/**
@@ -280,8 +224,8 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 
 				// Remove options pre API Manager 2.0
 				if ( is_multisite() ) {
-					switch_to_blog( $blog_id );
 
+					switch_to_blog( $blog_id );
 					foreach (
 						array(
 							$this->wc_am_instance_key,
@@ -289,12 +233,12 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 							$this->wc_am_activated_key,
 						) as $option
 					) {
-
 						delete_option( $option );
 					}
-
 					restore_current_blog();
+
 				} else {
+
 					foreach (
 						array(
 							$this->wc_am_instance_key,
@@ -302,9 +246,9 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 							$this->wc_am_activated_key
 						) as $option
 					) {
-
 						delete_option( $option );
 					}
+
 				}
 			}
 		}
