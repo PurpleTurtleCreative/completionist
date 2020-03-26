@@ -27,6 +27,7 @@ try {
     && isset( $_POST['nonce'] )
     && wp_verify_nonce( $_POST['nonce'], 'ptc_completionist_create_task' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     && Asana_Interface::has_connected_asana()
+    && Asana_Interface::require_license()
   ) {
 
     $site_tag_gid = Options::get( Options::ASANA_TAG_GID );

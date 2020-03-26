@@ -738,6 +738,29 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
     }
 
+
+    /**
+     * Confirm that the plugin is licensed.
+     *
+     * @since 1.0.0
+     *
+     * @throws \PTC_Completionist\Errors\NoLicense If the plugin license is
+     * invalid.
+     */
+    static function require_license() {
+
+      global $ptc_completionist;
+      if (
+        is_object( $ptc_completionist->wcam )
+        && $ptc_completionist->wcam->get_api_key_status( FALSE )
+      ) {
+        return;
+      }
+
+      throw new Errors\NoLicense( 'Invalid license. Please enter a valid license to activate Completionist\'s features.', 403 );
+
+    }
+
     /**
      * Count how many tasks are completed.
      *

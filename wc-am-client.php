@@ -288,7 +288,7 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 					return;
 				} ?>
                 <div class="notice notice-error">
-                    <p><?php printf( __( 'The <strong>%s</strong> API Key has not been activated, so %s updates are unavailable! %sClick here%s to activate <strong>%s</strong>.', $this->text_domain ), esc_attr( $this->software_title ), esc_attr( $this->plugin_or_theme ), '<a href="' . esc_url( admin_url( 'admin.php?page=' . $this->wc_am_activation_tab_key ) ) . '">', '</a>', esc_attr( $this->software_title ) ); ?></p>
+                    <p><?php printf( __( 'The <strong>%s</strong> license has not been activated, so some %s features are unavailable! %sClick here%s to activate <strong>%s</strong>.', $this->text_domain ), esc_attr( $this->software_title ), esc_attr( $this->plugin_or_theme ), '<a href="' . esc_url( admin_url( 'admin.php?page=' . $this->wc_am_activation_tab_key ) ) . '">', '</a>', esc_attr( $this->software_title ) ); ?></p>
                 </div>
 			<?php }
 		}
@@ -354,11 +354,11 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 		public function load_settings() {
 			register_setting( $this->data_key, $this->data_key, array( $this, 'validate_options' ) );
 			// API Key
-			add_settings_section( $this->wc_am_api_key_key, esc_html__( 'API Key Activation', $this->text_domain ), array(
+			add_settings_section( $this->wc_am_api_key_key, esc_html__( 'License Activation', $this->text_domain ), array(
 				$this,
 				'wc_am_api_key_text'
 			), $this->wc_am_activation_tab_key );
-			add_settings_field( $this->wc_am_api_key_key, esc_html__( 'API Key', $this->text_domain ), array(
+			add_settings_field( $this->wc_am_api_key_key, esc_html__( 'License', $this->text_domain ), array(
 				$this,
 				'wc_am_api_key_field'
 			), $this->wc_am_activation_tab_key, $this->wc_am_api_key_key );
@@ -373,7 +373,7 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 				), $this->wc_am_activation_tab_key, $this->wc_am_api_key_key );
 			}
 
-			add_settings_field( 'status', esc_html__( 'API Key Status', $this->text_domain ), array(
+			add_settings_field( 'status', esc_html__( 'License Status', $this->text_domain ), array(
 				$this,
 				'wc_am_api_key_status'
 			), $this->wc_am_activation_tab_key, $this->wc_am_api_key_key );
@@ -386,7 +386,7 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 				$this,
 				'wc_am_deactivate_text'
 			), $this->wc_am_deactivation_tab_key );
-			add_settings_field( 'deactivate_button', esc_html__( 'Deactivate API Key', $this->text_domain ), array(
+			add_settings_field( 'deactivate_button', esc_html__( 'Deactivate License', $this->text_domain ), array(
 				$this,
 				'wc_am_deactivate_textarea'
 			), $this->wc_am_deactivation_tab_key, 'deactivate_button' );

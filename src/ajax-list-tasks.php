@@ -27,6 +27,7 @@ try {
     && isset( $_POST['nonce'] )
     && wp_verify_nonce( $_POST['nonce'], 'ptc_completionist_list_task' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     && Asana_Interface::has_connected_asana()
+    && Asana_Interface::require_license()
   ) {
 
     $task_gids = json_decode( stripslashes( $_POST['task_gids'] ), FALSE, 2, JSON_BIGINT_AS_STRING );

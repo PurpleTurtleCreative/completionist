@@ -18,6 +18,7 @@ require_once $ptc_completionist->plugin_path . 'src/class-html-builder.php';
 
 try {
 
+  Asana_Interface::require_license();
   Asana_Interface::require_settings();
   $asana = Asana_Interface::get_client();
 
@@ -96,6 +97,23 @@ try {
   <main id="task-list">
     <p class="task-loader"><i class="fas fa-circle-notch fa-spin"></i>Waiting to load tasks...</p>
   </main>
+  <?php
+} catch ( \PTC_Completionist\Errors\NoLicense $e ) {
+  /* User is not authenticated for API usage. */
+  $license_url = $ptc_completionist->license_url;
+  ?>
+  <div class="note-box note-box-error">
+    <p>
+      <strong>Invalid License</strong>
+      <br>
+      This feature is unavailable without an Activated license.
+      <br>
+      <a class="note-box-cta" href="<?php echo esc_url( $license_url ); ?>">Activate License<i class="fas fa-long-arrow-alt-right"></i></a>
+    </p>
+    <div class="note-box-dismiss">
+      <i class="fas fa-times"></i>
+    </div>
+  </div>
   <?php
 } catch ( \PTC_Completionist\Errors\NoAuthorization $e ) {
   /* User is not authenticated for API usage. */
