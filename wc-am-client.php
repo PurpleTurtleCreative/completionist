@@ -125,9 +125,9 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 				$this->wc_am_activation_tab_key          = $this->data_key . '_dashboard';
 				$this->wc_am_deactivation_tab_key        = $this->data_key . '_deactivation';
 				$this->wc_am_settings_menu_title         = $this->software_title . esc_html__( ' Activation', $this->text_domain );
-				$this->wc_am_settings_title              = $this->software_title . esc_html__( ' API Key Activation', $this->text_domain );
-				$this->wc_am_menu_tab_activation_title   = esc_html__( 'API Key Activation', $this->text_domain );
-				$this->wc_am_menu_tab_deactivation_title = esc_html__( 'API Key Deactivation', $this->text_domain );
+				$this->wc_am_settings_title              = $this->software_title . esc_html__( ' License Key Activation', $this->text_domain );
+				$this->wc_am_menu_tab_activation_title   = esc_html__( 'License Key Activation', $this->text_domain );
+				$this->wc_am_menu_tab_deactivation_title = esc_html__( 'License Key Deactivation', $this->text_domain );
 
 				/**
 				 * Set all software update data here
@@ -558,7 +558,7 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 				if ( $activate_results[ 'success' ] === true && $activate_results[ 'deactivated' ] === true ) {
 					if ( ! empty( $this->wc_am_activated_key ) ) {
 						update_option( $this->wc_am_activated_key, 'Deactivated' );
-						add_settings_error( 'wc_am_deactivate_text', 'deactivate_msg', esc_html__( 'API Key deactivated. ', $this->text_domain ) . esc_attr( "{$activate_results['activations_remaining']}." ), 'updated' );
+						add_settings_error( 'wc_am_deactivate_text', 'deactivate_msg', esc_html__( 'License Key deactivated. ', $this->text_domain ) . esc_attr( "{$activate_results['activations_remaining']}." ), 'updated' );
 					}
 
 					return $options;
@@ -594,7 +594,7 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 				return true;
 			}
 
-			add_settings_error( 'not_deactivated_text', 'not_deactivated_error', esc_html__( 'The API Key could not be deactivated. Use the API Key Deactivation tab to manually deactivate the API Key before activating a new API Key. If all else fails, go to Plugins, then deactivate and reactivate this plugin, or if a theme change themes, then change back to this theme, then go to the Settings for this plugin/theme and enter the API Key information again to activate it. Also check the My Account dashboard to see if the API Key for this site was still active before the error message was displayed.', $this->text_domain ), 'updated' );
+			add_settings_error( 'not_deactivated_text', 'not_deactivated_error', esc_html__( 'The License Key could not be deactivated. Use the License Key Deactivation tab to manually deactivate the License Key before activating a new License Key. If all else fails, go to Plugins, then deactivate and reactivate this plugin, or if a theme change themes, then change back to this theme, then go to the Settings for this plugin/theme and enter the License Key information again to activate it. Also check the My Account dashboard to see if the License Key for this site was still active before the error message was displayed.', $this->text_domain ), 'updated' );
 
 			return false;
 		}
@@ -605,7 +605,7 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 			echo '<input type="checkbox" id="' . esc_attr( $this->wc_am_deactivate_checkbox_key ) . '" name="' . esc_attr( $this->wc_am_deactivate_checkbox_key ) . '" value="on"';
 			echo checked( get_option( $this->wc_am_deactivate_checkbox_key ), 'on' );
 			echo '/>';
-			?><span class="description"><?php esc_html_e( 'Deactivates an API Key so it can be used on another blog.', $this->text_domain ); ?></span>
+			?><span class="description"><?php esc_html_e( 'Deactivates a License Key so it can be used on another blog.', $this->text_domain ); ?></span>
 			<?php
 		}
 

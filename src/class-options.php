@@ -183,7 +183,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
           $asana_pat = $value;
           $sanitized_asana_pat = self::sanitize( $key, $asana_pat );
           if ( ! $force && $asana_pat != $sanitized_asana_pat ) {
-            throw new \Exception( 'ERROR: Refused to save different value for option: ' . $key );
+            throw new \Exception( 'ERROR: Refused to save invalid Asana PAT value.' );
           }
           return self::maybe_update_usermeta( $key, self::crypt( $sanitized_asana_pat, 'e' ), $object_id );
 
@@ -443,7 +443,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
           );
-          $sanitized_asana_pat = preg_replace( '/[^a-z0-9\/]+/', '', $filtered_asana_pat );
+          $sanitized_asana_pat = preg_replace( '/[^a-z0-9\/:]+/', '', $filtered_asana_pat );
           return (string) $sanitized_asana_pat;
 
         case 'gid':
