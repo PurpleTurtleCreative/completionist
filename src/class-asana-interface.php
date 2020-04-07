@@ -746,18 +746,22 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      *
      * @throws \PTC_Completionist\Errors\NoLicense If the plugin license is
      * invalid.
+     *
+     * @return bool If the plugin is licensed.
      */
-    static function require_license() {
+    static function require_license() : bool {
 
       global $ptc_completionist;
       if (
         is_object( $ptc_completionist->wcam )
         && $ptc_completionist->wcam->get_api_key_status( FALSE )
       ) {
-        return;
+        return TRUE;
       }
 
       throw new Errors\NoLicense( 'Invalid license. Please enter a valid license to activate Completionist\'s features.', 403 );
+
+      return TRUE;
 
     }
 
