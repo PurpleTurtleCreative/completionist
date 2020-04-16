@@ -127,6 +127,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 
         $cta_button_link = '';
         $cta_button_label = '';
+        $cta_button_target = '_self';
 
         $post_id = Options::get_task_pin_post_id( $task_gid );
 
@@ -153,6 +154,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
         if ( $cta_button_link === '' ) {
           $cta_button_link = $task_url;
           $cta_button_label = 'View in Asana';
+          $cta_button_target = '_asana';
         }
 
       }
@@ -213,7 +215,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 
         <?php if ( $detailed_view ) { ?>
         <div class="cta-button">
-          <a href="<?php echo esc_url( $cta_button_link ); ?>">
+          <a href="<?php echo esc_url( $cta_button_link ); ?>" target="<?php echo esc_attr( $cta_button_target ); ?>">
             <?php echo esc_html( $cta_button_label ); ?>
             <i class="fas fa-long-arrow-alt-right"></i>
           </a>
