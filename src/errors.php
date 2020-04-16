@@ -1,4 +1,9 @@
 <?php
+/**
+ * All custom error types.
+ *
+ * @since 1.0.0
+ */
 
 namespace PTC_Completionist\Errors;
 

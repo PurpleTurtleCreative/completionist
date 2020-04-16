@@ -452,6 +452,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      *
      * @param string $task_gid
      *
+     * @param string $workspace_gid Optional. Default '' to use saved workspace.
+     *
      * @return bool If the task belongs to the workspace. Note that any API
      * errors will cause FALSE to be returned.
      *

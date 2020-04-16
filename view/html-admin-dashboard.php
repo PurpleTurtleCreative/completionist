@@ -233,6 +233,13 @@ try {
 
 /* HELPERS */
 
+/**
+ * Outputs collaborator row for the passed user.
+ *
+ * @since 1.0.0
+ *
+ * @param \WP_User $user The collaborator to display.
+ */
 function display_collaborator_row( \WP_User $user ) {
 
   $gravatar = get_avatar( $user->ID, 30, 'mystery' );

@@ -163,6 +163,13 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
 
     }//end add_admin_pages()
 
+    /**
+     * Add action links to the plugins page row.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
     function filter_plugin_action_links( $links ) {
 
       $links[] = '<a href="https://purpleturtlecreative.com/completionist/documentation/">Docs</a>';

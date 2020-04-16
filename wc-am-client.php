@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The WooCommerce API Manager PHP Client Library is designed to be droppped into a WordPress plugin or theme.
  * This version is designed to be used with the WooCommerce API Manager version 2.x.
@@ -13,6 +12,8 @@
  * @copyright     Copyright (c) Todd Lahman LLC (support@toddlahman.com)
  * @package       WooCommerce API Manager plugin and theme library
  * @license       Copyright Todd Lahman LLC
+ *
+ * @ignore
  */
 
 defined( 'ABSPATH' ) || exit;
