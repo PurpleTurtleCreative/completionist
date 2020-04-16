@@ -9,9 +9,9 @@
  * @wordpress-plugin
  * Plugin Name:       Completionist - Manage Asana Tasks on WordPress
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
- * Description:       Pin and manage Asana tasks in relevant areas of your WordPress admin.
+ * Description:       Pin and manage Asana tasks in your WordPress admin.
  * Version:           1.0.0
- * Requires at least: 4.7
+ * Requires at least: 4.7.1
  * Requires PHP:      7.0
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
@@ -119,6 +119,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
         $this->license_url = admin_url( 'admin.php?page=' . $this->wcam->wc_am_activation_tab_key );
       }
 
+      add_filter( 'plugin_action_links_' . $this->plugin_title, [ $this, 'filter_plugin_action_links' ] );
       add_action( 'wp_ajax_ptc_get_tag_options', [ $this, 'ajax_get_tag_options' ] );
 
       add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
@@ -161,6 +162,23 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       );
 
     }//end add_admin_pages()
+
+    function filter_plugin_action_links( $links ) {
+
+      $links[] = '<a href="https://purpleturtlecreative.com/completionist/documentation/">Docs</a>';
+      $links[] = '<a href="https://purpleturtlecreative.com/my-account/">Support</a>';
+      $links[] = '<a href="' . esc_url( $this->settings_url ) . '">Settings</a>';
+      $links[] = '<a href="' . esc_url( $this->license_url ) . '">License</a>';
+
+      if ( is_object( $this->wcam ) && $this->wcam->get_api_key_status( FALSE ) ) {
+        $links[] = '<span style="color:#399709;">&#10004; Activated</span>';
+      } else {
+        $links[] = '<span style="color:#E12D39;">&#10006; Inactive</span>';
+      }
+
+      return $links;
+
+    }
 
     /**
      * AJAX handler to load tag options for a workspace.
