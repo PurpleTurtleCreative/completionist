@@ -10,7 +10,7 @@
  * Plugin Name:       Completionist - Manage Asana Tasks on WordPress
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
  * Description:       Pin and manage Asana tasks in your WordPress admin.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 4.7.1
  * Requires PHP:      7.0
  * Author:            Purple Turtle Creative
@@ -115,7 +115,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       }
 
       if ( class_exists( 'WC_AM_Client_2_7' ) ) {
-        $this->wcam = new WC_AM_Client_2_7( __FILE__, '', '1.0.0', 'plugin', 'https://www.purpleturtlecreative.com/', 'Completionist' );
+        $this->wcam = new WC_AM_Client_2_7( __FILE__, '', '1.0.1', 'plugin', 'https://www.purpleturtlecreative.com/', 'Completionist' );
         $this->license_url = admin_url( 'admin.php?page=' . $this->wcam->wc_am_activation_tab_key );
       }
 
