@@ -425,7 +425,8 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
           );
           break;
 
-        case 'post.php' || 'post-new.php':
+        case 'post.php':
+        case 'post-new.php':
           require_once $this->plugin_path . 'src/class-options.php';
           wp_enqueue_script(
             'ptc-completionist_metabox-pinned-tasks-js',
