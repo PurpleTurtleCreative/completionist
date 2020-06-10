@@ -1,6 +1,6 @@
 <?php
 /**
- * Provide task HTML in response to an AJAX request.
+ * Provide HTML for multiple tasks in response to an AJAX request.
  *
  * @since 1.0.0
  */
@@ -11,10 +11,9 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-global $ptc_completionist;
-require_once $ptc_completionist->plugin_path . 'src/class-asana-interface.php';
-require_once $ptc_completionist->plugin_path . 'src/class-options.php';
-require_once $ptc_completionist->plugin_path . 'src/class-html-builder.php';
+require_once __DIR__ . '../class-asana-interface.php';
+require_once __DIR__ . '../class-options.php';
+require_once __DIR__ . '../class-html-builder.php';
 
 $res['status'] = 'error';
 $res['code'] = 400;
@@ -23,22 +22,17 @@ $res['data'] = '';
 
 try {
   if (
-    isset( $_POST['task_gid'] )
+    isset( $_POST['task_gids'] )
     && isset( $_POST['nonce'] )
     && wp_verify_nonce( $_POST['nonce'], 'ptc_completionist_list_task' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     && Asana_Interface::has_connected_asana()
     && Asana_Interface::require_license()
   ) {
 
-    $task_gid = Options::sanitize( 'gid', $_POST['task_gid'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+    $task_gids = json_decode( stripslashes( $_POST['task_gids'] ), FALSE, 2, JSON_BIGINT_AS_STRING );
 
-    if ( isset( $_POST['post_id'] ) ) {
-      $the_post_id = (int) Options::sanitize( 'gid', $_POST['post_id'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-      if ( $the_post_id < 1 ) {
-        throw new \Exception( 'Invalid post identifier.', 400 );
-      }
-    } else {
-      $the_post_id = Options::get_task_pin_post_id( $task_gid );
+    if ( ! is_array( $task_gids ) || empty( $task_gids ) ) {
+      throw new \Exception( 'Invalid task_gids array.', 400 );
     }
 
     if ( isset( $_POST['detailed'] ) ) {
@@ -47,8 +41,21 @@ try {
       $detailed_view = FALSE;
     }
 
-    $task = Asana_Interface::maybe_get_task_data( $task_gid, HTML_Builder::TASK_OPT_FIELDS, $the_post_id );
-    $html = HTML_Builder::format_task_row( $task, $detailed_view );
+    $all_tasks = Asana_Interface::maybe_get_all_site_tasks( HTML_Builder::TASK_OPT_FIELDS );
+
+    $matched_tasks = [];
+    foreach ( $all_tasks as $task ) {
+      if ( isset( $task->gid ) && in_array( $task->gid, $task_gids ) ) {
+        $matched_tasks[ $task->gid ] = $task;
+      }
+    }
+
+    $html = '';
+    foreach ( $task_gids as $t_gid ) {
+      if ( isset( $matched_tasks[ $t_gid ] ) && is_a( $matched_tasks[ $t_gid ], 'stdClass' ) ) {
+        $html .= HTML_Builder::format_task_row( $matched_tasks[ $t_gid ], $detailed_view );
+      }
+    }
 
     $res['status'] = 'success';
     $res['code'] = 200;

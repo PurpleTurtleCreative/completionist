@@ -14,9 +14,8 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-global $ptc_completionist;
-require_once $ptc_completionist->plugin_path . 'src/class-options.php';
-require_once $ptc_completionist->plugin_path . 'src/errors.php';
+require_once 'class-options.php';
+require_once 'errors.php';
 
 if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
   /**
@@ -27,6 +26,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
    * use the API through someone else's authentication!
    */
   class Asana_Interface {
+
+    /**
+     * The currently authenticated WordPress user's ID.
+     *
+     * @since 1.1.0
+     *
+     * @var int $wp_user_id
+     */
+    private static $wp_user_id;
 
     /**
      * The authenticated Asana API client object.
@@ -51,17 +59,25 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
     /**
      * Gets the authenticated Asana API client.
      *
+     * @since 1.1.0 Added optional parameter $user_id.
      * @since 1.0.0
+     *
+     * @param int $user_id Optional. The WordPress user to authenticate. Default
+     * 0 to use the current user.
      *
      * @return \Asana\Client The authenticated Asana API client.
      *
      * @throws \Exception Authentication may fail when first loading the client
      * or requests could fail due to request limits or server issues.
      */
-    static function get_client() : \Asana\Client {
+    static function get_client( int $user_id = 0 ) : \Asana\Client {
 
-      if ( ! isset( self::$asana ) ) {
-        self::$asana = self::maybe_load_client();
+      if (
+        ! isset( self::$asana )
+        || ! isset( self::$wp_user_id )
+        || self::$wp_user_id !== $user_id
+      ) {
+        self::$asana = self::maybe_load_client( $user_id );
       }
 
       return self::$asana;
@@ -94,21 +110,30 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      *
      * @see get_client() To get the loaded client.
      *
+     * @since 1.1.0 Added optional parameter $user_id.
      * @since 1.0.0
      *
+     * @param int $user_id Optional. The WordPress user to authenticate. Default
+     * 0 to use the current user.
+     *
      * @return \Asana\Client The authenticated Asana API client.
+     *
+     * @throws \PTC_Completionist\Errors\NoAuthorization If the user does not
+     * have a valid Asana PAT saved.
      *
      * @throws \Exception Authentication may fail when first loading the client
      * or requests could fail due to request limits or server issues.
      */
-    private static function maybe_load_client() : \Asana\Client {
+    private static function maybe_load_client( int $user_id = 0 ) : \Asana\Client {
 
-      $asana_personal_access_token = Options::get( Options::ASANA_PAT );
+      $asana_personal_access_token = Options::get( Options::ASANA_PAT, $user_id );
       if (
         FALSE === $asana_personal_access_token
         || '' === $asana_personal_access_token
       ) {
         throw new Errors\NoAuthorization( 'No Asana authentication provided. Please save a valid personal access token in Completionist\'s settings.' );
+      } else {
+        self::$wp_user_id = $user_id;
       }
 
       global $ptc_completionist;
@@ -245,12 +270,21 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      * @since 1.0.0
      *
      * @param int $user_id Optional. The WordPress user's ID. Default 0 to use
-     * current user's ID.
+     * the currently loaded user's ID. If a user has not yet been loaded, the
+     * current WordPress user's ID will be used.
      *
      * @return bool If the user is successfully authorized to use Asana. Note
      * that any API errors will cause FALSE to be returned.
      */
     static function has_connected_asana( int $user_id = 0 ) : bool {
+
+      if (
+        $user_id === 0
+        && isset( self::$wp_user_id )
+        && $user_id !== self::$wp_user_id
+      ) {
+        $user_id = self::$wp_user_id;
+      }
 
       $asana_personal_access_token = Options::get( Options::ASANA_PAT, $user_id );
       if (
@@ -887,6 +921,126 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
       return (int) $res;
 
     }
+
+    /**
+     * Create a task in Asana and optionally pin it to a WordPress post.
+     *
+     * @since 1.1.0
+     *
+     * @param array $args The unsanitized task params. Accepted keys are:
+     * * 'name' => (string) Required. The task title.
+     * * 'post_id' => (int) The WordPress post ID on which to pin the new task.
+     * * 'assignee' => (gid) The assignee's Asana gid.
+     * * 'due_on' => (date string) The task due date.
+     * * 'project' => (gid) The Asana project gid to house the task.
+     * * 'notes' => (string) The task description.
+     *
+     * @param int $user_id Optional. The WordPress user ID to authenticate task
+     * creation in Asana. Default 0 to use the currently loaded user.
+     *
+     * @return \stdClass The created task object response from Asana.
+     *
+     * @throws \Exception Authentication may fail when first loading the client
+     * or requests could fail due to request limits or server issues.
+     */
+    static function create_task( array $args, int $user_id = 0 ) : \stdClass {
+
+      if ( ! isset( $args['name'] ) ) {
+        throw new \Exception( 'A task name is required.', 409 );
+      }
+
+      $asana = self::get_client( $user_id );
+
+      $site_tag_gid = Options::get( Options::ASANA_TAG_GID );
+      if ( '' === $site_tag_gid ) {
+        throw new \Exception( 'A site tag is required to create a task. Please set a site tag in Completionist\'s settings.', 409 );
+      }
+
+      if ( isset( $args['post_id'] ) ) {
+        /* Validate for pinning */
+        $the_post_id = (int) Options::sanitize( 'gid', $args['post_id'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+        $the_post = get_post( $the_post_id );
+        if ( NULL === $the_post ) {
+          throw new \Exception( 'The provided post id is invalid.', 400 );
+        }
+      }
+
+      /* Gather Input Data */
+
+      $params['tags'] = $site_tag_gid;
+
+      $name = sanitize_text_field( wp_unslash( $args['name'] ) );
+      if ( ! empty( $name ) ) {
+        $params['name'] = $name;
+      } else {
+        throw new \Exception( 'A task name is required.', 400 );
+      }
+
+      if ( isset( $args['assignee'] ) ) {
+        $assignee_gid = Options::sanitize( 'gid', $args['assignee'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+        if ( ! empty( $assignee_gid ) ) {
+          $params['assignee'] = $assignee_gid;
+        }
+      }
+
+      if ( isset( $args['due_on'] ) ) {
+        $due_on = Options::sanitize( 'date', $args['due_on'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+        if ( ! empty( $due_on ) ) {
+          $params['due_on'] = $due_on;
+        }
+      }
+
+      if ( isset( $args['project'] ) ) {
+        $project_gid = Options::sanitize( 'gid', $args['project'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+        if ( ! empty( $project_gid ) ) {
+          $params['projects'] = $project_gid;
+        }
+      }
+
+      if ( ! isset( $params['projects'] ) ) {
+        /* A workspace is required if a project hasn't been provided. */
+        $workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
+        if ( ! empty( $workspace_gid ) ) {
+          $params['workspace'] = $workspace_gid;
+        } else {
+          throw new \Exception( 'Please set a Workspace in Completionist\'s settings before creating a task.', 400 );
+        }
+      }
+
+      if ( isset( $args['notes'] ) ) {
+        $notes = sanitize_textarea_field( wp_unslash( $args['notes'] ) );
+        if ( ! empty( $notes ) ) {
+          $params['notes'] = $notes;
+        }
+      }
+
+      /* Create the task */
+
+      $task = $asana->tasks->create( $params );
+
+      if ( ! isset( $task->gid ) ) {
+        throw new \Exception( 'Unrecognized API response to create task.', 409 );
+      }
+
+      if ( isset( $the_post_id ) ) {
+
+        /* Pin the task */
+
+        try {
+          $did_pin_task = Options::save( Options::PINNED_TASK_GID, $task->gid, FALSE, $the_post_id );
+        } catch ( \Exception $e ) {
+          $did_pin_task = FALSE;
+        }
+
+        if ( $did_pin_task === FALSE ) {
+          error_log( "Failed to pin new task {$task->gid} to post {$the_post_id}." );
+        }
+
+      }
+
+      return $task;
+
+    }//end create_task()
 
   }//end class
 }//end if class_exists

@@ -7,12 +7,12 @@
  * @license           https://purpleturtlecreative.com/terms-conditions/
  *
  * @wordpress-plugin
- * Plugin Name:       Completionist - Manage Asana Tasks on WordPress
+ * Plugin Name:       Completionist - Asana for WordPress
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
  * Description:       Pin and manage Asana tasks in your WordPress admin.
- * Version:           1.0.1
+ * Version:           1.1.0
  * Requires at least: 4.7.1
- * Requires PHP:      7.0
+ * Requires PHP:      7.1
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
  * License:           https://purpleturtlecreative.com/terms-conditions/
@@ -27,6 +27,15 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
    * @since 1.0.0
    */
   class PTC_Completionist {
+
+    /**
+     * This plugin's current version.
+     *
+     * @since 1.1.0
+     *
+     * @ignore
+     */
+    public $plugin_version;
 
     /**
      * This plugin's basename.
@@ -92,6 +101,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      * @ignore
      */
     function __construct() {
+      $this->plugin_version = '1.1.0';
       $this->plugin_title = plugin_basename( __FILE__ );
       $this->plugin_path = plugin_dir_path( __FILE__ );
       $this->plugin_url = plugins_url( '', __FILE__ );
@@ -107,24 +117,29 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      */
     function register() {
 
+      register_activation_hook( __FILE__, [ $this, 'install_tables' ] );
+      add_action( 'plugins_loaded', [ $this, 'install_tables' ] );
+
       add_action( 'admin_menu', [ $this, 'add_admin_pages' ] );
       add_action( 'admin_enqueue_scripts', [ $this, 'register_scripts' ] );
 
       if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
-        require_once( plugin_dir_path( __FILE__ ) . 'wc-am-client.php' );
+        require_once $this->plugin_path . 'wc-am-client.php';
       }
 
       if ( class_exists( 'WC_AM_Client_2_7' ) ) {
-        $this->wcam = new WC_AM_Client_2_7( __FILE__, '', '1.0.1', 'plugin', 'https://www.purpleturtlecreative.com/', 'Completionist' );
+        $this->wcam = new WC_AM_Client_2_7( __FILE__, '', $this->plugin_version, 'plugin', 'https://www.purpleturtlecreative.com/', 'Completionist' );
         $this->license_url = admin_url( 'admin.php?page=' . $this->wcam->wc_am_activation_tab_key );
       }
 
       add_filter( 'plugin_action_links_' . $this->plugin_title, [ $this, 'filter_plugin_action_links' ] );
       add_action( 'wp_ajax_ptc_get_tag_options', [ $this, 'ajax_get_tag_options' ] );
 
+      /* Admin Widgets */
       add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
       add_action( 'wp_dashboard_setup', [ $this, 'add_dashboard_widgets' ] );
 
+      /* AJAX Handlers */
       add_action( 'wp_ajax_ptc_pin_task', [ $this, 'ajax_pin_task' ] );
       add_action( 'wp_ajax_ptc_unpin_task', [ $this, 'ajax_unpin_task' ] );
       add_action( 'wp_ajax_ptc_get_pins', [ $this, 'ajax_get_pins' ] );
@@ -134,6 +149,23 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       add_action( 'wp_ajax_ptc_delete_task', [ $this, 'ajax_delete_task' ] );
       add_action( 'wp_ajax_ptc_update_task', [ $this, 'ajax_update_task' ] );
 
+      /* Enqueue Automation Actions */
+      require_once $this->plugin_path . 'src/automations/class-events.php';
+      \PTC_Completionist\Automations\Events::add_actions();
+
+    }
+
+    /**
+     * Install all database tables for the current site.
+     *
+     * @since 1.1.0
+     *
+     * @ignore
+     */
+    function install_tables() {
+      require_once $this->plugin_path . 'src/class-database-manager.php';
+      \PTC_Completionist\Database_Manager::init();
+      \PTC_Completionist\Database_Manager::install_all_tables();
     }
 
     /**
@@ -154,11 +186,28 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
           if ( current_user_can( 'edit_posts' ) ) {
             require_once $this->plugin_path . 'view/html-admin-dashboard.php';
           } else {
-            wp_die('<strong>Error: Unauthorized.</strong> You must have post editing capabilities in order to use Completionist.');
+            wp_die('<strong>Error: Unauthorized.</strong> You must have post editing capabilities to use Completionist.');
           }
         },
         'data:image/svg+xml;base64,' . base64_encode('<svg width="20" height="20" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="clipboard-check" class="svg-inline--fa fa-clipboard-check fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="white" d="M336 64h-80c0-35.3-28.7-64-64-64s-64 28.7-64 64H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM192 40c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm121.2 231.8l-143 141.8c-4.7 4.7-12.3 4.6-17-.1l-82.6-83.3c-4.7-4.7-4.6-12.3.1-17L99.1 285c4.7-4.7 12.3-4.6 17 .1l46 46.4 106-105.2c4.7-4.7 12.3-4.6 17 .1l28.2 28.4c4.7 4.8 4.6 12.3-.1 17z"></path></svg>'),
         100 /* For default priorities, see https://developer.wordpress.org/reference/functions/add_menu_page/#default-bottom-of-menu-structure */
+      );
+
+      add_submenu_page(
+        'ptc-completionist',
+        'Completionist &ndash; Automations',
+        'Automations',
+        'edit_posts',
+        'ptc-completionist-automations',
+        function() {
+          if ( current_user_can( 'edit_posts' ) ) {
+            echo '<div id="ptc-completionist-automations-root"></div>';
+            // require_once $this->plugin_path . 'view/html-admin-automations.php';
+          } else {
+            wp_die('<strong>Error: Unauthorized.</strong> You must have post editing capabilities to use Completionist.');
+          }
+        },
+        NULL
       );
 
     }//end add_admin_pages()
@@ -195,7 +244,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      * @ignore
      */
     function ajax_get_tag_options() {
-      require_once $this->plugin_path . 'src/ajax-get-tag-options.php';
+      require_once $this->plugin_path . 'src/ajax/ajax-get-tag-options.php';
     }
 
     /**
@@ -260,7 +309,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      * @ignore
      */
     function ajax_pin_task() {
-      require_once $this->plugin_path . 'src/ajax-pin-task.php';
+      require_once $this->plugin_path . 'src/ajax/ajax-pin-task.php';
     }
 
     /**
@@ -271,7 +320,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      * @ignore
      */
     function ajax_unpin_task() {
-      require_once $this->plugin_path . 'src/ajax-unpin-task.php';
+      require_once $this->plugin_path . 'src/ajax/ajax-unpin-task.php';
     }
 
     /**
@@ -282,7 +331,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      * @ignore
      */
     function ajax_get_pins() {
-      require_once $this->plugin_path . 'src/ajax-get-pins.php';
+      require_once $this->plugin_path . 'src/ajax/ajax-get-pins.php';
     }
 
     /**
@@ -293,7 +342,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      * @ignore
      */
     function ajax_list_task() {
-      require_once $this->plugin_path . 'src/ajax-list-task.php';
+      require_once $this->plugin_path . 'src/ajax/ajax-list-task.php';
     }
 
     /**
@@ -304,7 +353,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      * @ignore
      */
     function ajax_list_tasks() {
-      require_once $this->plugin_path . 'src/ajax-list-tasks.php';
+      require_once $this->plugin_path . 'src/ajax/ajax-list-tasks.php';
     }
 
     /**
@@ -315,7 +364,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      * @ignore
      */
     function ajax_create_task() {
-      require_once $this->plugin_path . 'src/ajax-create-task.php';
+      require_once $this->plugin_path . 'src/ajax/ajax-create-task.php';
     }
 
     /**
@@ -326,7 +375,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      * @ignore
      */
     function ajax_delete_task() {
-      require_once $this->plugin_path . 'src/ajax-delete-task.php';
+      require_once $this->plugin_path . 'src/ajax/ajax-delete-task.php';
     }
 
     /**
@@ -337,7 +386,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      * @ignore
      */
     function ajax_update_task() {
-      require_once $this->plugin_path . 'src/ajax-update-task.php';
+      require_once $this->plugin_path . 'src/ajax/ajax-update-task.php';
     }
 
     /**
@@ -360,7 +409,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
         'ptc-completionist_admin-theme-css',
         plugins_url( 'assets/css/admin-theme.css', __FILE__ ),
         [],
-        '0.0.0'
+        $this->plugin_version
       );
 
       switch ( $hook_suffix ) {
@@ -370,7 +419,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
             'ptc-completionist_dashboard-widget-js',
             plugins_url( 'assets/js/dashboard-widget.js', __FILE__ ),
             [ 'jquery', 'fontawesome-5' ],
-            '0.0.0'
+            $this->plugin_version
           );
           wp_localize_script(
             'ptc-completionist_dashboard-widget-js',
@@ -390,7 +439,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
             'ptc-completionist_dashboard-widget-css',
             plugins_url( 'assets/css/dashboard-widget.css', __FILE__ ),
             [],
-            '0.0.0'
+            $this->plugin_version
           );
           break;
 
@@ -399,19 +448,19 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
             'ptc-completionist_connect-asana-css',
             plugins_url( 'assets/css/connect-asana.css', __FILE__ ),
             [ 'ptc-completionist_admin-theme-css' ],
-            '0.0.0'
+            $this->plugin_version
           );
           wp_enqueue_style(
             'ptc-completionist_admin-dashboard-css',
             plugins_url( 'assets/css/admin-dashboard.css', __FILE__ ),
             [ 'ptc-completionist_admin-theme-css' ],
-            '0.0.0'
+            $this->plugin_version
           );
           wp_enqueue_script(
             'ptc-completionist_admin-dashboard-js',
             plugins_url( 'assets/js/admin-dashboard.js', __FILE__ ),
             [ 'jquery', 'fontawesome-5' ],
-            '0.0.0'
+            $this->plugin_version
           );
           require_once $this->plugin_path . 'src/class-options.php';
           wp_localize_script(
@@ -432,7 +481,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
             'ptc-completionist_metabox-pinned-tasks-js',
             plugins_url( 'assets/js/metabox-pinned-tasks.js', __FILE__ ),
             [ 'jquery', 'fontawesome-5' ],
-            '0.0.0'
+            $this->plugin_version
           );
           wp_localize_script(
             'ptc-completionist_metabox-pinned-tasks-js',
@@ -451,7 +500,17 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
             'ptc-completionist_metabox-pinned-tasks-css',
             plugins_url( 'assets/css/metabox-pinned-tasks.css', __FILE__ ),
             [],
-            '0.0.0'
+            $this->plugin_version
+          );
+          break;
+
+        case 'completionist_page_ptc-completionist-automations':
+          $asset_file = require_once( $this->plugin_path . 'build/index.asset.php' );
+          wp_enqueue_script(
+            'ptc-completionist_metabox-pinned-tasks-js',
+            plugins_url( 'build/index.js', __FILE__ ),
+            $asset_file['dependencies'],
+            $this->plugin_version
           );
           break;
 

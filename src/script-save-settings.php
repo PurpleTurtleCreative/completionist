@@ -11,9 +11,8 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-global $ptc_completionist;
-require_once $ptc_completionist->plugin_path . 'src/class-options.php';
-require_once $ptc_completionist->plugin_path . 'src/class-asana-interface.php';
+require_once 'class-options.php';
+require_once 'class-asana-interface.php';
 
 if (
   isset( $_POST['asana_connect'] )

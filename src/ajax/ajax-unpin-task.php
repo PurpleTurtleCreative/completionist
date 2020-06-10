@@ -11,10 +11,9 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-global $ptc_completionist;
-require_once $ptc_completionist->plugin_path . 'src/class-asana-interface.php';
-require_once $ptc_completionist->plugin_path . 'src/class-options.php';
-require_once $ptc_completionist->plugin_path . 'src/class-html-builder.php';
+require_once __DIR__ . '../class-asana-interface.php';
+require_once __DIR__ . '../class-options.php';
+require_once __DIR__ . '../class-html-builder.php';
 
 $res['status'] = 'error';
 $res['code'] = 400;

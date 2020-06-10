@@ -443,7 +443,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
           );
-          $sanitized_asana_pat = preg_replace( '/[^a-z0-9\/:]+/', '', $filtered_asana_pat );
+          $sanitized_asana_pat = trim( preg_replace( '/[^a-z0-9\/:]+/', '', $filtered_asana_pat ) );
           return (string) $sanitized_asana_pat;
 
         case 'gid':
@@ -455,7 +455,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
             $value,
             FILTER_SANITIZE_NUMBER_INT
           );
-          $sanitized_integer_string = preg_replace( '/[^0-9]+/', '', $filtered_integer_string );
+          $sanitized_integer_string = trim( preg_replace( '/[^0-9]+/', '', $filtered_integer_string ) );
           return (string) $sanitized_integer_string;
 
         case 'datetime':
@@ -464,7 +464,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
           );
-          $sanitized_datetime = preg_replace( '/[^0-9:\- ]+/', '', $filtered_datetime );
+          $sanitized_datetime = trim( preg_replace( '/[^0-9:\- ]+/', '', $filtered_datetime ) );
           /* should be string in format Y-m-d H:i:s */
           $dt = \DateTime::createFromFormat( 'Y-m-d H:i:s', $date );
           if ( $dt !== FALSE && array_sum( $dt::getLastErrors() ) === 0 ) {
@@ -480,7 +480,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
           );
-          $sanitized_date = preg_replace( '/[^0-9\-]+/', '', $filtered_date );
+          $sanitized_date = trim( preg_replace( '/[^0-9\-]+/', '', $filtered_date ) );
           /* should be string in format yyyy-mm-dd */
           $dt = \DateTime::createFromFormat( 'Y-m-d', $sanitized_date );
           if ( $dt !== FALSE && array_sum( $dt::getLastErrors() ) === 0 ) {
@@ -496,7 +496,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
           );
-          return ( $filtered_value !== FALSE ) ? $filtered_value : '';
+          return ( $filtered_value !== FALSE ) ? trim( $filtered_value ) : '';
 
         case 'html':
           $sanitized_value = wp_kses(
