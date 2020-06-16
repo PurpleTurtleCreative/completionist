@@ -1,4 +1,6 @@
-const { render, Component } = wp.element;
+import { AutomationRow } from './AutomationRow.js';
+
+const { Component } = wp.element;
 
 export class AutomationsListing extends Component {
 
@@ -6,14 +8,14 @@ export class AutomationsListing extends Component {
 
     /*
     Required Props:
-    - (object) automations
+    - (object[]) automations
     - (function) goToAutomation
     */
 
     super(props);
     this.state = {
       automations: props.automations,
-      orderBy: 'title' //'title' or 'lastModified' or 'lastTriggered'
+      orderBy: 'title' //'title' or 'ID' or 'last_modified' or 'last_triggered' or 'triggered_count'
     };
 
     this.goToAutomation = props.goToAutomation;
@@ -23,14 +25,15 @@ export class AutomationsListing extends Component {
   render() {
     /* List Automations... */
     const automationLinks = this.state.automations.map((automation) =>
-      <button onClick={() => this.goToAutomation(automation.id)} key={automation.id.toString()}>View Automation {automation.id}</button>
+      <AutomationRow automation={automation} goToAutomation={this.goToAutomation} key={automation.ID} />
     );
     return (
-      <div className='ptc-completionist-automations-list'>
+      <div className='ptc-completionist-automations-listing'>
         <h1>Automations Listing</h1>
-        <div>{automationLinks}</div>
+        <button onClick={() => this.goToAutomation('new')}>Add New</button>
+        <div className='ptc-completionist-automations-list'>{automationLinks}</div>
       </div>
     );
   }
 
-}
+}//end class AutomationsListing

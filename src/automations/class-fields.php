@@ -21,7 +21,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Fields' ) ) {
   class Fields {
 
     const USER_OPTIONS = [
-      'ID' => 'ID',
+      'ID' => 'User ID',
       'user_login' => 'Username',
       'user_email' => 'Email',
       'display_name' => 'Display Name',
@@ -31,7 +31,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Fields' ) ) {
     ];
 
     const POST_OPTIONS = [
-      'ID' => 'ID',
+      'ID' => 'Post ID',
       'post_author' => 'Author (User ID)',
       'post_title' => 'Title',
       'post_status' => 'Status',

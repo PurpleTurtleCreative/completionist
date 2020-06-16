@@ -1,4 +1,47 @@
 import { AutomationsListing } from './components/AutomationsListing.js';
+import { AutomationDetailsForm } from './components/AutomationDetailsForm.js';
+
+const ptc_completionist_automations = {
+  event_user_options: {
+    user_register: 'User is Created',
+    profile_update: 'User is Updated',
+    delete_user: 'User is Deleted',
+  },
+  event_post_options: {
+    wp_insert_post: 'Post is Created',
+    post_updated: 'Post is Updated',
+    trash_post: 'Post is Trashed',
+  },
+  field_user_options: {
+    ID: 'User ID',
+    user_login: 'Username',
+    user_email: 'Email',
+    display_name: 'Display Name',
+    roles: 'Roles',
+    first_name: 'First Name',
+    last_name: 'Last Name'
+  },
+  field_post_options: {
+    ID: 'Post ID',
+    post_author: 'Author (User ID)',
+    post_title: 'Title',
+    post_status: 'Status',
+    post_type: 'Type',
+  },
+  field_comparison_methods: [
+    'equals',
+    'does not equal',
+    'less than',
+    'greater than',
+    'is empty',
+    'is filled',
+    'is in (csv)',
+    'starts with',
+    'ends with',
+    'contains'
+  ]
+};
+export default ptc_completionist_automations;
 
 jQuery(function($) {
   try {
@@ -13,44 +56,100 @@ jQuery(function($) {
         constructor(props) {
 
           super(props);
+
+          /*
+          Automation Object Structure:
+          - ID
+          - title
+          - description
+          - hook_name (event)
+          - last_modified
+          - conditions[]
+            - ID
+            - property
+            - comparison_method
+            - value
+          - actions[]
+            - ID
+            - action
+            - triggered_count
+            - last_triggered
+            - meta[]
+              - ...
+          */
           this.state = {
             automations: [
-              { id: 123 },
-              { id: 790 },
-              { id: 270 },
-              { id: 315 },
-              { id: 147 },
+              {
+                ID: 123,
+                title: 'Sample Automation',
+                description: 'This automation does not actually exist in the database and is only for frontend testing purposes.',
+                hook_name: 'post_updated',
+                last_modified: '2020/06/11 14:16',
+                conditions: [
+                  {
+                    ID: 124,
+                    property: 'post_status',
+                    comparison_method: 'equals',
+                    value: 'publish'
+                  },
+                  {
+                    ID: 126,
+                    property: 'post_type',
+                    comparison_method: 'equals',
+                    value: 'post'
+                  }
+                ],
+                actions: [
+                  {
+                    ID: 125,
+                    action: 'create_task',
+                    triggered_count: 79,
+                    last_triggered: '2020/06/11 14:20',
+                    meta: {
+                      task_author: 1,
+                      name: 'Finish coding Automations frontend with ReactJS'
+                    }
+                  }
+                ]
+              },
             ]
           };
 
-          this.goToAutomation = ( automationId = 0 ) => {
-
-            if ( automationId <= 0 ) {
-              let queryParams = new URLSearchParams( location.search );
-              queryParams.delete('automation');
-              history.pushState(
-                {},
-                'Completionist &ndash; Automation ' + automationId,
-                '?' + queryParams.toString()
-              );
-            } else {
-              let queryParams = new URLSearchParams( location.search );
-              queryParams.set('automation', automationId);
-              history.pushState(
-                { "automationId": automationId },
-                'Completionist &ndash; Automation ' + automationId,
-                '?' + queryParams.toString()
-              );
-            }
-
-            $(rootNode).slideToggle( 400, () => {
-              this.forceUpdate();
-              $(rootNode).slideToggle( 400 );
-            });
-
-          };//end goToAutomation()
+          this.goToAutomation = this.goToAutomation.bind(this);
 
         }//end constructor()
+
+        goToAutomation( automationId = 0 ) {
+
+          if ( automationId === 'new' ) {
+            let queryParams = new URLSearchParams( location.search );
+            queryParams.set('automation', automationId);
+            history.pushState(
+              {},
+              'Completionist &ndash; Add New Automation',
+              '?' + queryParams.toString()
+            );
+          } else if ( automationId <= 0 ) {
+            let queryParams = new URLSearchParams( location.search );
+            queryParams.delete('automation');
+            history.pushState(
+              {},
+              'Completionist &ndash; Automation ' + automationId,
+              '?' + queryParams.toString()
+            );
+          } else {
+            let queryParams = new URLSearchParams( location.search );
+            queryParams.set('automation', automationId);
+            history.pushState(
+              { "automationId": automationId },
+              'Completionist &ndash; Automation ' + automationId,
+              '?' + queryParams.toString()
+            );
+          }
+
+          this.forceUpdate();
+
+        };//end goToAutomation()
 
         componentDidMount() {
           window.addEventListener( 'popstate', this.goToAutomation );
@@ -58,11 +157,19 @@ jQuery(function($) {
 
         render() {
           let queryParams = new URLSearchParams( location.search );
-          if ( queryParams.get('automation') > 0 ) {
+          if ( queryParams.get('automation') === 'new' ) {
+            return (
+              <div className='ptc-completionist-automation-create'>
+                <AutomationDetailsForm automation={{}} />
+                <button onClick={() => this.goToAutomation()}>Back</button>
+              </div>
+            );
+          } else if ( queryParams.get('automation') > 0 ) {
             /* Edit Automation data... */
             return (
               <div className='ptc-completionist-automation-details'>
                 <h1>Viewing automation {queryParams.get('automation')}</h1>
+                <AutomationDetailsForm automation={this.state.automations[0]} />
                 <button onClick={() => this.goToAutomation()}>Back</button>
               </div>
             );

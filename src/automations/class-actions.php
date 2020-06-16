@@ -32,6 +32,18 @@ if ( ! class_exists( __NAMESPACE__ . '\Actions' ) ) {
       'create_task' => 'Create Asana Task',
     ];
 
+    const ACTION_META_OPTIONS = [
+      'create_task' => [
+        'task_author' => 'Creator',
+        'name' => 'Title',
+        'post_id' => 'Associated Post',
+        'assignee' => 'Assignee',
+        'due_on' => 'Due Date',
+        'project' => 'Project',
+        'notes' => 'Description',
+      ],
+    ];
+
     /**
      * Evaluate an automation condition entry using the provided objects.
      *
