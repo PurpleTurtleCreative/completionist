@@ -122,7 +122,9 @@ try {
           <?php
         } else {
 
-          $workspace_users = Asana_Interface::find_workspace_users();
+          $found_workspace_users = Asana_Interface::find_workspace_users();
+          $connected_workspace_users = Asana_Interface::get_connected_workspace_users();
+          $workspace_users = array_merge( $found_workspace_users, $connected_workspace_users );
 
           if ( empty( $workspace_users ) ) {
             ?>

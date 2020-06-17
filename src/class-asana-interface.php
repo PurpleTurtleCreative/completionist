@@ -16,6 +16,7 @@ defined( 'ABSPATH' ) || die();
 
 require_once 'class-options.php';
 require_once 'errors.php';
+require_once 'class-html-builder.php';
 
 if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
   /**
@@ -235,6 +236,131 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
     }
 
     /**
+     * Get WordPress users that match Asana users by email.
+     *
+     * @since 1.0.0
+     *
+     * @param string $workspace_gid Optional. The gid of the workspace to get
+     * Asana users to match by email. Default '' to use the chosen workspace.
+     *
+     * @return \WP_User[] The matching WordPress users keyed by their Asana gid.
+     *
+     * @throws \Exception Authentication may fail when first loading the client
+     * or requests could fail due to request limits or server issues.
+     */
+    static function get_connected_workspace_users( string $workspace_gid = '' ) : array {
+
+      if ( '' === $workspace_gid ) {
+        $workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
+      } else {
+        $workspace_gid = Options::sanitize( 'gid', $workspace_gid );
+      }
+
+      if ( '' === $workspace_gid ) {
+        return [];
+      }
+
+      $users_with_pat = get_users( [ 'meta_key' => Options::ASANA_PAT ] );
+      $wp_users = [];
+
+      global $ptc_completionist;
+      require_once $ptc_completionist->plugin_path . '/vendor/autoload.php';
+      foreach ( $users_with_pat as $wp_user ) {
+
+        $asana_personal_access_token = Options::get( Options::ASANA_PAT, $wp_user->ID );
+        if (
+          FALSE === $asana_personal_access_token
+          || '' === $asana_personal_access_token
+        ) {
+          continue;
+        }
+
+        $asana = \Asana\Client::accessToken( $asana_personal_access_token );
+
+        try {
+          $me = $asana->users->me();
+          foreach ( $me->workspaces as $workspace ) {
+            if ( $workspace->gid == $workspace_gid ) {
+              $wp_users[ $me->gid ] = $wp_user;
+              break;
+            }
+          }
+        } catch ( \Exception $e ) {
+          continue;
+        }
+
+      }//end foreach $users_with_pat
+
+      return $wp_users;
+
+    }
+
+    /**
+     * Get an array of WordPress user display names and emails keyed by their
+     * Asana gid.
+     *
+     * @see find_workspace_users() For how users are selected.
+     *
+     * @since 1.1.0
+     *
+     * @param string $workspace_gid Optional. The gid of the workspace to get
+     * Asana users to match by email. Default '' to use the chosen workspace.
+     *
+     * @return string[] Strings of WordPress user display names and emails keyed
+     * by their Asana gid.
+     */
+    static function get_workspace_user_options( string $workspace_gid = '' ) : array {
+
+      $wp_users = [];
+
+      try {
+        $wp_users = self::find_workspace_users( $workspace_gid );
+        foreach ( $wp_users as $gid => $wp_user ) {
+          $wp_users[ $gid ] = "{$wp_user->display_name} ({$wp_user->user_email})";
+        }
+      } catch ( \Exception $e ) {
+        error_log( HTML_Builder::format_error_string( $e, 'Failed to get_workspace_user_options().' ) );
+        $wp_users = [ 'error' => 'ERROR ' . HTML_Builder::get_error_code( $e ) ];
+      }
+
+      return $wp_users;
+
+    }
+
+    /**
+     * Get an array of Asana project names keyed by their gid.
+     *
+     * @since 1.1.0
+     *
+     * @param string $workspace_gid Optional. The gid of the workspace to get
+     * Asana users to match by email. Default '' to use the chosen workspace.
+     *
+     * @return string[] Asana project names keyed by their gid.
+     */
+    static function get_workspace_project_options( string $workspace_gid = '' ) : array {
+
+      $project_options = [];
+
+      try {
+        $params = [
+          'workspace' => Options::get( Options::ASANA_WORKSPACE_GID ),
+          'archived' => FALSE,
+          'opt_fields' => 'gid,name',
+        ];
+        $projects = self::get_client()->projects->findAll( $params );
+        foreach ( $projects as $project ) {
+          $project_options[ $project->gid ] = $project->name;
+        }
+      } catch ( \Exception $e ) {
+        error_log( HTML_Builder::format_error_string( $e, 'Failed to get_workspace_project_options().' ) );
+        $project_options = [ 'error' => 'ERROR ' . HTML_Builder::get_error_code( $e ) ];
+      }
+
+      return $project_options;
+
+    }
+
+    /**
      * Get a WordPress user ID by Asana user GID. Note that a user's GID is
      * stored as long as the user is successfully authorized.
      *
@@ -254,7 +380,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
         'fields' => 'ID',
       ];
 
-      $id = (int) get_users( $query_args );
+      $id = (int) get_users( $query_args )[0];
 
       if ( $id > 0 ) {
         return (int) $id;
