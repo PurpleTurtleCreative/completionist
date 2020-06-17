@@ -507,10 +507,29 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
         case 'completionist_page_ptc-completionist-automations':
           $asset_file = require_once( $this->plugin_path . 'build/index.asset.php' );
           wp_enqueue_script(
-            'ptc-completionist_metabox-pinned-tasks-js',
+            'ptc-completionist_build-index-js',
             plugins_url( 'build/index.js', __FILE__ ),
             $asset_file['dependencies'],
             $this->plugin_version
+          );
+          require_once $this->plugin_path . 'src/automations/class-events.php';
+          require_once $this->plugin_path . 'src/automations/class-fields.php';
+          require_once $this->plugin_path . 'src/automations/class-actions.php';
+          require_once $this->plugin_path . 'src/class-asana-interface.php';
+          wp_localize_script(
+            'ptc-completionist_build-index-js',
+            'ptc_completionist_automations',
+            [
+              'event_user_options' => \PTC_Completionist\Automations\Events::USER_OPTIONS,
+              'event_post_options' => \PTC_Completionist\Automations\Events::POST_OPTIONS,
+              'field_user_options' => \PTC_Completionist\Automations\Fields::USER_OPTIONS,
+              'field_post_options' => \PTC_Completionist\Automations\Fields::POST_OPTIONS,
+              'field_comparison_methods' => \PTC_Completionist\Automations\Fields::COMPARISON_METHODS,
+              'action_options' => \PTC_Completionist\Automations\Actions::ACTION_OPTIONS,
+              'workspace_users' => \PTC_Completionist\Asana_Interface::get_workspace_user_options(),
+              'workspace_projects' => \PTC_Completionist\Asana_Interface::get_workspace_project_options(),
+              'nonce' => wp_create_nonce( 'ptc_completionist_automations' ),
+            ]
           );
           break;
 

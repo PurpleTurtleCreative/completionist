@@ -27,13 +27,7 @@ try {
   }
 
   $workspace_users = Asana_Interface::find_workspace_users();
-
-  $params = [
-    'workspace' => Options::get( Options::ASANA_WORKSPACE_GID ),
-    'archived' => FALSE,
-    'opt_fields' => 'gid,name',
-  ];
-  $projects = $asana->projects->findAll( $params );
+  $projects = Asana_Interface::get_workspace_project_options();
 
   /* User is authenticated for API usage. */
   ?>
@@ -75,9 +69,9 @@ try {
         <select id="ptc-new-task_project">
           <option value="">None (Private Task)</option>
           <?php
-          foreach ( $projects as $project ) {
-            echo  '<option value="' . esc_attr( $project->gid ) . '">' .
-                    esc_html( $project->name ) . '</option>';
+          foreach ( $projects as $gid => $name ) {
+            echo  '<option value="' . esc_attr( $gid ) . '">' .
+                    esc_html( $name ) . '</option>';
           }
           ?>
         </select>

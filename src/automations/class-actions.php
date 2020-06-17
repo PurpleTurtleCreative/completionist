@@ -36,7 +36,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Actions' ) ) {
       'create_task' => [
         'task_author' => 'Creator',
         'name' => 'Title',
-        'post_id' => 'Associated Post',
+        'post_id' => 'Post Pin',
         'assignee' => 'Assignee',
         'due_on' => 'Due Date',
         'project' => 'Project',

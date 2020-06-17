@@ -1,48 +1,6 @@
 import { AutomationsListing } from './components/AutomationsListing.js';
 import { AutomationDetailsForm } from './components/AutomationDetailsForm.js';
 
-const ptc_completionist_automations = {
-  event_user_options: {
-    user_register: 'User is Created',
-    profile_update: 'User is Updated',
-    delete_user: 'User is Deleted',
-  },
-  event_post_options: {
-    wp_insert_post: 'Post is Created',
-    post_updated: 'Post is Updated',
-    trash_post: 'Post is Trashed',
-  },
-  field_user_options: {
-    ID: 'User ID',
-    user_login: 'Username',
-    user_email: 'Email',
-    display_name: 'Display Name',
-    roles: 'Roles',
-    first_name: 'First Name',
-    last_name: 'Last Name'
-  },
-  field_post_options: {
-    ID: 'Post ID',
-    post_author: 'Author (User ID)',
-    post_title: 'Title',
-    post_status: 'Status',
-    post_type: 'Type',
-  },
-  field_comparison_methods: [
-    'equals',
-    'does not equal',
-    'less than',
-    'greater than',
-    'is empty',
-    'is filled',
-    'is in (csv)',
-    'starts with',
-    'ends with',
-    'contains'
-  ]
-};
-export default ptc_completionist_automations;
-
 jQuery(function($) {
   try {
 
@@ -153,19 +111,21 @@ jQuery(function($) {
 
         componentDidMount() {
           window.addEventListener( 'popstate', this.goToAutomation );
-        }
+        }//end componentDidMount()
 
         render() {
           let queryParams = new URLSearchParams( location.search );
           if ( queryParams.get('automation') === 'new' ) {
+            /* Add Automation... */
             return (
               <div className='ptc-completionist-automation-create'>
-                <AutomationDetailsForm automation={{}} />
+                <h1>New Automation</h1>
+                <AutomationDetailsForm />
                 <button onClick={() => this.goToAutomation()}>Back</button>
               </div>
             );
           } else if ( queryParams.get('automation') > 0 ) {
-            /* Edit Automation data... */
+            /* Edit Automation... */
             return (
               <div className='ptc-completionist-automation-details'>
                 <h1>Viewing automation {queryParams.get('automation')}</h1>
