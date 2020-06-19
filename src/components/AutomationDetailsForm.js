@@ -30,13 +30,9 @@ export class AutomationDetailsForm extends Component {
       };
     }
 
-    this.handleTitleChange = this.handleTitleChange.bind(this);
-    this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-    this.handleEventChange = this.handleEventChange.bind(this);
+    this.handleAutomationChange = this.handleAutomationChange.bind(this);
 
-    this.handleConditionPropertyChange = this.handleConditionPropertyChange.bind(this);
-    this.handleConditionMethodChange = this.handleConditionMethodChange.bind(this);
-    this.handleConditionValueChange = this.handleConditionValueChange.bind(this);
+    this.handleConditionChange = this.handleConditionChange.bind(this);
     this.handleAddCondition = this.handleAddCondition.bind(this);
     this.handleRemoveCondition = this.handleRemoveCondition.bind(this);
 
@@ -49,58 +45,22 @@ export class AutomationDetailsForm extends Component {
 
   /* HANDLERS */
 
-  /** Info **/
+  /** Core Info **/
 
-  handleTitleChange(title) {
+  handleAutomationChange(property_key, value) {
     this.setState((state) => ({
-      title: title
-    }));
-  }
-
-  handleDescriptionChange(description) {
-    this.setState((state) => ({
-      description: description
-    }));
-  }
-
-  /** Event **/
-
-  handleEventChange(hook_name) {
-    this.setState((state) => ({
-      hook_name: hook_name
+      [ property_key ]: value
     }));
   }
 
   /** Conditions **/
 
-  handleConditionPropertyChange(index, property) {
+  handleConditionChange(index, property_key, value) {
     this.setState((state) => {
       let conditions = [...state.conditions];
       conditions[ index ] = {
         ...state.conditions[ index ],
-        property: property
-      };
-      return { conditions: conditions };
-    });
-  }
-
-  handleConditionMethodChange(index, comparison_method) {
-    this.setState((state) => {
-      let conditions = [...state.conditions];
-      conditions[ index ] = {
-        ...state.conditions[ index ],
-        comparison_method: comparison_method
-      };
-      return { conditions: conditions };
-    });
-  }
-
-  handleConditionValueChange(index, value) {
-    this.setState((state) => {
-      let conditions = [...state.conditions];
-      conditions[ index ] = {
-        ...state.conditions[ index ],
-        value: value
+        [ property_key ]: value
       };
       return { conditions: conditions };
     });
@@ -139,7 +99,19 @@ export class AutomationDetailsForm extends Component {
     });
   }
 
-  handleActionMetaChange(index, meta) {}
+  handleActionMetaChange(index, meta_key, meta_value) {
+    this.setState((state) => {
+      let actions = [...state.actions];
+      actions[ index ] = {
+        ...state.actions[ index ],
+        meta: {
+          ...state.actions[ index ].meta,
+          [ meta_key ]: meta_value
+        }
+      };
+      return { actions: actions };
+    });
+  }
 
   handleAddAction() {
     this.setState((state) => ({
@@ -169,20 +141,18 @@ export class AutomationDetailsForm extends Component {
       <div className="ptc-completionist-automation-details-form">
         <AutomationInfoInputs
           title={this.state.title}
-          changeTitle={this.handleTitleChange}
+          changeTitle={(value) => this.handleAutomationChange('title', value)}
           description={this.state.description}
-          changeDescription={this.handleDescriptionChange}
+          changeDescription={(value) => this.handleAutomationChange('description', value)}
         />
         <AutomationEventInput
           hook_name={this.state.hook_name}
-          changeEvent={this.handleEventChange}
+          changeEvent={(value) => this.handleAutomationChange('hook_name', value)}
         />
         <AutomationConditionsInputs
           conditions={this.state.conditions}
           event={this.state.hook_name}
-          changeConditionProperty={this.handleConditionPropertyChange}
-          changeConditionMethod={this.handleConditionMethodChange}
-          changeConditionValue={this.handleConditionValueChange}
+          changeCondition={this.handleConditionChange}
           addCondition={this.handleAddCondition}
           removeCondition={this.handleRemoveCondition}
         />
@@ -191,8 +161,9 @@ export class AutomationDetailsForm extends Component {
           changeAction={this.handleActionChange}
           addAction={this.handleAddAction}
           removeAction={this.handleRemoveAction}
+          changeActionMeta={this.handleActionMetaChange}
         />
-        <button onClick={() => console.log('Save automation...')}>{this.state.saveButtonLabel}</button>
+        <button onClick={() => console.log(this.state)}>{this.state.saveButtonLabel}</button>
       </div>
     );
   }//end render()
@@ -284,15 +255,15 @@ class AutomationConditionsInputs extends Component {
     this.conditionFieldsets = this.props.conditions.map((condition, index) => {
       let valueInput = null;
       if ( condition.comparison_method !== 'is empty' && condition.comparison_method !== 'is filled' ) {
-        valueInput = <input type="text" value={condition.value} key={index} onChange={(e) => this.props.changeConditionValue(index, e.target.value)} />;
+        valueInput = <input type="text" value={condition.value} key={index} onChange={(e) => this.props.changeCondition(index, 'value', e.target.value)} />;
       }
       return (
         <fieldset className="automation-condition" key={index}>
           <legend>Condition</legend>
-          <select value={condition.property} key={index} onChange={(e) => this.props.changeConditionProperty(index, e.target.value)}>
+          <select value={condition.property} key={index} onChange={(e) => this.props.changeCondition(index, 'property', e.target.value)}>
             {this.propertyOptions}
           </select>
-          <select value={condition.comparison_method} key={index} onChange={(e) => this.props.changeConditionMethod(index, e.target.value)}>
+          <select value={condition.comparison_method} key={index} onChange={(e) => this.props.changeCondition(index, 'comparison_method', e.target.value)}>
             {this.comparisonMethodOptions}
           </select>
           {valueInput}
@@ -339,18 +310,24 @@ class AutomationActionsInputs extends Component {
         return (
           <div className="action-meta_create_task">
 
-            <input id={"ptc-new-task_name_"+index} type="text" placeholder="Write a task name..." value={action.meta.name} />
+            <input
+              id={"ptc-new-task_name_"+index}
+              type="text"
+              placeholder="Write a task name..."
+              value={action.meta.name}
+              onChange={(e) => this.props.changeActionMeta(index, 'name', e.target.value)}
+            />
 
             <div class="form-group">
               <label for={"ptc-new-task_task_author_"+index}>Creator</label>
-              <select id={"ptc-new-task_task_author_"+index} value={action.meta.task_author}>
+              <select id={"ptc-new-task_task_author_"+index} value={action.meta.task_author} onChange={(e) => this.props.changeActionMeta(index, 'task_author', e.target.value)}>
                 {this.createSelectOptions(window.ptc_completionist_automations.workspace_users)}
               </select>
             </div>
 
             <div class="form-group">
               <label for={"ptc-new-task_assignee_"+index}>Assignee</label>
-              <select id={"ptc-new-task_assignee_"+index} value={action.meta.assignee}>
+              <select id={"ptc-new-task_assignee_"+index} value={action.meta.assignee} onChange={(e) => this.props.changeActionMeta(index, 'assignee', e.target.value)}>
                 <option value="">None (Unassigned)</option>
                 {this.createSelectOptions(window.ptc_completionist_automations.workspace_users)}
               </select>
@@ -358,12 +335,12 @@ class AutomationActionsInputs extends Component {
 
             <div class="form-group">
               <label for={"ptc-new-task_due_on_"+index}>Due Date</label>
-              <input id={"ptc-new-task_due_on_"+index} type="date" pattern="\d\d\d\d-\d\d-\d\d" placeholder="yyyy-mm-dd" value={action.meta.due_on} />
+              <input id={"ptc-new-task_due_on_"+index} type="date" pattern="\d\d\d\d-\d\d-\d\d" placeholder="yyyy-mm-dd" value={action.meta.due_on} onChange={(e) => this.props.changeActionMeta(index, 'due_on', e.target.value)} />
             </div>
 
             <div class="form-group">
               <label for={"ptc-new-task_project_"+index}>Project</label>
-              <select id={"ptc-new-task_project_"+index} value={action.meta.project}>
+              <select id={"ptc-new-task_project_"+index} value={action.meta.project} onChange={(e) => this.props.changeActionMeta(index, 'project', e.target.value)}>
                 <option value="">None (Private Task)</option>
                 {this.createSelectOptions(window.ptc_completionist_automations.workspace_projects)}
               </select>
@@ -371,12 +348,12 @@ class AutomationActionsInputs extends Component {
 
             <div class="form-group">
               <label for={"ptc-new-task_notes_"+index}>Description</label>
-              <textarea id={"ptc-new-task_notes_"+index} value={action.meta.notes} />
+              <textarea id={"ptc-new-task_notes_"+index} value={action.meta.notes} onChange={(e) => this.props.changeActionMeta(index, 'notes', e.target.value)} />
             </div>
 
             <div class="form-group">
               <label for={"ptc-new-task_project_"+index}>Pin</label>
-              <select id={"ptc-new-task_project_"+index} value={action.meta.post_id}>
+              <select id={"ptc-new-task_project_"+index} value={action.meta.post_id} onChange={(e) => this.props.changeActionMeta(index, 'post_id', e.target.value)}>
                 <option value="">None (General Task)</option>
               </select>
             </div>

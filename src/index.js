@@ -70,6 +70,39 @@ jQuery(function($) {
                   }
                 ]
               },
+              {
+                ID: 223,
+                title: 'Donor Members Listing',
+                description: 'This automation does not actually exist in the database and is only for frontend testing purposes.',
+                hook_name: 'user_register',
+                last_modified: '2020/06/11 14:16',
+                conditions: [
+                  {
+                    ID: 224,
+                    property: 'first_name',
+                    comparison_method: 'is filled',
+                    value: ''
+                  },
+                  {
+                    ID: 226,
+                    property: 'last_name',
+                    comparison_method: 'is filled',
+                    value: ''
+                  }
+                ],
+                actions: [
+                  {
+                    ID: 225,
+                    action: 'create_task',
+                    triggered_count: 17,
+                    last_triggered: '2020/06/19 14:20',
+                    meta: {
+                      task_author: 1,
+                      name: 'Verify and add donor to members listing'
+                    }
+                  }
+                ]
+              },
             ]
           };
 
@@ -115,7 +148,8 @@ jQuery(function($) {
 
         render() {
           let queryParams = new URLSearchParams( location.search );
-          if ( queryParams.get('automation') === 'new' ) {
+          const automationParam = queryParams.get('automation');
+          if ( automationParam === 'new' ) {
             /* Add Automation... */
             return (
               <div className='ptc-completionist-automation-create'>
@@ -124,12 +158,15 @@ jQuery(function($) {
                 <button onClick={() => this.goToAutomation()}>Back</button>
               </div>
             );
-          } else if ( queryParams.get('automation') > 0 ) {
+          }
+
+          const automationIndex = this.state.automations.findIndex((automation) => automation.ID == automationParam);
+          if ( automationIndex > -1 ) {
             /* Edit Automation... */
             return (
               <div className='ptc-completionist-automation-details'>
-                <h1>Viewing automation {queryParams.get('automation')}</h1>
-                <AutomationDetailsForm automation={this.state.automations[0]} />
+                <h1>Viewing automation {automationParam}</h1>
+                <AutomationDetailsForm automation={this.state.automations[ automationIndex ]} />
                 <button onClick={() => this.goToAutomation()}>Back</button>
               </div>
             );
