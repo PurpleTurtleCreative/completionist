@@ -8,11 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - New "Automations" feature.
 
-### Security
-- Added existence checks for classes and functions used in uninstallation script.
-
 ### Fixed
 - Authenticated users who could not be matched by email in Asana are now properly included in the site collaborators listing.
+- Added existence checks for classes and functions used in uninstallation script.
+- Corrected retrieval and typecasting on array of users returned when searching for WordPress user by Asana GID.
 
 ## 1.0.1 - 2020-04-21
 ### Fixed
