@@ -1,3 +1,5 @@
+import { PostSearchSelectInput } from './PostSearchSelectInput.js';
+
 const { Component } = wp.element;
 
 export class AutomationDetailsForm extends Component {
@@ -352,10 +354,12 @@ class AutomationActionsInputs extends Component {
             </div>
 
             <div class="form-group">
-              <label for={"ptc-new-task_project_"+index}>Pin</label>
-              <select id={"ptc-new-task_project_"+index} value={action.meta.post_id} onChange={(e) => this.props.changeActionMeta(index, 'post_id', e.target.value)}>
-                <option value="">None (General Task)</option>
-              </select>
+              <label for={"ptc-new-task_post_id_"+index}>Pin</label>
+              <PostSearchSelectInput
+                id={"ptc-new-task_post_id_"+index}
+                initialValue={action.meta.post_id}
+                onSelectOption={(value) => this.props.changeActionMeta(index, 'post_id', value)}
+              />
             </div>
 
           </div>

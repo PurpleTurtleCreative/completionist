@@ -139,7 +139,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
       add_action( 'wp_dashboard_setup', [ $this, 'add_dashboard_widgets' ] );
 
-      /* AJAX Handlers */
+      /* Task AJAX Handlers */
       add_action( 'wp_ajax_ptc_pin_task', [ $this, 'ajax_pin_task' ] );
       add_action( 'wp_ajax_ptc_unpin_task', [ $this, 'ajax_unpin_task' ] );
       add_action( 'wp_ajax_ptc_get_pins', [ $this, 'ajax_get_pins' ] );
@@ -148,6 +148,8 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       add_action( 'wp_ajax_ptc_create_task', [ $this, 'ajax_create_task' ] );
       add_action( 'wp_ajax_ptc_delete_task', [ $this, 'ajax_delete_task' ] );
       add_action( 'wp_ajax_ptc_update_task', [ $this, 'ajax_update_task' ] );
+      /* Generic AJAX Handlers */
+      add_action( 'wp_ajax_ptc_get_post_options_by_title', [ $this, 'ajax_ptc_get_post_options_by_title' ] );
 
       /* Enqueue Automation Actions */
       require_once $this->plugin_path . 'src/automations/class-events.php';
@@ -387,6 +389,17 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      */
     function ajax_update_task() {
       require_once $this->plugin_path . 'src/ajax/ajax-update-task.php';
+    }
+
+    /**
+     * AJAX handler to get post options by like title.
+     *
+     * @since 1.0.0
+     *
+     * @ignore
+     */
+    function ajax_ptc_get_post_options_by_title() {
+      require_once $this->plugin_path . 'src/ajax/ajax-get-post-options-by-title.php';
     }
 
     /**

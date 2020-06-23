@@ -12,7 +12,6 @@ namespace PTC_Completionist;
 defined( 'ABSPATH' ) || die();
 
 require_once __DIR__ . '/../class-asana-interface.php';
-require_once __DIR__ . '/../class-options.php';
 require_once __DIR__ . '/../class-html-builder.php';
 
 $res['status'] = 'error';
