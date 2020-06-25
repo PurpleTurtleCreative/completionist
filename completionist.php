@@ -150,6 +150,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       add_action( 'wp_ajax_ptc_update_task', [ $this, 'ajax_update_task' ] );
       /* Generic AJAX Handlers */
       add_action( 'wp_ajax_ptc_get_post_options_by_title', [ $this, 'ajax_ptc_get_post_options_by_title' ] );
+      add_action( 'wp_ajax_ptc_save_automation', [ $this, 'ajax_ptc_save_automation' ] );
 
       /* Enqueue Automation Actions */
       require_once $this->plugin_path . 'src/automations/class-events.php';
@@ -229,9 +230,9 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       $links[] = '<a href="' . esc_url( $this->license_url ) . '">License</a>';
 
       if ( is_object( $this->wcam ) && $this->wcam->get_api_key_status( FALSE ) ) {
-        $links[] = '<span style="color:#399709;">&#10004; Activated</span>';
+        $links[] = '<span style="color:#399709;">Activated</span>';
       } else {
-        $links[] = '<span style="color:#E12D39;">&#10006; Inactive</span>';
+        $links[] = '<span style="color:#E12D39;">Inactive</span>';
       }
 
       return $links;
@@ -394,12 +395,23 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
     /**
      * AJAX handler to get post options by like title.
      *
-     * @since 1.0.0
+     * @since 1.1.0
      *
      * @ignore
      */
     function ajax_ptc_get_post_options_by_title() {
       require_once $this->plugin_path . 'src/ajax/ajax-get-post-options-by-title.php';
+    }
+
+    /**
+     * AJAX handler to get post options by like title.
+     *
+     * @since 1.1.0
+     *
+     * @ignore
+     */
+    function ajax_ptc_save_automation() {
+      require_once $this->plugin_path . 'src/ajax/ajax-save-automation.php';
     }
 
     /**
@@ -540,6 +552,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
               'field_comparison_methods' => \PTC_Completionist\Automations\Fields::COMPARISON_METHODS,
               'action_options' => \PTC_Completionist\Automations\Actions::ACTION_OPTIONS,
               'workspace_users' => \PTC_Completionist\Asana_Interface::get_workspace_user_options(),
+              'connected_workspace_users' => \PTC_Completionist\Asana_Interface::get_connected_workspace_user_options(),
               'workspace_projects' => \PTC_Completionist\Asana_Interface::get_workspace_project_options(),
               'nonce' => wp_create_nonce( 'ptc_completionist_automations' ),
             ]

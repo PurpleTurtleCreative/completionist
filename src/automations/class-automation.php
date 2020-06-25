@@ -25,6 +25,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Automation' ) ) {
 
     public $ID = 0;
     public $title = '';
+    public $description = '';
     public $hook_name = '';
     public $last_modified = '';
 
@@ -34,11 +35,27 @@ if ( ! class_exists( __NAMESPACE__ . '\Automation' ) ) {
 
     public $translation_objects = [];
 
+    /**
+     * Loads initial automation details.
+     *
+     * @since 1.1.0
+     *
+     * @param int $automation_id
+     *
+     * @param array $translation_objects
+     *
+     * @throws \Exception If the automation does not exist.
+     */
     function __construct( int $automation_id, array $translation_objects ) {
 
       $automation_record = Automations\Data::get_automation( $automation_id );
+      if ( NULL === $automation_record ) {
+        throw new \Exception( "Automation does not exist with ID: {$automation_id}", 404 );
+      }
+
       $this->ID = $automation_record->ID;
       $this->title = $automation_record->title;
+      $this->description = $automation_record->description;
       $this->hook_name = $automation_record->hook_name;
       $this->last_modified = $automation_record->last_modified;
 

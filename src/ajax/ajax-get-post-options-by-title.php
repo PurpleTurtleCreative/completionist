@@ -2,7 +2,7 @@
 /**
  * Get WordPress post ID and title options by searching for like titles.
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
 
 declare(strict_types=1);

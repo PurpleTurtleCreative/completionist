@@ -15,26 +15,7 @@ jQuery(function($) {
 
           super(props);
 
-          /*
-          Automation Object Structure:
-          - ID
-          - title
-          - description
-          - hook_name (event)
-          - last_modified
-          - conditions[]
-            - ID
-            - property
-            - comparison_method
-            - value
-          - actions[]
-            - ID
-            - action
-            - triggered_count
-            - last_triggered
-            - meta[]
-              - ...
-          */
+          /* Automation Object Structure follows \PTC_Completionist\Automations\Data::save_automation() */
           this.state = {
             automations: [
               {

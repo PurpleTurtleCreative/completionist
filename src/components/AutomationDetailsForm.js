@@ -19,6 +19,7 @@ export class AutomationDetailsForm extends Component {
       if ( 'ID' in props.automation && props.automation.ID > 0 ) {
         this.state.saveButtonLabel = 'Update';
       }
+      this.state.isSubmitting = false;
     } else {
       this.state = {
         ID: 0,
@@ -28,7 +29,8 @@ export class AutomationDetailsForm extends Component {
         last_modified: '',
         conditions: [],
         actions: [],
-        saveButtonLabel: 'Create'
+        saveButtonLabel: 'Create',
+        isSubmitting: false
       };
     }
 
@@ -46,6 +48,50 @@ export class AutomationDetailsForm extends Component {
   }//end constructor()
 
   /* HANDLERS */
+
+  saveAutomation() {
+    if ( ! this.state.isSubmitting ) {
+      this.setState({
+        isSubmitting: true
+      }, () => {
+
+        let data = {
+          'action': 'ptc_save_automation',
+          'nonce': window.ptc_completionist_automations.nonce,
+          'automation': this.state
+        };
+
+        window.jQuery.post(window.ajaxurl, data, (res) => {
+
+          console.log(res);
+          this.setState({
+            isSubmitting: false
+          });
+
+          // TODO: handle error responses
+          // if(res.status == 'success' && res.data != '') {
+          //   remove_task_row(data.task_gid);
+          //   remove_task_gid(data.task_gid, false);
+          // } else if(res.status == 'error' && res.data != '') {
+          //   display_alert_html(res.data);
+          //   disable_element(thisButton, false);
+          //   buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
+          // } else {
+          //   alert('[Completionist] Error '+res.code+': '+res.message);
+          //   disable_element(thisButton, false);
+          //   buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
+          // }
+
+        }, 'json')
+          .fail(() => {
+            this.setState({
+              isSubmitting: false
+            });
+          });
+
+      });
+    }
+  }//end saveAutomation()
 
   /** Core Info **/
 
@@ -75,7 +121,7 @@ export class AutomationDetailsForm extends Component {
         {
           ID: 0,
           property: '',
-          comparison_method: '',
+          comparison_method: window.ptc_completionist_automations.field_comparison_methods[0],
           value: ''
         }
       ]
@@ -95,7 +141,8 @@ export class AutomationDetailsForm extends Component {
       let actions = [...state.actions];
       actions[ index ] = {
         ...state.actions[ index ],
-        action: action
+        action: action,
+        meta: this.getDefaultActionMeta(action)
       };
       return { actions: actions };
     });
@@ -124,7 +171,7 @@ export class AutomationDetailsForm extends Component {
           action: 'create_task',
           triggered_count: 0,
           last_triggered: '',
-          meta: {}
+          meta: this.getDefaultActionMeta('create_task')
         }
       ]
     }));
@@ -137,6 +184,19 @@ export class AutomationDetailsForm extends Component {
   }
 
   /* END HANDLERS */
+
+  getDefaultActionMeta(action) {
+    switch(action) {
+      case 'create_task':
+        return {
+          task_author: window.ptc_completionist_automations.connected_workspace_users[0]
+        }
+        break;
+      default:
+        return {};
+        break;
+    }
+  }
 
   render() {
     return (
@@ -165,7 +225,7 @@ export class AutomationDetailsForm extends Component {
           removeAction={this.handleRemoveAction}
           changeActionMeta={this.handleActionMetaChange}
         />
-        <button onClick={() => console.log(this.state)}>{this.state.saveButtonLabel}</button>
+        <button onClick={() => this.saveAutomation()} disabled={this.state.isSubmitting}>{this.state.saveButtonLabel}</button>
       </div>
     );
   }//end render()
@@ -323,7 +383,7 @@ class AutomationActionsInputs extends Component {
             <div class="form-group">
               <label for={"ptc-new-task_task_author_"+index}>Creator</label>
               <select id={"ptc-new-task_task_author_"+index} value={action.meta.task_author} onChange={(e) => this.props.changeActionMeta(index, 'task_author', e.target.value)}>
-                {this.createSelectOptions(window.ptc_completionist_automations.workspace_users)}
+                {this.createSelectOptions(window.ptc_completionist_automations.connected_workspace_users)}
               </select>
             </div>
 

@@ -28,6 +28,102 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
    */
   class Data {
 
+    /* Basic Interfacing */
+
+    /**
+     * Description
+     *
+     * @since 1.1.0
+     *
+     * @param \stdClass $automation A full object representation of automation
+     * data to be compared and saved to the database. Note that missing data
+     * for existing automation records is assumed to be deleted. The structure
+     * for the object is as follows:
+     * - ID (0 to create or existing ID to update)
+     * - title
+     * - description
+     * - hook_name
+     * - last_modified (unused)
+     * - conditions[]
+     *   - ID (0 to create or existing ID to update)
+     *   - property
+     *   - comparison_method
+     *   - value
+     * - actions[]
+     *   - ID (0 to create or existing ID to update)
+     *   - action
+     *   - triggered_count
+     *   - last_triggered (unused)
+     *   - meta{} (meta_key properties with meta_value values)
+     *
+     * @return bool If the save was successful.
+     */
+    static function save_automation( \stdClass $automation ) : bool {
+
+      if ( $automation->ID <= 0 ) {
+        /* Create new automation */
+        $new_automation_id = self::add_automation(
+          $automation->title,
+          $automation->description,
+          $automation->hook_name
+        );
+
+        if ( $new_automation_id <= 0 ) {
+          error_log('Failed to add new automation.');
+          return FALSE;
+        }
+
+        // TODO: use bulk insertion queries rather than multiple write calls
+
+        foreach ( $automation->conditions as $condition ) {
+          if (
+            self::add_condition(
+              $new_automation_id,
+              $condition->property,
+              $condition->comparison_method,
+              $condition->value
+            ) <= 0
+          ) {
+            error_log('Failed to add new automation condition.');
+          }
+        }//end foreach conditions
+
+        foreach ( $automation->actions as $action ) {
+          $new_action_id = self::add_action(
+            $new_automation_id,
+            $action->action
+          );
+          if ( $new_action_id <= 0 ) {
+            error_log('Failed to add new automation action.');
+            continue;
+          } elseif ( isset( $action->meta ) ) {
+            foreach ( $action->meta as $meta_key => $meta_value ) {
+              if (
+                self::add_action_meta(
+                  $new_action_id,
+                  $meta_key,
+                  $meta_value
+                ) <= 0
+              ) {
+                error_log('Failed to add new action meta.');
+              }
+            }
+          }
+        }//end foreach actions
+
+      } elseif ( self::automation_exists( $automation->ID ) ) {
+        // TODO: implement updating an existing automation
+        error_log('Automation exists with ID: ' . $automation->ID );
+      } else {
+        // TODO: return error response, maybe empty \stdClass
+        error_log('Automation does NOT exist with ID: ' . $automation->ID );
+      }
+
+      // TODO: return the retrieved \stdClass presentation of what finally exists in the database for the new or existing automation
+      return TRUE;
+
+    }//end save_automation()
+
     /* Main Record Queries */
 
     /**
@@ -196,9 +292,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
      *
      * @return int The automation ID. Default 0 on error.
      */
-    static function add_automation( string $title, string $hook_name ) : int {
+    static function add_automation( string $title, string $description, string $hook_name ) : int {
 
       $title = Options::sanitize( 'string', $title );
+      $description = Options::sanitize( 'string', $description );
       $hook_name = Options::sanitize( 'string', $hook_name );
 
       if (
@@ -211,12 +308,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 
       global $wpdb;
       $res = $wpdb->insert(
-        PTF_Database_Manager::$automations_table,
+        Database_Manager::$automations_table,
         [
           'title' => $title,
+          'description' => $description,
           'hook_name' => $hook_name,
         ],
         [
+          '%s',
           '%s',
           '%s',
         ]
@@ -248,7 +347,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
      */
     static function add_condition( int $automation_id, string $property, string $comparison_method, string $value ) : int {
 
-      $automation_id = (int) Options::sanitize( 'gid', $automation_id );
       $property = Options::sanitize( 'string', $property );
       $comparison_method = Options::sanitize( 'string', $comparison_method );
       $value = Options::sanitize( 'string', $value );
@@ -266,7 +364,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 
       global $wpdb;
       $res = $wpdb->insert(
-        PTF_Database_Manager::$automation_conditions_table,
+        Database_Manager::$automation_conditions_table,
         [
           'automation_id' => $automation_id,
           'property' => $property,
@@ -302,7 +400,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
      */
     static function add_action( int $automation_id, string $action_name ) : int {
 
-      $automation_id = (int) Options::sanitize( 'gid', $automation_id );
       $action_name = Options::sanitize( 'string', $action_name );
 
       if (
@@ -316,7 +413,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 
       global $wpdb;
       $res = $wpdb->insert(
-        PTF_Database_Manager::$automation_actions_table,
+        Database_Manager::$automation_actions_table,
         [
           'automation_id' => $automation_id,
           'action' => $action_name,
@@ -350,7 +447,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
      */
     static function add_action_meta( int $action_id, string $meta_key, string $meta_value ) : int {
 
-      $action_id = (int) Options::sanitize( 'gid', $action_id );
       $meta_key = Options::sanitize( 'string', $meta_key );
       $meta_value = Options::sanitize( 'string', $meta_value );
 
@@ -363,9 +459,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
         return 0;
       }
 
+      // TODO: check if meta key already exists, update meta value instead
+
       global $wpdb;
       $res = $wpdb->insert(
-        PTF_Database_Manager::$automation_actions_meta_table,
+        Database_Manager::$automation_actions_meta_table,
         [
           'action_id' => $action_id,
           'meta_key' => $meta_key,
@@ -401,7 +499,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 
       global $wpdb;
       $res = $wpdb->delete(
-        PTF_Database_Manager::$automations_table,
+        Database_Manager::$automations_table,
         [
           'ID' => $automation_id,
         ],
@@ -427,7 +525,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 
       global $wpdb;
       $res = $wpdb->delete(
-        PTF_Database_Manager::$automation_conditions_table,
+        Database_Manager::$automation_conditions_table,
         [
           'ID' => $condition_id,
         ],
@@ -453,7 +551,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 
       global $wpdb;
       $res = $wpdb->delete(
-        PTF_Database_Manager::$automation_actions_table,
+        Database_Manager::$automation_actions_table,
         [
           'ID' => $action_id,
         ],
@@ -479,7 +577,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 
       global $wpdb;
       $res = $wpdb->delete(
-        PTF_Database_Manager::$automation_actions_meta_table,
+        Database_Manager::$automation_actions_meta_table,
         [
           'ID' => $action_meta_id,
         ],
@@ -729,7 +827,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
      * @return bool If the action key is valid.
      */
     static function validate_action_key( string $action_key ) : bool {
-      return in_array( $action_key, Actions::ACTION_OPTIONS );
+      return in_array( $action_key, array_keys( Actions::ACTION_OPTIONS ) );
     }
 
   }//end class

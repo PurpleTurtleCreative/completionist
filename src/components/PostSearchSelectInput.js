@@ -62,6 +62,7 @@ export class PostSearchSelectInput extends Component {
             options: res.data
           });
 
+          // TODO: handle error responses
           // if(res.status == 'success' && res.data != '') {
           //   remove_task_row(data.task_gid);
           //   remove_task_gid(data.task_gid, false);

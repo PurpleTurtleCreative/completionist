@@ -318,8 +318,41 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
         foreach ( $wp_users as $gid => $wp_user ) {
           $wp_users[ $gid ] = "{$wp_user->display_name} ({$wp_user->user_email})";
         }
+        $wp_users += self::get_connected_workspace_user_options( $workspace_gid );
       } catch ( \Exception $e ) {
         error_log( HTML_Builder::format_error_string( $e, 'Failed to get_workspace_user_options().' ) );
+        $wp_users = [ 'error' => 'ERROR ' . HTML_Builder::get_error_code( $e ) ];
+      }
+
+      return $wp_users;
+
+    }
+
+    /**
+     * Get an array of WordPress user display names and emails keyed by their
+     * Asana gid.
+     *
+     * @see get_connected_workspace_users() For how users are selected.
+     *
+     * @since 1.1.0
+     *
+     * @param string $workspace_gid Optional. The gid of the workspace to get
+     * Asana users to match by email. Default '' to use the chosen workspace.
+     *
+     * @return string[] Strings of WordPress user display names and emails keyed
+     * by their Asana gid.
+     */
+    static function get_connected_workspace_user_options( string $workspace_gid = '' ) : array {
+
+      $wp_users = [];
+
+      try {
+        $wp_users = self::get_connected_workspace_users( $workspace_gid );
+        foreach ( $wp_users as $gid => $wp_user ) {
+          $wp_users[ $gid ] = "{$wp_user->display_name} ({$wp_user->user_email})";
+        }
+      } catch ( \Exception $e ) {
+        error_log( HTML_Builder::format_error_string( $e, 'Failed to get_connected_workspace_user_options().' ) );
         $wp_users = [ 'error' => 'ERROR ' . HTML_Builder::get_error_code( $e ) ];
       }
 
