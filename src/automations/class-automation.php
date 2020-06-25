@@ -175,5 +175,32 @@ if ( ! class_exists( __NAMESPACE__ . '\Automation' ) ) {
 
     }
 
+    /**
+     * Get the standard object representation of the automation.
+     *
+     * @see \PTC_Completionist\Automations\Data::save_automation() For returned
+     * object structure.
+     *
+     * @since 1.1.0
+     *
+     * @return \stdClass The standard object representation of the automation.
+     */
+    function to_stdClass() : \stdClass {
+
+      $obj = new \stdClass();
+
+      $obj->ID = $this->ID;
+      $obj->title = $this->title;
+      $obj->description = $this->description;
+      $obj->hook_name = $this->hook_name;
+      $obj->last_modified = $this->last_modified;
+
+      $obj->conditions = $this->get_conditions();
+      $obj->actions = $this->get_actions( TRUE );
+
+      return $obj;
+
+    }
+
   }//end class
 }//end if class_exists

@@ -37,17 +37,36 @@ try {
       throw new \Exception( 'Received invalid automation data object for saving.', 500 );
     }
 
-    if ( ! is_a( $automation, '\stdClass' ) ) {
+    if ( ! is_a( $automation, '\stdClass' ) || ! isset( $automation->ID ) ) {
       throw new \Exception( 'Invalid automation data JSON for saving.', 500 );
     }
 
-    error_log( print_r( $automation, TRUE ) );
-    error_log( print_r( Automations\Data::save_automation( $automation ), TRUE ) );
+    $saved_automation = Automations\Data::save_automation( $automation );
 
-    $res['status'] = 'success';
-    $res['code'] = 200;
-    $res['message'] = "Successfully saved automation.";
-    $res['data'] = $automation;
+    if (
+      $automation->ID == 0
+      && isset( $saved_automation->ID )
+      && $saved_automation->ID > 0
+    ) {
+      $res['status'] = 'success';
+      $res['code'] = 201;
+      $res['message'] = "Successfully created new automation {$saved_automation->ID}.";
+      $res['data'] = $saved_automation;
+    } elseif (
+      $automation->ID > 0
+      && isset( $saved_automation->ID )
+      && $saved_automation->ID == $automation->ID
+    ) {
+      $res['status'] = 'success';
+      $res['code'] = 200;
+      $res['message'] = "Successfully updated automation {$saved_automation->ID}.";
+      $res['data'] = $saved_automation;
+    } else {
+      $res['status'] = 'error';
+      $res['code'] = 500;
+      $res['message'] = 'Something went wrong when saving the automation.';
+      $res['data'] = $saved_automation;
+    }
 
   }//end validate form submission
 } catch ( \Exception $e ) {

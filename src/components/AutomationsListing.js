@@ -24,14 +24,14 @@ export class AutomationsListing extends Component {
 
   render() {
     /* List Automations... */
-    const automationLinks = this.state.automations.map((automation) =>
+    const automationRows = this.state.automations.map((automation) =>
       <AutomationRow automation={automation} goToAutomation={this.goToAutomation} key={automation.ID} />
     );
     return (
       <div className='ptc-completionist-automations-listing'>
-        <h1>Automations Listing</h1>
+        <h1>Automations</h1>
         <button onClick={() => this.goToAutomation('new')}>Add New</button>
-        <div className='ptc-completionist-automations-list'>{automationLinks}</div>
+        <div className='ptc-completionist-automations-list'>{automationRows}</div>
       </div>
     );
   }

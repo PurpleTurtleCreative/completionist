@@ -18,9 +18,11 @@ require_once 'class-fields.php';
 require_once 'class-actions.php';
 require_once __DIR__ . '/../class-database-manager.php';
 require_once __DIR__ . '/../class-options.php';
+require_once __DIR__ . '/../class-html-builder.php';
 
 use \PTC_Completionist\Database_Manager;
 use \PTC_Completionist\Options;
+use \PTC_Completionist\HTML_Builder;
 
 if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
   /**
@@ -56,9 +58,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
      *   - last_triggered (unused)
      *   - meta{} (meta_key properties with meta_value values)
      *
-     * @return bool If the save was successful.
+     * @return \stdClass The automation data now in the database for the new
+     * or updated automation. An empty object is returned on failure to create
+     * a new automation or when attempting to update an automation that does
+     * not exist.
      */
-    static function save_automation( \stdClass $automation ) : bool {
+    static function save_automation( \stdClass $automation ) : \stdClass {
+
+      $saved_automation = new \stdClass();
 
       if ( $automation->ID <= 0 ) {
         /* Create new automation */
@@ -111,16 +118,24 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
           }
         }//end foreach actions
 
+        try {
+          $saved_automation = (new Automation( $new_automation_id ))->to_stdClass();
+        } catch ( \Exception $e ) {
+          error_log( HTML_Builder::format_error_string( $e, 'Failed to retrieve newly created automation data.' ) );
+        }
+
       } elseif ( self::automation_exists( $automation->ID ) ) {
         // TODO: implement updating an existing automation
-        error_log('Automation exists with ID: ' . $automation->ID );
+        error_log( 'Automation exists with ID: ' . $automation->ID );
+        error_log( "as stdClass ---> \n" . print_r( (new Automation( $automation->ID ))->to_stdClass(), TRUE ) );
       } else {
         // TODO: return error response, maybe empty \stdClass
         error_log('Automation does NOT exist with ID: ' . $automation->ID );
       }
 
-      // TODO: return the retrieved \stdClass presentation of what finally exists in the database for the new or existing automation
-      return TRUE;
+      // ^-- change structure to else{ try/catch } because new Automation() checks existence
+
+      return $saved_automation;
 
     }//end save_automation()
 
@@ -143,7 +158,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
       $res = $wpdb->get_row(
         $wpdb->prepare(
           "SELECT * FROM $table
-            WHERE ID = %d",
+            WHERE ID = %d LIMIT 1",
           $automation_id
         )
       );
@@ -590,6 +605,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 
     }
 
+    static function delete_action_meta_by_key( int $action_id, string $meta_key ) : bool {}
+
     /* Special Queries */
 
     /**
@@ -645,6 +662,90 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
       }
 
       return TRUE;
+
+    }
+
+    /**
+     * Selects all main automation records with additional overview information
+     * for each.
+     *
+     * @since 1.1.0
+     *
+     * @param string $order_by Optional. The column to sort by in
+     * descending order. Default 'title'. May be one of any returned columns:
+     * - ID
+     * - title (default)
+     * - description
+     * - hook_name
+     * - last_modified
+     * - total_conditions
+     * - total_actions
+     * - last_triggered
+     * - total_triggered
+     *
+     * @return \stdClass[] The automation overview records.
+     */
+    static function get_automation_overviews( string $order_by = 'title' ) : array {
+
+      global $wpdb;
+      $automations_table = Database_Manager::$automations_table;
+      $automation_actions_table = Database_Manager::$automation_actions_table;
+      $automation_conditions_table = Database_Manager::$automation_conditions_table;
+      $res = $wpdb->get_results(
+        "SELECT
+          automations.*,
+          (
+            SELECT
+              COUNT(ID)
+            FROM
+              $automation_conditions_table
+            WHERE
+              automation_id = automations.ID
+          ) AS 'total_conditions',
+          (
+            SELECT
+              COUNT(ID)
+            FROM
+              $automation_actions_table
+            WHERE
+              automation_id = automations.ID
+          ) AS 'total_actions',
+          (
+            SELECT
+              MAX(last_triggered)
+            FROM
+              $automation_actions_table
+            WHERE
+              automation_id = automations.ID
+          ) AS 'last_triggered',
+          (
+            SELECT
+              SUM(triggered_count)
+            FROM
+              $automation_actions_table
+            WHERE
+              automation_id = automations.ID
+          ) AS 'total_triggered'
+        FROM
+          $automations_table automations
+        ORDER BY $order_by DESC"
+      );
+
+      if ( $res ) {
+        foreach ( $res as &$item ) {
+          $item->ID = (int) $item->ID;
+          $item->title = wp_unslash( $item->title );
+          $item->description = wp_unslash( $item->description );
+          $item->hook_name = wp_unslash( $item->hook_name );
+          $item->last_modified = wp_unslash( $item->last_modified );
+          $item->total_conditions = (int) $item->total_conditions;
+          $item->total_actions = (int) $item->total_actions;
+          $item->last_triggered = wp_unslash( $item->last_triggered );
+          $item->total_triggered = (int) $item->total_triggered;
+        }
+      }
+
+      return $res;
 
     }
 

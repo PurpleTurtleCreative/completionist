@@ -540,11 +540,13 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
           require_once $this->plugin_path . 'src/automations/class-events.php';
           require_once $this->plugin_path . 'src/automations/class-fields.php';
           require_once $this->plugin_path . 'src/automations/class-actions.php';
+          require_once $this->plugin_path . 'src/automations/class-data.php';
           require_once $this->plugin_path . 'src/class-asana-interface.php';
           wp_localize_script(
             'ptc-completionist_build-index-js',
             'ptc_completionist_automations',
             [
+              'automations' => \PTC_Completionist\Automations\Data::get_automation_overviews(),
               'event_user_options' => \PTC_Completionist\Automations\Events::USER_OPTIONS,
               'event_post_options' => \PTC_Completionist\Automations\Events::POST_OPTIONS,
               'field_user_options' => \PTC_Completionist\Automations\Fields::USER_OPTIONS,

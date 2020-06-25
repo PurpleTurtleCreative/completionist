@@ -11,81 +11,13 @@ jQuery(function($) {
 
       class PTCCompletionist_Automations extends Component {
 
+        // TODO: Move class to separate file for optimized importing
+
         constructor(props) {
 
           super(props);
 
-          /* Automation Object Structure follows \PTC_Completionist\Automations\Data::save_automation() */
-          this.state = {
-            automations: [
-              {
-                ID: 123,
-                title: 'Sample Automation',
-                description: 'This automation does not actually exist in the database and is only for frontend testing purposes.',
-                hook_name: 'post_updated',
-                last_modified: '2020/06/11 14:16',
-                conditions: [
-                  {
-                    ID: 124,
-                    property: 'post_status',
-                    comparison_method: 'equals',
-                    value: 'publish'
-                  },
-                  {
-                    ID: 126,
-                    property: 'post_type',
-                    comparison_method: 'equals',
-                    value: 'post'
-                  }
-                ],
-                actions: [
-                  {
-                    ID: 125,
-                    action: 'create_task',
-                    triggered_count: 79,
-                    last_triggered: '2020/06/11 14:20',
-                    meta: {
-                      task_author: 1,
-                      name: 'Finish coding Automations frontend with ReactJS'
-                    }
-                  }
-                ]
-              },
-              {
-                ID: 223,
-                title: 'Donor Members Listing',
-                description: 'This automation does not actually exist in the database and is only for frontend testing purposes.',
-                hook_name: 'user_register',
-                last_modified: '2020/06/11 14:16',
-                conditions: [
-                  {
-                    ID: 224,
-                    property: 'first_name',
-                    comparison_method: 'is filled',
-                    value: ''
-                  },
-                  {
-                    ID: 226,
-                    property: 'last_name',
-                    comparison_method: 'is filled',
-                    value: ''
-                  }
-                ],
-                actions: [
-                  {
-                    ID: 225,
-                    action: 'create_task',
-                    triggered_count: 17,
-                    last_triggered: '2020/06/19 14:20',
-                    meta: {
-                      task_author: 1,
-                      name: 'Verify and add donor to members listing'
-                    }
-                  }
-                ]
-              },
-            ]
-          };
+          this.state = { automations: window.ptc_completionist_automations.automations };
 
           this.goToAutomation = this.goToAutomation.bind(this);
 
@@ -141,6 +73,7 @@ jQuery(function($) {
             );
           }
 
+          // TODO: Request automation data by ID and pass result to AutomationDetailsForm
           const automationIndex = this.state.automations.findIndex((automation) => automation.ID == automationParam);
           if ( automationIndex > -1 ) {
             /* Edit Automation... */
