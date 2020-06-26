@@ -199,7 +199,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
         )
       );
 
-      if ( $res ) {
+      if ( $res && is_array( $res ) ) {
         foreach ( $res as &$item ) {
           $item->ID = (int) $item->ID;
           $item->automation_id = (int) $item->automation_id;
@@ -207,6 +207,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
           $item->comparison_method = wp_unslash( $item->comparison_method );
           $item->value = wp_unslash( $item->value );
         }
+      } else {
+        $res = [];
       }
 
       return $res;
@@ -234,13 +236,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
         )
       );
 
-      if ( $res ) {
+      if ( $res && is_array( $res ) ) {
         foreach ( $res as &$item ) {
           $item->ID = (int) $item->ID;
           $item->automation_id = (int) $item->automation_id;
           $item->action = wp_unslash( $item->action );
           $item->last_triggered = wp_unslash( $item->last_triggered );
         }
+      } else {
+        $res = [];
       }
 
       return $res;
@@ -275,13 +279,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
         )
       );
 
-      if ( $res ) {
+      if ( $res && is_array( $res ) ) {
         foreach ( $res as &$item ) {
           $item->ID = (int) $item->ID;
           $item->action_id = (int) $item->action_id;
           $item->meta_key = wp_unslash( $item->meta_key );
           $item->meta_value = wp_unslash( $item->meta_value );
         }
+      } else {
+        $res = [];
       }
 
       return $res;
@@ -740,7 +746,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
         ORDER BY $order_by DESC"
       );
 
-      if ( $res ) {
+      if ( $res && is_array( $res ) ) {
         foreach ( $res as &$item ) {
           $item->ID = (int) $item->ID;
           $item->title = wp_unslash( $item->title );
@@ -752,6 +758,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
           $item->last_triggered = wp_unslash( $item->last_triggered );
           $item->total_triggered = (int) $item->total_triggered;
         }
+      } else {
+        $res = [];
       }
 
       return $res;
