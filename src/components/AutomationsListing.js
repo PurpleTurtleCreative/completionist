@@ -22,6 +22,8 @@ export class AutomationsListing extends Component {
 
   }//end constructor()
 
+  sortAutomationsListing( orderBy = 'title' ) {}//end sortAutomationsListing()
+
   render() {
 
     // TODO: Add sorting functionality

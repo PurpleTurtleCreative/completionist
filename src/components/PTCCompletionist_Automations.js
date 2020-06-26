@@ -5,8 +5,6 @@ const { Component } = wp.element;
 
 export class PTCCompletionist_Automations extends Component {
 
-  // TODO: Move class to separate file for optimized importing
-
   constructor(props) {
 
     super(props);
@@ -21,25 +19,61 @@ export class PTCCompletionist_Automations extends Component {
   }//end constructor()
 
   goToAutomation( automationId = 0 ) {
+
     this.setState({ isLoading: true }, () => {
       if ( automationId === 'new' ) {
+
         let queryParams = new URLSearchParams( location.search );
         queryParams.set( 'automation', automationId );
         history.pushState(
-          {},
-          'Completionist &ndash; Add New Automation',
+          { ID: 'new' },
+          'Completionist – Add New Automation',
           '?' + queryParams.toString()
         );
+        document.title = 'Completionist – Add New Automation';
         this.setState({ isLoading: false });
-      } else if ( automationId <= 0 ) {
-        let queryParams = new URLSearchParams( location.search );
-        queryParams.delete('automation');
-        history.pushState(
-          {},
-          'Completionist &ndash; Automations',
-          '?' + queryParams.toString()
-        );
-        this.setState({ isLoading: false });
+
+      } else if ( isNaN( parseInt( automationId ) ) || automationId <= 0 ) {
+
+        let data = {
+          'action': 'ptc_get_automation_overviews',
+          'nonce': window.ptc_completionist_automations.nonce,
+        };
+
+        window.jQuery.post(window.ajaxurl, data, (res) => {
+
+          if ( res.status == 'success' && typeof res.data == 'object' ) {
+            let queryParams = new URLSearchParams( location.search );
+            queryParams.delete('automation');
+            history.pushState(
+              { ID: 0 },
+              'Completionist – Automations',
+              '?' + queryParams.toString()
+            );
+            document.title = 'Completionist – Automations';
+            this.setState({
+              automations: res.data,
+              isLoading: false
+            });
+          } else {
+            console.error( res );
+            this.goToAutomation();
+          }
+
+        }, 'json')
+          .fail(() => {
+            console.error( 'Failed to load automation overviews.' );
+            let queryParams = new URLSearchParams( location.search );
+            queryParams.delete('automation');
+            history.pushState(
+              { ID: 0 },
+              'Completionist – Automations',
+              '?' + queryParams.toString()
+            );
+            document.title = 'Completionist – Automations';
+            this.setState({ isLoading: false });
+          });
+
       } else {
 
         let data = {
@@ -50,16 +84,16 @@ export class PTCCompletionist_Automations extends Component {
 
         window.jQuery.post(window.ajaxurl, data, (res) => {
 
-          console.log(res);
-
           if ( res.status == 'success' && typeof res.data == 'object' ) {
+            let docTitle = 'Completionist – Automation ' + res.data.ID + ' – ' + res.data.title;
             let queryParams = new URLSearchParams( location.search );
             queryParams.set( 'automation', automationId );
             history.pushState(
               res.data,
-              'Completionist &ndash; Automation ' + automationId,
+              docTitle,
               '?' + queryParams.toString()
             );
+            document.title = docTitle;
             this.setState({ isLoading: false });
           } else {
             console.error( res );
@@ -76,7 +110,24 @@ export class PTCCompletionist_Automations extends Component {
   };//end goToAutomation()
 
   componentDidMount() {
-    window.addEventListener( 'popstate', this.goToAutomation );
+
+    /* Go to requested automation */
+    let queryParams = new URLSearchParams( location.search );
+    const automationParam = queryParams.get('automation');
+    if ( automationParam !== null ) {
+      this.goToAutomation( automationParam );
+    }
+
+    /* Listen to browser history events */
+    window.addEventListener( 'popstate', (e) => {
+      // TODO: goToAutomation calls pushState which "breaks" history navigation
+      if ( 'state' in e && e.state && 'ID' in e.state ) {
+        this.goToAutomation( e.state.ID )
+      } else {
+        this.goToAutomation();
+      }
+    });
+
   }//end componentDidMount()
 
   render() {
