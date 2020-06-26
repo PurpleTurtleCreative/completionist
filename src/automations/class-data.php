@@ -16,6 +16,7 @@ defined( 'ABSPATH' ) || die();
 require_once 'class-events.php';
 require_once 'class-fields.php';
 require_once 'class-actions.php';
+require_once 'class-automation.php';
 require_once __DIR__ . '/../class-database-manager.php';
 require_once __DIR__ . '/../class-options.php';
 require_once __DIR__ . '/../class-html-builder.php';
@@ -23,6 +24,7 @@ require_once __DIR__ . '/../class-html-builder.php';
 use \PTC_Completionist\Database_Manager;
 use \PTC_Completionist\Options;
 use \PTC_Completionist\HTML_Builder;
+use \PTC_Completionist\Automation;
 
 if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
   /**
@@ -66,6 +68,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
     static function save_automation( \stdClass $automation ) : \stdClass {
 
       $saved_automation = new \stdClass();
+      $automation->ID = (int) $automation->ID;
 
       if ( $automation->ID <= 0 ) {
         /* Create new automation */
@@ -119,21 +122,22 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
         }//end foreach actions
 
         try {
-          $saved_automation = (new Automation( $new_automation_id ))->to_stdClass();
+          $saved_automation = ( new Automation( $new_automation_id ) )->to_stdClass();
         } catch ( \Exception $e ) {
           error_log( HTML_Builder::format_error_string( $e, 'Failed to retrieve newly created automation data.' ) );
         }
 
-      } elseif ( self::automation_exists( $automation->ID ) ) {
-        // TODO: implement updating an existing automation
-        error_log( 'Automation exists with ID: ' . $automation->ID );
-        error_log( "as stdClass ---> \n" . print_r( (new Automation( $automation->ID ))->to_stdClass(), TRUE ) );
       } else {
-        // TODO: return error response, maybe empty \stdClass
-        error_log('Automation does NOT exist with ID: ' . $automation->ID );
+        try {
+          // TODO: implement updating an existing automation
+          $old_automation = ( new Automation( $automation->ID ) )->to_stdClass();
+          error_log( 'Automation exists with ID: ' . $automation->ID );
+          error_log( "as stdClass ---> \n" . print_r( $old_automation, TRUE ) );
+        } catch ( \Exception $e ) {
+          $saved_automation = \stdClass();
+          error_log( HTML_Builder::format_error_string( $e, 'Failed to update existing automation.' ) );
+        }
       }
-
-      // ^-- change structure to else{ try/catch } because new Automation() checks existence
 
       return $saved_automation;
 
@@ -310,7 +314,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
     static function add_automation( string $title, string $description, string $hook_name ) : int {
 
       $title = Options::sanitize( 'string', $title );
-      $description = Options::sanitize( 'string', $description );
+      $description = sanitize_textarea_field( $description );
       $hook_name = Options::sanitize( 'string', $hook_name );
 
       if (
@@ -463,7 +467,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
     static function add_action_meta( int $action_id, string $meta_key, string $meta_value ) : int {
 
       $meta_key = Options::sanitize( 'string', $meta_key );
-      $meta_value = Options::sanitize( 'string', $meta_value );
+
+      if ( $meta_key == 'notes' ) {
+        $meta_value = sanitize_textarea_field( $meta_value );
+      } else {
+        $meta_value = Options::sanitize( 'string', $meta_value );
+      }
 
       if (
         $action_id <= 0
