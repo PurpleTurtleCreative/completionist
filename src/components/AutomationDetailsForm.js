@@ -51,9 +51,7 @@ export class AutomationDetailsForm extends Component {
 
   saveAutomation() {
     if ( ! this.state.isSubmitting ) {
-      this.setState({
-        isSubmitting: true
-      }, () => {
+      this.setState({ isSubmitting: true }, () => {
 
         let data = {
           'action': 'ptc_save_automation',
@@ -64,9 +62,7 @@ export class AutomationDetailsForm extends Component {
         window.jQuery.post(window.ajaxurl, data, (res) => {
 
           console.log(res);
-          this.setState({
-            isSubmitting: false
-          });
+          this.setState({ isSubmitting: false });
 
           // TODO: handle error responses
           // if(res.status == 'success' && res.data != '') {
@@ -84,9 +80,7 @@ export class AutomationDetailsForm extends Component {
 
         }, 'json')
           .fail(() => {
-            this.setState({
-              isSubmitting: false
-            });
+            this.setState({ isSubmitting: false });
           });
 
       });
@@ -367,6 +361,7 @@ class AutomationActionsInputs extends Component {
   }//end createSelectOptions()
 
   loadActionMetaInputs(action, index) {
+    // TODO: Allow create_tasks to be dynamically pinned to created/updated/delete post if relevent: {post.ID}
     switch(action.action) {
       case 'create_task':
         return (

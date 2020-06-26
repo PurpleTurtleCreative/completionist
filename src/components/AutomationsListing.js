@@ -23,6 +23,10 @@ export class AutomationsListing extends Component {
   }//end constructor()
 
   render() {
+
+    // TODO: Add sorting functionality
+    // TODO: Add default/empty state if no automations exist
+
     /* List Automations... */
     const automationRows = this.state.automations.map((automation) =>
       <AutomationRow automation={automation} goToAutomation={this.goToAutomation} key={automation.ID} />

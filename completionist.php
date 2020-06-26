@@ -150,7 +150,9 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       add_action( 'wp_ajax_ptc_update_task', [ $this, 'ajax_update_task' ] );
       /* Generic AJAX Handlers */
       add_action( 'wp_ajax_ptc_get_post_options_by_title', [ $this, 'ajax_ptc_get_post_options_by_title' ] );
+      /* Automation AJAX Handlers */
       add_action( 'wp_ajax_ptc_save_automation', [ $this, 'ajax_ptc_save_automation' ] );
+      add_action( 'wp_ajax_ptc_get_automation', [ $this, 'ajax_ptc_get_automation' ] );
 
       /* Enqueue Automation Actions */
       require_once $this->plugin_path . 'src/automations/class-events.php';
@@ -412,6 +414,17 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      */
     function ajax_ptc_save_automation() {
       require_once $this->plugin_path . 'src/ajax/ajax-save-automation.php';
+    }
+
+    /**
+     * AJAX handler to get automation by ID.
+     *
+     * @since 1.1.0
+     *
+     * @ignore
+     */
+    function ajax_ptc_get_automation() {
+      require_once $this->plugin_path . 'src/ajax/ajax-get-automation.php';
     }
 
     /**

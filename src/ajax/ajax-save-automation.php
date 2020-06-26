@@ -1,6 +1,6 @@
 <?php
 /**
- *
+ * Saves automation data to the database for an existing or new automation.
  *
  * @since 1.1.0
  */

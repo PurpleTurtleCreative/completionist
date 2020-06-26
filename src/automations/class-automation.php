@@ -46,7 +46,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Automation' ) ) {
      *
      * @throws \Exception If the automation does not exist.
      */
-    function __construct( int $automation_id, array $translation_objects ) {
+    function __construct( int $automation_id, array $translation_objects = [] ) {
 
       $automation_record = Automations\Data::get_automation( $automation_id );
       if ( NULL === $automation_record ) {

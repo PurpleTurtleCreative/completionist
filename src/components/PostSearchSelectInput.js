@@ -140,7 +140,6 @@ export class PostSearchSelectInput extends Component {
   }//end createSelectOptions()
 
   componentDidMount() {
-    console.log( this.state );
     if ( this.state.currentValue.trim() !== '' && this.state.currentLabel.trim() === '' ) {
       // TODO: we have a value but no label, so request the post's title
       console.error('Post title needed!');
