@@ -62,10 +62,7 @@ try {
       $res['message'] = "Successfully updated automation {$saved_automation->ID}.";
       $res['data'] = $saved_automation;
     } else {
-      $res['status'] = 'error';
-      $res['code'] = 500;
-      $res['message'] = 'Something went wrong when saving the automation.';
-      $res['data'] = $saved_automation;
+      throw new \Exception( 'Something went wrong when trying to save the automation.', 409 );
     }
 
   }//end validate form submission
