@@ -7,6 +7,8 @@ export class AutomationDetailsForm extends Component {
   constructor(props) {
 
     /*
+    Required Props:
+    - (function) goToAutomation
     Optional Props:
     - (object) automation
     */
@@ -51,6 +53,9 @@ export class AutomationDetailsForm extends Component {
 
   saveAutomation() {
     if ( ! this.state.isSubmitting ) {
+
+      // TODO: validate data for submission
+
       this.setState({ isSubmitting: true }, () => {
 
         let data = {
@@ -61,25 +66,40 @@ export class AutomationDetailsForm extends Component {
 
         window.jQuery.post(window.ajaxurl, data, (res) => {
 
-          console.log(res);
-          this.setState({ isSubmitting: false });
-
-          // TODO: handle error responses
-          // if(res.status == 'success' && res.data != '') {
-          //   remove_task_row(data.task_gid);
-          //   remove_task_gid(data.task_gid, false);
-          // } else if(res.status == 'error' && res.data != '') {
-          //   display_alert_html(res.data);
-          //   disable_element(thisButton, false);
-          //   buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
-          // } else {
-          //   alert('[Completionist] Error '+res.code+': '+res.message);
-          //   disable_element(thisButton, false);
-          //   buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
-          // }
+          if (
+            res.status
+            && res.status == 'success'
+            && res.code
+            && res.data
+            && typeof res.data == 'object'
+            && 'ID' in res.data
+            && res.data.ID
+            && res.data.ID > 0
+          ) {
+            if ( res.code == 201 ) {
+              console.log( res.message );
+              this.props.goToAutomation( res.data.ID );
+            } else if ( res.code == 200 ) {
+              // TODO: display success message in notice section
+              console.log( res.message );
+              this.setState({
+                ...res.data,
+                isSubmitting: false
+              });
+            }
+          } else {
+            // TODO: display error messages in notice section
+            if ( res.message && res.code ) {
+              alert( 'Error ' + res.code + '. The automation could not be saved. ' + res.message);
+            } else {
+              alert( 'Error 409. The automation could not be saved.' );
+            }
+            this.setState({ isSubmitting: false });
+          }
 
         }, 'json')
           .fail(() => {
+            alert( 'Error 500. The automation could not be saved.' );
             this.setState({ isSubmitting: false });
           });
 

@@ -10,6 +10,7 @@ export class AutomationsListing extends Component {
     Required Props:
     - (object[]) automations
     - (function) goToAutomation
+    - (function) deleteAutomation
     */
 
     super(props);
@@ -22,7 +23,13 @@ export class AutomationsListing extends Component {
 
   }//end constructor()
 
-  sortAutomationsListing( orderBy = 'title' ) {}//end sortAutomationsListing()
+  sortAutomationsListing(orderBy = 'title') {}//end sortAutomationsListing()
+
+  componentDidUpdate(prevProps) {
+    if ( this.props.automations !== prevProps.automations ) {
+      this.setState({ automations: this.props.automations });
+    }
+  }
 
   render() {
 
@@ -31,7 +38,12 @@ export class AutomationsListing extends Component {
 
     /* List Automations... */
     const automationRows = this.state.automations.map((automation) =>
-      <AutomationRow automation={automation} goToAutomation={this.goToAutomation} key={automation.ID} />
+      <AutomationRow
+        key={automation.ID}
+        automation={automation}
+        goToAutomation={this.goToAutomation}
+        deleteAutomation={this.props.deleteAutomation}
+      />
     );
     return (
       <div className='ptc-completionist-automations-listing'>

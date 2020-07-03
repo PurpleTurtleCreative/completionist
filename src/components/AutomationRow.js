@@ -8,14 +8,28 @@ export class AutomationRow extends Component {
     Required Props:
     - (object) automation
     - (function) goToAutomation
+    - (function) deleteAutomation
     */
 
     super(props);
-    this.state = props.automation;
+    this.state = {
+      ...props.automation,
+      isDeleting: false
+    };
 
     this.goToAutomation = props.goToAutomation;
 
+    this.deleteAutomation = this.deleteAutomation.bind(this);
+
   }//end constructor()
+
+  deleteAutomation() {
+    this.setState({ isDeleting: true }, () => {
+      this.props.deleteAutomation(this.state.ID, () => {
+        this.setState({ isDeleting: false });
+      });
+    });
+  }
 
   render() {
     return (
@@ -30,7 +44,7 @@ export class AutomationRow extends Component {
           <li>Total Action Triggers: {this.state.total_triggered}</li>
         </ul>
         <button onClick={() => this.goToAutomation(this.state.ID)}>Edit</button>
-        <button onClick={() => console.log('Delete '+this.state.ID)}>Delete</button>
+        <button onClick={this.deleteAutomation} disabled={this.state.isDeleting}>Delete</button>
       </div>
     );
   }//end render()

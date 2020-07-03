@@ -154,6 +154,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       add_action( 'wp_ajax_ptc_save_automation', [ $this, 'ajax_ptc_save_automation' ] );
       add_action( 'wp_ajax_ptc_get_automation', [ $this, 'ajax_ptc_get_automation' ] );
       add_action( 'wp_ajax_ptc_get_automation_overviews', [ $this, 'ajax_ptc_get_automation_overviews' ] );
+      add_action( 'wp_ajax_ptc_delete_automation', [ $this, 'ajax_ptc_delete_automation' ] );
 
       /* Enqueue Automation Actions */
       require_once $this->plugin_path . 'src/automations/class-events.php';
@@ -407,7 +408,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
     }
 
     /**
-     * AJAX handler to get post options by like title.
+     * AJAX handler to save automation data.
      *
      * @since 1.1.0
      *
@@ -429,7 +430,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
     }
 
     /**
-     * AJAX handler to get automation by ID.
+     * AJAX handler to get overview data for all automations.
      *
      * @since 1.1.0
      *
@@ -437,6 +438,17 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      */
     function ajax_ptc_get_automation_overviews() {
       require_once $this->plugin_path . 'src/ajax/ajax-get-automation-overviews.php';
+    }
+
+    /**
+     * AJAX handler to delete an automation by ID.
+     *
+     * @since 1.1.0
+     *
+     * @ignore
+     */
+    function ajax_ptc_delete_automation() {
+      require_once $this->plugin_path . 'src/ajax/ajax-delete-automation.php';
     }
 
     /**

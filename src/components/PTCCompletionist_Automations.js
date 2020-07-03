@@ -15,6 +15,7 @@ export class PTCCompletionist_Automations extends Component {
     };
 
     this.goToAutomation = this.goToAutomation.bind(this);
+    this.deleteAutomation = this.deleteAutomation.bind(this);
 
   }//end constructor()
 
@@ -109,6 +110,48 @@ export class PTCCompletionist_Automations extends Component {
     });
   };//end goToAutomation()
 
+  deleteAutomation( automationId, callback ) {
+
+    let data = {
+      'action': 'ptc_delete_automation',
+      'nonce': window.ptc_completionist_automations.nonce,
+      'ID': automationId
+    };
+
+    window.jQuery.post(window.ajaxurl, data, (res) => {
+
+      if (
+        res.status
+        && res.status == 'success'
+        && res.code
+        && res.code == 200
+        && res.data
+      ) {
+        // TODO: display success message in notice section
+        console.log( res.message );
+        this.setState((state) => ({
+          automations: state.automations.filter((automation) => automation.ID !== res.data)
+        }));
+      } else {
+        // TODO: display error messages in notice section
+        if ( res.message && res.code ) {
+          alert( 'Error ' + res.code + '. The automation could not be deleted. ' + res.message);
+        } else {
+          alert( 'Error. The automation could not be deleted.' );
+        }
+      }
+
+      typeof callback === 'function' && callback( res );
+
+    }, 'json')
+      .fail(() => {
+        // TODO: display error messages in notice section
+        alert( 'Error 500. The automation could not be deleted.' );
+        typeof callback === 'function' && callback();
+      });
+
+  }//end deleteAutomation()
+
   componentDidMount() {
 
     /* Go to requested automation */
@@ -120,7 +163,7 @@ export class PTCCompletionist_Automations extends Component {
 
     /* Listen to browser history events */
     window.addEventListener( 'popstate', (e) => {
-      // TODO: goToAutomation calls pushState which "breaks" history navigation
+      // TODO: goToAutomation calls pushState which breaks history navigation
       if ( 'state' in e && e.state && 'ID' in e.state ) {
         this.goToAutomation( e.state.ID )
       } else {
@@ -131,6 +174,7 @@ export class PTCCompletionist_Automations extends Component {
   }//end componentDidMount()
 
   render() {
+
     if ( this.state.isLoading ) {
       return (
         <p>Loading...</p>
@@ -144,7 +188,7 @@ export class PTCCompletionist_Automations extends Component {
       return (
         <div className='ptc-completionist-automation-create'>
           <h1>New Automation</h1>
-          <AutomationDetailsForm />
+          <AutomationDetailsForm goToAutomation={this.goToAutomation} />
           <button onClick={() => this.goToAutomation()}>Back</button>
         </div>
       );
@@ -155,14 +199,18 @@ export class PTCCompletionist_Automations extends Component {
       return (
         <div className='ptc-completionist-automation-details'>
           <h1>Viewing automation {automationParam}</h1>
-          <AutomationDetailsForm automation={history.state} />
+          <AutomationDetailsForm automation={history.state} goToAutomation={this.goToAutomation} />
           <button onClick={() => this.goToAutomation()}>Back</button>
         </div>
       );
     } else {
       /* List Automations... */
       return (
-        <AutomationsListing automations={this.state.automations} goToAutomation={this.goToAutomation} />
+        <AutomationsListing
+          automations={this.state.automations}
+          goToAutomation={this.goToAutomation}
+          deleteAutomation={this.deleteAutomation}
+        />
       );
     }
   }//end render()
