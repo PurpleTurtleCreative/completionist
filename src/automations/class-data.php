@@ -35,7 +35,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
     /* Basic Interfacing */
 
     /**
-     * Description
+     * Save a new or update an existing automation object in the database.
      *
      * @since 1.1.0
      *
@@ -68,23 +68,49 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
     static function save_automation( \stdClass $automation ) : \stdClass {
 
       $saved_automation = new \stdClass();
-      $automation->ID = (int) $automation->ID;
+
+      if ( isset( $automation->ID ) ) {
+        $automation->ID = (int) $automation->ID;
+      } else {
+        error_log( 'Failed to save automation missing ID field.' );
+        return new \stdClass();
+      }
+
+      if ( ! isset( $automation->hook_name ) ) {
+        error_log( 'Failed to save automation missing hook_name field.' );
+        return new \stdClass();
+      }
+
+      if ( ! isset( $automation->description ) ) {
+        $automation->description = '';
+      }
 
       if ( $automation->ID <= 0 ) {
-        /* Create new automation */
-        $new_automation_id = self::add_automation(
-          $automation->title,
-          $automation->description,
-          $automation->hook_name
-        );
+        $saved_automation = self::save_new_automation( $automation );
+      } else {
+        $saved_automation = self::save_existing_automation( $automation );
+      }
 
-        if ( $new_automation_id <= 0 ) {
-          error_log('Failed to add new automation.');
-          return FALSE;
-        }
+      return $saved_automation;
 
-        // TODO: use bulk insertion queries rather than multiple write calls
+    }//end save_automation()
 
+    private static function save_new_automation( \stdClass $automation ) : \stdClass {
+
+      $new_automation_id = self::add_automation(
+        $automation->title,
+        $automation->description,
+        $automation->hook_name
+      );
+
+      if ( $new_automation_id <= 0 ) {
+        error_log( 'Failed to add new automation.' );
+        return new \stdClass();
+      }
+
+      // TODO: use bulk insertion queries rather than multiple write calls
+
+      if ( isset( $automation->conditions ) && is_array( $automation->conditions ) ) {
         foreach ( $automation->conditions as $condition ) {
           if (
             self::add_condition(
@@ -94,17 +120,19 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
               $condition->value
             ) <= 0
           ) {
-            error_log('Failed to add new automation condition.');
+            error_log( 'Failed to add new automation condition.' );
           }
         }//end foreach conditions
+      }
 
+      if ( isset( $automation->actions ) && is_array( $automation->actions ) ) {
         foreach ( $automation->actions as $action ) {
           $new_action_id = self::add_action(
             $new_automation_id,
             $action->action
           );
           if ( $new_action_id <= 0 ) {
-            error_log('Failed to add new automation action.');
+            error_log( 'Failed to add new automation action.' );
             continue;
           } elseif ( isset( $action->meta ) ) {
             foreach ( $action->meta as $meta_key => $meta_value ) {
@@ -115,33 +143,154 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
                   $meta_value
                 ) <= 0
               ) {
-                error_log('Failed to add new action meta.');
+                error_log( 'Failed to add new action meta.' );
               }
             }
           }
         }//end foreach actions
+      }
 
-        try {
-          $saved_automation = ( new Automation( $new_automation_id ) )->to_stdClass();
-        } catch ( \Exception $e ) {
-          error_log( HTML_Builder::format_error_string( $e, 'Failed to retrieve newly created automation data.' ) );
-        }
-
-      } else {
-        try {
-          // TODO: implement updating an existing automation
-          $old_automation = ( new Automation( $automation->ID ) )->to_stdClass();
-          error_log( 'Automation exists with ID: ' . $automation->ID );
-          error_log( "as stdClass ---> \n" . print_r( $old_automation, TRUE ) );
-        } catch ( \Exception $e ) {
-          $saved_automation = \stdClass();
-          error_log( HTML_Builder::format_error_string( $e, 'Failed to update existing automation.' ) );
-        }
+      try {
+        $saved_automation = ( new Automation( $new_automation_id ) )->to_stdClass();
+      } catch ( \Exception $e ) {
+        error_log( HTML_Builder::format_error_string( $e, 'Failed to retrieve newly created automation data.' ) );
       }
 
       return $saved_automation;
 
-    }//end save_automation()
+    }//end save_new_automation()
+
+    private static function save_existing_automation( \stdClass $automation ) : \stdClass {
+      try {
+
+        $old_automation = ( new Automation( $automation->ID ) )->to_stdClass();
+
+        // TODO: use bulk insertion queries rather than multiple write calls
+
+        self::update_automation(
+          $automation->ID,
+          [
+            'title' => $automation->title,
+            'description' => $automation->description,
+            'hook_name' => $automation->hook_name,
+          ]
+        );
+
+        if ( isset( $automation->conditions ) && is_array( $automation->conditions ) ) {
+          foreach ( $automation->conditions as $i => $condition ) {
+            if ( $condition->ID == 0 ) {
+              if (
+                self::add_condition(
+                  $condition->ID,
+                  $condition->property,
+                  $condition->comparison_method,
+                  $condition->value
+                ) <= 0
+              ) {
+                error_log( "Failed to add new condition for existing automation {$automation->ID}." );
+              }
+            } elseif ( $condition->ID > 0 ) {
+              self::update_condition(
+                $condition->ID,
+                [
+                  'property' => $condition->property,
+                  'comparison_method' => $condition->comparison_method,
+                  'value' => $condition->value,
+                ]
+              );
+              foreach ( $old_automation->conditions as $j => $old_condition ) {
+                if ( $condition->ID == $old_condition->ID ) {
+                  unset( $old_automation->conditions[ $j ] );
+                }
+              }
+            }
+          }//end foreach conditions
+        }
+
+        foreach ( $old_automation->conditions as $i => $old_condition ) {
+          if ( isset( $old_condition->ID ) ) {
+            self::delete_condition( (int) $old_condition->ID );
+            unset( $old_automation->conditions[ $i ] );
+          }
+        }
+
+        if ( isset( $automation->actions ) && is_array( $automation->actions ) ) {
+          foreach ( $automation->actions as $action ) {
+            if ( $action->ID == 0 ) {
+              $action->ID = (int) $action->ID;
+              try {
+                $new_action_id = self::add_action(
+                  $automation->ID,
+                  $action->action
+                );
+                if ( $new_action_id <= 0 ) {
+                  throw new \Exception( "Failed to add new automation action for existing automation {$automation->ID}.", 409 );
+                } elseif ( isset( $action->meta ) ) {
+                  foreach ( $action->meta as $meta_key => $meta_value ) {
+                    if (
+                      self::add_action_meta(
+                        $new_action_id,
+                        $meta_key,
+                        $meta_value
+                      ) <= 0
+                    ) {
+                      error_log( "Failed to add new action meta for existing automation {$automation->ID} with new action {$new_action_id}." );
+                    }
+                  }//end foreach action meta
+                }
+              } catch ( \Exception $e ) {
+                error_log( HTML_Builder::format_error_string( $e ) );
+              }
+            } elseif ( $action->ID > 0 ) {
+              $action->ID = (int) $action->ID;
+              self::update_action(
+                $action->ID,
+                [ 'action' => $action->action ]
+              );
+              $saved_meta_keys = [];
+              foreach ( $action->meta as $meta_key => $meta_value ) {
+                if ( trim( $meta_value ) == '' ) {
+                  continue;
+                }
+                self::update_action_meta_by_key(
+                  $action->ID,
+                  $meta_key,
+                  $meta_value
+                );
+                $saved_meta_keys[] = $meta_key;
+              }
+              foreach ( $old_automation->actions as $j => $old_action ) {
+                if ( $action->ID == $old_action->ID ) {
+                  foreach ( $old_action->meta as $meta_key => $meta_value ) {
+                    if ( ! in_array( $meta_key, $saved_meta_keys ) ) {
+                      self::delete_action_meta_by_key( (int) $old_action->ID, $meta_key );
+                    }
+                  }
+                  unset( $old_automation->actions[ $j ] );
+                }
+              }
+            }
+          }//end foreach actions
+        }
+
+        foreach ( $old_automation->actions as $i => $old_action ) {
+          if ( isset( $old_action->ID ) ) {
+            self::delete_action( (int) $old_action->ID );
+            unset( $old_automation->actions[ $i ] );
+          }
+        }
+
+        self::update_automation_last_modified( $automation->ID );
+        $saved_automation = ( new Automation( $automation->ID ) )->to_stdClass();
+
+      } catch ( \Exception $e ) {
+        error_log( HTML_Builder::format_error_string( $e, 'Failed to update existing automation.' ) );
+        return new \stdClass();
+      }
+
+      return $saved_automation;
+
+    }//end save_existing_automation()
 
     /* Main Record Queries */
 
@@ -169,9 +318,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 
       if ( $res !== NULL ) {
         $res->ID = (int) $res->ID;
-        $res->title = wp_unslash( $res->title );
-        $res->hook_name = wp_unslash( $res->hook_name );
-        $res->last_modified = wp_unslash( $res->last_modified );
+        $res->title = html_entity_decode( wp_unslash( $res->title ), ENT_QUOTES | ENT_HTML5 );
+        $res->hook_name = html_entity_decode( wp_unslash( $res->hook_name ), ENT_QUOTES | ENT_HTML5 );
+        $res->last_modified = html_entity_decode( wp_unslash( $res->last_modified ), ENT_QUOTES | ENT_HTML5 );
       }
 
       return $res;
@@ -203,9 +352,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
         foreach ( $res as &$item ) {
           $item->ID = (int) $item->ID;
           $item->automation_id = (int) $item->automation_id;
-          $item->property = wp_unslash( $item->property );
-          $item->comparison_method = wp_unslash( $item->comparison_method );
-          $item->value = wp_unslash( $item->value );
+          $item->property = html_entity_decode( wp_unslash( $item->property ), ENT_QUOTES | ENT_HTML5 );
+          $item->comparison_method = html_entity_decode( wp_unslash( $item->comparison_method ), ENT_QUOTES | ENT_HTML5 );
+          $item->value = html_entity_decode( wp_unslash( $item->value ), ENT_QUOTES | ENT_HTML5 );
         }
       } else {
         $res = [];
@@ -240,8 +389,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
         foreach ( $res as &$item ) {
           $item->ID = (int) $item->ID;
           $item->automation_id = (int) $item->automation_id;
-          $item->action = wp_unslash( $item->action );
-          $item->last_triggered = wp_unslash( $item->last_triggered );
+          $item->action = html_entity_decode( wp_unslash( $item->action ), ENT_QUOTES | ENT_HTML5 );
+          $item->last_triggered = html_entity_decode( wp_unslash( $item->last_triggered ), ENT_QUOTES | ENT_HTML5 );
         }
       } else {
         $res = [];
@@ -283,8 +432,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
         foreach ( $res as &$item ) {
           $item->ID = (int) $item->ID;
           $item->action_id = (int) $item->action_id;
-          $item->meta_key = wp_unslash( $item->meta_key );
-          $item->meta_value = wp_unslash( $item->meta_value );
+          $item->meta_key = html_entity_decode( wp_unslash( $item->meta_key ), ENT_QUOTES | ENT_HTML5 );
+          $item->meta_value = html_entity_decode( wp_unslash( $item->meta_value ), ENT_QUOTES | ENT_HTML5 );
         }
       } else {
         $res = [];
@@ -294,15 +443,195 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 
     }
 
+    static function get_action_meta_by_key( int $action_id, string $meta_key, string $default = '' ) : string {
+
+      $meta_key = Options::sanitize( 'string', $meta_key );
+
+      global $wpdb;
+      $table = Database_Manager::$automation_actions_meta_table;
+      $res = $wpdb->get_var(
+        $wpdb->prepare(
+          "SELECT meta_value FROM $table
+            WHERE action_id = %d AND meta_key = %s
+            LIMIT 1",
+          $action_id,
+          $meta_key
+        )
+      );
+
+      if ( $res === NULL ) {
+        return $default;
+      }
+
+      return (string) $res;
+
+    }
+
     /* Update */
 
-    static function update_automation( int $automation_id, array $params ) : bool {}
+    static function update_automation( int $automation_id, array $params ) : bool {
 
-    static function update_condition( int $condition_id, array $params ) : bool {}
+      $format = [];
 
-    static function update_action( int $action_id, array $params ) : bool {}
+      foreach ( $params as $col => &$val ) {
+        switch ( $col ) {
+          case 'title':
+          case 'description':
+            $val = Options::sanitize( 'string', $val );
+            if ( $val === '' ) {
+              return FALSE;
+            }
+            $format[] = '%s';
+            break;
+          case 'hook_name':
+            $val = Options::sanitize( 'string', $val );
+            if (
+              $val === ''
+              || ! self::validate_automation_hook_name( $val )
+            ) {
+              return FALSE;
+            }
+            $format[] = '%s';
+            break;
+          default:
+            unset( $params[ $col ] );
+        }
+      }
+
+      global $wpdb;
+      $res = $wpdb->update(
+        Database_Manager::$automations_table,
+        $params,
+        [ 'ID' => $automation_id ],
+        $format,
+        [ '%d' ]
+      );
+
+      if ( $res >= 0 ) {
+        return TRUE;
+      }
+
+      return FALSE;
+
+    }
+
+    static function update_condition( int $condition_id, array $params ) : bool {
+
+      $format = [];
+
+      foreach ( $params as $col => &$val ) {
+        switch ( $col ) {
+          case 'property':
+          case 'value':
+            $val = Options::sanitize( 'string', $val );
+            if ( $val === '' ) {
+              return FALSE;
+            }
+            $format[] = '%s';
+            break;
+          case 'comparison_method':
+            $val = Options::sanitize( 'string', $val );
+            if (
+              $val === ''
+              || ! self::validate_condition_comparison_method( $val )
+            ) {
+              return FALSE;
+            }
+            $format[] = '%s';
+            break;
+          default:
+            unset( $params[ $col ] );
+        }
+      }
+
+      global $wpdb;
+      $res = $wpdb->update(
+        Database_Manager::$automation_conditions_table,
+        $params,
+        [ 'ID' => $condition_id ],
+        $format,
+        [ '%d' ]
+      );
+
+      if ( $res >= 0 ) {
+        return TRUE;
+      }
+
+      return FALSE;
+
+    }
+
+    static function update_action( int $action_id, array $params ) : bool {
+
+      $format = [];
+
+      foreach ( $params as $col => &$val ) {
+        switch ( $col ) {
+          case 'action':
+            $val = Options::sanitize( 'string', $val );
+            if (
+              $val === ''
+              || ! self::validate_action_key( $val )
+            ) {
+              return FALSE;
+            }
+            $format[] = '%s';
+            break;
+          default:
+            unset( $params[ $col ] );
+        }
+      }
+
+      global $wpdb;
+      $res = $wpdb->update(
+        Database_Manager::$automation_actions_table,
+        $params,
+        [ 'ID' => $action_id ],
+        $format,
+        [ '%d' ]
+      );
+
+      if ( $res >= 0 ) {
+        return TRUE;
+      }
+
+      return FALSE;
+
+    }
 
     static function update_action_meta( int $action_meta_id, array $params ) : bool {}
+
+    static function update_action_meta_by_key( int $action_id, string $meta_key, string $meta_value ) : bool {
+
+      $meta_key = Options::sanitize( 'string', $meta_key );
+      $meta_value = Options::sanitize( 'string', $meta_value );
+
+      if ( $meta_value == self::get_action_meta_by_key( $action_id, $meta_key ) ) {
+        return TRUE;
+      }
+
+      global $wpdb;
+      $res = $wpdb->update(
+        Database_Manager::$automation_actions_meta_table,
+        [ 'meta_value' => $meta_value ],
+        [
+          'action_id' => $action_id,
+          'meta_key' => $meta_key,
+        ],
+        [ '%s' ],
+        [
+          '%d',
+          '%s',
+        ]
+      );
+
+      if ( $res === 0 ) {
+        return ( self::add_action_meta( $action_id, $meta_key, $meta_value ) > 0 );
+      }
+
+      return FALSE;
+
+    }
 
     /* Create */
 
@@ -620,7 +949,24 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 
     }
 
-    static function delete_action_meta_by_key( int $action_id, string $meta_key ) : bool {}
+    static function delete_action_meta_by_key( int $action_id, string $meta_key ) : bool {
+
+      global $wpdb;
+      $res = $wpdb->delete(
+        Database_Manager::$automation_actions_meta_table,
+        [
+          'action_id' => $action_id,
+          'meta_key' => $meta_key,
+        ],
+        [
+          '%d',
+          '%s',
+        ]
+      );
+
+      return ( $res !== FALSE );
+
+    }
 
     /* Special Queries */
 
@@ -749,13 +1095,13 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
       if ( $res && is_array( $res ) ) {
         foreach ( $res as &$item ) {
           $item->ID = (int) $item->ID;
-          $item->title = wp_unslash( $item->title );
-          $item->description = wp_unslash( $item->description );
-          $item->hook_name = wp_unslash( $item->hook_name );
-          $item->last_modified = wp_unslash( $item->last_modified );
+          $item->title = html_entity_decode( wp_unslash( $item->title ), ENT_QUOTES | ENT_HTML5 );
+          $item->description = html_entity_decode( wp_unslash( $item->description ), ENT_QUOTES | ENT_HTML5 );
+          $item->hook_name = html_entity_decode( wp_unslash( $item->hook_name ), ENT_QUOTES | ENT_HTML5 );
+          $item->last_modified = html_entity_decode( wp_unslash( $item->last_modified ), ENT_QUOTES | ENT_HTML5 );
           $item->total_conditions = (int) $item->total_conditions;
           $item->total_actions = (int) $item->total_actions;
-          $item->last_triggered = wp_unslash( $item->last_triggered );
+          $item->last_triggered = html_entity_decode( wp_unslash( $item->last_triggered ), ENT_QUOTES | ENT_HTML5 );
           $item->total_triggered = (int) $item->total_triggered;
         }
       } else {
@@ -868,7 +1214,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
         $wpdb->prepare(
           "UPDATE $table
             SET last_modified = CURRENT_TIMESTAMP
-            WHERE automation_id = %d",
+            WHERE ID = %d",
           $automation_id
         )
       );
