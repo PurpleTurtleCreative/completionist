@@ -63,15 +63,24 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      * @since 1.1.0 Added optional parameter $user_id.
      * @since 1.0.0
      *
-     * @param int $user_id Optional. The WordPress user to authenticate. Default
-     * 0 to use the current user.
+     * @param string|int $user_id_or_gid Optional. The user to authenticate.
+     * Pass an Asana user GID string or the WordPress user ID integer.
+     * Default 0 to use the current WordPress user.
      *
      * @return \Asana\Client The authenticated Asana API client.
      *
      * @throws \Exception Authentication may fail when first loading the client
      * or requests could fail due to request limits or server issues.
      */
-    static function get_client( int $user_id = 0 ) : \Asana\Client {
+    static function get_client( $user_id_or_gid = 0 ) : \Asana\Client {
+
+      if ( is_string( $user_id_or_gid ) ) {
+        $user_id = self::get_user_id_by_gid( $user_id_or_gid );
+      } elseif ( is_int( $user_id_or_gid ) ) {
+        $user_id = $user_id_or_gid;
+      } else {
+        throw new \Exception( 'Failed to get Asana client for invalid user identifier. Must be string for Asana PAT or integer for WordPress User ID.', 400 );
+      }
 
       if (
         ! isset( self::$asana )
@@ -1103,21 +1112,22 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      * * 'project' => (gid) The Asana project gid to house the task.
      * * 'notes' => (string) The task description.
      *
-     * @param int $user_id Optional. The WordPress user ID to authenticate task
-     * creation in Asana. Default 0 to use the currently loaded user.
+     * @param string|int $user_id_or_gid Optional. The task author's Asana user
+     * GID string or WordPress user ID integer. Default 0 to use the current
+     * WordPress user.
      *
      * @return \stdClass The created task object response from Asana.
      *
      * @throws \Exception Authentication may fail when first loading the client
      * or requests could fail due to request limits or server issues.
      */
-    static function create_task( array $args, int $user_id = 0 ) : \stdClass {
+    static function create_task( array $args, $user_id_or_gid = 0 ) : \stdClass {
 
       if ( ! isset( $args['name'] ) ) {
         throw new \Exception( 'A task name is required.', 409 );
       }
 
-      $asana = self::get_client( $user_id );
+      $asana = self::get_client( $user_id_or_gid );
 
       $site_tag_gid = Options::get( Options::ASANA_TAG_GID );
       if ( '' === $site_tag_gid ) {

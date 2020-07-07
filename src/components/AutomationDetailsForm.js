@@ -203,8 +203,8 @@ export class AutomationDetailsForm extends Component {
     switch(action) {
       case 'create_task':
         return {
-          task_author: window.ptc_completionist_automations.connected_workspace_users[0]
-        }
+          task_author: Object.keys( window.ptc_completionist_automations.connected_workspace_users )[0]
+        };
         break;
       default:
         return {};

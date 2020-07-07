@@ -106,17 +106,19 @@ if ( ! class_exists( __NAMESPACE__ . '\Actions' ) ) {
           ! isset( $action_with_meta->meta['task_author'] )
           || ! isset( $action_with_meta->meta['name'] )
         ) {
-          throw new \Exception( 'A task author and title are required. Please review Completionist Automation {$action_with_meta->automation_id}.', 409 );
+          throw new \Exception( 'A task author and title are required. Please review Completionist Automation {$action_with_meta->ID}.', 409 );
         }
 
         $action_with_meta->meta['name'] = Fields::translate_templates( $action_with_meta->meta['name'], $translation_objects );
         $action_with_meta->meta['notes'] = Fields::translate_templates( $action_with_meta->meta['notes'], $translation_objects );
 
-        $task = Asana_Interface::create_task( $action_with_meta->meta, (int) $action_with_meta->meta['task_author'] );
+        $task = Asana_Interface::create_task( $action_with_meta->meta, (string) $action_with_meta->meta['task_author'] );
 
         /* Leave comment */
 
         try {
+
+          $asana = Asana_Interface::get_client( (string) $action_with_meta->meta['task_author'] );
 
           $comment_text = 'This task was automatically created using Completionist on the ';
           $comment_text .= get_bloginfo( 'name', 'display' );
