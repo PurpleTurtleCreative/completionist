@@ -24,13 +24,13 @@ if ( class_exists( '\WC_AM_Client_2_7' ) ) {
   $wcam = new \WC_AM_Client_2_7( __FILE__, '', '1.1.0', 'plugin', 'https://www.purpleturtlecreative.com/', 'Completionist' );
 }
 
+$wc_am_product_id_key = '';
+$wc_am_data_key = '';
+
 if ( isset( $wcam ) && is_a( $wcam, '\WC_AM_Client_2_7' ) ) {
   $wcam->uninstall();
   $wc_am_product_id_key = isset( $wcam->wc_am_product_id ) ? $wcam->wc_am_product_id : '';
   $wc_am_data_key = isset( $wcam->data_key ) ? $wcam->data_key : '';
-} else {
-  $wc_am_product_id_key = '';
-  $wc_am_data_key = '';
 }
 
 if ( function_exists( 'get_sites' ) ) {
