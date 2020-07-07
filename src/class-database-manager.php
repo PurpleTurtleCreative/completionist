@@ -107,7 +107,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
         $site_id = get_current_blog_id();
       }
 
-      if ( empty( get_sites( [ 'ID' => $site_id ] ) ) ) {
+      if ( function_exists( 'get_sites' ) && empty( get_sites( [ 'ID' => $site_id ] ) ) ) {
         $err_msg = "[PTC Completionist] FATAL: Cannot initialize Database Manager for site id $site_id";
         error_log( $err_msg );
         die( esc_html( $err_msg ) );
@@ -145,7 +145,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
       global $wpdb;
       $charset_collate = $wpdb->get_charset_collate();
 
-      $installed_version = (int) get_blog_option( self::$site_id, self::$db_version_option, 0 );
+      if ( function_exists( 'get_blog_option' ) ) {
+        $installed_version = (int) get_blog_option( self::$site_id, self::$db_version_option, 0 );
+      } else {
+        $installed_version = (int) get_option( self::$db_version_option, 0 );
+      }
 
       if ( $installed_version === self::$db_version ) {
         $success = FALSE;
@@ -211,7 +215,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
       }
 
       if ( $success ) {
-        update_blog_option( self::$site_id, self::$db_version_option, self::$db_version );
+        if ( function_exists( 'update_blog_option' ) ) {
+          update_blog_option( self::$site_id, self::$db_version_option, self::$db_version );
+        } else {
+          update_option( self::$db_version_option, self::$db_version );
+        }
       }
 
       return $success;
@@ -233,7 +241,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
       self::drop_table( self::$automation_conditions_table );
       self::drop_table( self::$automations_table );
 
-      delete_blog_option( self::$site_id, self::$db_version_option );
+      if ( function_exists( 'delete_blog_option' ) ) {
+        delete_blog_option( self::$site_id, self::$db_version_option );
+      } else {
+        delete_option( self::$db_version_option );
+      }
 
       error_log( '[PTC Completionist] Uninstalled database tables for site: ' . self::$site_id );
 

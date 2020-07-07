@@ -33,12 +33,20 @@ if ( isset( $wcam ) && is_a( $wcam, '\WC_AM_Client_2_7' ) ) {
   $wc_am_data_key = '';
 }
 
-$site_ids = get_sites( [ 'fields' => 'ids' ] );
-foreach ( $site_ids as $site_id ) {
+if ( function_exists( 'get_sites' ) ) {
+  $site_ids = get_sites( [ 'fields' => 'ids' ] );
+  foreach ( $site_ids as $site_id ) {
+    switch_to_blog( $site_id );
+    uninstall_for_current_blog();
+    restore_current_blog();
+  }//end foreach $site_ids
+} else {
+  uninstall_for_current_blog();
+}
 
-  switch_to_blog( $site_id );
-  /*-----------------------*/
+/* HELPERS */
 
+function uninstall_for_current_blog() {
   if ( class_exists( __NAMESPACE__ . '\Options' ) ) {
     if ( method_exists( __NAMESPACE__ . '\Options', 'delete_all' ) ) {
       Options::delete_all();
@@ -57,14 +65,10 @@ foreach ( $site_ids as $site_id ) {
 
   if (
     function_exists( 'delete_option' )
-    && ! empty( $wc_am_product_id_key )
-    && ! empty( $wc_am_data_key )
+    && $wc_am_product_id_key != ''
+    && $wc_am_data_key != ''
   ) {
     delete_option( $wc_am_product_id_key );
     delete_option( $wc_am_data_key );
   }
-
-  /*-------------------*/
-  restore_current_blog();
-
-}//end foreach $site_ids
+}

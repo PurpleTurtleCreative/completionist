@@ -157,8 +157,10 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       add_action( 'wp_ajax_ptc_delete_automation', [ $this, 'ajax_ptc_delete_automation' ] );
 
       /* Enqueue Automation Actions */
-      require_once $this->plugin_path . 'src/automations/class-events.php';
-      \PTC_Completionist\Automations\Events::add_actions();
+      add_action( 'plugins_loaded', function() {
+        require_once $this->plugin_path . 'src/automations/class-events.php';
+        \PTC_Completionist\Automations\Events::add_actions();
+      });
 
     }
 
