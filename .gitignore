@@ -39,3 +39,6 @@ composer.phar
 
 # Node/React
 /node_modules/
+
+# SCSS
+*.map
