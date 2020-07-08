@@ -181,7 +181,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
             if ( $condition->ID == 0 ) {
               if (
                 self::add_condition(
-                  $condition->ID,
+                  $automation->ID,
                   $condition->property,
                   $condition->comparison_method,
                   $condition->value
@@ -190,6 +190,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
                 error_log( "Failed to add new condition for existing automation {$automation->ID}." );
               }
             } elseif ( $condition->ID > 0 ) {
+              $condition->ID = (int) $condition->ID;
               self::update_condition(
                 $condition->ID,
                 [
@@ -476,8 +477,13 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
       foreach ( $params as $col => &$val ) {
         switch ( $col ) {
           case 'title':
-          case 'description':
             $val = Options::sanitize( 'string', $val );
+            if ( $val === '' ) {
+              return FALSE;
+            }
+            $format[] = '%s';
+          case 'description':
+            $val = sanitize_textarea_field( $val );
             if ( $val === '' ) {
               return FALSE;
             }
@@ -604,7 +610,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
     static function update_action_meta_by_key( int $action_id, string $meta_key, string $meta_value ) : bool {
 
       $meta_key = Options::sanitize( 'string', $meta_key );
-      $meta_value = Options::sanitize( 'string', $meta_value );
+
+      if ( $meta_key == 'notes' ) {
+        $meta_value = sanitize_textarea_field( $meta_value );
+      } else {
+        $meta_value = Options::sanitize( 'string', $meta_value );
+      }
 
       if ( $meta_value == self::get_action_meta_by_key( $action_id, $meta_key ) ) {
         return TRUE;
