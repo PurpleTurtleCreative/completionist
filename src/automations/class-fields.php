@@ -155,7 +155,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Fields' ) ) {
      */
     static function translate_templates( string $string_with_fields, array $translation_objects ) : string {
 
-      $translated_string = preg_replace_callback( '/{([a-z_]+?\.[a-z_]+?)}/', function( $matches ) use ( $translation_objects ) {
+      $translated_string = preg_replace_callback( '/{([a-zA-Z_]+?\.[a-zA-Z_]+?)}/', function( $matches ) use ( $translation_objects ) {
         return self::get_template_value( $matches[1], $translation_objects );
       }, $string_with_fields );
 

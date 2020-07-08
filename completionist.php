@@ -211,7 +211,6 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
         function() {
           if ( current_user_can( 'edit_posts' ) ) {
             echo '<div id="ptc-completionist-automations-root"></div>';
-            // require_once $this->plugin_path . 'view/html-admin-automations.php';
           } else {
             wp_die('<strong>Error: Unauthorized.</strong> You must have post editing capabilities to use Completionist.');
           }
