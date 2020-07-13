@@ -21,21 +21,21 @@ if ( ! class_exists( __NAMESPACE__ . '\Fields' ) ) {
   class Fields {
 
     const USER_OPTIONS = [
-      'ID' => 'User ID',
-      'user_login' => 'Username',
-      'user_email' => 'Email',
-      'display_name' => 'Display Name',
-      'roles' => 'Roles',
-      'first_name' => 'First Name',
-      'last_name' => 'Last Name',
+      'user.ID' => 'User ID',
+      'user.user_login' => 'Username',
+      'user.user_email' => 'Email',
+      'user.display_name' => 'Display Name',
+      'user.roles' => 'Roles',
+      'user.first_name' => 'First Name',
+      'user.last_name' => 'Last Name',
     ];
 
     const POST_OPTIONS = [
-      'ID' => 'Post ID',
-      'post_author' => 'Author (User ID)',
-      'post_title' => 'Title',
-      'post_status' => 'Status',
-      'post_type' => 'Type',
+      'post.ID' => 'Post ID',
+      'post.post_author' => 'Author (User ID)',
+      'post.post_title' => 'Title',
+      'post.post_status' => 'Status',
+      'post.post_type' => 'Type',
     ];
 
     const COMPARISON_METHODS = [
@@ -93,8 +93,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Fields' ) ) {
           return ( strpos( $property_value, $condition->value, 0 ) === 0 );
           break;
         case 'ends with':
-          $offset = strlen( $property_value ) - ( strlen( $condition->value ) - 1 );
-          return ( strpos( $property_value, $condition->value, $offset ) === $offset - 1 );
+          $offset = strlen( $property_value ) - strlen( $condition->value );
+          if ( $offset < 0 ) {
+            return FALSE;
+          }
+          return ( strpos( $property_value, $condition->value, $offset ) === $offset );
           break;
         case 'contains':
           return ( strpos( $property_value, $condition->value, 0 ) !== FALSE );
