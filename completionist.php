@@ -597,6 +597,12 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
               'nonce' => wp_create_nonce( 'ptc_completionist_automations' ),
             ]
           );
+          wp_enqueue_style(
+            'ptc-completionist_admin-automations-css',
+            plugins_url( 'assets/css/admin-automations.css', __FILE__ ),
+            [],
+            $this->plugin_version
+          );
           break;
 
       }//end switch hook suffix
