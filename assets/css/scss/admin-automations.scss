@@ -1,3 +1,144 @@
+@use 'abstracts/colors';
+@use 'abstracts/layout';
+@use 'abstracts/elements';
+
+@use 'admin-theme';
+
+//----------------------
+
 #ptc-completionist-automations-root {
-  color: red;
+  max-width: 1280px;
+  margin: 0 auto;
+
+  .ptc-completionist-automations-listing {
+
+    > .title {
+      display: flex;
+      align-items: flex-end;
+      margin-bottom: layout.$lg-em;
+
+      > h1 {
+        flex: 1;
+        margin: 0;
+      }
+
+      > .actions {
+        flex: 1;
+        text-align: right;
+       
+        > button {
+          @extend %button-sm-success;
+          margin-bottom: 0;
+          font-size: 1em;
+          padding: layout.$sm-em layout.$lg-em;
+        }
+        
+      }
+
+    }
+
+    > header {
+      background: colors.$grey-light;
+      border-radius: layout.$md-px;
+      border: 2px solid colors.$grey-light;
+      padding: layout.$md-em layout.$lg-em;
+      margin: layout.$md-px 0;
+      display: flex;
+      font-weight: 900;
+      color: colors.$grey-darkest;
+
+      > div {
+        flex: 1;
+        text-align: center;
+      }
+
+      > div:first-of-type {
+        flex: 2;
+        text-align: left;
+      }
+
+    }
+
+    .ptc-completionist-automations-list {
+
+      .ptc-completionist-automation-row {
+        background: colors.$white;
+        border-radius: layout.$md-px;
+        border: 2px solid colors.$grey-light;
+        padding: layout.$full-padding;
+        margin: layout.$md-px 0;
+        display: flex;
+        align-items: center;
+
+        > header {
+          flex: 1;
+
+          > h2 {
+            font-size: 1.5em;
+            margin: 0 0 layout.$md-px;
+            color: #2BB0ED;
+            display: inline-block;
+
+            span {
+              color: colors.$grey-light;
+            }
+
+            &:hover {
+              cursor: pointer;
+              color: #40C3F7;
+            }
+
+          }
+
+          > .automation-actions {
+
+            > button {
+              margin: layout.$lg-px layout.$md-px 0 0 !important;
+
+              &.edit {
+                @extend %button-sm-warning;
+              }
+
+              &.delete {
+                @extend %button-sm-danger;
+              }
+
+              i {
+                display: inline-block;
+                margin-right: 0.3em;
+              }
+            }
+          }
+
+          > p {
+            margin: 0;
+          }
+
+        }
+
+        > ul {
+          flex: 2;
+          display: flex;
+          width: 100%;
+
+          > li {
+            flex: 1;
+            text-align: center;
+            font-weight: 600;
+
+            &:not(:last-of-type) {
+              font-weight: 900;
+              font-size: 1.8em;
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
 }

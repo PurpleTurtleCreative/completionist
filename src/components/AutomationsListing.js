@@ -47,8 +47,19 @@ export class AutomationsListing extends Component {
     );
     return (
       <div className='ptc-completionist-automations-listing'>
-        <h1>Automations</h1>
-        <button onClick={() => this.goToAutomation('new')}>Add New</button>
+        <div className='title'>
+          <h1>Automations</h1>
+          <div className='actions'>
+            <button onClick={() => this.goToAutomation('new')}><i className='fas fa-plus'></i> Add New</button>
+          </div>
+        </div>
+        <header>
+          <div>Automation</div>
+          <div><i className="fas fa-question"></i> Conditions</div>
+          <div><i className="fas fa-running"></i> Actions</div>
+          <div><i className="fas fa-bolt"></i> Triggers</div>
+          <div><i className="fas fa-history"></i> Last Triggered</div>
+        </header>
         <div className='ptc-completionist-automations-list'>{automationRows}</div>
       </div>
     );

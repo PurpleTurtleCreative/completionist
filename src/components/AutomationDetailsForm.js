@@ -226,13 +226,14 @@ export class AutomationDetailsForm extends Component {
           changeEvent={(value) => this.handleAutomationChange('hook_name', value)}
         />
         <AutomationConditionsInputs
-          conditions={this.state.conditions}
           event={this.state.hook_name}
+          conditions={this.state.conditions}
           changeCondition={this.handleConditionChange}
           addCondition={this.handleAddCondition}
           removeCondition={this.handleRemoveCondition}
         />
         <AutomationActionsInputs
+          event={this.state.hook_name}
           actions={this.state.actions}
           changeAction={this.handleActionChange}
           addAction={this.handleAddAction}
@@ -351,6 +352,8 @@ class AutomationConditionsInputs extends Component {
 
   render() {
 
+    // TODO: Do not show add button until an event is set
+
     this.loadPropertyOptions();
     this.loadComparisonMethodOptions();
     this.loadConditionFieldsets();
@@ -464,6 +467,8 @@ class AutomationActionsInputs extends Component {
   }//end loadActionFieldsets()
 
   render() {
+
+    // TODO: Do not show add button until an event is set
 
     this.loadActionFieldsets();
 

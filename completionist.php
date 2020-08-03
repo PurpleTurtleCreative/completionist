@@ -569,6 +569,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
 
         case 'completionist_page_ptc-completionist-automations':
           $asset_file = require_once( $this->plugin_path . 'build/index.asset.php' );
+          $asset_file['dependencies'][] = 'fontawesome-5';
           wp_enqueue_script(
             'ptc-completionist_build-index-js',
             plugins_url( 'build/index.js', __FILE__ ),
