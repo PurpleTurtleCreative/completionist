@@ -9,6 +9,7 @@
 #ptc-completionist-automations-root {
   max-width: 1280px;
   margin: 0 auto;
+  color: colors.$grey-darkest;
 
   .ptc-completionist-automations-listing {
 
@@ -45,7 +46,6 @@
       margin: layout.$md-px 0;
       display: flex;
       font-weight: 900;
-      color: colors.$grey-darkest;
 
       > div {
         flex: 1;
@@ -75,13 +75,9 @@
 
           > h2 {
             font-size: 1.5em;
-            margin: 0 0 layout.$md-px;
+            margin: 0 0 layout.$sm-px;
             color: #2BB0ED;
             display: inline-block;
-
-            span {
-              color: colors.$grey-light;
-            }
 
             &:hover {
               cursor: pointer;
@@ -90,10 +86,21 @@
 
           }
 
+          > p.last-modified {
+            color: colors.$grey;
+            margin: layout.$sm-px 0 layout.$md-px;
+          }
+
+          > p.description {
+            margin: -(layout.$sm-px) 0 layout.$md-px;
+            font-style: normal;
+            color: colors.$grey-darkest;
+          }
+
           > .automation-actions {
 
             > button {
-              margin: layout.$lg-px layout.$md-px 0 0 !important;
+              margin: layout.$sm-px layout.$md-px 0 0 !important;
 
               &.edit {
                 @extend %button-sm-warning;

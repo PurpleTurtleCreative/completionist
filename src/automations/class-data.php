@@ -1065,7 +1065,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
       $automation_conditions_table = Database_Manager::$automation_conditions_table;
       $res = $wpdb->get_results(
         "SELECT
-          automations.*,
+          automations.ID,
+          automations.title,
+          automations.description,
+          automations.hook_name,
+          UNIX_TIMESTAMP(automations.last_modified) AS 'last_modified',
           (
             SELECT
               COUNT(ID)
@@ -1084,7 +1088,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
           ) AS 'total_actions',
           (
             SELECT
-              MAX(last_triggered)
+              UNIX_TIMESTAMP(MAX(last_triggered))
             FROM
               $automation_actions_table
             WHERE
@@ -1107,12 +1111,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
         foreach ( $res as &$item ) {
           $item->ID = (int) $item->ID;
           $item->title = html_entity_decode( wp_unslash( $item->title ), ENT_QUOTES | ENT_HTML5 );
-          $item->description = html_entity_decode( wp_unslash( $item->description ), ENT_QUOTES | ENT_HTML5 );
+          $item->description = nl2br( html_entity_decode( wp_unslash( $item->description ), ENT_QUOTES | ENT_HTML5 ) );
           $item->hook_name = html_entity_decode( wp_unslash( $item->hook_name ), ENT_QUOTES | ENT_HTML5 );
-          $item->last_modified = html_entity_decode( wp_unslash( $item->last_modified ), ENT_QUOTES | ENT_HTML5 );
+          $item->last_modified = ( $item->last_modified == 0 ) ? 'Never' : human_time_diff( $item->last_modified ) . ' ago';
           $item->total_conditions = (int) $item->total_conditions;
           $item->total_actions = (int) $item->total_actions;
-          $item->last_triggered = html_entity_decode( wp_unslash( $item->last_triggered ), ENT_QUOTES | ENT_HTML5 );
+          $item->last_triggered = ( $item->last_triggered == 0 ) ? 'Never' : human_time_diff( $item->last_triggered ) . ' ago';
           $item->total_triggered = (int) $item->total_triggered;
         }
       } else {

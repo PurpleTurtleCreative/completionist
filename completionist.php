@@ -101,7 +101,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      * @ignore
      */
     function __construct() {
-      $this->plugin_version = '1.1.0';
+      $this->plugin_version = get_file_data( __FILE__, [ 'Version' => 'Version' ], 'plugin' )['Version'];
       $this->plugin_title = plugin_basename( __FILE__ );
       $this->plugin_path = plugin_dir_path( __FILE__ );
       $this->plugin_url = plugins_url( '', __FILE__ );

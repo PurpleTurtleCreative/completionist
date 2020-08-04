@@ -35,8 +35,11 @@ export class AutomationRow extends Component {
     return (
       <div className='ptc-completionist-automation-row'>
         <header>
-          <h2 onClick={() => this.goToAutomation(this.state.ID)}>{this.state.title} <span title={'Automation ID: '+this.state.ID}>{this.state.ID}</span></h2>
-          <p>Last Updated: {this.state.last_modified}</p>
+          <h2 title={'Automation ID: '+this.state.ID} onClick={() => this.goToAutomation(this.state.ID)}>{this.state.title}</h2>
+          <p className='last-modified'><em>Updated {this.state.last_modified}</em></p>
+          { this.state.description.length > 0 &&
+            <p className='description' dangerouslySetInnerHTML={{__html: this.state.description}} />
+          }
           <div className='automation-actions'>
             <button className='edit' onClick={() => this.goToAutomation(this.state.ID)}><i className='fas fa-pen'></i> Edit</button>
             <button className='delete' onClick={this.deleteAutomation} disabled={this.state.isDeleting}><i className='fas fa-trash'></i> Delete</button>
@@ -46,7 +49,7 @@ export class AutomationRow extends Component {
           <li title={this.state.total_conditions + ' Conditions'}>{this.state.total_conditions}</li>
           <li title={this.state.total_actions + ' Actions'}>{this.state.total_actions}</li>
           <li title={'Triggered ' + this.state.total_triggered + ' times'}>{this.state.total_triggered}</li>
-          <li title={'Last Triggered at ' + this.state.last_triggered}>{this.state.last_triggered}</li>
+          <li title={'Last Triggered ' + this.state.last_triggered}>{this.state.last_triggered}</li>
         </ul>
       </div>
     );
