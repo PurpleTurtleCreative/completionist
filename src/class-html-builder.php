@@ -412,22 +412,23 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
     /**
      * Get various data for a task's 'due_on' relativity to today's date.
      *
+     * @since 1.1.0 Removed returned object member 'days'.
      * @since 1.0.0
      *
      * @param \stdClass $task A task object with set 'due_on' member value.
      *
-     * @return \stdClass A standard object containing a label, status, and the
-     * days difference. Object members are:
+     * @return \stdClass A standard object containing a label and status.
+     * Object members are:
      * * `label`: A human-readable string for the relative time
      * * `status`: {'past','today','soon','later'}
-     * * `days`: Negative if in the past, 0 if today, positive if future.
      */
     static function get_relative_due( \stdClass $task ) : \stdClass {
+
+      // TODO: just pass a string, don't require using a task object...
 
       $relative_due = new \stdClass();
       $relative_due->label = '';
       $relative_due->status = '';
-      $relative_due->days = NULL;
 
       if ( isset( $task->due_on ) ) {
         $due_date = Options::sanitize( 'date', $task->due_on );
@@ -445,15 +446,13 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
               if ( $days_diff === 1 ) {
                 $dt_string = 'Yesterday';
               } else {
-                $dt_string = "$days_diff days ago";
+                $dt_string = human_time_diff( $dt->getTimestamp() ) . ' ago';
               }
 
               $relative_due->status = 'past';
-              $relative_due->days = $days_diff * -1;
 
             } else {
 
-              $relative_due->days = $days_diff;
 
               if ( $days_diff === 0 ) {
 
