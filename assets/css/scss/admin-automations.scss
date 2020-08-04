@@ -11,7 +11,11 @@
   margin: 0 auto;
   color: colors.$grey-darkest;
 
-  .ptc-completionist-automations-listing {
+  button {
+    cursor: pointer;
+  }
+
+  > .ptc-completionist-automations-listing {
 
     > .title {
       display: flex;
@@ -146,6 +150,113 @@
 
     }
 
+  }//end automations listing container
+
+  > .ptc-completionist-automation-create,
+  > .ptc-completionist-automation-details {
+    > header {
+      display: flex;
+      align-items: center;
+
+      > button {
+        @extend %button-sm-warning;
+        margin: 0;
+        flex: 1;
+      }
+
+      > h1 {
+        flex: 8;
+        margin: 0;
+        font-size: layout.$lg-em;
+        text-align: center;
+      }
+
+      > div.spacer {
+        flex: 1;
+      }
+
+    }
   }
 
-}
+  > .ptc-completionist-automation-details {
+    max-width: 720px;
+    margin: 0 auto;
+
+    > .ptc-completionist-automation-details-form {
+
+      > div {
+        background: colors.$white;
+        border-radius: layout.$md-px;
+        border: 2px solid colors.$grey-light;
+        padding: layout.$lg-em layout.$lg-em layout.$lg-em+layout.$sm-em;
+        margin: layout.$md-px 0;
+
+        > h2 {
+          font-size: 1.5em;
+          margin: 0 0 layout.$sm-px;
+
+          > span.automation-step-number {
+            background: colors.$brand-primary;
+            color: colors.$white;
+            display: inline-block;
+            border-radius: 50%;
+            line-height: 1.4em;
+            width: 1.5em;
+            height: 1.5em;
+            text-align: center;
+            vertical-align: baseline;
+          }
+
+        }
+
+        button.remove-action {
+          @extend %button-sm-danger;
+          color: colors.$white;
+          text-shadow: 1px 1px 3px #{colors.$danger-dark}99;
+          border: none;
+          display: inline-block;
+          border-radius: 50%;
+          padding: layout.$md-em - .07em layout.$md-em;
+          line-height: 0;
+          vertical-align: baseline;
+        }
+
+        &.automation-info {
+
+          > input, > textarea {
+            display: block;
+            margin: layout.$md-px 0;
+          }
+
+        }
+
+      }
+
+      > button.save-automation {
+        @extend %button-sm-brand-primary;
+        padding: layout.$md-em;
+        color: colors.$white;
+        text-shadow: 1px 1px 3px #{colors.$brand-primary-dark}50;
+        font-weight: 600;
+        font-size: 1.5em;
+        border-radius: layout.$md-px;
+        border: 2px solid colors.$brand-primary;
+        margin: 0 auto;
+        display: block;
+        width: 33%;
+        letter-spacing: layout.$sm-em/5;
+
+        &:hover {
+          background: colors.$brand-primary-light;
+        }
+
+        > i {
+          margin-right: layout.$sm-em;
+        }
+      }
+
+    }
+
+  }
+
+}//end automations root container

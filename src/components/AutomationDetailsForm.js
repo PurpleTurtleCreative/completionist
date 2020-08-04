@@ -240,7 +240,11 @@ export class AutomationDetailsForm extends Component {
           removeAction={this.handleRemoveAction}
           changeActionMeta={this.handleActionMetaChange}
         />
-        <button onClick={() => this.saveAutomation()} disabled={this.state.isSubmitting}>{this.state.saveButtonLabel}</button>
+        { this.state.isSubmitting ?
+          <button className='save-automation' onClick={() => this.saveAutomation()} disabled='disabled'><i className="fas fa-spinner fa-pulse"></i> Saving...</button>
+          :
+          <button className='save-automation' onClick={() => this.saveAutomation()}><i className="fas fa-save"></i> {this.state.saveButtonLabel}</button>
+        }
       </div>
     );
   }//end render()
@@ -344,7 +348,7 @@ class AutomationConditionsInputs extends Component {
             {this.comparisonMethodOptions}
           </select>
           {valueInput}
-          <button onClick={() => this.props.removeCondition(index)}>Remove</button>
+          <button className='remove-action' title='Remove Condition' onClick={() => this.props.removeCondition(index)}><i className="fas fa-minus"></i></button>
         </fieldset>
       );
     });
@@ -461,7 +465,7 @@ class AutomationActionsInputs extends Component {
             {actionOptions}
           </select>
           {this.loadActionMetaInputs(action, index)}
-        <button onClick={() => this.props.removeAction(index)}>Remove</button>
+        <button className='remove-action' title='Remove Action' onClick={() => this.props.removeAction(index)}><i className="fas fa-minus"></i></button>
       </fieldset>
     ));
   }//end loadActionFieldsets()
@@ -469,6 +473,7 @@ class AutomationActionsInputs extends Component {
   render() {
 
     // TODO: Do not show add button until an event is set
+    // TODO: Add list of available merge fields based on selected event, similar to Awesome Support email templates
 
     this.loadActionFieldsets();
 

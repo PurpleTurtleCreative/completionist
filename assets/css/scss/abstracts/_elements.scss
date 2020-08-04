@@ -17,10 +17,24 @@
   cursor: pointer;
   border: 1px solid colors.$grey-dark;
 
-  &[disabled] {
-    background: colors.$grey-lighter;
-    border-color: colors.$grey-dark;
-    color: colors.$grey-dark;
+  &[disabled], &[disabled]:hover {
+    background: colors.$grey-lighter !important;
+    border-color: colors.$grey-dark !important;
+    color: colors.$grey-dark !important;
+    text-shadow: none !important;
+  }
+
+}
+
+%button-sm-brand-primary {
+
+  @extend %button-sm;
+  background: colors.$brand-primary;
+  border: 1px solid colors.$brand-primary-dark;
+  color: colors.$brand-primary-dark;
+
+  &:hover {
+    background: colors.$brand-primary-light;
   }
 
 }

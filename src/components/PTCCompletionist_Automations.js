@@ -177,7 +177,7 @@ export class PTCCompletionist_Automations extends Component {
 
     if ( this.state.isLoading ) {
       return (
-        <p>Loading...</p>
+        <p className='loading-screen'><i className="fas fa-spinner fa-pulse"></i> Loading...</p>
       );
     }
 
@@ -187,9 +187,12 @@ export class PTCCompletionist_Automations extends Component {
       /* Add Automation... */
       return (
         <div className='ptc-completionist-automation-create'>
-          <h1>New Automation</h1>
+          <header>
+            <button onClick={() => this.goToAutomation()}><i className="fas fa-angle-left"></i> Back</button>
+            <h1>New Automation</h1>
+            <div className='spacer'></div>
+          </header>
           <AutomationDetailsForm goToAutomation={this.goToAutomation} />
-          <button onClick={() => this.goToAutomation()}>Back</button>
         </div>
       );
     }
@@ -198,9 +201,12 @@ export class PTCCompletionist_Automations extends Component {
       /* Edit Automation... */
       return (
         <div className='ptc-completionist-automation-details'>
-          <h1>Viewing automation {automationParam}</h1>
+          <header>
+            <button onClick={() => this.goToAutomation()}><i className="fas fa-angle-left"></i> Back</button>
+            <h1>Edit Automation {history.state.ID}</h1>
+            <div className='spacer'></div>
+          </header>
           <AutomationDetailsForm automation={history.state} goToAutomation={this.goToAutomation} />
-          <button onClick={() => this.goToAutomation()}>Back</button>
         </div>
       );
     } else {
