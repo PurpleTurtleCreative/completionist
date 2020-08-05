@@ -127,7 +127,7 @@ export class PostSearchSelectInput extends Component {
   createSelectOptions() {
     if ( this.state.options.length < 1 ) {
       if ( this.state.isLoading === true ) {
-        return <li>Searching for posts...</li>;
+        return <li><i className="fas fa-spinner fa-pulse"></i> Searching for posts...</li>;
       } else if ( this.state.currentLabel.trim().length >= 3 ) {
         return <li>No post results.</li>;
       } else {
@@ -135,7 +135,7 @@ export class PostSearchSelectInput extends Component {
       }
     }
     return this.state.options.map((post) => (
-      <li data-value={post.ID} key={post.ID} onMouseDown={() => this.handleOptionChange(post.ID, post.post_title)}>{post.post_title + ' [' + post.ID + ']'}</li>
+      <li className='post-option' data-value={post.ID} key={post.ID} onMouseDown={() => this.handleOptionChange(post.ID, post.post_title)}>{post.post_title + ' [' + post.ID + ']'}</li>
     ));
   }//end createSelectOptions()
 
@@ -157,20 +157,20 @@ export class PostSearchSelectInput extends Component {
     let selectList = null;
     if ( this.state.textInputHasFocus === true ) {
       const selectOptions = this.createSelectOptions( this.state.options );
-      selectList = <ul className="select-options">{selectOptions}</ul>;
+      selectList = <ul className='select-options'>{selectOptions}</ul>;
     }
 
     return (
-      <div className="ptc-ajax-search-select-input">
+      <div className='ptc-ajax-search-select-input'>
         <input
           id={this.props.id}
-          type="text"
+          type='text'
           value={this.state.currentLabel}
           onChange={(e) => this.handleSearchChange(e.target.value)}
           onFocus={() => this.setState({ textInputHasFocus: true })}
           onBlur={() => this.handleSearchBlur()}
         />
-        <input type="hidden" value={this.state.currentValue} />
+        <input type='hidden' value={this.state.currentValue} />
         {selectList}
       </div>
     );

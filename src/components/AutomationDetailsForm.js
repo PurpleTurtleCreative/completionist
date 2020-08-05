@@ -260,8 +260,14 @@ class AutomationInfoInputs extends Component {
   render() {
     return (
       <div className="automation-info">
-        <input type="text" value={this.props.title} onChange={(e) => this.props.changeTitle(e.target.value)} />
-        <textarea value={this.props.description} onChange={(e) => this.props.changeDescription(e.target.value)} />
+        <div className='form-group'>
+          <label for='automation-title'>Title</label>
+          <input id='automation-title' type="text" value={this.props.title} onChange={(e) => this.props.changeTitle(e.target.value)} />
+        </div>
+        <div className='form-group'>
+          <label for='automation-description'>Description</label>
+          <textarea id='automation-description' value={this.props.description} onChange={(e) => this.props.changeDescription(e.target.value)} />
+        </div>
       </div>
     );
   }
@@ -281,8 +287,8 @@ class AutomationEventInput extends Component {
   }//end createSelectOptions()
 
   render() {
-    let userEventOptions = this.createSelectOptions( window.ptc_completionist_automations.event_user_options );
-    let postEventOptions = this.createSelectOptions( window.ptc_completionist_automations.event_post_options );
+    const userEventOptions = this.createSelectOptions( window.ptc_completionist_automations.event_user_options );
+    const postEventOptions = this.createSelectOptions( window.ptc_completionist_automations.event_post_options );
     return (
       <div className="automation-event">
         <h2><span className="automation-step-number">1</span> Trigger Event</h2>
@@ -341,14 +347,16 @@ class AutomationConditionsInputs extends Component {
       return (
         <fieldset className="automation-condition" key={index}>
           <legend>Condition</legend>
-          <select value={condition.property} key={index} onChange={(e) => this.props.changeCondition(index, 'property', e.target.value)}>
-            {this.propertyOptions}
-          </select>
-          <select value={condition.comparison_method} key={index} onChange={(e) => this.props.changeCondition(index, 'comparison_method', e.target.value)}>
-            {this.comparisonMethodOptions}
-          </select>
-          {valueInput}
-          <button className='remove-action' title='Remove Condition' onClick={() => this.props.removeCondition(index)}><i className="fas fa-minus"></i></button>
+          <div className='form-group'>
+            <select value={condition.property} key={index} onChange={(e) => this.props.changeCondition(index, 'property', e.target.value)}>
+              {this.propertyOptions}
+            </select>
+            <select value={condition.comparison_method} key={index} onChange={(e) => this.props.changeCondition(index, 'comparison_method', e.target.value)}>
+              {this.comparisonMethodOptions}
+            </select>
+            {valueInput}
+            <button className='remove-item' title='Remove Condition' onClick={() => this.props.removeCondition(index)}><i className="fas fa-minus"></i> Delete</button>
+          </div>
         </fieldset>
       );
     });
@@ -366,7 +374,7 @@ class AutomationConditionsInputs extends Component {
       <div className="automation-conditions-list">
         <h2><span className="automation-step-number">2</span> Conditions</h2>
         {this.conditionFieldsets}
-        <button onClick={this.props.addCondition}>Add Condition</button>
+        <button className='add-item' onClick={this.props.addCondition}><i className="fas fa-plus"></i> Add Condition</button>
       </div>
     );
   }//end render()
@@ -402,14 +410,14 @@ class AutomationActionsInputs extends Component {
               onChange={(e) => this.props.changeActionMeta(index, 'name', e.target.value)}
             />
 
-            <div class="form-group">
+            <div className='form-group'>
               <label for={"ptc-new-task_task_author_"+index}>Creator</label>
               <select id={"ptc-new-task_task_author_"+index} value={action.meta.task_author} onChange={(e) => this.props.changeActionMeta(index, 'task_author', e.target.value)}>
                 {this.createSelectOptions(window.ptc_completionist_automations.connected_workspace_users)}
               </select>
             </div>
 
-            <div class="form-group">
+            <div className='form-group'>
               <label for={"ptc-new-task_assignee_"+index}>Assignee</label>
               <select id={"ptc-new-task_assignee_"+index} value={action.meta.assignee} onChange={(e) => this.props.changeActionMeta(index, 'assignee', e.target.value)}>
                 <option value="">None (Unassigned)</option>
@@ -417,12 +425,12 @@ class AutomationActionsInputs extends Component {
               </select>
             </div>
 
-            <div class="form-group">
+            <div className='form-group'>
               <label for={"ptc-new-task_due_on_"+index}>Due Date</label>
               <input id={"ptc-new-task_due_on_"+index} type="date" pattern="\d\d\d\d-\d\d-\d\d" placeholder="yyyy-mm-dd" value={action.meta.due_on} onChange={(e) => this.props.changeActionMeta(index, 'due_on', e.target.value)} />
             </div>
 
-            <div class="form-group">
+            <div className='form-group'>
               <label for={"ptc-new-task_project_"+index}>Project</label>
               <select id={"ptc-new-task_project_"+index} value={action.meta.project} onChange={(e) => this.props.changeActionMeta(index, 'project', e.target.value)}>
                 <option value="">None (Private Task)</option>
@@ -430,13 +438,13 @@ class AutomationActionsInputs extends Component {
               </select>
             </div>
 
-            <div class="form-group">
+            <div className='form-group'>
               <label for={"ptc-new-task_notes_"+index}>Description</label>
               <textarea id={"ptc-new-task_notes_"+index} value={action.meta.notes} onChange={(e) => this.props.changeActionMeta(index, 'notes', e.target.value)} />
             </div>
 
-            <div class="form-group">
-              <label for={"ptc-new-task_post_id_"+index}>Pin</label>
+            <div className='form-group'>
+              <label for={"ptc-new-task_post_id_"+index}>Pin to Post</label>
               <PostSearchSelectInput
                 id={"ptc-new-task_post_id_"+index}
                 initialValue={action.meta.post_id}
@@ -461,11 +469,15 @@ class AutomationActionsInputs extends Component {
     this.actionFieldsets = this.props.actions.map((action, index) => (
       <fieldset className="automation-action" key={index}>
         <legend>Action</legend>
+        <div className='form-group'>
           <select value={action.action} onChange={(e) => this.props.changeAction(index, e.target.value)} key={index}>
             {actionOptions}
           </select>
-          {this.loadActionMetaInputs(action, index)}
-        <button className='remove-action' title='Remove Action' onClick={() => this.props.removeAction(index)}><i className="fas fa-minus"></i></button>
+          <div>
+            <button className='remove-item' title='Remove Action' onClick={() => this.props.removeAction(index)}><i className="fas fa-minus"></i> Delete</button>
+          </div>
+        </div>
+        {this.loadActionMetaInputs(action, index)}
       </fieldset>
     ));
   }//end loadActionFieldsets()
@@ -481,7 +493,7 @@ class AutomationActionsInputs extends Component {
       <div className="automation-actions-list">
         <h2><span className="automation-step-number">3</span> Actions</h2>
         {this.actionFieldsets}
-        <button onClick={this.props.addAction}>Add Action</button>
+        <button className='add-item' onClick={this.props.addAction}><i className="fas fa-plus"></i> Add Action</button>
       </div>
     );
   }//end render()

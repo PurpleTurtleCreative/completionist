@@ -87,10 +87,10 @@ label {
   margin-bottom: 0.3em;
 }
 
-input[type="text"],
-input[type="password"],
-input[type="checkbox"],
-textarea {
+form input[type="text"],
+form input[type="password"],
+form input[type="checkbox"],
+form textarea {
   color: #004440;
   outline: none;
   box-shadow: none;
@@ -100,16 +100,16 @@ textarea {
   background: #edf1f7;
 }
 
-input[type="checkbox"] {
+form input[type="checkbox"] {
   margin: 0 0.15em;
   position: relative;
   bottom: 1px;
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="checkbox"]:focus,
-textarea:focus {
+form input[type="text"]:focus,
+form input[type="password"]:focus,
+form input[type="checkbox"]:focus,
+form textarea:focus {
   background: #FFF;
   box-shadow: 0 0 7px 0 #17B897 !important;
 }
