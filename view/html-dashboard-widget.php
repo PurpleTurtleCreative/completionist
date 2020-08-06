@@ -22,7 +22,6 @@ require_once $ptc_completionist->plugin_path . 'src/task-categorizers/class-my-t
 
 try {
 
-  Asana_Interface::require_license();
   Asana_Interface::require_settings();
   $asana = Asana_Interface::get_client();
 

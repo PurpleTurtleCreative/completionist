@@ -16,12 +16,22 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || die();
 include_once __DIR__ . '/src/class-options.php';
 include_once __DIR__ . '/src/class-database-manager.php';
 
+$ptc_completionist_file = plugin_dir_path( __FILE__ ) . 'completionist.php';
+$ptc_completionist_version = get_file_data( $ptc_completionist_file, [ 'Version' => 'Version' ], 'plugin' )['Version'];
+
 if ( ! class_exists( '\WC_AM_Client_2_7' ) ) {
   include_once( plugin_dir_path( __FILE__ ) . 'wc-am-client.php' );
 }
 
 if ( class_exists( '\WC_AM_Client_2_7' ) ) {
-  $wcam = new \WC_AM_Client_2_7( __FILE__, '', '1.1.0', 'plugin', 'https://www.purpleturtlecreative.com/', 'Completionist' );
+  $wcam = new WC_AM_Client_2_7(
+    $ptc_completionist_file,
+    2699,
+    $ptc_completionist_version,
+    'plugin',
+    'https://www.purpleturtlecreative.com/',
+    'Completionist'
+  );
 }
 
 $wc_am_product_id_key = '';

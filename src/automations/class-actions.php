@@ -122,8 +122,18 @@ if ( ! class_exists( __NAMESPACE__ . '\Actions' ) ) {
 
           $comment_text = 'This task was automatically created using Completionist on the ';
           $comment_text .= get_bloginfo( 'name', 'display' );
-          $comment_text .= ' WordPress website, here: ';
+          $comment_text .= ' WordPress website, ';
           $comment_text .= get_site_url();
+
+          /**
+           * Filters the comment added to new Asana tasks.
+           *
+           * @since 1.1.0
+           *
+           * @param string $comment_text The plain text string to comment on the new task.
+           * @param string $context The context of this filter, 'automation' or 'ajax'.
+           */
+          $comment_text = apply_filters( 'ptc_cmp_create_task_comment', $comment_text, 'automation' );
 
           $asana->tasks->addComment( $task->gid, [ 'text' => $comment_text ] );
 

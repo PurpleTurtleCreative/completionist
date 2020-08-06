@@ -289,7 +289,7 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 					return;
 				} ?>
                 <div class="notice notice-error">
-                    <p><?php printf( __( 'The <strong>%s</strong> license has not been activated, so some %s features are unavailable! %sClick here%s to activate <strong>%s</strong>.', $this->text_domain ), esc_attr( $this->software_title ), esc_attr( $this->plugin_or_theme ), '<a href="' . esc_url( admin_url( 'admin.php?page=' . $this->wc_am_activation_tab_key ) ) . '">', '</a>', esc_attr( $this->software_title ) ); ?></p>
+                    <p><?php printf( __( 'Your <strong>%s</strong> license has not been activated, so %s updates are unavailable! %sClick here%s to activate <strong>%s</strong> to ensure you are using the latest and greatest version.', $this->text_domain ), esc_attr( $this->software_title ), esc_attr( $this->plugin_or_theme ), '<a href="' . esc_url( admin_url( 'admin.php?page=' . $this->wc_am_activation_tab_key ) ) . '">', '</a>', esc_attr( $this->software_title ) ); ?></p>
                 </div>
 			<?php }
 		}

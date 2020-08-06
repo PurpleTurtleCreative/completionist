@@ -128,7 +128,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       }
 
       if ( class_exists( 'WC_AM_Client_2_7' ) ) {
-        $this->wcam = new WC_AM_Client_2_7( __FILE__, '', $this->plugin_version, 'plugin', 'https://www.purpleturtlecreative.com/', 'Completionist' );
+        $this->wcam = new WC_AM_Client_2_7( __FILE__, 2699, $this->plugin_version, 'plugin', 'https://www.purpleturtlecreative.com/', 'Completionist' );
         $this->license_url = admin_url( 'admin.php?page=' . $this->wcam->wc_am_activation_tab_key );
       }
 

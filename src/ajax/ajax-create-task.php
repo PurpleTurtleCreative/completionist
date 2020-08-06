@@ -25,7 +25,6 @@ try {
     && isset( $_POST['nonce'] )
     && wp_verify_nonce( $_POST['nonce'], 'ptc_completionist_create_task' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     && Asana_Interface::has_connected_asana()
-    && Asana_Interface::require_license()
   ) {
 
     $task = Asana_Interface::create_task( $_POST );
@@ -48,6 +47,9 @@ try {
       } else {
         $comment_text .= get_site_url();
       }
+
+      /** This filter is documented in src/automations/class-actions.php */
+      $comment_text = apply_filters( 'ptc_cmp_create_task_comment', $comment_text, 'ajax' );
 
       $asana->tasks->addComment( $task->gid, [ 'text' => $comment_text ] );
 

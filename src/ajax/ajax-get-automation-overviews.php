@@ -26,7 +26,6 @@ try {
     isset( $_POST['nonce'] )
     && wp_verify_nonce( $_POST['nonce'], 'ptc_completionist_automations' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     && Asana_Interface::has_connected_asana()
-    && Asana_Interface::require_license()
   ) {
 
     if ( isset( $_POST['order_by'] ) ) {
