@@ -11,6 +11,23 @@
   margin: 30px auto 0;
   color: colors.$grey-darkest;
 
+  > .loading-screen {
+    display: flex;
+    height: 50vh;
+    justify-content: center;
+    align-items: center;
+
+    p {
+      font-size: 2rem;
+      font-weight: 600;
+      color: colors.$grey;
+
+      i {
+        margin-right: layout.$sm-em;
+      }
+    }
+  }
+
   button {
     cursor: pointer;
   }

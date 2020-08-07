@@ -177,7 +177,9 @@ export class PTCCompletionist_Automations extends Component {
 
     if ( this.state.isLoading ) {
       return (
-        <p className='loading-screen'><i className="fas fa-spinner fa-pulse"></i> Loading...</p>
+        <div className='loading-screen'>
+          <p><i className='fas fa-spinner fa-pulse fa-lg'></i> Loading...</p>
+        </div>
       );
     }
 
