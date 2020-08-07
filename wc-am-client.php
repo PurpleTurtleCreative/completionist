@@ -126,9 +126,9 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 				$this->wc_am_activation_tab_key          = $this->data_key . '_dashboard';
 				$this->wc_am_deactivation_tab_key        = $this->data_key . '_deactivation';
 				$this->wc_am_settings_menu_title         = $this->software_title . esc_html__( ' Activation', $this->text_domain );
-				$this->wc_am_settings_title              = $this->software_title . esc_html__( ' License Key Activation', $this->text_domain );
-				$this->wc_am_menu_tab_activation_title   = esc_html__( 'License Key Activation', $this->text_domain );
-				$this->wc_am_menu_tab_deactivation_title = esc_html__( 'License Key Deactivation', $this->text_domain );
+				$this->wc_am_settings_title              = $this->software_title . esc_html__( ' License', $this->text_domain );
+				$this->wc_am_menu_tab_activation_title   = esc_html__( 'Activation', $this->text_domain );
+				$this->wc_am_menu_tab_deactivation_title = esc_html__( 'Deactivation', $this->text_domain );
 
 				/**
 				 * Set all software update data here
@@ -338,11 +338,11 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 						if ( $tab == $this->wc_am_activation_tab_key ) {
 							settings_fields( $this->data_key );
 							do_settings_sections( $this->wc_am_activation_tab_key );
-							submit_button( esc_html__( 'Save Changes', $this->text_domain ) );
+							submit_button( esc_html__( 'Activate', $this->text_domain ), 'activate-license' );
 						} else {
 							settings_fields( $this->wc_am_deactivate_checkbox_key );
 							do_settings_sections( $this->wc_am_deactivation_tab_key );
-							submit_button( esc_html__( 'Save Changes', $this->text_domain ) );
+							submit_button( esc_html__( 'Deactivate', $this->text_domain ), 'deactivate-license' );
 						}
 						?>
                     </div>
@@ -359,10 +359,10 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 				$this,
 				'wc_am_api_key_text'
 			), $this->wc_am_activation_tab_key );
-			add_settings_field( $this->wc_am_api_key_key, esc_html__( 'License', $this->text_domain ), array(
+			add_settings_field( $this->wc_am_api_key_key, '<i title="License Key" class="fas fa-key"></i>', array(
 				$this,
 				'wc_am_api_key_field'
-			), $this->wc_am_activation_tab_key, $this->wc_am_api_key_key );
+			), $this->wc_am_activation_tab_key, $this->wc_am_api_key_key, [ 'class' => 'activate-license-key-field' ] );
 
 			/**
 			 * @since 2.3
@@ -374,23 +374,23 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 				), $this->wc_am_activation_tab_key, $this->wc_am_api_key_key );
 			}
 
-			add_settings_field( 'status', esc_html__( 'License Status', $this->text_domain ), array(
+			add_settings_field( 'status', esc_html__( 'Status:', $this->text_domain ), array(
 				$this,
 				'wc_am_api_key_status'
-			), $this->wc_am_activation_tab_key, $this->wc_am_api_key_key );
+			), $this->wc_am_activation_tab_key, $this->wc_am_api_key_key, [ 'class' => 'license-status-field' ] );
 			// Activation settings
 			register_setting( $this->wc_am_deactivate_checkbox_key, $this->wc_am_deactivate_checkbox_key, array(
 				$this,
 				'wc_am_license_key_deactivation'
 			) );
-			add_settings_section( 'deactivate_button', esc_html__( 'API Deactivation', $this->text_domain ), array(
+			add_settings_section( 'deactivate_button', esc_html__( 'License Deactivation', $this->text_domain ), array(
 				$this,
 				'wc_am_deactivate_text'
 			), $this->wc_am_deactivation_tab_key );
 			add_settings_field( 'deactivate_button', esc_html__( 'Deactivate License', $this->text_domain ), array(
 				$this,
 				'wc_am_deactivate_textarea'
-			), $this->wc_am_deactivation_tab_key, 'deactivate_button' );
+			), $this->wc_am_deactivation_tab_key, 'deactivate_button', [ 'class' => 'deactivate-license-field' ] );
 		}
 
 		// Provides text for api key section
@@ -606,7 +606,7 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 			echo '<input type="checkbox" id="' . esc_attr( $this->wc_am_deactivate_checkbox_key ) . '" name="' . esc_attr( $this->wc_am_deactivate_checkbox_key ) . '" value="on"';
 			echo checked( get_option( $this->wc_am_deactivate_checkbox_key ), 'on' );
 			echo '/>';
-			?><span class="description"><?php esc_html_e( 'Deactivates a License Key so it can be used on another blog.', $this->text_domain ); ?></span>
+			?><span class="description"><?php esc_html_e( 'Confirm license deactivation for this site. Plugin updates will be disabled.', $this->text_domain ); ?></span>
 			<?php
 		}
 

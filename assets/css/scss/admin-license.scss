@@ -1,0 +1,173 @@
+@use 'abstracts/colors';
+@use 'abstracts/layout';
+@use 'abstracts/elements';
+
+@use 'admin-theme';
+
+//----------------------
+
+#wpbody-content .wrap {
+  max-width: 500px;
+  margin: 30px auto 0;
+  text-align: center;
+  color: colors.$black;
+
+  > h2:not(.nav-tab-wrapper) {
+    font-size: 2em;
+    font-weight: 900;
+    padding: 0;
+  }
+
+  > h2.nav-tab-wrapper {
+    border: none;
+    margin: layout.$lg-px 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+
+    > a {
+      @extend %button-sm-brand-primary;
+      font-size: 0.9rem;
+      border: none;
+      padding: layout.$sm-em layout.$lg-em;
+
+      &.nav-tab-active {
+        background: colors.$grey-light;
+        color: colors.$grey-darkest;
+      }
+    }
+  }
+
+  > form {
+
+    h2 {
+      display: none;
+    }
+
+    > .main {
+
+      > table {
+        background: colors.$white;
+        border-radius: layout.$md-px;
+        border: 2px solid colors.$grey-light;
+        padding: layout.$lg-px * 2;
+        margin: layout.$md-px * 2 0;
+        display: flex;
+
+        tbody {
+          width: 100%;
+
+          tr {
+            display: flex;
+            align-items: center;
+
+            th {
+              width: auto;
+            }
+
+            td {
+              flex: 2;
+            }
+
+            th, td {
+              padding: 0;
+              margin: 0;
+            }
+
+            &.activate-license-key-field {
+              border: 1px solid colors.$brand-primary;
+              background: colors.$brand-primary-light;
+              border-radius: 3px 5px 5px 3px;
+
+              th {
+
+                i {
+                  width: 2.3em;
+                  text-align: center;
+                  padding: 0;
+                  margin: 0;
+                  color: colors.$brand-primary-dark;
+                }
+              }
+
+              td {
+                padding: 0;
+
+                input {
+                  border-radius: 0 5px 5px 0;
+                  width: 100%;
+                }
+              }
+            }
+
+            &.license-status-field {
+              justify-content: center;
+              margin-top: layout.$lg-px;
+
+              th, td {
+                flex: initial;
+                width: auto;
+                padding: 0 layout.$md-px;
+              }
+
+              td {
+                font-style: italic;
+              }
+            }
+
+            &.deactivate-license-field {
+
+              th {
+                display: none;
+              }
+
+              td {
+
+                input[type=checkbox] {
+                  margin-right: layout.$md-px;
+                }
+
+                span.description {
+                  font-style: normal;
+                  font-size: 1em;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      > p.submit {
+        margin: layout.$lg-px * 2 0;
+        padding: 0;
+        text-align: center;
+
+        > input {
+          @extend %button-sm-brand-primary;
+          padding: layout.$sm-em layout.$md-em;
+          color: colors.$white;
+          text-shadow: 1px 1px 3px #{colors.$brand-primary-dark}50;
+          font-weight: 600;
+          font-size: 1.2em;
+          border-radius: layout.$md-px;
+          border: 2px solid colors.$brand-primary;
+          margin: 0 auto;
+          display: block;
+          width: 33%;
+          letter-spacing: layout.$sm-em/5;
+
+          &.deactivate-license {
+            text-shadow: 1px 1px 3px #{colors.$danger-dark}CC;
+            background: colors.$danger;
+            border: 2px solid colors.$danger;
+            color: colors.$white;
+
+            &:hover {
+              background: colors.$danger-light;
+            }
+          }
+        }
+      }
+    }
+  }
+}

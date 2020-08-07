@@ -606,6 +606,16 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
           );
           break;
 
+        case 'completionist_page_wc_am_client_2699_dashboard':
+          wp_enqueue_script( 'fontawesome-5' );
+          wp_enqueue_style(
+            'ptc-completionist_admin-license-css',
+            plugins_url( 'assets/css/admin-license.css', __FILE__ ),
+            [],
+            $this->plugin_version
+          );
+          break;
+
       }//end switch hook suffix
 
     }//end register_scripts()
