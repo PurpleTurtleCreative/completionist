@@ -205,6 +205,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Fields' ) ) {
           if ( ! is_a( $object, '\WP_Post' ) ) {
             throw new \Exception( 'Provided object was not \WP_User instance' );
           }
+          $actual_post_id = wp_is_post_revision( $object );
+          if ( $actual_post_id ) {
+            $object = get_post( $actual_post_id );
+          }
         } else {
           throw new \Exception( "Invalid field object key, {$field[0]}" );
         }
