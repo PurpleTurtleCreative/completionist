@@ -55,7 +55,8 @@ export class PostSearchSelectInput extends Component {
 
         let post_search_request = window.jQuery.post(window.ajaxurl, data, (res) => {
 
-          console.log(res);
+          // TODO: Look at using WP REST API: https://developer.wordpress.org/rest-api/reference/search-results/
+
           this.setState({
             isLoading: false,
             currentRequest: {},
@@ -141,8 +142,16 @@ export class PostSearchSelectInput extends Component {
 
   componentDidMount() {
     if ( this.state.currentValue.trim() !== '' && this.state.currentLabel.trim() === '' ) {
-      // TODO: we have a value but no label, so request the post's title
-      console.error('Post title needed!');
+      this.setState({ currentLabel: '(Loading...)' }, () => {
+        window.jQuery.get(window.ptc_completionist_automations.resturl+'wp/v2/posts/'+this.state.currentValue, {}, (res) => {
+          if ( 'title' in res && 'rendered' in res.title ) {
+            this.setState({ currentLabel: res.title.rendered });
+          }
+        }, 'json')
+          .fail(() => {
+            this.setState({ currentLabel: '(Error: Failed to load post title)' });
+          });
+      });
     }
   }//end componentDidMount()
 

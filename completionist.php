@@ -596,6 +596,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
               'connected_workspace_users' => \PTC_Completionist\Asana_Interface::get_connected_workspace_user_options(),
               'workspace_projects' => \PTC_Completionist\Asana_Interface::get_workspace_project_options(),
               'nonce' => wp_create_nonce( 'ptc_completionist_automations' ),
+              'resturl' => esc_url_raw( rest_url() ),
             ]
           );
           wp_enqueue_style(
