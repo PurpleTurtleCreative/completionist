@@ -77,11 +77,11 @@ export class AutomationDetailsForm extends Component {
             && res.data.ID > 0
           ) {
             if ( res.code == 201 ) {
-              console.log( res.message );
+//               console.log( res.message );
               this.props.goToAutomation( res.data.ID );
             } else if ( res.code == 200 ) {
               // TODO: display success message in notice section
-              console.log( res.message );
+//               console.log( res.message );
               this.setState({
                 ...res.data,
                 isSubmitting: false
