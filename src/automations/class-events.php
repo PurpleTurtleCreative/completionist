@@ -62,7 +62,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Events' ) ) {
 
       if ( Data::actions_exist_for( 'wp_insert_post' ) ) {
         add_action( 'wp_insert_post', function( $post_id, $the_post, $update ) {
-          if ( ! $update ) {
+          if ( ! $update && $the_post->post_status != 'auto-draft' ) {
             $automation_ids = Data::get_all_automation_ids_for( 'wp_insert_post' );
             if ( count( $automation_ids ) > 0 ) {
               foreach ( $automation_ids as $id ) {
@@ -77,8 +77,20 @@ if ( ! class_exists( __NAMESPACE__ . '\Events' ) ) {
         add_action( 'post_updated', function( $post_id, $post_after, $post_before ) {
           $automation_ids = Data::get_all_automation_ids_for( 'post_updated' );
           if ( count( $automation_ids ) > 0 ) {
-            foreach ( $automation_ids as $id ) {
-              ( new Automation( $id, [ 'post' => $post_after ] ) )->maybe_run_actions();
+            $has_changes = FALSE;
+            foreach ( $post_after as $field => $val ) {
+              if (
+                $val != $post_before->{$field}
+                && $field != 'post_modified'
+                && $field != 'post_modified_gmt'
+              ) {
+                $has_changes = TRUE;
+              }
+            }
+            if ( $has_changes ) {
+              foreach ( $automation_ids as $id ) {
+                ( new Automation( $id, [ 'post' => $post_after ] ) )->maybe_run_actions();
+              }
             }
           }
         }, 10, 3 );
@@ -96,7 +108,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Events' ) ) {
         }, 10, 1 );
       }
 
-    }//end enqueue_automations()
+    }//end add_actions()
 
   }//end class
 }//end if class_exists
