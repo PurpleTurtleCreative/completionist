@@ -97,6 +97,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 
     private static function save_new_automation( \stdClass $automation ) : \stdClass {
 
+      // TODO: VALIDATE DATA. SOME FIELDS ARE REQUIRED LIKE TITLE AND HOOK.
+
       $new_automation_id = self::add_automation(
         $automation->title,
         $automation->description,
@@ -164,6 +166,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
       try {
 
         $old_automation = ( new Automation( $automation->ID ) )->to_stdClass();
+
+        // TODO: VALIDATE DATA. SOME FIELDS ARE REQUIRED LIKE TITLE AND HOOK.
 
         // TODO: use bulk insertion queries rather than multiple write calls
 
@@ -478,26 +482,19 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
         switch ( $col ) {
           case 'title':
             $val = Options::sanitize( 'string', $val );
-            if ( $val === '' ) {
-              return FALSE;
-            }
             $format[] = '%s';
+            break;
           case 'description':
             $val = sanitize_textarea_field( $val );
-            if ( $val === '' ) {
-              return FALSE;
-            }
             $format[] = '%s';
             break;
           case 'hook_name':
             $val = Options::sanitize( 'string', $val );
-            if (
-              $val === ''
-              || ! self::validate_automation_hook_name( $val )
-            ) {
-              return FALSE;
+            if ( ! self::validate_automation_hook_name( $val ) ) {
+              unset( $params[ $col ] );
+            } else {
+              $format[] = '%s';
             }
-            $format[] = '%s';
             break;
           default:
             unset( $params[ $col ] );
