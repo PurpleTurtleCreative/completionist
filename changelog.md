@@ -6,11 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased - 1.1.0
 ### Added
-- New "Automations" feature.
-- Filter hook, 'ptc_cmp_create_task_comment', to filter the comment added to new Asana tasks.
+- NEW "Automations" feature!
 
 ### Changed
 - Licensing is no longer required to use Completionist's features, but license activation is still required to check for and receive plugin updates.
+- Improved design of licensing screens.
 
 ### Fixed
 - Authenticated users who could not be matched by email in Asana are now properly included in the site collaborators listing.
