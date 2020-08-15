@@ -23,4 +23,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.0.0 - 2020-04-16
 ### Added
-- Initial release featuring task-to-post pinning and the dashboard tasks overview widget.
+- Initial release featuring task-to-post pinning and the tasks overview dashboard widget.
