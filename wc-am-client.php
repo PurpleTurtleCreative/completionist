@@ -259,7 +259,8 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 		 */
 		public function license_key_deactivation() {
 			$activation_status = get_option( $this->wc_am_activated_key );
-			$api_key           = $this->data[ $this->wc_am_api_key_key ];
+			$api_key           = isset( $this->data[ $this->wc_am_api_key_key ] ) ?
+				$this->data[ $this->wc_am_api_key_key ] : '';
 
 			$args = array(
 				'api_key' => $api_key,
@@ -451,7 +452,7 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 
 		// Returns API Key text field
 		public function wc_am_api_key_field() {
-			if ( ! empty( $this->data[ $this->wc_am_api_key_key ] ) ) {
+			if ( isset( $this->data[ $this->wc_am_api_key_key ] ) && ! empty( $this->data[ $this->wc_am_api_key_key ] ) ) {
 				echo "<input id='api_key' name='" . esc_attr( $this->data_key ) . "[" . esc_attr( $this->wc_am_api_key_key ) . "]' size='25' type='text' value='" . esc_attr( $this->data[ $this->wc_am_api_key_key ] ) . "' />";
 			} else {
 				echo "<input id='api_key' name='" . esc_attr( $this->data_key ) . "[" . esc_attr( $this->wc_am_api_key_key ) . "]' size='25' type='text' value='' />";
@@ -491,7 +492,7 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 			$api_key                             = trim( $input[ $this->wc_am_api_key_key ] );
 			$activation_status                   = get_option( $this->wc_am_activated_key );
 			$checkbox_status                     = get_option( $this->wc_am_deactivate_checkbox_key );
-			$current_api_key                     = $this->data[ $this->wc_am_api_key_key ];
+			$current_api_key                     = isset( $this->data[ $this->wc_am_api_key_key ] ) ? $this->data[ $this->wc_am_api_key_key ] : '';
 
 			/**
 			 * @since 2.3
@@ -549,7 +550,8 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 			$options           = ( $input == 'on' ? 'on' : 'off' );
 
 			$args = array(
-				'api_key' => $this->data[ $this->wc_am_api_key_key ],
+				'api_key' => isset( $this->data[ $this->wc_am_api_key_key ] ) ?
+				$this->data[ $this->wc_am_api_key_key ] : '',
 			);
 
 			if ( $options == 'on' && $activation_status == 'Activated' && $this->data[ $this->wc_am_api_key_key ] != '' ) {
@@ -686,9 +688,11 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 		 * @return bool|string
 		 */
 		public function status() {
+
 			$defaults = array(
 				'wc_am_action' => 'status',
-				'api_key'      => $this->data[ $this->wc_am_api_key_key ],
+				'api_key'      => isset( $this->data[ $this->wc_am_api_key_key ] ) ?
+				$this->data[ $this->wc_am_api_key_key ] : '',
 				'product_id'   => $this->product_id,
 				'instance'     => $this->wc_am_instance_id,
 				'object'       => $this->wc_am_domain
@@ -797,7 +801,8 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 				'plugin_name'  => $this->plugin_name,
 				'version'      => $this->wc_am_software_version,
 				'product_id'   => $this->product_id,
-				'api_key'      => $this->data[ $this->wc_am_api_key_key ],
+				'api_key'      => isset( $this->data[ $this->wc_am_api_key_key ] ) ?
+				$this->data[ $this->wc_am_api_key_key ] : '',
 				'instance'     => $this->wc_am_instance_id,
 			);
 
@@ -871,7 +876,8 @@ if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
 				'plugin_name'  => $this->plugin_name,
 				'version'      => $this->wc_am_software_version,
 				'product_id'   => $this->product_id,
-				'api_key'      => $this->data[ $this->wc_am_api_key_key ],
+				'api_key'      => isset( $this->data[ $this->wc_am_api_key_key ] ) ?
+				$this->data[ $this->wc_am_api_key_key ] : '',
 				'instance'     => $this->wc_am_instance_id,
 				'object'       => $this->wc_am_domain,
 			);
