@@ -6,6 +6,39 @@
 
 //----------------------
 
+.ptc-error-screen {
+  display: flex;
+  height: 50vh;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  p {
+    font-size: 1.5em;
+    font-weight: 400;
+    color: colors.$danger;
+    margin: 0;
+    padding: 0;
+
+    strong {
+      font-weight: 800;
+      font-size: 1.3em;
+    }
+
+    a {
+      @extend %button-sm-danger;
+      border: 2px solid colors.$danger;
+      color: colors.$white;
+      display: inline-block;
+      margin: layout.$lg-em 0 0;
+
+      i {
+        margin-left: layout.$sm-em;
+      }
+    }
+  }
+}
+
 #ptc-completionist-automations-root {
   max-width: 1280px;
   margin: 30px auto 0;

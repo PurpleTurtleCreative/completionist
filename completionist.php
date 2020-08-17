@@ -210,9 +210,27 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
         'ptc-completionist-automations',
         function() {
           if ( current_user_can( 'edit_posts' ) ) {
-            echo '<div id="ptc-completionist-automations-root"></div>';
+            require_once $this->plugin_path . 'src/class-asana-interface.php';
+            if ( \PTC_Completionist\Asana_Interface::has_connected_asana() ) {
+              echo '<div id="ptc-completionist-automations-root"></div>';
+            } else {
+              ?>
+              <div class="ptc-error-screen">
+                <p>
+                  <strong>Not Authorized.</strong>
+                  <br />
+                  Please connect your Asana account to use Completionist.
+                  <br />
+                  <a href="<?php echo esc_url( $this->settings_url ); ?>">
+                    Go to Settings
+                    <i class="fas fa-long-arrow-alt-right"></i>
+                  </a>
+                </p>
+              </div>
+              <?php
+            }
           } else {
-            wp_die('<strong>Error: Unauthorized.</strong> You must have post editing capabilities to use Completionist.');
+            wp_die('<strong>Error 401: Unauthorized.</strong> You must have post editing capabilities to use Completionist.');
           }
         },
         NULL
@@ -576,29 +594,31 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
             $asset_file['dependencies'],
             $this->plugin_version
           );
-          require_once $this->plugin_path . 'src/automations/class-events.php';
-          require_once $this->plugin_path . 'src/automations/class-fields.php';
-          require_once $this->plugin_path . 'src/automations/class-actions.php';
-          require_once $this->plugin_path . 'src/automations/class-data.php';
           require_once $this->plugin_path . 'src/class-asana-interface.php';
-          wp_localize_script(
-            'ptc-completionist_build-index-js',
-            'ptc_completionist_automations',
-            [
-              'automations' => \PTC_Completionist\Automations\Data::get_automation_overviews(),
-              'event_user_options' => \PTC_Completionist\Automations\Events::USER_OPTIONS,
-              'event_post_options' => \PTC_Completionist\Automations\Events::POST_OPTIONS,
-              'field_user_options' => \PTC_Completionist\Automations\Fields::USER_OPTIONS,
-              'field_post_options' => \PTC_Completionist\Automations\Fields::POST_OPTIONS,
-              'field_comparison_methods' => \PTC_Completionist\Automations\Fields::COMPARISON_METHODS,
-              'action_options' => \PTC_Completionist\Automations\Actions::ACTION_OPTIONS,
-              'workspace_users' => \PTC_Completionist\Asana_Interface::get_workspace_user_options(),
-              'connected_workspace_users' => \PTC_Completionist\Asana_Interface::get_connected_workspace_user_options(),
-              'workspace_projects' => \PTC_Completionist\Asana_Interface::get_workspace_project_options(),
-              'nonce' => wp_create_nonce( 'ptc_completionist_automations' ),
-              'resturl' => esc_url_raw( rest_url() ),
-            ]
-          );
+          if ( \PTC_Completionist\Asana_Interface::has_connected_asana() ) {
+            require_once $this->plugin_path . 'src/automations/class-events.php';
+            require_once $this->plugin_path . 'src/automations/class-fields.php';
+            require_once $this->plugin_path . 'src/automations/class-actions.php';
+            require_once $this->plugin_path . 'src/automations/class-data.php';
+            wp_localize_script(
+              'ptc-completionist_build-index-js',
+              'ptc_completionist_automations',
+              [
+                'automations' => \PTC_Completionist\Automations\Data::get_automation_overviews(),
+                'event_user_options' => \PTC_Completionist\Automations\Events::USER_OPTIONS,
+                'event_post_options' => \PTC_Completionist\Automations\Events::POST_OPTIONS,
+                'field_user_options' => \PTC_Completionist\Automations\Fields::USER_OPTIONS,
+                'field_post_options' => \PTC_Completionist\Automations\Fields::POST_OPTIONS,
+                'field_comparison_methods' => \PTC_Completionist\Automations\Fields::COMPARISON_METHODS,
+                'action_options' => \PTC_Completionist\Automations\Actions::ACTION_OPTIONS,
+                'workspace_users' => \PTC_Completionist\Asana_Interface::get_workspace_user_options(),
+                'connected_workspace_users' => \PTC_Completionist\Asana_Interface::get_connected_workspace_user_options(),
+                'workspace_projects' => \PTC_Completionist\Asana_Interface::get_workspace_project_options(),
+                'nonce' => wp_create_nonce( 'ptc_completionist_automations' ),
+                'resturl' => esc_url_raw( rest_url() ),
+              ]
+            );
+          }
           wp_enqueue_style(
             'ptc-completionist_admin-automations-css',
             plugins_url( 'assets/css/admin-automations.css', __FILE__ ),

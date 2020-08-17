@@ -57,8 +57,9 @@ export class PTCCompletionist_Automations extends Component {
               isLoading: false
             });
           } else {
+            // TODO: Fix infinite requests when error
             console.error( res );
-            this.goToAutomation();
+            this.setState({ isLoading: false });
           }
 
         }, 'json')

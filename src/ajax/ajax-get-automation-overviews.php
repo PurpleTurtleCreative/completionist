@@ -25,8 +25,11 @@ try {
   if (
     isset( $_POST['nonce'] )
     && wp_verify_nonce( $_POST['nonce'], 'ptc_completionist_automations' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-    && Asana_Interface::has_connected_asana()
   ) {
+
+    if ( ! Asana_Interface::has_connected_asana() ) {
+      throw new \Exception( 'Please connect your Asana account to use Completionist.', 403 );
+    }
 
     if ( isset( $_POST['order_by'] ) ) {
       $order_by = Options::sanitize( 'string', $_POST['order_by'] );

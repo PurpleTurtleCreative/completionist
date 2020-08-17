@@ -162,9 +162,6 @@ try {
       <br>
       <a class="note-box-cta" href="<?php echo esc_url( $license_url ); ?>">Activate License<i class="fas fa-long-arrow-alt-right"></i></a>
     </p>
-    <div class="note-box-dismiss">
-      <i class="fas fa-times"></i>
-    </div>
   </div>
   <?php
 } catch ( \PTC_Completionist\Errors\NoAuthorization $e ) {
@@ -179,9 +176,6 @@ try {
       <br>
       <a class="note-box-cta" href="<?php echo esc_url( $settings_url ); ?>">Go to Settings<i class="fas fa-long-arrow-alt-right"></i></a>
     </p>
-    <div class="note-box-dismiss">
-      <i class="fas fa-times"></i>
-    </div>
   </div>
   <?php
 } catch ( \Exception $e ) {
