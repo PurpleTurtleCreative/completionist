@@ -11,7 +11,7 @@
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
  * Description:       Manage, pin, and automate Asana tasks in relevant areas of your WordPress admin.
  * Version:           1.1.0
- * Requires at least: 4.7.1
+ * Requires at least: 5.0.1
  * Requires PHP:      7.1
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
@@ -586,9 +586,9 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
           break;
 
         case 'completionist_page_ptc-completionist-automations':
-          $asset_file = require_once( $this->plugin_path . 'build/index.asset.php' );
           require_once $this->plugin_path . 'src/class-asana-interface.php';
           if ( \PTC_Completionist\Asana_Interface::has_connected_asana() ) {
+            $asset_file = require_once( $this->plugin_path . 'build/index.asset.php' );
             wp_enqueue_script(
               'ptc-completionist_build-index-js',
               plugins_url( 'build/index.js', __FILE__ ),
