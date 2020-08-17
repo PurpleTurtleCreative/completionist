@@ -587,15 +587,14 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
 
         case 'completionist_page_ptc-completionist-automations':
           $asset_file = require_once( $this->plugin_path . 'build/index.asset.php' );
-          $asset_file['dependencies'][] = 'fontawesome-5';
-          wp_enqueue_script(
-            'ptc-completionist_build-index-js',
-            plugins_url( 'build/index.js', __FILE__ ),
-            $asset_file['dependencies'],
-            $this->plugin_version
-          );
           require_once $this->plugin_path . 'src/class-asana-interface.php';
           if ( \PTC_Completionist\Asana_Interface::has_connected_asana() ) {
+            wp_enqueue_script(
+              'ptc-completionist_build-index-js',
+              plugins_url( 'build/index.js', __FILE__ ),
+              $asset_file['dependencies'],
+              $this->plugin_version
+            );
             require_once $this->plugin_path . 'src/automations/class-events.php';
             require_once $this->plugin_path . 'src/automations/class-fields.php';
             require_once $this->plugin_path . 'src/automations/class-actions.php';
@@ -619,6 +618,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
               ]
             );
           }
+          wp_enqueue_script( 'fontawesome-5' );
           wp_enqueue_style(
             'ptc-completionist_admin-automations-css',
             plugins_url( 'assets/css/admin-automations.css', __FILE__ ),
