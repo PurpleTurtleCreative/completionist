@@ -141,7 +141,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
         FALSE === $asana_personal_access_token
         || '' === $asana_personal_access_token
       ) {
-        throw new Errors\NoAuthorization( 'No Asana authentication provided. Please save a valid personal access token in Completionist\'s settings.' );
+        throw new Errors\NoAuthorization( 'No Asana authentication provided. Please save a valid personal access token in Completionist\'s settings.', 401 );
       } else {
         self::$wp_user_id = $user_id;
       }
@@ -154,12 +154,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
         self::$me = $asana->users->me();
       } catch ( \Asana\Errors\NoAuthorizationError $e ) {
         Options::delete( Options::ASANA_PAT );
-        throw new Errors\NoAuthorization( 'Asana authorization failed. Please provide a new personal access token in Completionist\'s settings.' );
+        throw new Errors\NoAuthorization( 'Asana authorization failed. Please provide a new personal access token in Completionist\'s settings.', $e->getCode() );
       } catch ( \Exception $e ) {
         /* Don't delete option here because could be server error or API limit... */
         $error_code = esc_html( $e->getCode() );
         $error_msg = esc_html( $e->getMessage() );
-        throw new \Exception( "Asana authorization failure {$error_code}: {$error_msg}" );
+        throw new \Exception( "Asana authorization failure {$error_code}: {$error_msg}", $e->getCode() );
       }
 
       return $asana;
