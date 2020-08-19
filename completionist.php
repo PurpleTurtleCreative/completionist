@@ -11,7 +11,7 @@
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
  * Description:       Manage, pin, and automate Asana tasks in relevant areas of your WordPress admin.
  * Version:           1.1.0
- * Requires at least: 5.0.1
+ * Requires at least: 5.0.0
  * Requires PHP:      7.1
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
@@ -210,27 +210,9 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
         'ptc-completionist-automations',
         function() {
           if ( current_user_can( 'edit_posts' ) ) {
-            require_once $this->plugin_path . 'src/class-asana-interface.php';
-            if ( \PTC_Completionist\Asana_Interface::has_connected_asana() ) {
-              echo '<div id="ptc-completionist-automations-root"></div>';
-            } else {
-              ?>
-              <div class="ptc-error-screen">
-                <p>
-                  <strong>Not Authorized.</strong>
-                  <br />
-                  Please connect your Asana account to use Completionist.
-                  <br />
-                  <a href="<?php echo esc_url( $this->settings_url ); ?>">
-                    Go to Settings
-                    <i class="fas fa-long-arrow-alt-right"></i>
-                  </a>
-                </p>
-              </div>
-              <?php
-            }
+            require_once $this->plugin_path . 'view/html-admin-automations.php';
           } else {
-            wp_die('<strong>Error 401: Unauthorized.</strong> You must have post editing capabilities to use Completionist.');
+            wp_die('<strong>Error: Unauthorized.</strong> You must have post editing capabilities to use Completionist.');
           }
         },
         NULL
@@ -587,6 +569,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
 
         case 'completionist_page_ptc-completionist-automations':
           require_once $this->plugin_path . 'src/class-asana-interface.php';
+          // TODO: Require Completionist settings
           if ( \PTC_Completionist\Asana_Interface::has_connected_asana() ) {
             $asset_file = require_once( $this->plugin_path . 'build/index.asset.php' );
             wp_enqueue_script(
