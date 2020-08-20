@@ -24,7 +24,7 @@ if ( ! class_exists( '\WC_AM_Client_2_7' ) ) {
 }
 
 if ( class_exists( '\WC_AM_Client_2_7' ) ) {
-  $wcam = new WC_AM_Client_2_7(
+  $wcam = new \WC_AM_Client_2_7(
     $ptc_completionist_file,
     2699,
     $ptc_completionist_version,
