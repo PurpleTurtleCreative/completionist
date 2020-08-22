@@ -569,8 +569,13 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
 
         case 'completionist_page_ptc-completionist-automations':
           require_once $this->plugin_path . 'src/class-asana-interface.php';
-          // TODO: Require Completionist settings
-          if ( \PTC_Completionist\Asana_Interface::has_connected_asana() ) {
+          try {
+            Asana_Interface::require_settings();
+            $has_required_settings = TRUE;
+          } catch ( \Exception $e ) {
+            $has_required_settings = FALSE;
+          }
+          if ( $has_required_settings && \PTC_Completionist\Asana_Interface::has_connected_asana() ) {
             $asset_file = require_once( $this->plugin_path . 'build/index.asset.php' );
             wp_enqueue_script(
               'ptc-completionist_build-index-js',
@@ -597,7 +602,6 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
                 'connected_workspace_users' => \PTC_Completionist\Asana_Interface::get_connected_workspace_user_options(),
                 'workspace_projects' => \PTC_Completionist\Asana_Interface::get_workspace_project_options(),
                 'nonce' => wp_create_nonce( 'ptc_completionist_automations' ),
-                'resturl' => esc_url_raw( rest_url() ),
               ]
             );
           }
