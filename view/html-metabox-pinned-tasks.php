@@ -25,7 +25,7 @@ try {
     throw new \Exception( 'You are not a member of the assigned Asana Workspace.', 403 );
   }
 
-  $workspace_users = Asana_Interface::find_workspace_users();
+  $workspace_user_options = Asana_Interface::get_workspace_user_options();
   $projects = Asana_Interface::get_workspace_project_options();
 
   /* User is authenticated for API usage. */
@@ -50,9 +50,9 @@ try {
         <select id="ptc-new-task_assignee">
           <option value="">None (Unassigned)</option>
           <?php
-          foreach ( $workspace_users as $user_gid => $wp_user ) {
+          foreach ( $workspace_user_options as $user_gid => $option_label ) {
             echo  '<option value="' . esc_attr( $user_gid ) . '">' .
-                    esc_html( $wp_user->display_name ) . '</option>';
+                    esc_html( $option_label ) . '</option>';
           }
           ?>
         </select>
