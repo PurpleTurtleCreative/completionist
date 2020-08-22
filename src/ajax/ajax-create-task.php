@@ -38,6 +38,8 @@ try {
 
     try {
 
+      $asana = Asana_Interface::get_client();
+
       $comment_text = 'I just created this task using Completionist on the ';
       $comment_text .= get_bloginfo( 'name', 'display' );
       $comment_text .= ' WordPress website, here: ';
