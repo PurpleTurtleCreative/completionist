@@ -150,6 +150,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       add_action( 'wp_ajax_ptc_update_task', [ $this, 'ajax_update_task' ] );
       /* Generic AJAX Handlers */
       add_action( 'wp_ajax_ptc_get_post_options_by_title', [ $this, 'ajax_ptc_get_post_options_by_title' ] );
+      add_action( 'wp_ajax_ptc_get_post_title_by_id', [ $this, 'ajax_ptc_get_post_title_by_id' ] );
       /* Automation AJAX Handlers */
       add_action( 'wp_ajax_ptc_save_automation', [ $this, 'ajax_ptc_save_automation' ] );
       add_action( 'wp_ajax_ptc_get_automation', [ $this, 'ajax_ptc_get_automation' ] );
@@ -409,6 +410,17 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
     }
 
     /**
+     * AJAX handler to get post title by ID.
+     *
+     * @since 1.1.0
+     *
+     * @ignore
+     */
+    function ajax_ptc_get_post_title_by_id() {
+      require_once $this->plugin_path . 'src/ajax/ajax-get-post-title-by-id.php';
+    }
+
+    /**
      * AJAX handler to save automation data.
      *
      * @since 1.1.0
@@ -570,7 +582,7 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
         case 'completionist_page_ptc-completionist-automations':
           require_once $this->plugin_path . 'src/class-asana-interface.php';
           try {
-            Asana_Interface::require_settings();
+            \PTC_Completionist\Asana_Interface::require_settings();
             $has_required_settings = TRUE;
           } catch ( \Exception $e ) {
             $has_required_settings = FALSE;
