@@ -10,7 +10,7 @@
  * Plugin Name:       Completionist - Asana for WordPress
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
  * Description:       Manage, pin, and automate Asana tasks in relevant areas of your WordPress admin.
- * Version:           1.1.0
+ * Version:           2.0.0
  * Requires at least: 5.0.0
  * Requires PHP:      7.1
  * Author:            Purple Turtle Creative
@@ -73,24 +73,6 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      */
     public $settings_url;
 
-    /**
-     * The WCAM library object.
-     *
-     * @since 1.0.0
-     *
-     * @ignore
-     */
-    public $wcam;
-
-    /**
-     * The full url to this plugin's license page.
-     *
-     * @since 1.0.0
-     *
-     * @ignore
-     */
-    public $license_url;
-
     /* Plugin Initialization */
 
     /**
@@ -122,15 +104,6 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
 
       add_action( 'admin_menu', [ $this, 'add_admin_pages' ] );
       add_action( 'admin_enqueue_scripts', [ $this, 'register_scripts' ] );
-
-      if ( ! class_exists( 'WC_AM_Client_2_7' ) ) {
-        require_once $this->plugin_path . 'wc-am-client.php';
-      }
-
-      if ( class_exists( 'WC_AM_Client_2_7' ) ) {
-        $this->wcam = new WC_AM_Client_2_7( __FILE__, 2699, $this->plugin_version, 'plugin', 'https://www.purpleturtlecreative.com/', 'Completionist' );
-        $this->license_url = admin_url( 'admin.php?page=' . $this->wcam->wc_am_activation_tab_key );
-      }
 
       add_filter( 'plugin_action_links_' . $this->plugin_title, [ $this, 'filter_plugin_action_links' ] );
       add_action( 'wp_ajax_ptc_get_tag_options', [ $this, 'ajax_get_tag_options' ] );
@@ -229,20 +202,9 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
      * @ignore
      */
     function filter_plugin_action_links( $links ) {
-
       $links[] = '<a href="https://purpleturtlecreative.com/completionist/documentation/">Docs</a>';
-      $links[] = '<a href="https://purpleturtlecreative.com/my-account/">Support</a>';
       $links[] = '<a href="' . esc_url( $this->settings_url ) . '">Settings</a>';
-      $links[] = '<a href="' . esc_url( $this->license_url ) . '">License</a>';
-
-      if ( is_object( $this->wcam ) && $this->wcam->get_api_key_status( FALSE ) ) {
-        $links[] = '<span style="color:#399709;">Activated</span>';
-      } else {
-        $links[] = '<span style="color:#E12D39;">Inactive</span>';
-      }
-
       return $links;
-
     }
 
     /**
@@ -621,16 +583,6 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
           wp_enqueue_style(
             'ptc-completionist_admin-automations-css',
             plugins_url( 'assets/css/admin-automations.css', __FILE__ ),
-            [],
-            $this->plugin_version
-          );
-          break;
-
-        case 'completionist_page_wc_am_client_2699_dashboard':
-          wp_enqueue_script( 'fontawesome-5' );
-          wp_enqueue_style(
-            'ptc-completionist_admin-license-css',
-            plugins_url( 'assets/css/admin-license.css', __FILE__ ),
             [],
             $this->plugin_version
           );
