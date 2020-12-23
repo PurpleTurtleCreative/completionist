@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2.0.0 - [Unreleased]
 ### Removed
-- Licensing and remote updates system (WCAM)
+- Licensing and remote updates system (WCAM).
+
+### Changed
+- Software is now licensed under GPL v3 or later instead of proprietary terms and conditions.
 
 ## 1.1.0 - 2020-08-22
 ### Added
