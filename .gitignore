@@ -10,7 +10,6 @@ Icon
 ._*
 
 # Composer
-composer.phar
 /vendor/
 
 # Node/React

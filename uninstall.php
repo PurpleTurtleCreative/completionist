@@ -16,33 +16,6 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || die();
 include_once __DIR__ . '/src/class-options.php';
 include_once __DIR__ . '/src/class-database-manager.php';
 
-$ptc_completionist_file = plugin_dir_path( __FILE__ ) . 'completionist.php';
-$ptc_completionist_version = get_file_data( $ptc_completionist_file, [ 'Version' => 'Version' ], 'plugin' )['Version'];
-
-if ( ! class_exists( '\WC_AM_Client_2_7' ) ) {
-  include_once( plugin_dir_path( __FILE__ ) . 'wc-am-client.php' );
-}
-
-if ( class_exists( '\WC_AM_Client_2_7' ) ) {
-  $wcam = new \WC_AM_Client_2_7(
-    $ptc_completionist_file,
-    2699,
-    $ptc_completionist_version,
-    'plugin',
-    'https://www.purpleturtlecreative.com/',
-    'Completionist'
-  );
-}
-
-$wc_am_product_id_key = '';
-$wc_am_data_key = '';
-
-if ( isset( $wcam ) && is_a( $wcam, '\WC_AM_Client_2_7' ) ) {
-  $wcam->uninstall();
-  $wc_am_product_id_key = isset( $wcam->wc_am_product_id ) ? $wcam->wc_am_product_id : '';
-  $wc_am_data_key = isset( $wcam->data_key ) ? $wcam->data_key : '';
-}
-
 if ( function_exists( 'get_sites' ) ) {
   $site_ids = get_sites( [ 'fields' => 'ids' ] );
   foreach ( $site_ids as $site_id ) {
@@ -57,6 +30,7 @@ if ( function_exists( 'get_sites' ) ) {
 /* HELPERS */
 
 function uninstall_for_current_blog() {
+
   if ( class_exists( __NAMESPACE__ . '\Options' ) ) {
     if ( method_exists( __NAMESPACE__ . '\Options', 'delete_all' ) ) {
       Options::delete_all();
@@ -73,12 +47,4 @@ function uninstall_for_current_blog() {
     }
   }
 
-  if (
-    function_exists( 'delete_option' )
-    && $wc_am_product_id_key != ''
-    && $wc_am_data_key != ''
-  ) {
-    delete_option( $wc_am_product_id_key );
-    delete_option( $wc_am_data_key );
-  }
 }
