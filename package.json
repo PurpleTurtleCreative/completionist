@@ -12,11 +12,12 @@
   "bugs": {
     "url": "https://github.com/PurpleTurtleCreative/completionist/issues"
   },
-  "scripts": {
-    "build": "wp-scripts build",
-    "start": "wp-scripts start"
-  },
   "devDependencies": {
     "@wordpress/scripts": "10.0.0"
+  },
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "bundle": "./bundle.sh"
   }
 }
