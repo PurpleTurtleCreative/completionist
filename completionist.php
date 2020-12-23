@@ -2,9 +2,10 @@
 /**
  * Completionist
  *
+ * @package           Completionist
  * @author            Michelle Blanchette
  * @copyright         2020 Michelle Blanchette
- * @license           https://purpleturtlecreative.com/terms-conditions/
+ * @license           GPL-3.0-or-later
  *
  * @wordpress-plugin
  * Plugin Name:       Completionist - Asana for WordPress
@@ -15,8 +16,24 @@
  * Requires PHP:      7.1
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
- * License:           https://purpleturtlecreative.com/terms-conditions/
+ * License:           GPL v3 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.txt
  */
+
+/*
+This program is open-source software: you can redistribute it and/or modify
+it UNDER THE TERMS of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see https://www.gnu.org/licenses/.
+*/
 
 defined( 'ABSPATH' ) || die();
 
