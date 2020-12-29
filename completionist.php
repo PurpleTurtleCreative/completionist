@@ -12,8 +12,9 @@
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
  * Description:       Manage, pin, and automate Asana tasks in relevant areas of your WordPress admin.
  * Version:           2.0.0
- * Requires at least: 5.0.0
  * Requires PHP:      7.1
+ * Requires at least: 5.0.0
+ * Tested up to:      5.6.0
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
  * License:           GPL v3 or later
@@ -32,7 +33,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program. If not, see https://www.gnu.org/licenses/.
+along with this program. If not, see https://www.gnu.org/licenses/gpl-3.0.txt.
 */
 
 defined( 'ABSPATH' ) || die();
@@ -151,6 +152,16 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       add_action( 'plugins_loaded', function() {
         require_once $this->plugin_path . 'src/automations/class-events.php';
         \PTC_Completionist\Automations\Events::add_actions();
+      });
+
+      /* YahnisElsts/plugin-update-checker */
+      add_action( 'plugins_loaded', function() {
+        require_once $this->plugin_path . 'vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php';
+        Puc_v4_Factory::buildUpdateChecker(
+          'http://ptc-staging_wordpress_1/wp-content/resources/completionist/plugin-info.php',
+          __FILE__, //Full path to the main plugin file or functions.php.
+          'completionist'
+        );
       });
 
     }
