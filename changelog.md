@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Software is now licensed under GPL v3 or later instead of proprietary terms and conditions.
 
+### Fixed
+- Unnecessary files are now properly excluded from release package, drastically reducing plugin size.
+
 ## 1.1.0 - 2020-08-22
 ### Added
 - NEW "Automations" feature!
