@@ -228,7 +228,7 @@ try {
   ?>
   <div id="ptc-asana-dashboard-error" class="note-box note-box-error">
     <i class="fas fa-times"></i>
-    <p><strong>Error <?php echo esc_html( $e->getCode() ); ?>.</strong> <?php echo esc_html( $e->getMessage() ); ?></p>
+    <p><strong>Error <?php echo esc_html( $e->getCode() ); ?>.</strong> <?php echo wp_kses_post( $e->getMessage() ); ?></p>
   </div>
   <?php
 }//end try catch asana client
@@ -262,7 +262,7 @@ function display_collaborator_row( \WP_User $user ) {
     </div>
 
     <div class="email">
-      <p><a href="<?php echo esc_attr( "mailto:$email" ); ?>"><?php echo esc_html( $email ); ?></a></p>
+      <p><a href="<?php echo esc_url( "mailto:$email" ); ?>"><?php echo esc_html( $email ); ?></a></p>
     </div>
 
     <div class="connection-status" data-status="<?php echo $has_connected_asana ? 'yes' : 'no'; ?>">

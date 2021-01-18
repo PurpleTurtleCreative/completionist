@@ -107,12 +107,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
      */
     static function get_me() : \stdClass {
 
-      if ( ! isset( self::$me ) ) {
+      if ( ! isset( self::$me ) || ! is_a( self::$me, '\stdClass' ) ) {
         self::$me = self::get_client()->users->me();
       }
 
-      return self::$me;
+      if ( isset( self::$me ) && is_a( self::$me, '\stdClass' ) ) {
+        return self::$me;
+      }
 
+      throw new \Exception( 'Could not retrieve the current Asana user\'s identity. The Asana API may be experiencing issues, see <a href="https://status.asana.com/" target="_blank">https://status.asana.com/</a>', 500 );
     }
 
     /**
