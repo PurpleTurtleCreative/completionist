@@ -9,7 +9,7 @@
 - Software is now licensed under GPL v3 or later.
 
 #### Fixed
-- Unnecessary files drastically increasing plugin size. They are now properly excluded from release package.
+- Unnecessary files drastically increasing plugin size.
 - Asana API outage causing fatal TypeError when attempting to identify the current Asana user.
 
 ### 1.1.0 - 2020-08-22
