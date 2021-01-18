@@ -2,7 +2,6 @@
 /**
  * Completionist
  *
- * @package           Completionist
  * @author            Michelle Blanchette
  * @copyright         2020 Michelle Blanchette
  * @license           GPL-3.0-or-later
@@ -157,11 +156,19 @@ if ( ! class_exists( '\PTC_Completionist' ) ) {
       /* YahnisElsts/plugin-update-checker */
       add_action( 'plugins_loaded', function() {
         require_once $this->plugin_path . 'vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php';
-        Puc_v4_Factory::buildUpdateChecker(
-          'http://ptc-staging_wordpress_1/wp-content/resources/completionist/plugin-info.php',
-          __FILE__, //Full path to the main plugin file or functions.php.
-          'completionist'
-        );
+        if ( class_exists( '\Puc_v4_Factory' ) ) {
+          global $wp_version;
+          $url = add_query_arg(
+            'wp_version',
+            $wp_version,
+            'https://purpleturtlecreative.com/wp-json/ptc-resources/v1/plugins/completionist/latest'
+          );
+          \Puc_v4_Factory::buildUpdateChecker(
+            $url,
+            __FILE__, //Full path to the main plugin file or functions.php.
+            'completionist'
+          );
+        }
       });
 
     }
