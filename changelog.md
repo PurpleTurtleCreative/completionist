@@ -1,4 +1,4 @@
-### 2.0.0 - [Unreleased]
+### 2.0.0 - 2021-01-18
 #### Added
 - Remote updates via YahnisElsts/plugin-update-checker and custom releases server.
 
