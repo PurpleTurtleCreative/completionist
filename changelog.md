@@ -1,15 +1,16 @@
 ### 2.0.0 - 2021-01-18
 #### Added
-- Remote updates via YahnisElsts/plugin-update-checker and custom releases server.
+- Remote updates via YahnisElsts/plugin-update-checker and custom resources API.
 
 #### Removed
 - Licensing and remote updates system via WCAM.
 
 #### Changed
-- Software is now licensed under GPL v3 or later instead of proprietary terms and conditions.
+- Software is now licensed under GPL v3 or later.
 
 #### Fixed
-- Unnecessary files are now properly excluded from release package, drastically reducing plugin size.
+- Unnecessary files drastically increasing plugin size. They are now properly excluded from release package.
+- Asana API outage causing fatal TypeError when attempting to identify the current Asana user.
 
 ### 1.1.0 - 2020-08-22
 #### Added
