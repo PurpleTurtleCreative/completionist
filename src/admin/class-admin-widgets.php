@@ -32,7 +32,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Widgets' ) ) {
 		/**
 		 * Adds metaboxes.
 		 *
-		 * @since 2.0.1 Moved to Admin_Widgets class
+		 * @since 2.0.1 Moved to Admin_Widgets class.
 		 * @since 1.0.0
 		 */
 		public static function add_meta_boxes() {
@@ -50,7 +50,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Widgets' ) ) {
 		/**
 		 * Adds admin dashboard widgets.
 		 *
-		 * @since 2.0.1 Moved to Admin_Widgets class
+		 * @since 2.0.1 Moved to Admin_Widgets class.
 		 * @since 1.0.0
 		 */
 		public static function add_dashboard_widgets() {
