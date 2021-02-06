@@ -4,7 +4,7 @@
  *
  * Registers admin pages.
  *
- * @since 2.0.1
+ * @since 3.0.0
  */
 
 declare(strict_types=1);
@@ -22,14 +22,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 		/**
 		 * The name of the plugin menu's main parent page.
 		 *
-		 * @since 2.0.1
+		 * @since 3.0.0
 		 */
 		public const PARENT_PAGE_SLUG = 'ptc-completionist';
 
 		/**
 		 * Registers code.
 		 *
-		 * @since 2.0.1
+		 * @since 3.0.0
 		 */
 		public static function register() {
 			add_action( 'admin_menu', [ __CLASS__, 'add_admin_pages' ] );
@@ -40,7 +40,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 		/**
 		 * Gets the settings admin page URL.
 		 *
-		 * @since 2.0.1
+		 * @since 3.0.0
 		 */
 		public static function get_settings_url() {
 			return admin_url( 'admin.php?page=' . static::PARENT_PAGE_SLUG );
@@ -49,7 +49,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 		/**
 		 * Adds the admin pages.
 		 *
-		 * @since 2.0.1 Moved to Admin_Pages class.
+		 * @since 3.0.0 Moved to Admin_Pages class.
 		 * @since 1.0.0
 		 */
 		public static function add_admin_pages() {
@@ -90,7 +90,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 		/**
 		 * Edits the plugin row's action links.
 		 *
-		 * @since 2.0.1 Moved to Admin_Pages class.
+		 * @since 3.0.0 Moved to Admin_Pages class.
 		 * @since 1.0.0
 		 *
 		 * @param string[] $links The plugin action link HTML items.
@@ -104,7 +104,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 		/**
 		 * Registers and enqueues admin CSS and JS.
 		 *
-		 * @since 2.0.1 Moved to Admin_Pages class.
+		 * @since 3.0.0 Moved to Admin_Pages class.
 		 * @since 1.0.0
 		 *
 		 * @param string $hook_suffix The current admin page.

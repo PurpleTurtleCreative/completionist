@@ -4,7 +4,7 @@
  *
  * Registers admin widgets and metaboxes.
  *
- * @since 2.0.1
+ * @since 3.0.0
  */
 
 declare(strict_types=1);
@@ -22,7 +22,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Widgets' ) ) {
 		/**
 		 * Registers code.
 		 *
-		 * @since 2.0.1
+		 * @since 3.0.0
 		 */
 		public static function register() {
 			add_action( 'add_meta_boxes', [ __CLASS__, 'add_meta_boxes' ] );
@@ -32,7 +32,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Widgets' ) ) {
 		/**
 		 * Adds metaboxes.
 		 *
-		 * @since 2.0.1 Moved to Admin_Widgets class.
+		 * @since 3.0.0 Moved to Admin_Widgets class.
 		 * @since 1.0.0
 		 */
 		public static function add_meta_boxes() {
@@ -50,7 +50,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Widgets' ) ) {
 		/**
 		 * Adds admin dashboard widgets.
 		 *
-		 * @since 2.0.1 Moved to Admin_Widgets class.
+		 * @since 3.0.0 Moved to Admin_Widgets class.
 		 * @since 1.0.0
 		 */
 		public static function add_dashboard_widgets() {

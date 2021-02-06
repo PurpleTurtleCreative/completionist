@@ -10,7 +10,7 @@
  * Plugin Name:       Completionist - Asana for WordPress
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
  * Description:       Manage, pin, and automate Asana tasks in relevant areas of your WordPress admin.
- * Version:           2.0.1
+ * Version:           3.0.0
  * Requires PHP:      7.1
  * Requires at least: 5.0.0
  * Tested up to:      5.6.0
@@ -42,35 +42,35 @@ defined( 'ABSPATH' ) || die();
 /**
  * The full file path to this plugin's main file.
  *
- * @since 2.0.1
+ * @since 3.0.0
  */
 define( __NAMESPACE__ . '\PLUGIN_FILE', __FILE__ );
 
 /**
  * The full file path to this plugin's directory ending with a slash.
  *
- * @since 2.0.1
+ * @since 3.0.0
  */
 define( __NAMESPACE__ . '\PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 
 /**
  * This plugin's current version.
  *
- * @since 2.0.1
+ * @since 3.0.0
  */
 define( __NAMESPACE__ . '\PLUGIN_VERSION', get_file_data( __FILE__, [ 'Version' => 'Version' ], 'plugin' )['Version'] );
 
 /**
  * This plugin's basename.
  *
- * @since 2.0.1
+ * @since 3.0.0
  */
 define( __NAMESPACE__ . '\PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
 /**
  * The full url to this plugin's directory, NOT ending with a slash.
  *
- * @since 2.0.1
+ * @since 3.0.0
  */
 define( __NAMESPACE__ . '\PLUGIN_URL', plugins_url( '', __FILE__ ) );
 

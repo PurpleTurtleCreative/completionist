@@ -4,7 +4,7 @@
  *
  * Registers AJAX endpoints requiring privileges.
  *
- * @since 2.0.1
+ * @since 3.0.0
  */
 
 declare(strict_types=1);
@@ -22,7 +22,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * Registers code.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.0.0
 		 */
 		public static function register() {
@@ -50,7 +50,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to load tag options for a workspace.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.0.0
 		 */
 		public static function ajax_get_tag_options() {
@@ -60,7 +60,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to pin a task.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.0.0
 		 */
 		public static function ajax_pin_task() {
@@ -70,7 +70,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to unpin a task.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.0.0
 		 */
 		public static function ajax_unpin_task() {
@@ -80,7 +80,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to load task HTML.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.0.0
 		 */
 		public static function ajax_get_pins() {
@@ -90,7 +90,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to load task HTML.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.0.0
 		 */
 		public static function ajax_list_task() {
@@ -100,7 +100,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to load HTML for multiple tasks.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.0.0
 		 */
 		public static function ajax_list_tasks() {
@@ -110,7 +110,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to create and pin a new task.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.0.0
 		 */
 		public static function ajax_create_task() {
@@ -120,7 +120,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to delete and unpin a task.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.0.0
 		 */
 		public static function ajax_delete_task() {
@@ -130,7 +130,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to update a task.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.0.0
 		 */
 		public static function ajax_update_task() {
@@ -140,7 +140,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to get post options by like title.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.1.0
 		 */
 		public static function ajax_ptc_get_post_options_by_title() {
@@ -150,7 +150,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to get post title by ID.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.1.0
 		 */
 		public static function ajax_ptc_get_post_title_by_id() {
@@ -160,7 +160,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to save automation data.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.1.0
 		 */
 		public static function ajax_ptc_save_automation() {
@@ -170,7 +170,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to get automation by ID.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.1.0
 		 */
 		public static function ajax_ptc_get_automation() {
@@ -180,7 +180,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to get overview data for all automations.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.1.0
 		 */
 		public static function ajax_ptc_get_automation_overviews() {
@@ -190,7 +190,7 @@ if ( ! class_exists( '\Admin_Ajax' ) ) {
 		/**
 		 * AJAX handler to delete an automation by ID.
 		 *
-		 * @since 2.0.1 Moved to Admin_Ajax class.
+		 * @since 3.0.0 Moved to Admin_Ajax class.
 		 * @since 1.1.0
 		 */
 		public static function ajax_ptc_delete_automation() {

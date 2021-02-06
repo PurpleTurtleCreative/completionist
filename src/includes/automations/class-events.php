@@ -19,96 +19,94 @@ require_once 'class-automation.php';
 use \PTC_Completionist\Automation;
 
 if ( ! class_exists( __NAMESPACE__ . '\Events' ) ) {
-  /**
-   * Static class for hooking in automations.
-   */
-  class Events {
+	/**
+	 * Static class for hooking in automations.
+	 */
+	class Events {
 
-    const USER_OPTIONS = [
-      'user_register' => 'User is Created',
-      'profile_update' => 'User is Updated',
-      'delete_user' => 'User is Deleted',
-    ];
+		public const USER_OPTIONS = [
+			'user_register' => 'User is Created',
+			'profile_update' => 'User is Updated',
+			'delete_user' => 'User is Deleted',
+		];
 
-    const POST_OPTIONS = [
-      'wp_insert_post' => 'Post is Created',
-      'post_updated' => 'Post is Updated',
-      'trash_post' => 'Post is Trashed',
-    ];
+		public const POST_OPTIONS = [
+			'wp_insert_post' => 'Post is Created',
+			'post_updated' => 'Post is Updated',
+			'trash_post' => 'Post is Trashed',
+		];
 
-    /**
-     * Hook all automations into WordPress execution.
-     *
-     * @since 1.1.0
-     */
-    static function add_actions() {
+		/**
+		 * Hook all automations into WordPress execution.
+		 *
+		 * @since 1.1.0
+		 */
+		public static function add_actions() {
 
-      /* User Events */
+			/* User Events */
 
-      $user_hook_names = array_keys( self::USER_OPTIONS );
-      foreach ( $user_hook_names as $hook_name ) {
-        if ( Data::actions_exist_for( $hook_name ) ) {
-          add_action( $hook_name, function( $user_id ) use ( $hook_name ) {
-            $user = new \WP_User( $user_id );
-            $automation_ids = Data::get_all_automation_ids_for( $hook_name );
-            foreach ( $automation_ids as $id ) {
-              ( new Automation( $id, [ 'user' => $user ] ) )->maybe_run_actions();
-            }
-          }, 10, 1 );
-        }
-      }
+			$user_hook_names = array_keys( self::USER_OPTIONS );
+			foreach ( $user_hook_names as $hook_name ) {
+				if ( Data::actions_exist_for( $hook_name ) ) {
+					add_action( $hook_name, function( $user_id ) use ( $hook_name ) {
+						$user = new \WP_User( $user_id );
+						$automation_ids = Data::get_all_automation_ids_for( $hook_name );
+						foreach ( $automation_ids as $id ) {
+							( new Automation( $id, [ 'user' => $user ] ) )->maybe_run_actions();
+						}
+					}, 10, 1 );
+				}
+			}
 
-      /* Post Events */
+			/* Post Events */
 
-      if ( Data::actions_exist_for( 'wp_insert_post' ) ) {
-        add_action( 'wp_insert_post', function( $post_id, $the_post, $update ) {
-          if ( ! $update && $the_post->post_status != 'auto-draft' ) {
-            $automation_ids = Data::get_all_automation_ids_for( 'wp_insert_post' );
-            if ( count( $automation_ids ) > 0 ) {
-              foreach ( $automation_ids as $id ) {
-                ( new Automation( $id, [ 'post' => $the_post ] ) )->maybe_run_actions();
-              }
-            }
-          }
-        }, 10, 3 );
-      }
+			if ( Data::actions_exist_for( 'wp_insert_post' ) ) {
+				add_action( 'wp_insert_post', function( $post_id, $the_post, $update ) {
+					if ( ! $update && 'auto-draft' != $the_post->post_status ) {
+						$automation_ids = Data::get_all_automation_ids_for( 'wp_insert_post' );
+						if ( count( $automation_ids ) > 0 ) {
+							foreach ( $automation_ids as $id ) {
+								( new Automation( $id, [ 'post' => $the_post ] ) )->maybe_run_actions();
+							}
+						}
+					}
+				}, 10, 3 );
+			}
 
-      if ( Data::actions_exist_for( 'post_updated' ) ) {
-        add_action( 'post_updated', function( $post_id, $post_after, $post_before ) {
-          $automation_ids = Data::get_all_automation_ids_for( 'post_updated' );
-          if ( count( $automation_ids ) > 0 ) {
-            $has_changes = FALSE;
-            foreach ( $post_after as $field => $val ) {
-              if (
-                $val != $post_before->{$field}
-                && $field != 'post_modified'
-                && $field != 'post_modified_gmt'
-              ) {
-                $has_changes = TRUE;
-              }
-            }
-            if ( $has_changes ) {
-              foreach ( $automation_ids as $id ) {
-                ( new Automation( $id, [ 'post' => $post_after ] ) )->maybe_run_actions();
-              }
-            }
-          }
-        }, 10, 3 );
-      }
+			if ( Data::actions_exist_for( 'post_updated' ) ) {
+				add_action( 'post_updated', function( $post_id, $post_after, $post_before ) {
+					$automation_ids = Data::get_all_automation_ids_for( 'post_updated' );
+					if ( count( $automation_ids ) > 0 ) {
+						$has_changes = false;
+						foreach ( $post_after as $field => $val ) {
+							if (
+								$val != $post_before->{$field}
+								&& 'post_modified' != $field
+								&& 'post_modified_gmt' != $field
+							) {
+								$has_changes = true;
+							}
+						}
+						if ( $has_changes ) {
+							foreach ( $automation_ids as $id ) {
+								( new Automation( $id, [ 'post' => $post_after ] ) )->maybe_run_actions();
+							}
+						}
+					}
+				}, 10, 3 );
+			}
 
-      if ( Data::actions_exist_for( 'trash_post' ) ) {
-        add_action( 'trash_post', function( $post_id ) {
-          $automation_ids = Data::get_all_automation_ids_for( 'trash_post' );
-          if ( count( $automation_ids ) > 0 ) {
-            $the_post = get_post( $post_id );
-            foreach ( $automation_ids as $id ) {
-              ( new Automation( $id, [ 'post' => $the_post ] ) )->maybe_run_actions();
-            }
-          }
-        }, 10, 1 );
-      }
-
-    }//end add_actions()
-
-  }//end class
+			if ( Data::actions_exist_for( 'trash_post' ) ) {
+				add_action( 'trash_post', function( $post_id ) {
+					$automation_ids = Data::get_all_automation_ids_for( 'trash_post' );
+					if ( count( $automation_ids ) > 0 ) {
+						$the_post = get_post( $post_id );
+						foreach ( $automation_ids as $id ) {
+							( new Automation( $id, [ 'post' => $the_post ] ) )->maybe_run_actions();
+						}
+					}
+				}, 10, 1 );
+			}
+		}//end add_actions()
+	}//end class
 }//end if class_exists
