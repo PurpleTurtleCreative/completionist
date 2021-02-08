@@ -1,3 +1,10 @@
+### 3.0.0 - [unreleased]
+#### Changed
+- Greatly improved source code organization.
+
+#### Fixed
+- Plugin "Docs" link refers to new PTC Docs website!
+
 ### 2.0.0 - 2021-01-18
 #### Added
 - Remote updates via YahnisElsts/plugin-update-checker and custom resources API.
