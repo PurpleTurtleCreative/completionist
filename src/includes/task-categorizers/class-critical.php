@@ -13,8 +13,8 @@ namespace PTC_Completionist\Task_Categorizer;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/includes/task-categorizers/class-task-categorizer.php';
-require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
+require_once \PTC_Completionist\PLUGIN_PATH . 'src/includes/task-categorizers/class-task-categorizer.php';
+require_once \PTC_Completionist\PLUGIN_PATH . 'src/includes/class-html-builder.php';
 
 use PTC_Completionist\Task_Categorizer;
 use PTC_Completionist\HTML_Builder;

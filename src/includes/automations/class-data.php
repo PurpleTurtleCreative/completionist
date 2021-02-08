@@ -17,9 +17,9 @@ require_once 'class-events.php';
 require_once 'class-fields.php';
 require_once 'class-actions.php';
 require_once 'class-automation.php';
-require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
-require_once PLUGIN_PATH . 'src/includes/class-options.php';
-require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
+require_once \PTC_Completionist\PLUGIN_PATH . 'src/includes/class-database-manager.php';
+require_once \PTC_Completionist\PLUGIN_PATH . 'src/includes/class-options.php';
+require_once \PTC_Completionist\PLUGIN_PATH . 'src/includes/class-html-builder.php';
 
 use \PTC_Completionist\Database_Manager;
 use \PTC_Completionist\Options;

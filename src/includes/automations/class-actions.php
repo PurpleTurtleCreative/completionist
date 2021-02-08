@@ -14,9 +14,9 @@ namespace PTC_Completionist\Automations;
 defined( 'ABSPATH' ) || die();
 
 require_once 'class-fields.php';
-require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
-require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
-require_once PLUGIN_PATH . 'src/includes/class-options.php';
+require_once \PTC_Completionist\PLUGIN_PATH . 'src/includes/class-asana-interface.php';
+require_once \PTC_Completionist\PLUGIN_PATH . 'src/includes/class-html-builder.php';
+require_once \PTC_Completionist\PLUGIN_PATH . 'src/includes/class-options.php';
 
 use \PTC_Completionist\Asana_Interface;
 use \PTC_Completionist\HTML_Builder;
