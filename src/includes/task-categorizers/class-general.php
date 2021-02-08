@@ -14,7 +14,7 @@ namespace PTC_Completionist\Task_Categorizer;
 defined( 'ABSPATH' ) || die();
 
 require_once 'class-task-categorizer.php';
-require_once \PTC_Completionist\PLUGIN_PATH . 'src/class-options.php';
+require_once \PTC_Completionist\PLUGIN_PATH . 'src/includes/class-options.php';
 
 use PTC_Completionist\Task_Categorizer;
 use PTC_Completionist\Options;

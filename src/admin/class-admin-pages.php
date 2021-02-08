@@ -96,7 +96,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 		 * @param string[] $links The plugin action link HTML items.
 		 */
 		public static function filter_plugin_action_links( $links ) {
-			$links[] = '<a href="https://docs.purpleturtlecreative.com/completionist/">Docs</a>';
+			$links[] = '<a href="https://docs.purpleturtlecreative.com/completionist/" target="_blank">Docs</a>';
 			$links[] = '<a href="' . esc_url( static::get_settings_url() ) . '">Settings</a>';
 			return $links;
 		}
@@ -120,7 +120,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 
 			wp_register_style(
 				'ptc-completionist_admin-theme-css',
-				PLUGIN_URL . '/assets/css/admin-theme.css',
+				PLUGIN_URL . '/assets/styles/admin-theme.css',
 				[],
 				PLUGIN_VERSION
 			);
@@ -130,7 +130,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 				case 'index.php':
 					wp_enqueue_script(
 						'ptc-completionist_dashboard-widget-js',
-						PLUGIN_URL . '/assets/js/dashboard-widget.js',
+						PLUGIN_URL . '/assets/scripts/dashboard-widget.js',
 						[ 'jquery', 'fontawesome-5' ],
 						PLUGIN_VERSION
 					);
@@ -150,7 +150,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					);
 					wp_enqueue_style(
 						'ptc-completionist_dashboard-widget-css',
-						PLUGIN_URL . '/assets/css/dashboard-widget.css',
+						PLUGIN_URL . '/assets/styles/dashboard-widget.css',
 						[],
 						PLUGIN_VERSION
 					);
@@ -158,10 +158,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 
 				case 'post.php':
 				case 'post-new.php':
-					require_once PLUGIN_PATH . 'src/class-options.php';
+					require_once PLUGIN_PATH . 'src/includes/class-options.php';
 					wp_enqueue_script(
 						'ptc-completionist_metabox-pinned-tasks-js',
-						PLUGIN_URL . '/assets/js/metabox-pinned-tasks.js',
+						PLUGIN_URL . '/assets/scripts/metabox-pinned-tasks.js',
 						[ 'jquery', 'fontawesome-5' ],
 						PLUGIN_VERSION
 					);
@@ -180,7 +180,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					);
 					wp_enqueue_style(
 						'ptc-completionist_metabox-pinned-tasks-css',
-						PLUGIN_URL . '/assets/css/metabox-pinned-tasks.css',
+						PLUGIN_URL . '/assets/styles/metabox-pinned-tasks.css',
 						[],
 						PLUGIN_VERSION
 					);
@@ -189,23 +189,23 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 				case 'toplevel_page_ptc-completionist':
 					wp_enqueue_style(
 						'ptc-completionist_connect-asana-css',
-						PLUGIN_URL . '/assets/css/connect-asana.css',
+						PLUGIN_URL . '/assets/styles/connect-asana.css',
 						[ 'ptc-completionist_admin-theme-css' ],
 						PLUGIN_VERSION
 					);
 					wp_enqueue_style(
 						'ptc-completionist_admin-dashboard-css',
-						PLUGIN_URL . '/assets/css/admin-dashboard.css',
+						PLUGIN_URL . '/assets/styles/admin-dashboard.css',
 						[ 'ptc-completionist_admin-theme-css' ],
 						PLUGIN_VERSION
 					);
 					wp_enqueue_script(
 						'ptc-completionist_admin-dashboard-js',
-						PLUGIN_URL . '/assets/js/admin-dashboard.js',
+						PLUGIN_URL . '/assets/scripts/admin-dashboard.js',
 						[ 'jquery', 'fontawesome-5' ],
 						PLUGIN_VERSION
 					);
-					require_once PLUGIN_PATH . 'src/class-options.php';
+					require_once PLUGIN_PATH . 'src/includes/class-options.php';
 					wp_localize_script(
 						'ptc-completionist_admin-dashboard-js',
 						'ptc_completionist_dashboard',
@@ -218,7 +218,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					break;
 
 				case 'completionist_page_ptc-completionist-automations':
-					require_once PLUGIN_PATH . 'src/class-asana-interface.php';
+					require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
 					try {
 						Asana_Interface::require_settings();
 						$has_required_settings = true;
@@ -233,10 +233,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 							$asset_file['dependencies'],
 							PLUGIN_VERSION
 						);
-						require_once PLUGIN_PATH . 'src/automations/class-events.php';
-						require_once PLUGIN_PATH . 'src/automations/class-fields.php';
-						require_once PLUGIN_PATH . 'src/automations/class-actions.php';
-						require_once PLUGIN_PATH . 'src/automations/class-data.php';
+						require_once PLUGIN_PATH . 'src/includes/automations/class-events.php';
+						require_once PLUGIN_PATH . 'src/includes/automations/class-fields.php';
+						require_once PLUGIN_PATH . 'src/includes/automations/class-actions.php';
+						require_once PLUGIN_PATH . 'src/includes/automations/class-data.php';
 						wp_localize_script(
 							'ptc-completionist_build-index-js',
 							'ptc_completionist_automations',
@@ -258,7 +258,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					wp_enqueue_script( 'fontawesome-5' );
 					wp_enqueue_style(
 						'ptc-completionist_admin-automations-css',
-						PLUGIN_URL . '/assets/css/admin-automations.css',
+						PLUGIN_URL . '/assets/styles/admin-automations.css',
 						[],
 						PLUGIN_VERSION
 					);
