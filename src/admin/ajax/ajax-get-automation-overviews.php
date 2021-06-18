@@ -33,9 +33,9 @@ try {
 
     if ( isset( $_POST['order_by'] ) ) {
       $order_by = Options::sanitize( 'string', $_POST['order_by'] );
-      $automation_overviews = Automations\Data::get_automation_overviews( $order_by );
+      $automation_overviews = Automations\Data::get_automation_overviews( $order_by, true );
     } else {
-      $automation_overviews = Automations\Data::get_automation_overviews();
+      $automation_overviews = Automations\Data::get_automation_overviews( null, true );
     }
 
     $records_count = count( $automation_overviews );

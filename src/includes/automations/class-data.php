@@ -320,6 +320,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 			if ( null !== $res ) {
 				$res->ID = (int) $res->ID;
 				$res->title = html_entity_decode( wp_unslash( $res->title ), ENT_QUOTES | ENT_HTML5 );
+				$res->description = html_entity_decode( wp_unslash( $res->description ), ENT_QUOTES | ENT_HTML5 );
 				$res->hook_name = html_entity_decode( wp_unslash( $res->hook_name ), ENT_QUOTES | ENT_HTML5 );
 				$res->last_modified = html_entity_decode( wp_unslash( $res->last_modified ), ENT_QUOTES | ENT_HTML5 );
 			}
@@ -997,6 +998,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 		 * Selects all main automation records with additional overview information
 		 * for each.
 		 *
+		 * @since 3.0.0 Added optional parameter $return_html.
 		 * @since 1.1.0
 		 *
 		 * @param string $order_by Optional. The column to sort by in
@@ -1010,9 +1012,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 		 * - total_actions
 		 * - last_triggered
 		 * - total_triggered
+		 * @param bool $return_html Optional. Convert newlines to <br> tags for
+		 * HTML rendering.
 		 * @return \stdClass[] The automation overview records.
 		 */
-		public static function get_automation_overviews( string $order_by = 'title' ) : array {
+		public static function get_automation_overviews( string $order_by = null, bool $return_html = false ) : array {
+
+			if ( null === $order_by ) {
+				$order_by = 'title';
+			}
 
 			global $wpdb;
 			$automations_table = Database_Manager::$automations_table;
@@ -1066,7 +1074,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 				foreach ( $res as &$item ) {
 					$item->ID = (int) $item->ID;
 					$item->title = html_entity_decode( wp_unslash( $item->title ), ENT_QUOTES | ENT_HTML5 );
-					$item->description = nl2br( html_entity_decode( wp_unslash( $item->description ), ENT_QUOTES | ENT_HTML5 ) );
+					$item->description = html_entity_decode( wp_unslash( $item->description ), ENT_QUOTES | ENT_HTML5 );
+					if ( $return_html ) {
+						$item->description = nl2br( $item->description );
+					}
 					$item->hook_name = html_entity_decode( wp_unslash( $item->hook_name ), ENT_QUOTES | ENT_HTML5 );
 					$item->last_modified = ( 0 == $item->last_modified ) ? 'Never' : human_time_diff( $item->last_modified ) . ' ago';
 					$item->total_conditions = (int) $item->total_conditions;

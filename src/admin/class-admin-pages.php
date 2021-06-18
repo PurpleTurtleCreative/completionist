@@ -241,7 +241,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 							'ptc-completionist_build-index-js',
 							'ptc_completionist_automations',
 							[
-								'automations' => Automations\Data::get_automation_overviews(),
+								'automations' => Automations\Data::get_automation_overviews( null, true ),
 								'event_user_options' => Automations\Events::USER_OPTIONS,
 								'event_post_options' => Automations\Events::POST_OPTIONS,
 								'field_user_options' => Automations\Fields::USER_OPTIONS,
