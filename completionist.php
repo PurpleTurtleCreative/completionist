@@ -3,7 +3,7 @@
  * Completionist
  *
  * @author            Michelle Blanchette
- * @copyright         2020 Michelle Blanchette
+ * @copyright         2021 Michelle Blanchette
  * @license           GPL-3.0-or-later
  *
  * @wordpress-plugin
