@@ -1,34 +1,50 @@
-// Neutrals
+$colors: (
 
-$white: #FFFFFF;
+	// Neutrals
 
-$grey-lightest: #F0F4F8;
-$grey-lighter: #D9E2EC;
-$grey-light: #BCCCDC;
-$grey: #829AB1;
-$grey-dark: #627D98;
-$grey-darker: #334E68;
-$grey-darkest: #243b53;
+	white: #ffffff,
 
-$black: #1F2933;
+	grey-lightest: #f0f4f8,
+	grey-lighter: #d9e2ec,
+	grey-light: #bcccdc,
+	grey: #829ab1,
+	grey-dark: #627d98,
+	grey-darker: #334e68,
+	grey-darkest: #243b53,
 
-// Colors
+	black: #1f2933,
 
-$brand-primary-light: #2DCCA7;
-$brand-primary: #17B897;
-$brand-primary-dark: #004440;
+	// Colors
 
-$info-light: #5ED0FA;
-$success-light: #8DED2D;
-$warning-light: #FADB5F;
-$danger-light: #F86A6A;
+	brand-primary-light: #2dcca7,
+	brand-primary: #17b897,
+	brand-primary-dark: #004440,
 
-$info: #40C3F7;
-$danger: #EF4E4E;
-$success: #6CD410;
-$warning: #F7C948;
+	info-light: #5ed0fa,
+	success-light: #8ded2d,
+	warning-light: #fadb5f,
+	danger-light: #f86a6a,
 
-$info-dark: #035388;
-$danger-dark: #610316;
-$success-dark: #1E5303;
-$warning-dark: #B44D12;
+	info: #40c3f7,
+	danger: #ef4e4e,
+	success: #6cd410,
+	warning: #f7c948,
+
+	info-dark: #035388,
+	danger-dark: #610316,
+	success-dark: #1e5303,
+	warning-dark: #b44d12,
+);
+
+// Getter function
+
+@function color($key) {
+
+	@if map-has-key($colors, $key) {
+
+		@return map-get($colors, $key);
+	}
+
+	@warn "Unknown `#{$key}` in $colors.";
+	@return null;
+}

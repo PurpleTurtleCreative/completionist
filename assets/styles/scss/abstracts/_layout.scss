@@ -1,15 +1,59 @@
 // Measurements
 
-$sm-px: 3px;
-$md-px: 7px;
-$lg-px: 12px;
+$px: (
+	sm: 3px,
+	md: 7px,
+	lg: 12px,
+);
 
-$sm-em: .3em;
-$md-em: .75em;
-$lg-em: 1.3em;
+@function px($key) {
 
-$full-padding-sm: $sm-em $md-em .35em;
-$full-padding: 1em $lg-em 1.2em;
+	@if map-has-key($px, $key) {
 
-$side-padding-sm: 0 $md-em;
-$side-padding: 0 $lg-em;
+		@return map-get($px, $key);
+	}
+
+	@warn "Unknown `#{$key}` in $px.";
+	@return null;
+}
+
+//
+
+$em: (
+	sm: .3em,
+	md: .75em,
+	lg: 1.3em,
+);
+
+@function em($key) {
+
+	@if map-has-key($em, $key) {
+
+		@return map-get($em, $key);
+	}
+
+	@warn "Unknown `#{$key}` in $em.";
+	@return null;
+}
+
+//
+
+$padding: (
+	// Full
+	full-sm: em(sm) em(md) .35em,
+	full: 1em #{em(lg)} 1.2em,
+	// Sides
+	side-sm: 0 em(md),
+	side: 0 em(lg),
+);
+
+@function padding($key) {
+
+	@if map-has-key($padding, $key) {
+
+		@return map-get($padding, $key);
+	}
+
+	@warn "Unknown `#{$key}` in $padding.";
+	@return null;
+}

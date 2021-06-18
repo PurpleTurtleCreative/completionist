@@ -1,3 +1,11 @@
+@import 'abstracts/colors';
+
+//----------------------
+
+#dashboard-widgets .meta-box-sortables #ptc-completionist_site-tasks.postbox {
+  margin-bottom: 0; // fix WordPress doubling widget's margin bottom.
+}
+
 #ptc-completionist_site-tasks .inside {
   padding: 0;
   margin: 0;
@@ -21,13 +29,13 @@
 #ptc-completionist_site-tasks .inside select[disabled],
 #ptc-completionist_site-tasks .inside textarea[disabled] {
   background: #F5F7FA;
-  border-color: #9FB3C8;
-  color: #9FB3C8;
+  border-color: color(grey);
+  color: color(grey);
   text-shadow: none;
 }
 
 #ptc-completionist_site-tasks .inside button[disabled] {
-  background: #D9E2EC;
+  background: color(grey-lighter);
 }
 
 #ptc-completionist_site-tasks .inside input,
@@ -38,12 +46,12 @@
 }
 
 #ptc-completionist_site-tasks .inside input::placeholder {
-  color: #9AA5B1;
+  color: color(grey);
 }
 
 /* Task Categories Header */
 #ptc-completionist_site-tasks .inside header {
-  border-bottom: 1px solid #CBD2D9;
+  border-bottom: 1px solid color(grey-light);
   padding: 0;
 }
 
@@ -54,10 +62,11 @@
 
 #ptc-completionist_site-tasks .inside header button[data-category-task-gids] {
   border: none;
+  background: color(white)
 }
 
 #ptc-completionist_site-tasks .inside header button[data-category-task-gids]:hover {
-  background: #F0F4F8;
+  background: color(grey-lightest);
 }
 
 /* All Tasks Category, Site Overview */
@@ -67,16 +76,16 @@
   display: flex;
   border-radius: 0;
   padding: 7px 10px;
-  border-bottom: 1px solid #BCCCDC;
+  border-bottom: 1px solid color(grey-light);
 }
 
 #ptc-completionist_site-tasks .inside header button#all-site-tasks[data-viewing-tasks=true] {
-  background: #D9E2EC;
+  background: color(grey-lighter);
 }
 
 #ptc-completionist_site-tasks .inside header button#all-site-tasks > div.task-box-icon {
-  background: #17B897;
-  color: #FFF;
+  background: color(brand-primary);
+  color: color(white);
   height: 4em;
   width: 4em;
   border-radius: 999px;
@@ -87,13 +96,13 @@
 }
 
 #ptc-completionist_site-tasks .inside header button#all-site-tasks[disabled] > div.task-box-icon {
-  background: #9FB3C8;
-  color: #D9E2EC;
+  background: color(grey);
+  color: color(grey-lighter);
 }
 
 #ptc-completionist_site-tasks .inside header button#all-site-tasks[data-viewing-tasks=true] > div.task-box-icon {
-  background: #17B897;
-  color: #FFF;
+  background: color(brand-primary);
+  color: color(white);
 }
 
 #ptc-completionist_site-tasks .inside header button#all-site-tasks > div.task-box-icon i.fa-clipboard-list {
@@ -104,12 +113,12 @@
   padding: 0 10px;
   flex: 1;
   text-align: left;
-  color: #829AB1;
+  color: color(grey);
 }
 
 #ptc-completionist_site-tasks .inside header button#all-site-tasks > div.task-box-data > p {
   font-size: 1.5em;
-  color: #334E68;
+  color: color(grey-darker);
   font-weight: 500;
 }
 
@@ -125,22 +134,22 @@
   height: 5px;
   margin-right: 7px;
   border-radius: 999px;
-  background: #BCCCDC;
+  background: color(grey-light);
 }
 
 #ptc-completionist_site-tasks .inside header button#all-site-tasks > div.task-box-data .progress-bar-wrapper .progress-bar {
   height: inherit;
   margin-right: 7px;
   border-radius: 999px;
-  background: #17B897;
+  background: color(brand-primary);
 }
 
 #ptc-completionist_site-tasks .inside header button#all-site-tasks[disabled] > div.task-box-data .progress-bar-wrapper .progress-bar {
-  background: #9FB3C8;
+  background: color(grey);
 }
 
 #ptc-completionist_site-tasks .inside header button#all-site-tasks[data-viewing-tasks=true] > div.task-box-data .progress-bar-wrapper .progress-bar {
-  background: #17B897;
+  background: color(brand-primary);
 }
 
 /* Task Category Buttons */
@@ -148,7 +157,7 @@
   display: flex;
   justify-content: space-evenly;
   padding: 7px 0;
-  background: #D9E2EC;
+  background: color(grey-lighter);
 }
 
 #ptc-completionist_site-tasks .inside header #ptc-asana-task-categories button[data-category-task-gids] {
@@ -157,12 +166,12 @@
   padding-right: 10px;
   display: flex;
   color: #1F2933;
-  border: 1px solid #BCCCDC;
+  border: 1px solid color(grey-light);
 }
 
 #ptc-completionist_site-tasks .inside header #ptc-asana-task-categories button[data-category-task-gids] span.task-count {
   display: inline-block;
-  background: #9FB3C8;
+  background: color(grey);
   width: 2em;
   height: 2em;
   border-radius: 999px;
@@ -172,15 +181,15 @@
 }
 
 #ptc-completionist_site-tasks .inside header #ptc-asana-task-categories button#pinned-tasks span.task-count {
-  background: #40C3F7;
+  background: color(info);
 }
 
 #ptc-completionist_site-tasks .inside header #ptc-asana-task-categories button#general-tasks span.task-count {
-  background: #9FB3C8;
+  background: color(grey);
 }
 
 #ptc-completionist_site-tasks .inside header #ptc-asana-task-categories button#critical-tasks span.task-count {
-  background: #EF4E4E;
+  background: color(danger);
 }
 
 #ptc-completionist_site-tasks .inside header #ptc-asana-task-categories button#my-tasks span.task-count {
@@ -188,20 +197,19 @@
 }
 
 #ptc-completionist_site-tasks .inside header #ptc-asana-task-categories button[data-category-task-gids][disabled] {
-  background: #9FB3C8;
-  color: #627D98;
+  background: color(grey-lighter);
+  color: color(grey-dark);
 }
 
 #ptc-completionist_site-tasks .inside header #ptc-asana-task-categories button[data-category-task-gids][disabled] span.task-count {
-  background: #627D98 !important;
-  color: #9FB3C8;
+  background: color(grey-lighter) !important;
 }
 
 /* Task Loader Message */
 #ptc-completionist_site-tasks main#ptc-asana-task-list p.task-loader,
 #ptc-completionist_site-tasks main#ptc-asana-task-list p.nothing-to-see {
   padding: 12px;
-  color: #829AB1;
+  color: color(grey);
   text-align: center;
   margin: 0;
 }
@@ -214,15 +222,15 @@
 /* Task List */
 #ptc-completionist_site-tasks main#ptc-asana-task-list section.ptc-completionist-task {
   padding: 10px 12px;
-  border-bottom: 1px solid #CBD2D9;
+  border-bottom: 1px solid color(grey-light);
   display: flex;
-  color: #323F4B;
+  color: color(grey-darkest);
 }
 
 #ptc-completionist_site-tasks main#ptc-asana-task-list section.ptc-completionist-task button.mark-complete {
-  background: #F0F4F8;
-  border-color: #9FB3C8;
-  color: #829AB1;
+  background: color(grey-lightest);
+  border-color: color(grey);
+  color: color(grey);
 }
 
 #ptc-completionist_site-tasks main#ptc-asana-task-list section.ptc-completionist-task > div.body {
@@ -260,7 +268,7 @@
 #ptc-completionist_site-tasks main#ptc-asana-task-list section.ptc-completionist-task > div.body .details .assignee img {
   border-radius: 999px;
   margin: 1px 3px 0 0;
-  border: 1px solid #9AA5B1;
+  border: 1px solid color(grey);
 }
 
 #ptc-completionist_site-tasks main#ptc-asana-task-list section.ptc-completionist-task > div.body .details .due {
@@ -276,7 +284,7 @@
 }
 
 #ptc-completionist_site-tasks main#ptc-asana-task-list section.ptc-completionist-task[data-due-status=soon] > div.body .details .due {
-  color: #17B897;
+  color: color(brand-primary);
 }
 
 #ptc-completionist_site-tasks main#ptc-asana-task-list section.ptc-completionist-task > div.body .description {
@@ -302,19 +310,19 @@
 }
 
 #ptc-completionist_site-tasks main#ptc-asana-task-list section.ptc-completionist-task > div.body .task-actions button.view-task {
-  background: #BCCCDC;
-  border-color: #627D98;
-  color: #334E68;
+  background: color(grey-light);
+  border-color: color(grey-dark);
+  color: color(grey-darker);
 }
 
 #ptc-completionist_site-tasks main#ptc-asana-task-list section.ptc-completionist-task > div.body .task-actions button.unpin-task {
-  background: #40C3F7;
+  background: color(info);
   border-color: #127FBF;
   color: #035388;
 }
 
 #ptc-completionist_site-tasks main#ptc-asana-task-list section.ptc-completionist-task > div.body .task-actions button.delete-task {
-  background: #EF4E4E;
+  background: color(danger);
   border-color: #8A041A;
   color: #610316;
 }
@@ -330,7 +338,7 @@
   border: 1px solid #1992D4;
   text-shadow: 1px 2px 1px #1992D4;
   text-decoration: none;
-  color: #FFF;
+  color: color(white);
   font-size: 0.9em;
   padding: 0.2em 1.2em 0.2em;
   font-weight: 400;
@@ -339,7 +347,7 @@
 }
 
 #ptc-completionist_site-tasks main#ptc-asana-task-list section.ptc-completionist-task .cta-button a[href^="https://app.asana.com/"] {
-  background: #627D98;
+  background: color(grey-dark);
   border-color: #486581;
   text-shadow: 1px 2px 1px #486581;
 }
@@ -347,7 +355,7 @@
 /* Completed Tasks */
 #ptc-completionist_site-tasks main#ptc-asana-task-list section.ptc-completionist-task[data-completed=true] > div.body .name {
   text-decoration: line-through;
-  color: #9AA5B1;
+  color: color(grey);
   font-weight: 400;
 }
 
@@ -369,7 +377,7 @@
   text-align: center;
   padding: 7px 10px;
   background: #486581;
-  color: #FFF;
+  color: color(white);
   border-radius: 0;
   display: flex;
   align-items: center;
@@ -380,7 +388,7 @@
   padding: 10px 12px;
   margin: 0;
   line-height: 1.5em;
-  border: 1px solid #BCCCDC;
+  border: 1px solid color(grey-light);
   border-radius: 0;
   color: #486581;
   text-align: left;
@@ -432,7 +440,7 @@
   justify-content: center;
   align-items: center;
   padding: 7px 0;
-  background: #D9E2EC;
+  background: color(grey-lighter);
 }
 
 #ptc-completionist_site-tasks .inside footer a {
@@ -441,16 +449,16 @@
 }
 
 #ptc-completionist_site-tasks .inside footer a button {
-  background: #BCCCDC;
-  border-color: #627D98;
-  color: #334E68;
+  background: color(grey-light);
+  border-color: color(grey-dark);
+  color: color(grey-darker);
 }
 
 #ptc-completionist_site-tasks .inside footer #ptc-asana-tasks-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #D9E2EC;
+  background: color(grey-lighter);
 }
 
 #ptc-completionist_site-tasks .inside footer #ptc-asana-tasks-pagination button {

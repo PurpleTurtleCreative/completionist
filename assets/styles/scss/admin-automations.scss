@@ -1,8 +1,8 @@
-@use 'abstracts/colors';
-@use 'abstracts/layout';
-@use 'abstracts/elements';
+@import 'abstracts/colors';
+@import 'abstracts/layout';
+@import 'abstracts/elements';
 
-@use 'admin-theme';
+@import 'admin-theme';
 
 //----------------------
 
@@ -16,7 +16,7 @@
   p {
     font-size: 1.5em;
     font-weight: 400;
-    color: colors.$danger;
+    color: color(danger);
     margin: 0;
     padding: 0;
 
@@ -27,13 +27,13 @@
 
     a {
       @extend %button-sm-danger;
-      border: 2px solid colors.$danger;
-      color: colors.$white;
+      border: 2px solid color(danger);
+      color: color(white);
       display: inline-block;
-      margin: layout.$lg-em 0 0;
+      margin: em(lg) 0 0;
 
       i {
-        margin-left: layout.$sm-em;
+        margin-left: em(sm);
       }
     }
   }
@@ -42,7 +42,7 @@
 #ptc-completionist-automations-root {
   max-width: 1280px;
   margin: 30px auto 0;
-  color: colors.$grey-darkest;
+  color: color(grey-darkest);
 
   > .loading-screen {
     display: flex;
@@ -53,10 +53,10 @@
     p {
       font-size: 2rem;
       font-weight: 600;
-      color: colors.$grey;
+      color: color(grey);
 
       i {
-        margin-right: layout.$sm-em;
+        margin-right: em(sm);
       }
     }
   }
@@ -70,7 +70,7 @@
     > .title {
       display: flex;
       align-items: flex-end;
-      margin-bottom: layout.$lg-em;
+      margin-bottom: em(lg);
 
       > h1 {
         flex: 1;
@@ -85,17 +85,17 @@
           @extend %button-sm-success;
           margin-bottom: 0;
           font-size: 1em;
-          padding: layout.$sm-em layout.$lg-em;
+          padding: em(sm) em(lg);
         }
       }
     }
 
     > header {
-      background: colors.$grey-light;
-      border-radius: layout.$md-px;
-      border: 2px solid colors.$grey-light;
-      padding: layout.$md-em layout.$lg-em;
-      margin: layout.$md-px 0;
+      background: color(grey-light);
+      border-radius: px(md);
+      border: 2px solid color(grey-light);
+      padding: em(md) em(lg);
+      margin: px(md) 0;
       display: flex;
       font-weight: 900;
 
@@ -113,11 +113,11 @@
     .ptc-completionist-automations-list {
 
       .ptc-completionist-automation-row {
-        background: colors.$white;
-        border-radius: layout.$md-px;
-        border: 2px solid colors.$grey-light;
-        padding: layout.$full-padding;
-        margin: layout.$md-px 0;
+        background: color(white);
+        border-radius: px(md);
+        border: 2px solid color(grey-light);
+        padding: padding(full);
+        margin: px(md) 0;
         display: flex;
         align-items: center;
 
@@ -126,31 +126,31 @@
 
           > h2 {
             font-size: 1.5em;
-            margin: 0 0 layout.$sm-px;
-            color: #2BB0ED;
+            margin: 0 0 px(sm);
+            color: color(info);
             display: inline-block;
 
             &:hover {
               cursor: pointer;
-              color: #40C3F7;
+              color: color(info-light);
             }
           }
 
           > p.last-modified {
-            color: colors.$grey;
-            margin: layout.$sm-px 0 layout.$md-px;
+            color: color(grey);
+            margin: px(sm) 0 px(md);
           }
 
           > p.description {
-            margin: -(layout.$sm-px) 0 layout.$md-px;
+            margin: -(px(sm)) 0 px(md);
             font-style: normal;
-            color: colors.$grey-darkest;
+            color: color(grey-darkest);
           }
 
           > .automation-actions {
 
             > button {
-              margin: layout.$sm-px layout.$md-px 0 0 !important;
+              margin: px(sm) px(md) 0 0 !important;
 
               &.edit {
                 @extend %button-sm-warning;
@@ -205,18 +205,18 @@
         @extend %button-sm-grey-dark;
         margin: 0;
         flex: 1;
-        border-color: colors.$grey-dark;
+        border-color: color(grey-dark);
         font-size: 1em;
 
         > i {
-          margin-right: layout.$sm-em;
+          margin-right: em(sm);
         }
       }
 
       > h1 {
         flex: 8;
         margin: 0;
-        font-size: layout.$lg-em;
+        font-size: em(lg);
         text-align: center;
       }
 
@@ -228,19 +228,19 @@
     > .ptc-completionist-automation-details-form {
 
       > div {
-        background: colors.$white;
-        border-radius: layout.$md-px;
-        border: 2px solid colors.$grey-light;
-        padding: layout.$lg-em layout.$lg-em layout.$lg-em+layout.$sm-em;
-        margin: layout.$md-px 0;
+        background: color(white);
+        border-radius: px(md);
+        border: 2px solid color(grey-light);
+        padding: em(lg) em(lg) em(lg)+em(sm);
+        margin: px(md) 0;
 
         > h2 {
           font-size: 1.5em;
-          margin: 0 0 layout.$lg-px;
+          margin: 0 0 px(lg);
 
           > span.automation-step-number {
-            background: colors.$brand-primary;
-            color: colors.$white;
+            background: color(brand-primary);
+            color: color(white);
             display: inline-block;
             border-radius: 50%;
             line-height: 1.4em;
@@ -248,57 +248,57 @@
             height: 1.5em;
             text-align: center;
             vertical-align: baseline;
-            margin-right: layout.$sm-em;
+            margin-right: em(sm);
           }
         }
 
         button.remove-item {
           @extend %button-sm-danger;
-          color: colors.$white;
-          text-shadow: 1px 1px 3px #{colors.$danger-dark}99;
-          border: 1px solid colors.$danger;
-          padding: layout.$md-em - .25em layout.$lg-em layout.$md-em - .15em;
+          color: color(white);
+          text-shadow: 1px 1px 3px #{color(danger-dark)}99;
+          border: 1px solid color(danger);
+          padding: em(md) - .25em em(lg) em(md) - .15em;
           margin: 0;
           letter-spacing: .03em;
 
           > i {
-            margin-right: layout.$sm-em;
+            margin-right: em(sm);
           }
         }
 
         button.add-item {
           @extend %button-sm-brand-primary;
-          color: colors.$white;
-          text-shadow: 1px 1px 3px #{colors.$brand-primary-dark}99;
-          border: 1px solid colors.$brand-primary;
-          padding: layout.$md-em - .25em layout.$lg-em layout.$md-em - .15em;
-          margin: layout.$md-em 0 0;
+          color: color(white);
+          text-shadow: 1px 1px 3px #{color(brand-primary-dark)}99;
+          border: 1px solid color(brand-primary);
+          padding: em(md) - .25em em(lg) em(md) - .15em;
+          margin: em(md) 0 0;
           letter-spacing: .03em;
           font-size: .95em;
 
           > i {
-            margin-right: layout.$sm-em;
+            margin-right: em(sm);
           }
         }
 
         fieldset {
-          border: 1px solid colors.$grey-light;
-          border-radius: layout.$md-px;
-          padding: layout.$full-padding;
-          margin: layout.$md-px 0;
-          background: colors.$grey-lightest;
+          border: 1px solid color(grey-light);
+          border-radius: px(md);
+          padding: padding(full);
+          margin: px(md) 0;
+          background: color(grey-lightest);
 
           legend {
             font-weight: 600;
-            color: colors.$grey;
-            padding: 0 layout.$md-px;
+            color: color(grey);
+            padding: 0 px(md);
           }
         }
 
         div.form-group {
           display: flex;
           align-items: center;
-          margin: layout.$md-px 0;
+          margin: px(md) 0;
 
           > label {
             width: 5rem;
@@ -318,17 +318,17 @@
         input,
         textarea,
         select {
-          border-color: colors.$grey-light !important;
+          border-color: color(grey-light) !important;
         }
 
         &.automation-info {
 
           input,
           textarea {
-            border-color: #{colors.$grey-light}00;
+            border-color: #{color(grey-light)}00;
 
             &:hover, &:focus {
-              border-color: colors.$grey-light;
+              border-color: color(grey-light);
             }
           }
 
@@ -360,7 +360,7 @@
         &.automation-conditions-list {
 
           fieldset {
-            padding-top: layout.$md-em - .25em;
+            padding-top: em(md) - .25em;
 
             .form-group {
               display: flex;
@@ -370,7 +370,7 @@
               select,
               input {
                 flex: 1;
-                margin-right: layout.$md-px;
+                margin-right: px(md);
               }
             }
           }
@@ -393,8 +393,8 @@
             }
 
             > div[class^=action-meta] {
-              border-top: 1px dashed colors.$grey-light;
-              padding-top: layout.$md-px;
+              border-top: 1px dashed color(grey-light);
+              padding-top: px(md);
             }
 
             > div.action-meta_create_task {
@@ -417,19 +417,19 @@
                 }
 
                 > ul.select-options {
-                  margin: layout.$md-px 0 0;
+                  margin: px(md) 0 0;
                   padding: 0;
 
                   li.post-option {
-                    background: colors.$white;
-                    border: 1px solid colors.$grey-light;
+                    background: color(white);
+                    border: 1px solid color(grey-light);
                     border-bottom: none;
-                    padding: layout.$sm-em layout.$md-em;
+                    padding: em(sm) em(md);
                     margin: 0;
                     cursor: pointer;
 
                     &:hover {
-                      background: colors.$grey-lightest;
+                      background: color(grey-lightest);
                     }
 
                     &:first-of-type {
@@ -438,7 +438,7 @@
 
                     &:last-of-type {
                       border-radius: 0 0 5px 5px;
-                      border-bottom: 1px solid colors.$grey-light;
+                      border-bottom: 1px solid color(grey-light);
                     }
                   }
                 }
@@ -451,24 +451,24 @@
 
       > button.save-automation {
         @extend %button-sm-brand-primary;
-        padding: layout.$md-em;
-        color: colors.$white;
-        text-shadow: 1px 1px 3px #{colors.$brand-primary-dark}50;
+        padding: em(md);
+        color: color(white);
+        text-shadow: 1px 1px 3px #{color(brand-primary-dark)}50;
         font-weight: 600;
         font-size: 1.5em;
-        border-radius: layout.$md-px;
-        border: 2px solid colors.$brand-primary;
+        border-radius: px(md);
+        border: 2px solid color(brand-primary);
         margin: 0 auto;
         display: block;
         width: 33%;
-        letter-spacing: layout.$sm-em/5;
+        letter-spacing: em(sm)/5;
 
         &:hover {
-          background: colors.$brand-primary-light;
+          background: color(brand-primary-light);
         }
 
         > i {
-          margin-right: layout.$sm-em;
+          margin-right: em(sm);
         }
       }
     }//end automation details form

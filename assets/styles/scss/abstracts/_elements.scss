@@ -1,5 +1,7 @@
-@use 'colors';
-@use 'layout';
+@import 'colors';
+@import 'layout';
+
+//----------------------
 
 // Small Buttons
 
@@ -10,97 +12,97 @@
   border-radius: 999px;
   text-decoration: none;
   font-size: .9em;
-  padding: layout.$full-padding-sm;
+  padding: padding(full-sm);
   font-weight: 600;
   margin: .3em .15em;
   cursor: pointer;
-  border: 1px solid colors.$grey-dark;
+  border: 1px solid color(grey-dark);
   outline: none;
   box-shadow: none;
 
   &[disabled], &[disabled]:hover {
-    background: colors.$grey-lighter !important;
-    border-color: colors.$grey-dark !important;
-    color: colors.$grey-dark !important;
+    background: color(grey-lighter) !important;
+    border-color: color(grey-dark) !important;
+    color: color(grey-dark) !important;
     text-shadow: none !important;
   }
 }
 
 %button-sm-brand-primary {
   @extend %button-sm;
-  background: colors.$brand-primary;
-  border: 1px solid colors.$brand-primary-dark;
-  color: colors.$brand-primary-dark;
+  background: color(brand-primary);
+  border: 1px solid color(brand-primary-dark);
+  color: color(brand-primary-dark);
 
   &:hover {
-    background: colors.$brand-primary-light;
+    background: color(brand-primary-light);
   }
 }
 
 %button-sm-grey {
   @extend %button-sm;
-  color: colors.$black;
-  background: colors.$grey;
-  border-color: colors.$black;
+  color: color(black);
+  background: color(grey);
+  border-color: color(black);
 
   &:hover {
-    background: colors.$grey-light;
+    background: color(grey-light);
   }
 }
 
 %button-sm-grey-dark {
   @extend %button-sm;
-  color: colors.$white;
-  background: colors.$grey-dark;
-  border-color: colors.$grey-darker;
-  text-shadow: 1px 1px 3px #{colors.$grey-darkest}99;
+  color: color(white);
+  background: color(grey-dark);
+  border-color: color(grey-darker);
+  text-shadow: 1px 1px 3px #{color(grey-darkest)}99;
   letter-spacing: .03em;
 
   &:hover {
-    background: colors.$grey;
+    background: color(grey);
   }
 }
 
 %button-sm-info {
   @extend %button-sm;
-  background: colors.$info;
-  border: 1px solid colors.$info-dark;
-  color: colors.$info-dark;
+  background: color(info);
+  border: 1px solid color(info-dark);
+  color: color(info-dark);
 
   &:hover {
-    background: colors.$info-light;
+    background: color(info-light);
   }
 }
 
 %button-sm-success {
   @extend %button-sm;
-  background: colors.$success;
-  border: 1px solid colors.$success-dark;
-  color: colors.$success-dark;
+  background: color(success);
+  border: 1px solid color(success-dark);
+  color: color(success-dark);
 
   &:hover {
-    background: colors.$success-light;
+    background: color(success-light);
   }
 }
 
 %button-sm-warning {
   @extend %button-sm;
-  background: colors.$warning;
-  border: 1px solid colors.$warning-dark;
-  color: colors.$warning-dark;
+  background: color(warning);
+  border: 1px solid color(warning-dark);
+  color: color(warning-dark);
 
   &:hover {
-    background: colors.$warning-light;
+    background: color(warning-light);
   }
 }
 
 %button-sm-danger {
   @extend %button-sm;
-  background: colors.$danger;
-  border: 1px solid colors.$danger-dark;
-  color: colors.$danger-dark;
+  background: color(danger);
+  border: 1px solid color(danger-dark);
+  color: color(danger-dark);
 
   &:hover {
-    background: colors.$danger-light;
+    background: color(danger-light);
   }
 }

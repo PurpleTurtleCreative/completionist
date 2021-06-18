@@ -14,13 +14,13 @@
   },
   "devDependencies": {
     "@wordpress/scripts": "10.0.0",
-    "sass": "^1.32.6"
+    "node-sass": "^5.0.0"
   },
   "scripts": {
     "build": "wp-scripts build && npm run styles",
     "start": "wp-scripts start",
     "bundle": "npm run build && bash ./bundle.sh",
-    "styles": "sass assets/css/scss/:assets/css/ --style=compressed --source-map",
-    "watch:styles": "sass assets/css/scss/:assets/css/ --style=expanded --source-map --watch"
+    "styles": "node-sass assets/styles/scss/ -o assets/styles/ --source-map true --output-style compressed",
+    "watch:styles": "node-sass assets/styles/scss/ -o assets/styles/ --source-map true --output-style expanded --indent-type tab --indent-width 1 -wr"
   }
 }

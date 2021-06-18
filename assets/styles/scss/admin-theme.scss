@@ -1,16 +1,20 @@
+@import 'abstracts/colors';
+
+//----------------------
+
 html, body {
-  background: #E4E7EB;
+  background: color(grey-lightest);
 }
 
 #wpcontent {
   padding: 5px 30px 35px;
-  color: #3E4C59;
+  color: color(grey-darkest);
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 800;
   letter-spacing: 0.03em;
-  color: #243B53;
+  color: color(grey-darkest);
   margin-bottom: 0.3em;
 }
 
@@ -25,16 +29,16 @@ p.help-link {
 
 p.footnote {
   font-size: 0.8em;
-  color: #9FB3C8;
+  color: color(grey);
   margin-top: 2em;
 }
 
 a, a:visited {
-  color: #17B897;
+  color: color(brand-primary);
 }
 
 a:focus, a:hover, a:active {
-  color: #2DCCA7;
+  color: color(brand-primary-light);
   text-decoration: none;
 }
 
@@ -69,13 +73,12 @@ a:focus, a:hover, a:active {
 }
 
 section {
-  background: #F9FBFD;
-  border: 2px solid #DCDFE4;
+  background: color(white);
+  border: 2px solid color(grey-lighter);
   border-radius: 7px;
   max-width: 700px;
   padding: 80px 80px 100px;
-  margin: 7px auto;
-  box-shadow: 0 10px 7px -7px #CBD2D9;
+  margin: 15px auto;
   text-align: center;
   box-sizing: border-box;
 }
@@ -83,7 +86,7 @@ section {
 label {
   display: block;
   font-weight: 600;
-  color: #243B53;
+  color: color(grey-darkest);
   margin-bottom: 0.3em;
 }
 
@@ -95,7 +98,7 @@ form textarea {
   outline: none;
   box-shadow: none;
   border-radius: 5px;
-  border: 1px solid #17B897;
+  border: 1px solid color(brand-primary);
   margin: 0;
   background: #edf1f7;
 }
@@ -111,20 +114,20 @@ form input[type="password"]:focus,
 form input[type="checkbox"]:focus,
 form textarea:focus {
   background: #FFF;
-  box-shadow: 0 0 7px 0 #17B897 !important;
+  box-shadow: 0 0 7px 0 color(brand-primary) !important;
 }
 
 div.icon-input-field {
-  background: #2DCCA7;
+  background: color(brand-primary-light);
   display: inline-block;
   border-radius: 3px 5px 5px 3px;
-  border: 1px solid #17B897;
+  border: 1px solid color(brand-primary);
 }
 
 div.icon-input-field input {
   border-radius: 0 5px 5px 0;
   border: none;
-  border-left: 1px solid #17B897 !important;
+  border-left: 1px solid color(brand-primary) !important;
 }
 
 div.icon-input-field i {
