@@ -3,273 +3,271 @@
 //----------------------
 
 html, body {
-  background: color(grey-lightest);
+	background: color(grey-lightest);
 }
 
 #wpcontent {
-  padding: 5px 30px 35px;
-  color: color(grey-darkest);
+	padding: 5px 30px 35px;
+	color: color(grey-darkest);
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 800;
-  letter-spacing: 0.03em;
-  color: color(grey-darkest);
-  margin-bottom: 0.3em;
+	font-weight: 800;
+	letter-spacing: 0.03em;
+	color: color(grey-darkest);
+	margin-bottom: 0.3em;
 }
 
 strong, b {
-  font-weight: 700;
+	font-weight: 700;
 }
 
 p.help-link {
-  font-style: italic;
-  margin: 0.5em;
+	font-style: italic;
+	margin: 0.5em;
 }
 
 p.footnote {
-  font-size: 0.8em;
-  color: color(grey);
-  margin-top: 2em;
+	font-size: 0.8em;
+	color: color(grey);
+	margin-top: 2em;
 }
 
 a, a:visited {
-  color: color(brand-primary);
+	color: color(brand-primary);
 }
 
 a:focus, a:hover, a:active {
-  color: color(brand-primary-light);
-  text-decoration: none;
+	color: color(brand-primary-light);
+	text-decoration: none;
 }
 
 .notice {
-  background: #F9FBFD;
-  border-top: 2px solid #DCDFE4;
-  border-right: 2px solid #DCDFE4;
-  border-bottom: 2px solid #DCDFE4;
-  border-radius: 3px;
-  padding: 0.5em 1.3em 0.6em;
-  margin: 7px 0;
-  color: #3E4C59;
+	background: color(white);
+	border: 2px solid color(grey-lighter);
+	border-radius: 3px;
+	padding: 0.5em 1.3em 0.6em;
+	margin: 7px 0;
+	color: color(grey-darkest);
 }
 
 .ptc-asana-error {
-  max-width: 700px;
-  margin: 7px auto;
-  box-sizing: border-box;
-}
+	max-width: 700px;
+	margin: 7px auto;
+	box-sizing: border-box;
+	padding: 30px;
 
-.ptc-asana-error {
-  padding: 30px;
-}
+	h3 {
+		color: #E12D39;
+		margin: 0 0 7px;
+	}
 
-.ptc-asana-error h3 {
-  color: #E12D39;
-  margin: 0 0 7px;
-}
-
-.ptc-asana-error p {
-  margin: 0;
+	p {
+		margin: 0;
+	}
 }
 
 section {
-  background: color(white);
-  border: 2px solid color(grey-lighter);
-  border-radius: 7px;
-  max-width: 700px;
-  padding: 80px 80px 100px;
-  margin: 15px auto;
-  text-align: center;
-  box-sizing: border-box;
+	background: color(white);
+	border: 2px solid color(grey-lighter);
+	border-radius: 7px;
+	max-width: 700px;
+	padding: 80px 80px 100px;
+	margin: 15px auto;
+	text-align: center;
+	box-sizing: border-box;
 }
 
 label {
-  display: block;
-  font-weight: 600;
-  color: color(grey-darkest);
-  margin-bottom: 0.3em;
+	display: block;
+	font-weight: 600;
+	color: color(grey-darkest);
+	margin-bottom: 0.3em;
 }
 
 form input[type="text"],
 form input[type="password"],
 form input[type="checkbox"],
 form textarea {
-  color: #004440;
-  outline: none;
-  box-shadow: none;
-  border-radius: 5px;
-  border: 1px solid color(brand-primary);
-  margin: 0;
-  background: #edf1f7;
+	color: #004440;
+	outline: none;
+	box-shadow: none;
+	border-radius: 5px;
+	border: 1px solid color(brand-primary);
+	margin: 0;
+	background: #edf1f7;
+
+	&:focus {
+		background: #FFF;
+		box-shadow: 0 0 7px 0 color(brand-primary) !important;
+	}
 }
 
 form input[type="checkbox"] {
-  margin: 0 0.15em;
-  position: relative;
-  bottom: 1px;
-}
-
-form input[type="text"]:focus,
-form input[type="password"]:focus,
-form input[type="checkbox"]:focus,
-form textarea:focus {
-  background: #FFF;
-  box-shadow: 0 0 7px 0 color(brand-primary) !important;
+	margin: 0 0.15em;
+	position: relative;
+	bottom: 1px;
 }
 
 div.icon-input-field {
-  background: color(brand-primary-light);
-  display: inline-block;
-  border-radius: 3px 5px 5px 3px;
-  border: 1px solid color(brand-primary);
-}
+	background: color(brand-primary-light);
+	display: inline-block;
+	border-radius: 3px 5px 5px 3px;
+	border: 1px solid color(brand-primary);
 
-div.icon-input-field input {
-  border-radius: 0 5px 5px 0;
-  border: none;
-  border-left: 1px solid color(brand-primary) !important;
-}
+	input {
+		border-radius: 0 5px 5px 0;
+		border: none;
+		border-left: 1px solid color(brand-primary) !important;
+	}
 
-div.icon-input-field i {
-  width: 1.75em;
-  text-align: center;
-  padding: 0;
-  margin: 0;
-  margin-left: 0.15em;
-  color: #004440;
+	i {
+		width: 1.75em;
+		text-align: center;
+		padding: 0;
+		margin: 0;
+		margin-left: 0.15em;
+		color: #004440;
+	}
 }
 
 form input[type=submit] {
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  margin: 0.7em 0 1em;
-  color: #FFF;
-  text-shadow: 1px 2px 2px #0ca285;
-  background: #10c39f;
-  width: 33%;
-  border-radius: 5px;
-  padding: 0.75em 1em 0.9em;
-  cursor: pointer;
-  border: 1px solid #0ca285;
-}
+	font-weight: 600;
+	letter-spacing: 0.03em;
+	margin: 0.7em 0 1em;
+	color: #FFF;
+	text-shadow: 1px 2px 2px #0ca285;
+	background: #10c39f;
+	width: 33%;
+	border-radius: 5px;
+	padding: 0.75em 1em 0.9em;
+	cursor: pointer;
+	border: 1px solid #0ca285;
 
-form input[type=submit]:hover,
-form input[type=submit]:active {
-  background: #0ca285;
-}
+	&:hover,
+	&:active {
+		background: #0ca285;
+	}
 
-form input[type=submit].error {
-  background: #E12D39;
-  text-shadow: 1px 2px 2px #AB091E;
-  border-color: #AB091E;
-}
+	&.error {
+		background: #E12D39;
+		text-shadow: 1px 2px 2px #AB091E;
+		border-color: #AB091E;
 
-form input[type=submit].error:hover,
-form input[type=submit].error:active {
-  background: #CF1124;
+		&:hover,
+		&:active {
+			background: #CF1124;
+		}
+	}
 }
 
 form p.warning-note {
-  color: #E67635;
-  background: #FFFBEA;
-  border: 1px solid #FFD3BA;
-  border-radius: 3px;
-  padding: 0.5em 1em;
-  margin: 7px 0;
-}
+	color: #E67635;
+	background: #FFFBEA;
+	border: 1px solid #FFD3BA;
+	border-radius: 3px;
+	padding: 0.5em 1em;
+	margin: 7px 0;
 
-form p.warning-note i {
-  margin-right: 0.3em;
+	i {
+		margin-right: 0.3em;
+	}
 }
 
 form p.error-note {
-  color: #D64545;
-  background: #FFEEEE;
-  border: 1px solid #F29B9B;
-  border-radius: 3px;
-  padding: 0.5em 1em;
-  margin: 7px 0;
-}
+	color: #D64545;
+	background: #FFEEEE;
+	border: 1px solid #F29B9B;
+	border-radius: 3px;
+	padding: 0.5em 1em;
+	margin: 7px 0;
 
-form p.error-note i {
-  margin-right: 0.3em;
+	i {
+		margin-right: 0.3em;
+	}
 }
 
 a.ptc-button {
-  display: inline-block;
-  background: #627D98;
-  border-radius: 999px;
-  border: 1px solid #486581;
-  text-shadow: 1px 2px 2px #486581;
-  text-decoration: none;
-  color: #FFF;
-  font-size: 0.9em;
-  padding: 0.2em 1.2em 0.2em;
-  font-weight: 400;
-  margin-top: 0.15em;
-}
+	display: inline-block;
+	background: #627D98;
+	border-radius: 999px;
+	border: 1px solid #486581;
+	text-shadow: 1px 2px 2px #486581;
+	text-decoration: none;
+	color: #FFF;
+	font-size: 0.9em;
+	padding: 0.2em 1.2em 0.2em;
+	font-weight: 400;
+	margin-top: 0.15em;
 
-a.ptc-button:hover,
-a.ptc-button:active {
-  background: #486581;
-}
+	&:hover,
+	&:active {
+		background: #486581;
+	}
 
-a.ptc-button[disabled] {
-  background: #F5F7FA;
-  border-color: #9FB3C8;
-  color: #9FB3C8;
-  text-shadow: none;
+	&[disabled] {
+		background: #F5F7FA;
+		border-color: #9FB3C8;
+		color: #9FB3C8;
+		text-shadow: none;
+	}
 }
 
 div.note-box {
-  display: flex;
-  background: #e9eff7;
-  border-radius: 5px;
-  margin: 7px 0;
-}
+	display: flex;
+	background: #e9eff7;
+	border-radius: 5px;
+	margin: 7px 0;
 
-div.note-box i {
-  display: block;
-  text-align: center;
-  padding: 1.3em;
-  width: 1.3em !important;
-  background: #486581;
-  color: #FFF;
-  border-radius: 5px 0 0 5px;
-}
+	i {
+		display: block;
+		text-align: center;
+		padding: 1.3em;
+		width: 1.3em !important;
+		background: #486581;
+		color: #FFF;
+		border-radius: 5px 0 0 5px;
 
-div.note-box i::before {
-  display: inline-block;
-  width: 1.3em !important;
-}
+		&::before {
+			display: inline-block;
+			width: 1.3em !important;
+		}
+	}
 
-div.note-box p {
-  padding: 1em 1.3em 1.2em;
-  margin: 0;
-  line-height: 1.5em;
-  border: 1px solid #BCCCDC;
-  border-radius: 0 5px 5px 0;
-  color: #486581;
-  text-align: left;
-  flex: 1;
-}
+	p {
+		padding: 1em 1.3em 1.2em;
+		margin: 0;
+		line-height: 1.5em;
+		border: 1px solid #BCCCDC;
+		border-radius: 0 5px 5px 0;
+		color: #486581;
+		text-align: left;
+		flex: 1;
+	}
 
-div.note-box.note-box-info i {
-  background: #1992D4;
-}
+	&.note-box-info {
 
-div.note-box.note-box-info p {
-  background: #daf0ff;
-  color: #2D83AE;
-  border-color: #7CC1E4;
-}
+		i {
+			background: #1992D4;
+		}
 
-div.note-box.note-box-error i {
-  background: #E12D39;
-}
+		p {
+			background: #daf0ff;
+			color: #2D83AE;
+			border-color: #7CC1E4;
+		}
+	}
 
-div.note-box.note-box-error p {
-  background: #FFEEEE;
-  color: #D64545;
-  border-color: #F29B9B;
-}
+	&.note-box-error {
+
+		i {
+			background: #E12D39;
+		}
+
+		p {
+			background: #FFEEEE;
+			color: #D64545;
+			border-color: #F29B9B;
+		}
+	}
+}//end .note-box
