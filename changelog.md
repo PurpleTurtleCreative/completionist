@@ -2,6 +2,7 @@
 #### Changed
 - Greatly improved source code organization, introduces breaking changes for source code users.
 - Minor style tweaks due to better color organization and standardization.
+- Task descriptions are now displayed on click instead of hover.
 
 #### Fixed
 - Plugin "Docs" link refers to new PTC Docs website!
