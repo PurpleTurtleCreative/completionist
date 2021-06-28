@@ -168,7 +168,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 					<div class="name">
 						<?php echo esc_html( $task_name ); ?>
 						<?php if ( ! empty( $task_notes ) ) { ?>
-							<i class="fas fa-sticky-note"></i>
+							<i class="far fa-sticky-note"></i>
 						<?php }//end if not empty task notes ?>
 					</div>
 

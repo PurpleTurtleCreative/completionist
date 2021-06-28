@@ -249,7 +249,6 @@
 
 					i.fa-sticky-note {
 						color: #F0B429;
-						font-weight: 400;
 					}
 				}
 
@@ -288,12 +287,8 @@
 					display: none;
 				}
 
-				&:hover {
-
-					.task-actions,
-					.description {
-						display: block;
-					}
+				&:hover .task-actions {
+					display: block;
 				}
 
 				.details {

@@ -35,6 +35,22 @@ jQuery(function($) {
     });
   });
 
+  /* TOGGLE DESCRIPTION VISIBILITY */
+  taskContainer.on('click', '.ptc-completionist-task .body .name', function() {
+    $this_task = $(this).closest('.ptc-completionist-task');
+    if ( $this_task.hasClass('open') ) {
+      // Is open, so close it.
+      $this_task.removeClass('open');
+      $this_task.find('.name i.fa-sticky-note').removeClass('fas').addClass('far');
+      $this_task.find('.description').hide();
+    } else {
+      // Is not open, so open it.
+      $this_task.addClass('open');
+      $this_task.find('.name i.fa-sticky-note').removeClass('far').addClass('fas');
+      $this_task.find('.description').show();
+    }
+  });//end toggle description
+
   /* PREV PAGE */
   paginationNavContainer.on('click', 'button[data-page=prev]', function() {
     if(current_page > 1) {
