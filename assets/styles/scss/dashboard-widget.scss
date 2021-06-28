@@ -19,7 +19,7 @@
 		border-radius: 999px;
 		outline: none;
 		box-shadow: none;
-		border: 1px solid #486581;
+		border: 1px solid color(grey-darker);
 		cursor: pointer;
 	}
 
@@ -27,7 +27,7 @@
 	input[disabled],
 	select[disabled],
 	textarea[disabled] {
-		background: #F5F7FA;
+		background: color(grey-lightest);
 		border-color: color(grey);
 		color: color(grey);
 		text-shadow: none;
@@ -273,13 +273,13 @@
 					button.unpin-task {
 						background: color(info);
 						border-color: #127FBF;
-						color: #035388;
+						color: color(info-dark);
 					}
 
 					button.delete-task {
 						background: color(danger);
 						border-color: #8A041A;
-						color: #610316;
+						color: color(danger-dark);
 					}
 				}
 
@@ -351,8 +351,8 @@
 
 					&[href^="https://app.asana.com/"] {
 						background: color(grey-dark);
-						border-color: #486581;
-						text-shadow: 1px 2px 1px #486581;
+						border-color: color(grey-darker);
+						text-shadow: 1px 2px 1px color(grey-darker);
 					}
 				}
 			}
@@ -375,14 +375,14 @@
 	/* Alert Banners */
 	div.note-box {
 		display: flex;
-		background: #e9eff7;
+		background: color(grey-lightest);
 		border-radius: 0;
 		margin: 0;
 
 		div.note-box-dismiss {
 			text-align: center;
 			padding: 7px 10px;
-			background: #486581;
+			background: color(grey-darker);
 			color: color(white);
 			border-radius: 0;
 			display: flex;
@@ -396,7 +396,7 @@
 			line-height: 1.5em;
 			border: 1px solid color(grey-light);
 			border-radius: 0;
-			color: #486581;
+			color: color(grey-darker);
 			text-align: left;
 			flex: 1;
 
