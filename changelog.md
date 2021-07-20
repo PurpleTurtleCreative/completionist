@@ -3,10 +3,12 @@
 - Greatly improved source code organization, introduces breaking changes for source code users.
 - Minor style tweaks due to better color organization and standardization.
 - Task descriptions are now displayed on click instead of hover.
+- Updated the Asana client library to `v0.10.2`.
 
 #### Fixed
 - Plugin "Docs" link refers to new PTC Docs website!
 - Character escaping visible in Automation description.
+- Enabled `new_user_task_lists` Asana updated endpoint to resolve deprecation logs.
 
 ### 2.0.0 - 2021-01-18
 #### Added
