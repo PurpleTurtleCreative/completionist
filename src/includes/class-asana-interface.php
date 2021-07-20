@@ -146,7 +146,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			}
 
 			require_once PLUGIN_PATH . '/vendor/autoload.php';
-			$asana = \Asana\Client::accessToken( $asana_personal_access_token );
+			$asana = \Asana\Client::accessToken(
+				$asana_personal_access_token,
+				[
+					'headers' => [
+						'asana-enable' => 'new_user_task_lists',
+					],
+				]
+			);
 
 			try {
 				self::$me = $asana->users->me();
