@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "94d94cfe50823a3fd95f2f711445a8ac",
+    "content-hash": "1033b756a414862fe74c3a236455bed3",
     "packages": [
         {
             "name": "adoy/oauth2",
@@ -44,20 +44,24 @@
                 }
             ],
             "description": "Light PHP wrapper for the OAuth 2.0 protocol (based on OAuth 2.0 Authorization Protocol draft-ietf-oauth-v2-15)",
+            "support": {
+                "issues": "https://github.com/adoy/PHP-OAuth2/issues",
+                "source": "https://github.com/adoy/PHP-OAuth2/tree/1.3.0"
+            },
             "time": "2015-08-03T19:57:06+00:00"
         },
         {
             "name": "asana/asana",
-            "version": "v0.9.1",
+            "version": "v0.10.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Asana/php-asana.git",
-                "reference": "f6aa3cfcb272218a1f1357f3ee96e57d952c7169"
+                "reference": "d5c466c3bcb6164e4ee8dec9e6fc23e20181b5af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Asana/php-asana/zipball/f6aa3cfcb272218a1f1357f3ee96e57d952c7169",
-                "reference": "f6aa3cfcb272218a1f1357f3ee96e57d952c7169",
+                "url": "https://api.github.com/repos/Asana/php-asana/zipball/d5c466c3bcb6164e4ee8dec9e6fc23e20181b5af",
+                "reference": "d5c466c3bcb6164e4ee8dec9e6fc23e20181b5af",
                 "shasum": ""
             },
             "require": {
@@ -67,7 +71,7 @@
             },
             "require-dev": {
                 "instaclick/php-code-sniffer": "dev-master",
-                "phpunit/phpunit": "4.5.*"
+                "phpunit/phpunit": "^9"
             },
             "type": "library",
             "autoload": {
@@ -85,7 +89,11 @@
                 "asana",
                 "client"
             ],
-            "time": "2019-08-29T17:38:35+00:00"
+            "support": {
+                "issues": "https://github.com/Asana/php-asana/issues",
+                "source": "https://github.com/Asana/php-asana/tree/v0.10.2"
+            },
+            "time": "2021-04-14T23:58:39+00:00"
         },
         {
             "name": "nategood/httpful",
@@ -135,20 +143,24 @@
                 "rest",
                 "restful"
             ],
+            "support": {
+                "issues": "https://github.com/nategood/httpful/issues",
+                "source": "https://github.com/nategood/httpful/tree/v0.2.20"
+            },
             "time": "2015-10-26T16:11:30+00:00"
         },
         {
             "name": "yahnis-elsts/plugin-update-checker",
-            "version": "v4.10",
+            "version": "v4.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/YahnisElsts/plugin-update-checker.git",
-                "reference": "0edd15f67822464af8a23285ce367b30d515a855"
+                "reference": "3155f2d3f1ca5e7ed3f25b256f020e370515af43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/YahnisElsts/plugin-update-checker/zipball/0edd15f67822464af8a23285ce367b30d515a855",
-                "reference": "0edd15f67822464af8a23285ce367b30d515a855",
+                "url": "https://api.github.com/repos/YahnisElsts/plugin-update-checker/zipball/3155f2d3f1ca5e7ed3f25b256f020e370515af43",
+                "reference": "3155f2d3f1ca5e7ed3f25b256f020e370515af43",
                 "shasum": ""
             },
             "require": {
@@ -158,7 +170,7 @@
             "type": "library",
             "autoload": {
                 "files": [
-                    "load-v4p10.php"
+                    "load-v4p11.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -183,9 +195,9 @@
             ],
             "support": {
                 "issues": "https://github.com/YahnisElsts/plugin-update-checker/issues",
-                "source": "https://github.com/YahnisElsts/plugin-update-checker/tree/wp55-auto-updates"
+                "source": "https://github.com/YahnisElsts/plugin-update-checker/tree/v4.11"
             },
-            "time": "2020-08-21T11:36:45+00:00"
+            "time": "2021-03-15T16:07:52+00:00"
         }
     ],
     "packages-dev": [],

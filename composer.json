@@ -1,6 +1,6 @@
 {
   "require": {
-    "asana/asana": "^0.9.1",
-    "yahnis-elsts/plugin-update-checker": "^4.10"
+    "asana/asana": "~0.10.2",
+    "yahnis-elsts/plugin-update-checker": "~4.11"
   }
 }
