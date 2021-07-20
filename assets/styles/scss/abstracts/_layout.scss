@@ -1,0 +1,59 @@
+// Measurements
+
+$px: (
+	sm: 3px,
+	md: 7px,
+	lg: 12px,
+);
+
+@function px($key) {
+
+	@if map-has-key($px, $key) {
+
+		@return map-get($px, $key);
+	}
+
+	@warn "Unknown `#{$key}` in $px.";
+	@return null;
+}
+
+//
+
+$em: (
+	sm: .3em,
+	md: .75em,
+	lg: 1.3em,
+);
+
+@function em($key) {
+
+	@if map-has-key($em, $key) {
+
+		@return map-get($em, $key);
+	}
+
+	@warn "Unknown `#{$key}` in $em.";
+	@return null;
+}
+
+//
+
+$padding: (
+	// Full
+	full-sm: em(sm) em(md) .35em,
+	full: 1em #{em(lg)} 1.2em,
+	// Sides
+	side-sm: 0 em(md),
+	side: 0 em(lg),
+);
+
+@function padding($key) {
+
+	@if map-has-key($padding, $key) {
+
+		@return map-get($padding, $key);
+	}
+
+	@warn "Unknown `#{$key}` in $padding.";
+	@return null;
+}

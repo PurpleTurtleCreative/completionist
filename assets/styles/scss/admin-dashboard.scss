@@ -1,0 +1,203 @@
+@import 'abstracts/colors';
+
+//----------------------
+
+#wpbody-content {
+	padding-top: 30px;
+}
+
+/* CURRENT USER */
+section#ptc-asana-user {
+	padding-bottom: 50px;
+
+	div.asana-connected-profile-photo {
+		background: color(grey-lightest);
+		border-bottom: 1px solid color(grey-lighter);
+		margin: -80px -80px 70px;
+		border-radius: 7px 7px 0 0;
+		position: relative;
+
+		img {
+			background: color(white);
+			margin: 60px 0 -50px;
+			border-radius: 50%;
+			border: 5px solid color(grey-lighter);
+		}
+
+		i {
+			color: color(white);
+			background: #51ca58;
+			border-radius: 50%;
+			padding: 7px;
+			border: 1px solid #31b237;
+			text-shadow: 0 1px 2px #0f8613;
+			position: absolute;
+			bottom: -40px;
+			right: 41.5%;
+		}
+	}
+}
+
+/* CHOSEN WORKSPACE */
+section#ptc-asana-workspace {
+	padding: 0;
+	background: color(grey-lightest);
+
+	&-unauthorized,
+	&-error {
+		margin: 0;
+	}
+
+	p.nothing-to-see {
+		background: color(white);
+		margin: 0;
+		padding: 2em 2em 2.3em;
+		font-style: italic;
+		color: color(grey-darker);
+	}
+
+	form {
+		padding: 0 21px;
+
+		> div {
+			display: flex;
+			align-items: center;
+			align-content: center;
+			margin: 7px 0;
+		}
+
+		label {
+			display: inline;
+
+			i {
+				margin-right: 0.3em;
+			}
+		}
+
+		select {
+			width: 33%;
+			margin: 0 0.3em;
+		}
+
+		input[type=submit] {
+			padding: 0.3em 1.3em 0.4em;
+			width: auto;
+			box-sizing: border-box;
+			margin: 0;
+		}
+
+		.warning-note {
+			display: none;
+		}
+	}
+
+	div.ptc-asana-collaborator-row {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		align-content: center;
+		padding: 14px 14px 21px;
+		border-top: 1px solid color(grey-lighter);
+		background: color(white);
+
+		&:last-of-type {
+			border-radius: 0 0 7px 7px;
+		}
+
+		p {
+			margin: 0;
+		}
+
+		> div {
+			flex: 1;
+			text-align: center;
+			padding: 0.3em;
+		}
+
+		> div.user {
+			display: flex;
+			align-items: start;
+			align-content: center;
+			text-align: left;
+
+			div.identity p {
+				margin: 0;
+				line-height: 1.3;
+				font-weight: 600;
+				font-size: 1em;
+
+				&.roles {
+					text-transform: capitalize;
+					font-style: italic;
+					font-weight: 400;
+				}
+			}
+
+			img {
+				border-radius: 50%;
+				border: 1px solid color(grey-light);
+				margin-right: 0.5em;
+			}
+		}//end .user
+
+		> div.email {
+
+			a {
+				text-decoration: none;
+			}
+		}
+
+		> div.connection-status {
+
+			p i {
+				margin-right: 0.3em;
+			}
+
+			a i {
+				margin-left: 0.5em;
+				font-size: 0.9em;
+			}
+
+			&[data-status=yes] {
+
+				p {
+					color: #31b237;
+					font-weight: 600;
+				}
+			}
+
+			&[data-status=no] {
+
+				p {
+					color: color(grey);
+				}
+			}
+		}//end .connection-status
+	}//end .ptc-asana-collaborator-row
+}//end section#ptc-asana-workspace
+
+/* DEAUTHORIZE ACCOUNT */
+section#ptc-disconnect-asana {
+	padding: 0;
+	border-color: color(danger);
+
+	form {
+		margin: 0;
+
+		input {
+			display: block;
+			margin: 0 auto 0.75em;
+			padding: 0.4em 0.75em 0.5em;
+		}
+
+		.note-box {
+			margin: 0;
+		}
+
+		p.disconnect-notice {
+			text-align: center;
+			border-radius: 5px;
+			border: none;
+		}
+	}
+}

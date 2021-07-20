@@ -1,0 +1,50 @@
+$colors: (
+
+	// Neutrals
+
+	white: #ffffff,
+
+	grey-lightest: #f0f4f8,
+	grey-lighter: #d9e2ec,
+	grey-light: #bcccdc,
+	grey: #829ab1,
+	grey-dark: #627d98,
+	grey-darker: #334e68,
+	grey-darkest: #243b53,
+
+	black: #1f2933,
+
+	// Colors
+
+	brand-primary-light: #2dcca7,
+	brand-primary: #17b897,
+	brand-primary-dark: #004440,
+
+	info-light: #5ed0fa,
+	success-light: #8ded2d,
+	warning-light: #fadb5f,
+	danger-light: #f86a6a,
+
+	info: #40c3f7,
+	danger: #ef4e4e,
+	success: #6cd410,
+	warning: #f7c948,
+
+	info-dark: #035388,
+	danger-dark: #610316,
+	success-dark: #1e5303,
+	warning-dark: #b44d12,
+);
+
+// Getter function
+
+@function color($key) {
+
+	@if map-has-key($colors, $key) {
+
+		@return map-get($colors, $key);
+	}
+
+	@warn "Unknown `#{$key}` in $colors.";
+	@return null;
+}

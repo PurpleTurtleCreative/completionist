@@ -1,3 +1,13 @@
+### 3.0.0 - [unreleased]
+#### Changed
+- Greatly improved source code organization, introduces breaking changes for source code users.
+- Minor style tweaks due to better color organization and standardization.
+- Task descriptions are now displayed on click instead of hover.
+
+#### Fixed
+- Plugin "Docs" link refers to new PTC Docs website!
+- Character escaping visible in Automation description.
+
 ### 2.0.0 - 2021-01-18
 #### Added
 - Remote updates via YahnisElsts/plugin-update-checker and custom resources API.

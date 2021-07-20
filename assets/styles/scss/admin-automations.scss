@@ -1,0 +1,476 @@
+@import 'abstracts/colors';
+@import 'abstracts/layout';
+@import 'abstracts/elements';
+
+@import 'admin-theme';
+
+//----------------------
+
+.ptc-error-screen {
+  display: flex;
+  height: 50vh;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  p {
+    font-size: 1.5em;
+    font-weight: 400;
+    color: color(danger);
+    margin: 0;
+    padding: 0;
+
+    strong {
+      font-weight: 800;
+      font-size: 1.3em;
+    }
+
+    a {
+      @extend %button-sm-danger;
+      border: 2px solid color(danger);
+      color: color(white);
+      display: inline-block;
+      margin: em(lg) 0 0;
+
+      i {
+        margin-left: em(sm);
+      }
+    }
+  }
+}
+
+#ptc-completionist-automations-root {
+  max-width: 1280px;
+  margin: 30px auto 0;
+  color: color(grey-darkest);
+
+  > .loading-screen {
+    display: flex;
+    height: 50vh;
+    justify-content: center;
+    align-items: center;
+
+    p {
+      font-size: 2rem;
+      font-weight: 600;
+      color: color(grey);
+
+      i {
+        margin-right: em(sm);
+      }
+    }
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  > .ptc-completionist-automations-listing {
+
+    > .title {
+      display: flex;
+      align-items: flex-end;
+      margin-bottom: em(lg);
+
+      > h1 {
+        flex: 1;
+        margin: 0;
+      }
+
+      > .actions {
+        flex: 1;
+        text-align: right;
+       
+        > button {
+          @extend %button-sm-success;
+          margin-bottom: 0;
+          font-size: 1em;
+          padding: em(sm) em(lg);
+        }
+      }
+    }
+
+    > header {
+      background: color(grey-light);
+      border-radius: px(md);
+      border: 2px solid color(grey-light);
+      padding: em(md) em(lg);
+      margin: px(md) 0;
+      display: flex;
+      font-weight: 900;
+
+      > div {
+        flex: 1;
+        text-align: center;
+      }
+
+      > div:first-of-type {
+        flex: 2;
+        text-align: left;
+      }
+    }
+
+    .ptc-completionist-automations-list {
+
+      .ptc-completionist-automation-row {
+        background: color(white);
+        border-radius: px(md);
+        border: 2px solid color(grey-light);
+        padding: padding(full);
+        margin: px(md) 0;
+        display: flex;
+        align-items: center;
+
+        > header {
+          flex: 1;
+
+          > h2 {
+            font-size: 1.5em;
+            margin: 0 0 px(sm);
+            color: color(info);
+            display: inline-block;
+
+            &:hover {
+              cursor: pointer;
+              color: color(info-light);
+            }
+          }
+
+          > p.last-modified {
+            color: color(grey);
+            margin: px(sm) 0 px(md);
+          }
+
+          > p.description {
+            margin: -(px(sm)) 0 px(md);
+            font-style: normal;
+            color: color(grey-darkest);
+          }
+
+          > .automation-actions {
+
+            > button {
+              margin: px(sm) px(md) 0 0 !important;
+
+              &.edit {
+                @extend %button-sm-warning;
+              }
+
+              &.delete {
+                @extend %button-sm-danger;
+              }
+
+              i {
+                display: inline-block;
+                margin-right: 0.3em;
+              }
+            }
+          }
+
+          > p {
+            margin: 0;
+          }
+        }
+
+        > ul {
+          flex: 2;
+          display: flex;
+          width: 100%;
+
+          > li {
+            flex: 1;
+            text-align: center;
+            font-weight: 600;
+
+            &:not(:last-of-type) {
+              font-weight: 900;
+              font-size: 1.8em;
+            }
+          }
+        }
+      }
+    }
+  }//end automations listing container
+
+  > .ptc-completionist-automation-create,
+  > .ptc-completionist-automation-details {
+    max-width: 700px;
+    margin: 0 auto;
+
+    > header {
+      display: flex;
+      align-items: center;
+
+      > button {
+        @extend %button-sm-grey-dark;
+        margin: 0;
+        flex: 1;
+        border-color: color(grey-dark);
+        font-size: 1em;
+
+        > i {
+          margin-right: em(sm);
+        }
+      }
+
+      > h1 {
+        flex: 8;
+        margin: 0;
+        font-size: em(lg);
+        text-align: center;
+      }
+
+      > div.spacer {
+        flex: 1;
+      }
+    }//end automation details header
+
+    > .ptc-completionist-automation-details-form {
+
+      > div {
+        background: color(white);
+        border-radius: px(md);
+        border: 2px solid color(grey-light);
+        padding: em(lg) em(lg) em(lg)+em(sm);
+        margin: px(md) 0;
+
+        > h2 {
+          font-size: 1.5em;
+          margin: 0 0 px(lg);
+
+          > span.automation-step-number {
+            background: color(brand-primary);
+            color: color(white);
+            display: inline-block;
+            border-radius: 50%;
+            line-height: 1.4em;
+            width: 1.5em;
+            height: 1.5em;
+            text-align: center;
+            vertical-align: baseline;
+            margin-right: em(sm);
+          }
+        }
+
+        button.remove-item {
+          @extend %button-sm-danger;
+          color: color(white);
+          text-shadow: 1px 1px 3px #{color(danger-dark)}99;
+          border: 1px solid color(danger);
+          padding: em(md) - .25em em(lg) em(md) - .15em;
+          margin: 0;
+          letter-spacing: .03em;
+
+          > i {
+            margin-right: em(sm);
+          }
+        }
+
+        button.add-item {
+          @extend %button-sm-brand-primary;
+          color: color(white);
+          text-shadow: 1px 1px 3px #{color(brand-primary-dark)}99;
+          border: 1px solid color(brand-primary);
+          padding: em(md) - .25em em(lg) em(md) - .15em;
+          margin: em(md) 0 0;
+          letter-spacing: .03em;
+          font-size: .95em;
+
+          > i {
+            margin-right: em(sm);
+          }
+        }
+
+        fieldset {
+          border: 1px solid color(grey-light);
+          border-radius: px(md);
+          padding: padding(full);
+          margin: px(md) 0;
+          background: color(grey-lightest);
+
+          legend {
+            font-weight: 600;
+            color: color(grey);
+            padding: 0 px(md);
+          }
+        }
+
+        div.form-group {
+          display: flex;
+          align-items: center;
+          margin: px(md) 0;
+
+          > label {
+            width: 5rem;
+            margin: 0;
+          }
+
+          > input,
+          > textarea,
+          > select,
+          > div.ptc-ajax-search-select-input {
+            flex: 1;
+            margin: 0;
+            max-width: calc( 100% - 5rem );
+          }
+        }
+
+        input,
+        textarea,
+        select {
+          border-color: color(grey-light) !important;
+        }
+
+        &.automation-info {
+
+          input,
+          textarea {
+            border-color: #{color(grey-light)}00;
+
+            &:hover, &:focus {
+              border-color: color(grey-light);
+            }
+          }
+
+          input {
+            font-size: 1.5em;
+            font-weight: 600;
+          }
+
+          textarea {
+            min-height: 6.2em;
+          }
+
+        }//end automation info
+
+        &.automation-event {
+          display: flex;
+          align-items: center;
+
+          > h2 {
+            margin: 0;
+            flex: 1;
+          }
+
+          > select {
+            flex: 2;
+          }
+        }//end automation event
+
+        &.automation-conditions-list {
+
+          fieldset {
+            padding-top: em(md) - .25em;
+
+            .form-group {
+              display: flex;
+              margin: 0;
+              padding: 0;
+
+              select,
+              input {
+                flex: 1;
+                margin-right: px(md);
+              }
+            }
+          }
+        }//end automation condition list
+
+        &.automation-actions-list {
+
+          > fieldset {
+
+            > div.form-group {
+
+              > select {
+                flex: 1;
+              }
+
+              > div {
+                flex: 2;
+                text-align: right;
+              }
+            }
+
+            > div[class^=action-meta] {
+              border-top: 1px dashed color(grey-light);
+              padding-top: px(md);
+            }
+
+            > div.action-meta_create_task {
+
+              > input[id^=ptc-new-task_name] {
+                width: 100%;
+                font-size: 1.2em;
+                font-weight: 600;
+              }
+
+              textarea {
+                min-height: 10em;
+              }
+
+              .ptc-ajax-search-select-input {
+
+                > * {
+                  width: 100%;
+                  margin: 0;
+                }
+
+                > ul.select-options {
+                  margin: px(md) 0 0;
+                  padding: 0;
+
+                  li.post-option {
+                    background: color(white);
+                    border: 1px solid color(grey-light);
+                    border-bottom: none;
+                    padding: em(sm) em(md);
+                    margin: 0;
+                    cursor: pointer;
+
+                    &:hover {
+                      background: color(grey-lightest);
+                    }
+
+                    &:first-of-type {
+                      border-radius: 5px 5px 0 0;
+                    }
+
+                    &:last-of-type {
+                      border-radius: 0 0 5px 5px;
+                      border-bottom: 1px solid color(grey-light);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }//end automation actions list
+
+      }//end automation details form section div
+
+      > button.save-automation {
+        @extend %button-sm-brand-primary;
+        padding: em(md);
+        color: color(white);
+        text-shadow: 1px 1px 3px #{color(brand-primary-dark)}50;
+        font-weight: 600;
+        font-size: 1.5em;
+        border-radius: px(md);
+        border: 2px solid color(brand-primary);
+        margin: 0 auto;
+        display: block;
+        width: 33%;
+        letter-spacing: em(sm)/5;
+
+        &:hover {
+          background: color(brand-primary-light);
+        }
+
+        > i {
+          margin-right: em(sm);
+        }
+      }
+    }//end automation details form
+  }//end automation details container
+}//end automations root container
