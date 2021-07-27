@@ -233,6 +233,10 @@
 			display: flex;
 			color: color(grey-darkest);
 
+			&:hover > div.body .task-actions {
+				visibility: visible;
+			}
+
 			button.mark-complete {
 				background: color(grey-lightest);
 				border-color: color(grey);
@@ -288,10 +292,6 @@
 						border-color: #8A041A;
 						color: color(danger-dark);
 					}
-				}
-
-				&:hover .task-actions {
-					visibility: visible;
 				}
 
 				.details {
