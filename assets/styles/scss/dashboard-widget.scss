@@ -1,4 +1,5 @@
 @import 'abstracts/colors';
+@import 'abstracts/effects';
 
 //----------------------
 
@@ -236,6 +237,8 @@
 				background: color(grey-lightest);
 				border-color: color(grey);
 				color: color(grey);
+				height: 1.3rem;
+				width: 1.3rem;
 			}
 
 			> div.body {
@@ -243,21 +246,26 @@
 				margin-left: 7px;
 
 				.name {
-					font-size: 1.05em;
-					line-height: 1.25rem;
-					font-weight: 500;
+					@extend %disable-select;
+					cursor: help;
+					font-size: 1.25em;
+					line-height: 1.3rem;
+					font-weight: bolder;
 
 					i.fa-sticky-note {
 						color: #F0B429;
+						margin-left: .125em;
 					}
 				}
 
 				.description {
-					margin: 7px 0 10px;
+					margin: 5px 0 10px;
+					display: none;//shown onclick
 				}
 
 				.task-actions {
-					margin: 7px 0 3px;
+					margin: 5px 0 0;
+					visibility: hidden;//shown on hover
 
 					a {
 						text-decoration: none !important;
@@ -282,13 +290,8 @@
 					}
 				}
 
-				.task-actions,
-				.description {
-					display: none;
-				}
-
 				&:hover .task-actions {
-					display: block;
+					visibility: visible;
 				}
 
 				.details {
