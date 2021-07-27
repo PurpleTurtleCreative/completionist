@@ -13,7 +13,7 @@
  * Version:           3.0.0
  * Requires PHP:      7.1
  * Requires at least: 5.0.0
- * Tested up to:      5.7.2
+ * Tested up to:      5.8.0
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
  * License:           GPL v3 or later
@@ -106,7 +106,7 @@ add_action( 'plugins_loaded', function() {
 		);
 		\Puc_v4_Factory::buildUpdateChecker(
 			$url,
-			PLUGIN_FILE, // Full path to the main plugin file or functions.php.
+			PLUGIN_FILE,
 			'completionist'
 		);
 	}
