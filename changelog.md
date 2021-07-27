@@ -1,4 +1,4 @@
-### 3.0.0 - [unreleased]
+### 3.0.0 - 2021-07-27
 #### Changed
 - Greatly improved source code organization—introduces breaking changes for source code users.
 - Minor style tweaks due to better color organization and standardization.
@@ -11,7 +11,7 @@
 - Plugin "Docs" link refers to the new PTC Docs website!
 - Character escaping visible in Automation description.
 - Enabled `new_user_task_lists` Asana updated endpoint to resolve deprecation logs.
-- Task actions now longer cause layout shifting when displayed on hover in the dashboard widget and pinned tasks metabox task lists.
+- Task actions no longer cause layout shifting when displayed on hover in the dashboard widget and pinned tasks metabox task lists.
 
 ### 2.0.0 - 2021-01-18
 #### Added
