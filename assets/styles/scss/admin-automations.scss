@@ -121,6 +121,13 @@
         display: flex;
         align-items: center;
 
+        &:hover {
+
+          .automation-actions {
+            visibility: visible;
+          }
+        }
+
         > header {
           flex: 1;
 
@@ -148,6 +155,7 @@
           }
 
           > .automation-actions {
+            visibility: hidden;//shown on hover
 
             > button {
               margin: px(sm) px(md) 0 0 !important;
