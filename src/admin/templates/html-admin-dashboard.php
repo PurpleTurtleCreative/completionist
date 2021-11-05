@@ -92,7 +92,7 @@ try {
 					try {
 						Asana_Interface::require_settings();
 					} catch ( \Exception $e ) {
-						require_once PLUGIN_PATH . 'src/class-html-builder.php';
+						require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
 						$alert_msg = HTML_Builder::get_error_message( $e );
 						echo '<p class="error-note"><i class="fas fa-exclamation-circle"></i>' . esc_html( $alert_msg ) . '</p>';
 					}
