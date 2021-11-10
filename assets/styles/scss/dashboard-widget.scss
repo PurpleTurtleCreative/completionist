@@ -3,10 +3,6 @@
 
 //----------------------
 
-#dashboard-widgets .meta-box-sortables #ptc-completionist_site-tasks.postbox {
-	margin-bottom: 0; // fix WordPress doubling widget's margin bottom.
-}
-
 #ptc-completionist_site-tasks .inside{
 	padding: 0;
 	margin: 0;
@@ -424,7 +420,7 @@
 			}
 		}
 
-		.note-box-error {
+		&.note-box-error {
 
 			div.note-box-dismiss {
 				background: #E12D39;
