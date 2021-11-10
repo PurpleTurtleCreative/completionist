@@ -85,6 +85,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Events' ) ) {
 								&& 'post_modified_gmt' != $field
 							) {
 								$has_changes = true;
+								break;
 							}
 						}
 						if ( $has_changes ) {
