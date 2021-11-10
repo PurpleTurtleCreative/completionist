@@ -1,4 +1,12 @@
+### 3.0.1 - 2021-11-09
+
+#### Fixed
+
+- Incorrect require file path in the admin dashboard widget.
+- Minor style fixes.
+
 ### 3.0.0 - 2021-07-27
+
 #### Changed
 - Greatly improved source code organization—introduces breaking changes for source code users.
 - Minor style tweaks due to better color organization and standardization.
