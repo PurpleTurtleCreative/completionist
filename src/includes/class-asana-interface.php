@@ -17,6 +17,7 @@ defined( 'ABSPATH' ) || die();
 require_once 'class-options.php';
 require_once 'errors.php';
 require_once 'class-html-builder.php';
+require_once 'class-cache-manager.php';
 
 if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 	/**
@@ -566,6 +567,13 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				throw new \Exception( 'Invalid task gid', 400 );
 			}
 
+			// Get from cache.
+			$transient_key = Cache_Manager::get_cache_key( "task_{$task_gid}" );
+			$transient = get_transient( $transient_key );
+			if ( false !== $transient ) {
+				return $transient;
+			}
+
 			try {
 
 				$asana = self::get_client();
@@ -594,6 +602,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 					}
 				}
 
+				set_transient( $transient_key, $task, Cache_Manager::get_transient_lifespan() );
 				return $task;
 			} catch ( \Exception $e ) {
 
@@ -626,7 +635,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				throw $e;
 			}
 
-			throw new \Exception( 'Failed to get task data', 0 );
+			throw new \Exception( 'Failed to get task data.', 0 );
 		}
 
 		/**
@@ -687,6 +696,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 */
 		public static function maybe_get_all_site_tasks( string $opt_fields ) : array {
 
+			$transient_key = Cache_Manager::get_cache_key( 'all_site_tasks' );
+			$transient = get_transient( $transient_key );
+			if ( false !== $transient ) {
+				return $transient;
+			}
+
 			$asana = self::get_client();
 
 			$tasks = [];
@@ -715,6 +730,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$all_tasks[] = $task;
 			}
 
+			set_transient( $transient_key, $all_tasks, Cache_Manager::get_transient_lifespan() );
 			return $all_tasks;
 		}
 
