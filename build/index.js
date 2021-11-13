@@ -1191,6 +1191,64 @@ function PTCCompletionistTasksDashboardWidget() {
 
 /***/ }),
 
+/***/ "./src/components/task/TaskActions.jsx":
+/*!*********************************************!*\
+  !*** ./src/components/task/TaskActions.jsx ***!
+  \*********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TaskActions; },
+/* harmony export */   "delete_task": function() { return /* binding */ delete_task; },
+/* harmony export */   "unpin_task": function() { return /* binding */ unpin_task; },
+/* harmony export */   "get_asana_task_url": function() { return /* binding */ get_asana_task_url; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+function TaskActions(_ref) {
+  let {
+    taskGID
+  } = _ref;
+  const task_url = get_asana_task_url(taskGID);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-TaskActions"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: task_url,
+    target: "_asana"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    title: "View in Asana",
+    className: "view-task",
+    type: "button"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-link"
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    title: "Unpin",
+    className: "unpin-task",
+    type: "button"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-thumbtack"
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    title: "Delete",
+    className: "delete-task",
+    type: "button"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-minus"
+  })));
+}
+function delete_task(taskGID) {
+  console.log(`@TODO: Delete task ${taskGID}`);
+}
+function unpin_task(taskGID) {
+  console.log(`@TODO: Unpin task ${taskGID}`);
+}
+function get_asana_task_url(taskGID) {
+  return `https://app.asana.com/0/0/${taskGID}/f`;
+}
+
+/***/ }),
+
 /***/ "./src/components/task/TaskList.jsx":
 /*!******************************************!*\
   !*** ./src/components/task/TaskList.jsx ***!
@@ -1215,7 +1273,7 @@ function TaskList(_ref) {
     task: t
   }));
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "ptc-asana-task-list"
+    className: "ptc-TaskList"
   }, renderedTasks);
 }
 
@@ -1233,13 +1291,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _TaskActions_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskActions.jsx */ "./src/components/task/TaskActions.jsx");
+
 
 function TaskRow(_ref) {
   let {
     task
   } = _ref;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("section", {
-    className: "ptc-completionist-task"
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-TaskRow"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     title: "Mark Complete",
     className: "mark-complete",
@@ -1254,7 +1314,22 @@ function TaskRow(_ref) {
     className: "details"
   }, task.assignee && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "assignee"
-  }, task.assignee.gid)));
+  }, task.assignee.gid), task.due_on && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "due"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-clock"
+  }), task.due_on)), task.notes && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "description"
+  }, task.notes), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskActions_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    taskGID: task.gid
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "cta-button"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: "#TODO",
+    target: ""
+  }, "@TODO", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-long-arrow-alt-right"
+  }))));
 }
 
 /***/ }),
@@ -1367,7 +1442,7 @@ jQuery(function ($) {
   }
 });
 document.addEventListener('DOMContentLoaded', () => {
-  const rootNode = document.getElementById('ptc-completionist-tasks-dashboard-widget');
+  const rootNode = document.getElementById('ptc-PTCCompletionistTasksDashboardWidget');
 
   if (null !== rootNode) {
     render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_PTCCompletionistTasksDashboardWidget_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], null), rootNode);

@@ -75,7 +75,7 @@ try {
 	/* Display */
 	?>
 
-	<div id="ptc-completionist-tasks-dashboard-widget">
+	<div id="ptc-PTCCompletionistTasksDashboardWidget">
 		<p>Loading...</p>
 	</div>
 	<?php return; ?>
