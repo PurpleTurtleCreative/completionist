@@ -1,20 +1,19 @@
+import { getTaskUrl } from './taskUtil.jsx';
+
+const { useState, useCallback } = wp.element;
+
 export default function TaskActions({taskGID}) {
-	/*
-	@TODO: useState vars for component state
-	- isProcessing, which action for button loader animation and processing lock down
-	*/
+	const [isProcessing, setIsProcessing] = useState(false);
 
-	const task_url = get_asana_task_url(taskGID);
+	const handleUnpinTask = useCallback((taskGID) => {
+		console.log(`@TODO - Handle unpin task ${taskGID}`);
+	}, []);
 
-	// @TODO: useMemo to memoize function definition.
-	const handleUnpinTask = (taskGID) => {
+	const handleDeleteTask = useCallback((taskGID) => {
+		console.log(`@TODO - Handle delete task ${taskGID}`);
+	}, []);
 
-	};
-
-	// @TODO: useMemo to memoize function definition.
-	const handleDeleteTask = (taskGID) => {
-
-	};
+	const task_url = getTaskUrl(taskGID);
 
 	return (
 		<div className="ptc-TaskActions">
@@ -23,24 +22,12 @@ export default function TaskActions({taskGID}) {
 					<i className="fas fa-link"></i>
 				</button>
 			</a>
-			<button title="Unpin" className="unpin-task" type="button" onClick={handleUnpinTask(taskGID)}>
+			<button title="Unpin" className="unpin-task" type="button" onClick={() => handleUnpinTask(taskGID)}>
 				<i className="fas fa-thumbtack"></i>
 			</button>
-			<button title="Delete" className="delete-task" type="button" onClick={handleDeleteTask(taskGID)}>
+			<button title="Delete" className="delete-task" type="button" onClick={() => handleDeleteTask(taskGID)}>
 				<i className="fas fa-minus"></i>
 			</button>
 		</div>
 	);
-}
-
-export function delete_task(taskGID) {
-	console.log(`@TODO: Delete task ${taskGID}`);
-}
-
-export function unpin_task(taskGID) {
-	console.log(`@TODO: Unpin task ${taskGID}`);
-}
-
-export function get_asana_task_url(taskGID) {
-	return `https://app.asana.com/0/0/${taskGID}/f`;
 }

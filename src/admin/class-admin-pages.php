@@ -166,6 +166,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					// 		'current_page' => 1,
 					// 	]
 					// );
+					wp_enqueue_script( 'fontawesome-5' );
 					wp_enqueue_style(
 						'ptc-completionist_dashboard-widget-css',
 						PLUGIN_URL . '/assets/styles/dashboard-widget.css',

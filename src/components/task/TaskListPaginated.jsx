@@ -22,7 +22,7 @@ export default function TaskListPaginated({limit, tasks}) {
 	const renderedPageButtons = [];
 	for ( let i = 1; i <= totalPages; ++i ) {
 		renderedPageButtons.push(
-			<button className="page-option" type="button" title={`Page ${i}`} disabled={i === currentPage} onClick={() => goToPage(i)}>{i}</button>
+			<button type="button" title={`Page ${i}`} disabled={i === currentPage} onClick={() => goToPage(i)}>{i}</button>
 		);
 	}
 
@@ -33,13 +33,13 @@ export default function TaskListPaginated({limit, tasks}) {
 
 			<nav>
 
-				<button data-page="prev" type="button" title="Previous Page" disabled={1 === currentPage} onClick={() => goToPage(currentPage - 1)}>
+				<button type="button" title="Previous Page" disabled={1 === currentPage} onClick={() => goToPage(currentPage - 1)}>
 					<i class="fas fa-angle-left"></i>
 				</button>
 
 				{renderedPageButtons}
 
-				<button data-page="next" type="button" title="Next Page" disabled={totalPages === currentPage} onClick={() => goToPage(currentPage + 1)}>
+				<button type="button" title="Next Page" disabled={totalPages === currentPage} onClick={() => goToPage(currentPage + 1)}>
 					<i class="fas fa-angle-right"></i>
 				</button>
 

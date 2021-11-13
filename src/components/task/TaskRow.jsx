@@ -1,16 +1,33 @@
 import TaskActions from './TaskActions.jsx';
 
+const { useState, useCallback } = wp.element;
+
 export default function TaskRow({task}) {
+	const [showDescription, setShowDescription] = useState(false);
+
+	const handleMarkComplete = useCallback((taskGID) => {
+		console.log(`@TODO - Handle mark complete for task ${taskGID}`);
+	}, []);
+
+	const handleToggleDescription = useCallback(() => {
+		if ( ! task.notes ) {
+			return;
+		}
+		setShowDescription(!showDescription);
+	}, [task, showDescription, setShowDescription]);
+
+	const notesIconClassName = ( showDescription ) ? 'fas' : 'far';
+
 	return (
 		<div className="ptc-TaskRow">
 
-			<button title="Mark Complete" className="mark-complete" type="button">
+			<button title="Mark Complete" className="mark-complete" type="button" onClick={() => handleMarkComplete(task.gid)}>
 				<i className="fas fa-check"></i>
 			</button>
 
-			<div className="name">
+			<div className="name" onClick={handleToggleDescription}>
 				{task.name}
-				{task.notes && <i className="far fa-sticky-note"></i>}
+				{task.notes && <i className={`${notesIconClassName} fa-sticky-note`}></i>}
 			</div>
 
 			<div className="details">
@@ -18,7 +35,7 @@ export default function TaskRow({task}) {
 				{task.due_on && <div className="due"><i className="fas fa-clock"></i>{task.due_on}</div>}
 			</div>
 
-			{task.notes && <div className="description">{task.notes}</div>}
+			{showDescription && <div className="description">{task.notes}</div>}
 
 			<TaskActions taskGID={task.gid} />
 

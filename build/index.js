@@ -1200,30 +1200,29 @@ function PTCCompletionistTasksDashboardWidget() {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ TaskActions; },
-/* harmony export */   "delete_task": function() { return /* binding */ delete_task; },
-/* harmony export */   "unpin_task": function() { return /* binding */ unpin_task; },
-/* harmony export */   "get_asana_task_url": function() { return /* binding */ get_asana_task_url; }
+/* harmony export */   "default": function() { return /* binding */ TaskActions; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./taskUtil.jsx */ "./src/components/task/taskUtil.jsx");
 
+
+const {
+  useState,
+  useCallback
+} = wp.element;
 function TaskActions(_ref) {
   let {
     taskGID
   } = _ref;
-
-  /*
-  @TODO: useState vars for component state
-  - isProcessing, which action for button loader animation and processing lock down
-  */
-  const task_url = get_asana_task_url(taskGID); // @TODO: useMemo to memoize function definition.
-
-  const handleUnpinTask = taskGID => {}; // @TODO: useMemo to memoize function definition.
-
-
-  const handleDeleteTask = taskGID => {};
-
+  const [isProcessing, setIsProcessing] = useState(false);
+  const handleUnpinTask = useCallback(taskGID => {
+    console.log(`@TODO - Handle unpin task ${taskGID}`);
+  }, []);
+  const handleDeleteTask = useCallback(taskGID => {
+    console.log(`@TODO - Handle delete task ${taskGID}`);
+  }, []);
+  const task_url = (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.getTaskUrl)(taskGID);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-TaskActions"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
@@ -1239,26 +1238,17 @@ function TaskActions(_ref) {
     title: "Unpin",
     className: "unpin-task",
     type: "button",
-    onClick: handleUnpinTask(taskGID)
+    onClick: () => handleUnpinTask(taskGID)
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-thumbtack"
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     title: "Delete",
     className: "delete-task",
     type: "button",
-    onClick: handleDeleteTask(taskGID)
+    onClick: () => handleDeleteTask(taskGID)
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-minus"
   })));
-}
-function delete_task(taskGID) {
-  console.log(`@TODO: Delete task ${taskGID}`);
-}
-function unpin_task(taskGID) {
-  console.log(`@TODO: Unpin task ${taskGID}`);
-}
-function get_asana_task_url(taskGID) {
-  return `https://app.asana.com/0/0/${taskGID}/f`;
 }
 
 /***/ }),
@@ -1335,7 +1325,6 @@ function TaskListPaginated(_ref) {
 
   for (let i = 1; i <= totalPages; ++i) {
     renderedPageButtons.push((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-      className: "page-option",
       type: "button",
       title: `Page ${i}`,
       disabled: i === currentPage,
@@ -1348,7 +1337,6 @@ function TaskListPaginated(_ref) {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskList_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
     tasks: currentTasks
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("nav", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    "data-page": "prev",
     type: "button",
     title: "Previous Page",
     disabled: 1 === currentPage,
@@ -1356,7 +1344,6 @@ function TaskListPaginated(_ref) {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     class: "fas fa-angle-left"
   })), renderedPageButtons, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    "data-page": "next",
     type: "button",
     title: "Next Page",
     disabled: totalPages === currentPage,
@@ -1383,22 +1370,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _TaskActions_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskActions.jsx */ "./src/components/task/TaskActions.jsx");
 
 
+const {
+  useState,
+  useCallback
+} = wp.element;
 function TaskRow(_ref) {
   let {
     task
   } = _ref;
+  const [showDescription, setShowDescription] = useState(false);
+  const handleMarkComplete = useCallback(taskGID => {
+    console.log(`@TODO - Handle mark complete for task ${taskGID}`);
+  }, []);
+  const handleToggleDescription = useCallback(() => {
+    if (!task.notes) {
+      return;
+    }
+
+    setShowDescription(!showDescription);
+  }, [task, showDescription, setShowDescription]);
+  const notesIconClassName = showDescription ? 'fas' : 'far';
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-TaskRow"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     title: "Mark Complete",
     className: "mark-complete",
-    type: "button"
+    type: "button",
+    onClick: () => handleMarkComplete(task.gid)
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-check"
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "name"
+    className: "name",
+    onClick: handleToggleDescription
   }, task.name, task.notes && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    className: "far fa-sticky-note"
+    className: `${notesIconClassName} fa-sticky-note`
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "details"
   }, task.assignee && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -1407,7 +1412,7 @@ function TaskRow(_ref) {
     className: "due"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-clock"
-  }), task.due_on)), task.notes && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }), task.due_on)), showDescription && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "description"
   }, task.notes), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskActions_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
     taskGID: task.gid
@@ -1419,6 +1424,30 @@ function TaskRow(_ref) {
   }, "@TODO", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-long-arrow-alt-right"
   }))));
+}
+
+/***/ }),
+
+/***/ "./src/components/task/taskUtil.jsx":
+/*!******************************************!*\
+  !*** ./src/components/task/taskUtil.jsx ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "deleteTask": function() { return /* binding */ deleteTask; },
+/* harmony export */   "unpinTask": function() { return /* binding */ unpinTask; },
+/* harmony export */   "getTaskUrl": function() { return /* binding */ getTaskUrl; }
+/* harmony export */ });
+function deleteTask(taskGID) {
+  console.log(`@TODO: Delete task ${taskGID}`);
+}
+function unpinTask(taskGID) {
+  console.log(`@TODO: Unpin task ${taskGID}`);
+}
+function getTaskUrl(taskGID) {
+  return `https://app.asana.com/0/0/${taskGID}/f`;
 }
 
 /***/ }),
