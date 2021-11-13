@@ -75,6 +75,11 @@ try {
 	/* Display */
 	?>
 
+	<div id="ptc-completionist-tasks-dashboard-widget">
+		<p>Loading...</p>
+	</div>
+	<?php return; ?>
+
 	<header>
 
 		<button id="all-site-tasks" title="View All Site Tasks" type="button" data-viewing-tasks="true" data-category-task-gids='<?php echo json_encode( Asana_Interface::get_tasks_gid_array( $all_incomplete_tasks ) ); ?>'>

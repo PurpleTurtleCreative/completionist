@@ -1,1 +1,1379 @@
-!function(t){var e={};function n(o){if(e[o])return e[o].exports;var a=e[o]={i:o,l:!1,exports:{}};return t[o].call(a.exports,a,a.exports,n),a.l=!0,a.exports}n.m=t,n.c=e,n.d=function(t,e,o){n.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:o})},n.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},n.t=function(t,e){if(1&e&&(t=n(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var o=Object.create(null);if(n.r(o),Object.defineProperty(o,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var a in t)n.d(o,a,function(e){return t[e]}.bind(null,a));return o},n.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return n.d(e,"a",e),e},n.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},n.p="",n(n.s=16)}([function(t,e){!function(){t.exports=this.wp.element}()},function(t,e){t.exports=function(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}},function(t,e){function n(e){return t.exports=n=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)},n(e)}t.exports=n},function(t,e){t.exports=function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}},function(t,e){function n(t,e){for(var n=0;n<e.length;n++){var o=e[n];o.enumerable=o.enumerable||!1,o.configurable=!0,"value"in o&&(o.writable=!0),Object.defineProperty(t,o.key,o)}}t.exports=function(t,e,o){return e&&n(t.prototype,e),o&&n(t,o),t}},function(t,e,n){var o=n(11);t.exports=function(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&o(t,e)}},function(t,e,n){var o=n(7),a=n(1);t.exports=function(t,e){return!e||"object"!==o(e)&&"function"!=typeof e?a(t):e}},function(t,e){function n(e){return"function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?t.exports=n=function(t){return typeof t}:t.exports=n=function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},n(e)}t.exports=n},function(t,e){t.exports=function(t,e,n){return e in t?Object.defineProperty(t,e,{value:n,enumerable:!0,configurable:!0,writable:!0}):t[e]=n,t}},function(t,e,n){var o=n(12),a=n(13),i=n(14),r=n(15);t.exports=function(t){return o(t)||a(t)||i(t)||r()}},function(t,e){t.exports=function(t,e){(null==e||e>t.length)&&(e=t.length);for(var n=0,o=new Array(e);n<e;n++)o[n]=t[n];return o}},function(t,e){function n(e,o){return t.exports=n=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t},n(e,o)}t.exports=n},function(t,e,n){var o=n(10);t.exports=function(t){if(Array.isArray(t))return o(t)}},function(t,e){t.exports=function(t){if("undefined"!=typeof Symbol&&Symbol.iterator in Object(t))return Array.from(t)}},function(t,e,n){var o=n(10);t.exports=function(t,e){if(t){if("string"==typeof t)return o(t,e);var n=Object.prototype.toString.call(t).slice(8,-1);return"Object"===n&&t.constructor&&(n=t.constructor.name),"Map"===n||"Set"===n?Array.from(t):"Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)?o(t,e):void 0}}},function(t,e){t.exports=function(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}},function(t,e,n){"use strict";n.r(e);var o=n(0),a=n(7),i=n.n(a),r=n(3),c=n.n(r),s=n(4),l=n.n(s),u=n(1),m=n.n(u),p=n(5),d=n.n(p),f=n(6),h=n.n(f),b=n(2),v=n.n(b),g=n(8),O=n.n(g);function j(t,e){var n=Object.keys(t);if(Object.getOwnPropertySymbols){var o=Object.getOwnPropertySymbols(t);e&&(o=o.filter((function(e){return Object.getOwnPropertyDescriptor(t,e).enumerable}))),n.push.apply(n,o)}return n}function y(t){for(var e=1;e<arguments.length;e++){var n=null!=arguments[e]?arguments[e]:{};e%2?j(Object(n),!0).forEach((function(e){O()(t,e,n[e])})):Object.getOwnPropertyDescriptors?Object.defineProperties(t,Object.getOwnPropertyDescriptors(n)):j(Object(n)).forEach((function(e){Object.defineProperty(t,e,Object.getOwnPropertyDescriptor(n,e))}))}return t}function _(t){var e=function(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{return Date.prototype.toString.call(Reflect.construct(Date,[],(function(){}))),!0}catch(t){return!1}}();return function(){var n,o=v()(t);if(e){var a=v()(this).constructor;n=Reflect.construct(o,arguments,a)}else n=o.apply(this,arguments);return h()(this,n)}}var E=function(t){d()(n,t);var e=_(n);function n(t){var o;return c()(this,n),(o=e.call(this,t)).state=y(y({},t.automation),{},{isDeleting:!1}),o.goToAutomation=t.goToAutomation,o.deleteAutomation=o.deleteAutomation.bind(m()(o)),o}return l()(n,[{key:"deleteAutomation",value:function(){var t=this;this.setState({isDeleting:!0},(function(){t.props.deleteAutomation(t.state.ID,(function(){t.setState({isDeleting:!1})}))}))}},{key:"render",value:function(){var t=this;return Object(o.createElement)("div",{className:"ptc-completionist-automation-row"},Object(o.createElement)("header",null,Object(o.createElement)("h2",{title:"Automation ID: "+this.state.ID,onClick:function(){return t.goToAutomation(t.state.ID)}},this.state.title),Object(o.createElement)("p",{className:"last-modified"},Object(o.createElement)("em",null,"Updated ",this.state.last_modified)),this.state.description.length>0&&Object(o.createElement)("p",{className:"description",dangerouslySetInnerHTML:{__html:this.state.description}}),Object(o.createElement)("div",{className:"automation-actions"},Object(o.createElement)("button",{className:"edit",onClick:function(){return t.goToAutomation(t.state.ID)}},Object(o.createElement)("i",{className:"fas fa-pen"})," Edit"),Object(o.createElement)("button",{className:"delete",onClick:this.deleteAutomation,disabled:this.state.isDeleting},Object(o.createElement)("i",{className:"fas fa-trash"})," Delete"))),Object(o.createElement)("ul",null,Object(o.createElement)("li",{title:this.state.total_conditions+" Conditions"},this.state.total_conditions),Object(o.createElement)("li",{title:this.state.total_actions+" Actions"},this.state.total_actions),Object(o.createElement)("li",{title:"Triggered "+this.state.total_triggered+" times"},this.state.total_triggered),Object(o.createElement)("li",{title:"Last Triggered "+this.state.last_triggered},this.state.last_triggered)))}}]),n}(wp.element.Component);function w(t){var e=function(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{return Date.prototype.toString.call(Reflect.construct(Date,[],(function(){}))),!0}catch(t){return!1}}();return function(){var n,o=v()(t);if(e){var a=v()(this).constructor;n=Reflect.construct(o,arguments,a)}else n=o.apply(this,arguments);return h()(this,n)}}var A=function(t){d()(n,t);var e=w(n);function n(t){var o;return c()(this,n),(o=e.call(this,t)).state={automations:t.automations,orderBy:"title"},o.goToAutomation=t.goToAutomation,o}return l()(n,[{key:"sortAutomationsListing",value:function(){}},{key:"componentDidUpdate",value:function(t){this.props.automations!==t.automations&&this.setState({automations:this.props.automations})}},{key:"render",value:function(){var t=this,e=this.state.automations.map((function(e){return Object(o.createElement)(E,{key:e.ID,automation:e,goToAutomation:t.goToAutomation,deleteAutomation:t.props.deleteAutomation})}));return Object(o.createElement)("div",{className:"ptc-completionist-automations-listing"},Object(o.createElement)("div",{className:"title"},Object(o.createElement)("h1",null,"Automations"),Object(o.createElement)("div",{className:"actions"},Object(o.createElement)("button",{onClick:function(){return t.goToAutomation("new")}},Object(o.createElement)("i",{className:"fas fa-plus"})," Add New"))),Object(o.createElement)("header",null,Object(o.createElement)("div",null,"Automation"),Object(o.createElement)("div",null,Object(o.createElement)("i",{className:"fas fa-question"})," Conditions"),Object(o.createElement)("div",null,Object(o.createElement)("i",{className:"fas fa-running"})," Actions"),Object(o.createElement)("div",null,Object(o.createElement)("i",{className:"fas fa-bolt"})," Triggers"),Object(o.createElement)("div",null,Object(o.createElement)("i",{className:"fas fa-history"})," Last Triggered")),Object(o.createElement)("div",{className:"ptc-completionist-automations-list"},e))}}]),n}(wp.element.Component),S=n(9),k=n.n(S);function C(t){var e=function(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{return Date.prototype.toString.call(Reflect.construct(Date,[],(function(){}))),!0}catch(t){return!1}}();return function(){var n,o=v()(t);if(e){var a=v()(this).constructor;n=Reflect.construct(o,arguments,a)}else n=o.apply(this,arguments);return h()(this,n)}}var N=function(t){d()(n,t);var e=C(n);function n(t){var o;return c()(this,n),(o=e.call(this,t)).state={isLoading:!1,currentRequest:{},textInputHasFocus:!1,options:[],currentValue:"",currentLabel:""},"initialValue"in t&&t.initialValue&&(o.state.currentValue=t.initialValue),"initialLabel"in t&&t.initialLabel&&(o.state.currentLabel=t.initialLabel),o.handleSearchChange=o.handleSearchChange.bind(m()(o)),o.handleOptionChange=o.handleOptionChange.bind(m()(o)),o.createSelectOptions=o.createSelectOptions.bind(m()(o)),o.handleSearchBlur=o.handleSearchBlur.bind(m()(o)),o}return l()(n,[{key:"handleSearchChange",value:function(t){var e=this;t.trim().length>=3?this.setState({isLoading:!0,currentValue:"",currentLabel:t,options:[]},(function(){var t={action:"ptc_get_post_options_by_title",nonce:window.ptc_completionist_automations.nonce,title:e.state.currentLabel},n=window.jQuery.post(window.ajaxurl,t,(function(t){e.setState({isLoading:!1,currentRequest:{},options:t.data})}),"json").fail((function(t,n){"abort"!=n&&(alert("Failed to search for posts by title."),e.setState({isLoading:!1,options:[]}))}));e.setState((function(t){return"object"===i()(t.currentRequest)&&"function"==typeof t.currentRequest.abort&&e.state.currentRequest.abort(),{currentRequest:n}}))})):this.setState({isLoading:!1,currentValue:"",currentLabel:t,options:[]})}},{key:"handleOptionChange",value:function(t,e){var n=this;this.setState((function(n){return{currentValue:t,currentLabel:e}}),(function(){n.props.onSelectOption(n.state.currentValue)}))}},{key:"handleSearchBlur",value:function(){this.setState((function(t){return{textInputHasFocus:!1,currentLabel:""===t.currentValue?"":t.currentLabel}}))}},{key:"createSelectOptions",value:function(){var t=this;return this.state.options.length<1?!0===this.state.isLoading?Object(o.createElement)("li",null,Object(o.createElement)("i",{className:"fas fa-spinner fa-pulse"})," Searching for posts..."):this.state.currentLabel.trim().length>=3?Object(o.createElement)("li",null,"No post results."):Object(o.createElement)("li",null,"Enter at least 3 characters to search..."):this.state.options.map((function(e){return Object(o.createElement)("li",{className:"post-option","data-value":e.ID,key:e.ID,onMouseDown:function(){return t.handleOptionChange(e.ID,e.post_title)}},e.post_title+" ["+e.ID+"]")}))}},{key:"componentDidMount",value:function(){var t=this;""!==this.state.currentValue.trim()&&""===this.state.currentLabel.trim()&&this.setState({currentLabel:"(Loading...)"},(function(){var e={action:"ptc_get_post_title_by_id",nonce:window.ptc_completionist_automations.nonce,post_id:t.state.currentValue};window.jQuery.post(window.ajaxurl,e,(function(e){"success"==e.status&&""!=e.data?t.setState({currentLabel:e.data}):(console.error("Failed to load initial PostSearchSelectInput label for initial value."),console.error(e),t.setState({currentLabel:"(Error: Failed to load post title)"}))}),"json").fail((function(){console.error("Failed to load initial PostSearchSelectInput label for initial value."),t.setState({currentLabel:"(Error: Failed to load post title)"})}))}))}},{key:"componentDidUpdate",value:function(t,e){this.state.currentValue!==e.currentValue&&this.props.onSelectOption(this.state.currentValue)}},{key:"render",value:function(){var t=this,e=null;if(!0===this.state.textInputHasFocus){var n=this.createSelectOptions(this.state.options);e=Object(o.createElement)("ul",{className:"select-options"},n)}return Object(o.createElement)("div",{className:"ptc-ajax-search-select-input"},Object(o.createElement)("input",{id:this.props.id,type:"text",value:this.state.currentLabel,onChange:function(e){return t.handleSearchChange(e.target.value)},onFocus:function(){return t.setState({textInputHasFocus:!0})},onBlur:function(){return t.handleSearchBlur()}}),Object(o.createElement)("input",{type:"hidden",value:this.state.currentValue}),e)}}]),n}(wp.element.Component);function D(t,e){var n=Object.keys(t);if(Object.getOwnPropertySymbols){var o=Object.getOwnPropertySymbols(t);e&&(o=o.filter((function(e){return Object.getOwnPropertyDescriptor(t,e).enumerable}))),n.push.apply(n,o)}return n}function L(t){for(var e=1;e<arguments.length;e++){var n=null!=arguments[e]?arguments[e]:{};e%2?D(Object(n),!0).forEach((function(e){O()(t,e,n[e])})):Object.getOwnPropertyDescriptors?Object.defineProperties(t,Object.getOwnPropertyDescriptors(n)):D(Object(n)).forEach((function(e){Object.defineProperty(t,e,Object.getOwnPropertyDescriptor(n,e))}))}return t}function P(t){var e=function(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{return Date.prototype.toString.call(Reflect.construct(Date,[],(function(){}))),!0}catch(t){return!1}}();return function(){var n,o=v()(t);if(e){var a=v()(this).constructor;n=Reflect.construct(o,arguments,a)}else n=o.apply(this,arguments);return h()(this,n)}}var x=wp.element.Component,R=function(t){d()(n,t);var e=P(n);function n(t){var o;return c()(this,n),o=e.call(this,t),"automation"in t?(o.state=t.automation,o.state.saveButtonLabel="Create","ID"in t.automation&&t.automation.ID>0&&(o.state.saveButtonLabel="Update"),o.state.isSubmitting=!1):o.state={ID:0,title:"",description:"",hook_name:"",last_modified:"",conditions:[],actions:[],saveButtonLabel:"Create",isSubmitting:!1},o.handleAutomationChange=o.handleAutomationChange.bind(m()(o)),o.handleConditionChange=o.handleConditionChange.bind(m()(o)),o.handleAddCondition=o.handleAddCondition.bind(m()(o)),o.handleRemoveCondition=o.handleRemoveCondition.bind(m()(o)),o.handleActionChange=o.handleActionChange.bind(m()(o)),o.handleActionMetaChange=o.handleActionMetaChange.bind(m()(o)),o.handleAddAction=o.handleAddAction.bind(m()(o)),o.handleRemoveAction=o.handleRemoveAction.bind(m()(o)),o}return l()(n,[{key:"saveAutomation",value:function(){var t=this;this.state.isSubmitting||this.setState({isSubmitting:!0},(function(){var e={action:"ptc_save_automation",nonce:window.ptc_completionist_automations.nonce,automation:t.state};window.jQuery.post(window.ajaxurl,e,(function(e){e.status&&"success"==e.status&&e.code&&e.data&&"object"==i()(e.data)&&"ID"in e.data&&e.data.ID&&e.data.ID>0?201==e.code?t.props.goToAutomation(e.data.ID):200==e.code&&t.setState(L(L({},e.data),{},{isSubmitting:!1})):(e.message&&e.code?alert("Error "+e.code+". The automation could not be saved. "+e.message):alert("Error 409. The automation could not be saved."),t.setState({isSubmitting:!1}))}),"json").fail((function(){alert("Error 500. The automation could not be saved."),t.setState({isSubmitting:!1})}))}))}},{key:"handleAutomationChange",value:function(t,e){this.setState((function(n){return O()({},t,e)}))}},{key:"handleConditionChange",value:function(t,e,n){this.setState((function(o){var a=k()(o.conditions);return a[t]=L(L({},o.conditions[t]),{},O()({},e,n)),{conditions:a}}))}},{key:"handleAddCondition",value:function(){this.setState((function(t){return{conditions:[].concat(k()(t.conditions),[{ID:0,property:"",comparison_method:window.ptc_completionist_automations.field_comparison_methods[0],value:""}])}}))}},{key:"handleRemoveCondition",value:function(t){this.setState((function(e){return{conditions:e.conditions.filter((function(e,n){return n!==t}))}}))}},{key:"handleActionChange",value:function(t,e){var n=this;this.setState((function(o){var a=k()(o.actions);return a[t]=L(L({},o.actions[t]),{},{action:e,meta:n.getDefaultActionMeta(e)}),{actions:a}}))}},{key:"handleActionMetaChange",value:function(t,e,n){this.setState((function(o){var a=k()(o.actions);return a[t]=L(L({},o.actions[t]),{},{meta:L(L({},o.actions[t].meta),{},O()({},e,n))}),{actions:a}}))}},{key:"handleAddAction",value:function(){var t=this;this.setState((function(e){return{actions:[].concat(k()(e.actions),[{ID:0,action:"create_task",triggered_count:0,last_triggered:"",meta:t.getDefaultActionMeta("create_task")}])}}))}},{key:"handleRemoveAction",value:function(t){this.setState((function(e){return{actions:e.actions.filter((function(e,n){return n!==t}))}}))}},{key:"getDefaultActionMeta",value:function(t){switch(t){case"create_task":return{task_author:Object.keys(window.ptc_completionist_automations.connected_workspace_users)[0]};default:return{}}}},{key:"render",value:function(){var t=this;return Object(o.createElement)("div",{className:"ptc-completionist-automation-details-form"},Object(o.createElement)(I,{title:this.state.title,changeTitle:function(e){return t.handleAutomationChange("title",e)},description:this.state.description,changeDescription:function(e){return t.handleAutomationChange("description",e)}}),Object(o.createElement)(T,{hook_name:this.state.hook_name,changeEvent:function(e){return t.handleAutomationChange("hook_name",e)}}),Object(o.createElement)(M,{event:this.state.hook_name,conditions:this.state.conditions,changeCondition:this.handleConditionChange,addCondition:this.handleAddCondition,removeCondition:this.handleRemoveCondition}),Object(o.createElement)(F,{event:this.state.hook_name,actions:this.state.actions,changeAction:this.handleActionChange,addAction:this.handleAddAction,removeAction:this.handleRemoveAction,changeActionMeta:this.handleActionMetaChange}),this.state.isSubmitting?Object(o.createElement)("button",{className:"save-automation",onClick:function(){return t.saveAutomation()},disabled:"disabled"},Object(o.createElement)("i",{className:"fas fa-spinner fa-pulse"})," Saving..."):Object(o.createElement)("button",{className:"save-automation",onClick:function(){return t.saveAutomation()}},Object(o.createElement)("i",{className:"fas fa-save"})," ",this.state.saveButtonLabel))}}]),n}(x),I=function(t){d()(n,t);var e=P(n);function n(t){return c()(this,n),e.call(this,t)}return l()(n,[{key:"render",value:function(){var t=this;return Object(o.createElement)("div",{className:"automation-info"},Object(o.createElement)("div",{className:"form-group"},Object(o.createElement)("label",{for:"automation-title"},"Title"),Object(o.createElement)("input",{id:"automation-title",type:"text",value:this.props.title,onChange:function(e){return t.props.changeTitle(e.target.value)}})),Object(o.createElement)("div",{className:"form-group"},Object(o.createElement)("label",{for:"automation-description"},"Description"),Object(o.createElement)("textarea",{id:"automation-description",value:this.props.description,onChange:function(e){return t.props.changeDescription(e.target.value)}})))}}]),n}(x),T=function(t){d()(n,t);var e=P(n);function n(t){return c()(this,n),e.call(this,t)}return l()(n,[{key:"createSelectOptions",value:function(t){return Object.keys(t).map((function(e){return Object(o.createElement)("option",{value:e,key:e},t[e])}))}},{key:"render",value:function(){var t=this,e=this.createSelectOptions(window.ptc_completionist_automations.event_user_options),n=this.createSelectOptions(window.ptc_completionist_automations.event_post_options);return Object(o.createElement)("div",{className:"automation-event"},Object(o.createElement)("h2",null,Object(o.createElement)("span",{className:"automation-step-number"},"1")," Trigger Event"),Object(o.createElement)("select",{value:this.props.hook_name,onChange:function(e){return t.props.changeEvent(e.target.value)}},Object(o.createElement)("option",{value:""},"(Choose Event)"),Object(o.createElement)("optgroup",{label:"User Events"},e),Object(o.createElement)("optgroup",{label:"Post Events"},n)))}}]),n}(x),M=function(t){d()(n,t);var e=P(n);function n(t){var o;return c()(this,n),(o=e.call(this,t)).loadPropertyOptions=o.loadPropertyOptions.bind(m()(o)),o.loadComparisonMethodOptions=o.loadComparisonMethodOptions.bind(m()(o)),o.loadConditionFieldsets=o.loadConditionFieldsets.bind(m()(o)),o}return l()(n,[{key:"createSelectOptions",value:function(t){return Object.keys(t).map((function(e){return Object(o.createElement)("option",{value:e,key:e},t[e])}))}},{key:"loadPropertyOptions",value:function(){Object.keys(window.ptc_completionist_automations.event_user_options).includes(this.props.event)?this.propertyOptions=this.createSelectOptions(window.ptc_completionist_automations.field_user_options):Object.keys(window.ptc_completionist_automations.event_post_options).includes(this.props.event)?this.propertyOptions=this.createSelectOptions(window.ptc_completionist_automations.field_post_options):this.propertyOptions=Object(o.createElement)("option",null,"(Choose Event)")}},{key:"loadComparisonMethodOptions",value:function(){this.comparisonMethodOptions=window.ptc_completionist_automations.field_comparison_methods.map((function(t){return Object(o.createElement)("option",{value:t,key:t},t)}))}},{key:"loadConditionFieldsets",value:function(){var t=this;this.conditionFieldsets=this.props.conditions.map((function(e,n){var a=null;return"is empty"!==e.comparison_method&&"is filled"!==e.comparison_method&&(a=Object(o.createElement)("input",{type:"text",value:e.value,key:n,onChange:function(e){return t.props.changeCondition(n,"value",e.target.value)}})),Object(o.createElement)("fieldset",{className:"automation-condition",key:n},Object(o.createElement)("legend",null,"Condition"),Object(o.createElement)("div",{className:"form-group"},Object(o.createElement)("select",{value:e.property,key:n,onChange:function(e){return t.props.changeCondition(n,"property",e.target.value)}},t.propertyOptions),Object(o.createElement)("select",{value:e.comparison_method,key:n,onChange:function(e){return t.props.changeCondition(n,"comparison_method",e.target.value)}},t.comparisonMethodOptions),a,Object(o.createElement)("button",{className:"remove-item",title:"Remove Condition",onClick:function(){return t.props.removeCondition(n)}},Object(o.createElement)("i",{className:"fas fa-minus"})," Delete")))}))}},{key:"render",value:function(){return this.loadPropertyOptions(),this.loadComparisonMethodOptions(),this.loadConditionFieldsets(),Object(o.createElement)("div",{className:"automation-conditions-list"},Object(o.createElement)("h2",null,Object(o.createElement)("span",{className:"automation-step-number"},"2")," Conditions"),this.conditionFieldsets,Object(o.createElement)("button",{className:"add-item",onClick:this.props.addCondition},Object(o.createElement)("i",{className:"fas fa-plus"})," Add Condition"))}}]),n}(x),F=function(t){d()(n,t);var e=P(n);function n(t){var o;return c()(this,n),(o=e.call(this,t)).loadActionMetaInputs=o.loadActionMetaInputs.bind(m()(o)),o.loadActionFieldsets=o.loadActionFieldsets.bind(m()(o)),o}return l()(n,[{key:"createSelectOptions",value:function(t){return Object.keys(t).map((function(e){return Object(o.createElement)("option",{value:e,key:e},t[e])}))}},{key:"loadActionMetaInputs",value:function(t,e){var n=this;switch(t.action){case"create_task":return Object(o.createElement)("div",{className:"action-meta_create_task"},Object(o.createElement)("input",{id:"ptc-new-task_name_"+e,type:"text",placeholder:"Write a task name...",value:t.meta.name,onChange:function(t){return n.props.changeActionMeta(e,"name",t.target.value)}}),Object(o.createElement)("div",{className:"form-group"},Object(o.createElement)("label",{for:"ptc-new-task_task_author_"+e},"Creator"),Object(o.createElement)("select",{id:"ptc-new-task_task_author_"+e,value:t.meta.task_author,onChange:function(t){return n.props.changeActionMeta(e,"task_author",t.target.value)}},this.createSelectOptions(window.ptc_completionist_automations.connected_workspace_users))),Object(o.createElement)("div",{className:"form-group"},Object(o.createElement)("label",{for:"ptc-new-task_assignee_"+e},"Assignee"),Object(o.createElement)("select",{id:"ptc-new-task_assignee_"+e,value:t.meta.assignee,onChange:function(t){return n.props.changeActionMeta(e,"assignee",t.target.value)}},Object(o.createElement)("option",{value:""},"None (Unassigned)"),this.createSelectOptions(window.ptc_completionist_automations.workspace_users))),Object(o.createElement)("div",{className:"form-group"},Object(o.createElement)("label",{for:"ptc-new-task_due_on_"+e},"Due Date"),Object(o.createElement)("input",{id:"ptc-new-task_due_on_"+e,type:"date",pattern:"\\d\\d\\d\\d-\\d\\d-\\d\\d",placeholder:"yyyy-mm-dd",value:t.meta.due_on,onChange:function(t){return n.props.changeActionMeta(e,"due_on",t.target.value)}})),Object(o.createElement)("div",{className:"form-group"},Object(o.createElement)("label",{for:"ptc-new-task_project_"+e},"Project"),Object(o.createElement)("select",{id:"ptc-new-task_project_"+e,value:t.meta.project,onChange:function(t){return n.props.changeActionMeta(e,"project",t.target.value)}},Object(o.createElement)("option",{value:""},"None (Private Task)"),this.createSelectOptions(window.ptc_completionist_automations.workspace_projects))),Object(o.createElement)("div",{className:"form-group"},Object(o.createElement)("label",{for:"ptc-new-task_notes_"+e},"Description"),Object(o.createElement)("textarea",{id:"ptc-new-task_notes_"+e,value:t.meta.notes,onChange:function(t){return n.props.changeActionMeta(e,"notes",t.target.value)}})),Object(o.createElement)("div",{className:"form-group"},Object(o.createElement)("label",{for:"ptc-new-task_post_id_"+e},"Pin to Post"),Object(o.createElement)(N,{id:"ptc-new-task_post_id_"+e,initialValue:t.meta.post_id,onSelectOption:function(t){return n.props.changeActionMeta(e,"post_id",t)}})));default:return Object(o.createElement)("div",{className:"automation-meta-default"},Object(o.createElement)("p",null,Object(o.createElement)("em",null,"Choose an action to see additional options.")))}}},{key:"loadActionFieldsets",value:function(){var t=this,e=this.createSelectOptions(window.ptc_completionist_automations.action_options);this.actionFieldsets=this.props.actions.map((function(n,a){return Object(o.createElement)("fieldset",{className:"automation-action",key:a},Object(o.createElement)("legend",null,"Action"),Object(o.createElement)("div",{className:"form-group"},Object(o.createElement)("select",{value:n.action,onChange:function(e){return t.props.changeAction(a,e.target.value)},key:a},e),Object(o.createElement)("div",null,Object(o.createElement)("button",{className:"remove-item",title:"Remove Action",onClick:function(){return t.props.removeAction(a)}},Object(o.createElement)("i",{className:"fas fa-minus"})," Delete"))),t.loadActionMetaInputs(n,a))}))}},{key:"render",value:function(){return this.loadActionFieldsets(),Object(o.createElement)("div",{className:"automation-actions-list"},Object(o.createElement)("h2",null,Object(o.createElement)("span",{className:"automation-step-number"},"3")," Actions"),this.actionFieldsets,Object(o.createElement)("button",{className:"add-item",onClick:this.props.addAction},Object(o.createElement)("i",{className:"fas fa-plus"})," Add Action"))}}]),n}(x);function V(t){var e=function(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{return Date.prototype.toString.call(Reflect.construct(Date,[],(function(){}))),!0}catch(t){return!1}}();return function(){var n,o=v()(t);if(e){var a=v()(this).constructor;n=Reflect.construct(o,arguments,a)}else n=o.apply(this,arguments);return h()(this,n)}}var B=function(t){d()(n,t);var e=V(n);function n(t){var o;return c()(this,n),(o=e.call(this,t)).state={automations:window.ptc_completionist_automations.automations,isLoading:!1},o.goToAutomation=o.goToAutomation.bind(m()(o)),o.deleteAutomation=o.deleteAutomation.bind(m()(o)),o}return l()(n,[{key:"goToAutomation",value:function(){var t=this,e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0;this.setState({isLoading:!0},(function(){if("new"===e){var n=new URLSearchParams(location.search);n.set("automation",e),history.pushState({ID:"new"},"Completionist – Add New Automation","?"+n.toString()),document.title="Completionist – Add New Automation",t.setState({isLoading:!1})}else if(isNaN(parseInt(e))||e<=0){var o={action:"ptc_get_automation_overviews",nonce:window.ptc_completionist_automations.nonce};window.jQuery.post(window.ajaxurl,o,(function(e){if("success"==e.status&&"object"==i()(e.data)){var n=new URLSearchParams(location.search);n.delete("automation"),history.pushState({ID:0},"Completionist – Automations","?"+n.toString()),document.title="Completionist – Automations",t.setState({automations:e.data,isLoading:!1})}else console.error(e),t.setState({isLoading:!1})}),"json").fail((function(){console.error("Failed to load automation overviews.");var e=new URLSearchParams(location.search);e.delete("automation"),history.pushState({ID:0},"Completionist – Automations","?"+e.toString()),document.title="Completionist – Automations",t.setState({isLoading:!1})}))}else{var a={action:"ptc_get_automation",nonce:window.ptc_completionist_automations.nonce,ID:e};window.jQuery.post(window.ajaxurl,a,(function(n){if("success"==n.status&&"object"==i()(n.data)){var o="Completionist – Automation "+n.data.ID+" – "+n.data.title,a=new URLSearchParams(location.search);a.set("automation",e),history.pushState(n.data,o,"?"+a.toString()),document.title=o,t.setState({isLoading:!1})}else console.error(n),t.goToAutomation()}),"json").fail((function(){console.error("Failed to get data for automation "+e),t.goToAutomation()}))}}))}},{key:"deleteAutomation",value:function(t,e){var n=this,o={action:"ptc_delete_automation",nonce:window.ptc_completionist_automations.nonce,ID:t};window.jQuery.post(window.ajaxurl,o,(function(t){t.status&&"success"==t.status&&t.code&&200==t.code&&t.data?(console.log(t.message),n.setState((function(e){return{automations:e.automations.filter((function(e){return e.ID!==t.data}))}}))):t.message&&t.code?alert("Error "+t.code+". The automation could not be deleted. "+t.message):alert("Error. The automation could not be deleted."),"function"==typeof e&&e(t)}),"json").fail((function(){alert("Error 500. The automation could not be deleted."),"function"==typeof e&&e()}))}},{key:"componentDidMount",value:function(){var t=this,e=new URLSearchParams(location.search).get("automation");null!==e&&this.goToAutomation(e),window.addEventListener("popstate",(function(e){"state"in e&&e.state&&"ID"in e.state?t.goToAutomation(e.state.ID):t.goToAutomation()}))}},{key:"render",value:function(){var t=this;if(this.state.isLoading)return Object(o.createElement)("div",{className:"loading-screen"},Object(o.createElement)("p",null,Object(o.createElement)("i",{className:"fas fa-spinner fa-pulse fa-lg"})," Loading..."));var e=new URLSearchParams(location.search).get("automation");return"new"===e?Object(o.createElement)("div",{className:"ptc-completionist-automation-create"},Object(o.createElement)("header",null,Object(o.createElement)("button",{onClick:function(){return t.goToAutomation()}},Object(o.createElement)("i",{className:"fas fa-angle-left"})," Back"),Object(o.createElement)("h1",null,"New Automation"),Object(o.createElement)("div",{className:"spacer"})),Object(o.createElement)(R,{goToAutomation:this.goToAutomation})):history.state&&"ID"in history.state&&history.state.ID==e?Object(o.createElement)("div",{className:"ptc-completionist-automation-details"},Object(o.createElement)("header",null,Object(o.createElement)("button",{onClick:function(){return t.goToAutomation()}},Object(o.createElement)("i",{className:"fas fa-angle-left"})," Back"),Object(o.createElement)("h1",null,"Edit Automation ",history.state.ID),Object(o.createElement)("div",{className:"spacer"})),Object(o.createElement)(R,{automation:history.state,goToAutomation:this.goToAutomation})):Object(o.createElement)(A,{automations:this.state.automations,goToAutomation:this.goToAutomation,deleteAutomation:this.deleteAutomation})}}]),n}(wp.element.Component),U=wp.element,q=U.render;U.Component;jQuery((function(t){try{var e=document.getElementById("ptc-completionist-automations-root");null!==e&&q(Object(o.createElement)(B,null),e)}catch(t){console.error(t)}}))}]);
+/******/ (function() { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/components/AutomationDetailsForm.js":
+/*!*************************************************!*\
+  !*** ./src/components/AutomationDetailsForm.js ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AutomationDetailsForm": function() { return /* binding */ AutomationDetailsForm; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _PostSearchSelectInput_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PostSearchSelectInput.js */ "./src/components/PostSearchSelectInput.js");
+
+
+const {
+  Component
+} = wp.element;
+class AutomationDetailsForm extends Component {
+  constructor(props) {
+    /*
+    Required Props:
+    - (function) goToAutomation
+    Optional Props:
+    - (object) automation
+    */
+    super(props);
+
+    if ('automation' in props) {
+      this.state = props.automation;
+      this.state.saveButtonLabel = 'Create';
+
+      if ('ID' in props.automation && props.automation.ID > 0) {
+        this.state.saveButtonLabel = 'Update';
+      }
+
+      this.state.isSubmitting = false;
+    } else {
+      this.state = {
+        ID: 0,
+        title: '',
+        description: '',
+        hook_name: '',
+        last_modified: '',
+        conditions: [],
+        actions: [],
+        saveButtonLabel: 'Create',
+        isSubmitting: false
+      };
+    }
+
+    this.handleAutomationChange = this.handleAutomationChange.bind(this);
+    this.handleConditionChange = this.handleConditionChange.bind(this);
+    this.handleAddCondition = this.handleAddCondition.bind(this);
+    this.handleRemoveCondition = this.handleRemoveCondition.bind(this);
+    this.handleActionChange = this.handleActionChange.bind(this);
+    this.handleActionMetaChange = this.handleActionMetaChange.bind(this);
+    this.handleAddAction = this.handleAddAction.bind(this);
+    this.handleRemoveAction = this.handleRemoveAction.bind(this);
+  } //end constructor()
+
+  /* HANDLERS */
+
+
+  saveAutomation() {
+    if (!this.state.isSubmitting) {
+      // TODO: validate data for submission
+      this.setState({
+        isSubmitting: true
+      }, () => {
+        let data = {
+          'action': 'ptc_save_automation',
+          'nonce': window.ptc_completionist_automations.nonce,
+          'automation': this.state
+        };
+        window.jQuery.post(window.ajaxurl, data, res => {
+          if (res.status && res.status == 'success' && res.code && res.data && typeof res.data == 'object' && 'ID' in res.data && res.data.ID && res.data.ID > 0) {
+            if (res.code == 201) {
+              //               console.log( res.message );
+              this.props.goToAutomation(res.data.ID);
+            } else if (res.code == 200) {
+              // TODO: display success message in notice section
+              //               console.log( res.message );
+              this.setState({ ...res.data,
+                isSubmitting: false
+              });
+            }
+          } else {
+            // TODO: display error messages in notice section
+            if (res.message && res.code) {
+              alert('Error ' + res.code + '. The automation could not be saved. ' + res.message);
+            } else {
+              alert('Error 409. The automation could not be saved.');
+            }
+
+            this.setState({
+              isSubmitting: false
+            });
+          }
+        }, 'json').fail(() => {
+          alert('Error 500. The automation could not be saved.');
+          this.setState({
+            isSubmitting: false
+          });
+        });
+      });
+    }
+  } //end saveAutomation()
+
+  /** Core Info **/
+
+
+  handleAutomationChange(property_key, value) {
+    this.setState(state => ({
+      [property_key]: value
+    }));
+  }
+  /** Conditions **/
+
+
+  handleConditionChange(index, property_key, value) {
+    this.setState(state => {
+      let conditions = [...state.conditions];
+      conditions[index] = { ...state.conditions[index],
+        [property_key]: value
+      };
+      return {
+        conditions: conditions
+      };
+    });
+  }
+
+  handleAddCondition() {
+    this.setState(state => ({
+      conditions: [...state.conditions, {
+        ID: 0,
+        property: '',
+        comparison_method: window.ptc_completionist_automations.field_comparison_methods[0],
+        value: ''
+      }]
+    }));
+  }
+
+  handleRemoveCondition(index) {
+    this.setState(state => ({
+      conditions: state.conditions.filter((_, i) => i !== index)
+    }));
+  }
+  /** Actions **/
+
+
+  handleActionChange(index, action) {
+    this.setState(state => {
+      let actions = [...state.actions];
+      actions[index] = { ...state.actions[index],
+        action: action,
+        meta: this.getDefaultActionMeta(action)
+      };
+      return {
+        actions: actions
+      };
+    });
+  }
+
+  handleActionMetaChange(index, meta_key, meta_value) {
+    this.setState(state => {
+      let actions = [...state.actions];
+      actions[index] = { ...state.actions[index],
+        meta: { ...state.actions[index].meta,
+          [meta_key]: meta_value
+        }
+      };
+      return {
+        actions: actions
+      };
+    });
+  }
+
+  handleAddAction() {
+    this.setState(state => ({
+      actions: [...state.actions, {
+        ID: 0,
+        action: 'create_task',
+        triggered_count: 0,
+        last_triggered: '',
+        meta: this.getDefaultActionMeta('create_task')
+      }]
+    }));
+  }
+
+  handleRemoveAction(index) {
+    this.setState(state => ({
+      actions: state.actions.filter((_, i) => i !== index)
+    }));
+  }
+  /* END HANDLERS */
+
+
+  getDefaultActionMeta(action) {
+    switch (action) {
+      case 'create_task':
+        return {
+          task_author: Object.keys(window.ptc_completionist_automations.connected_workspace_users)[0]
+        };
+        break;
+
+      default:
+        return {};
+        break;
+    }
+  }
+
+  render() {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "ptc-completionist-automation-details-form"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(AutomationInfoInputs, {
+      title: this.state.title,
+      changeTitle: value => this.handleAutomationChange('title', value),
+      description: this.state.description,
+      changeDescription: value => this.handleAutomationChange('description', value)
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(AutomationEventInput, {
+      hook_name: this.state.hook_name,
+      changeEvent: value => this.handleAutomationChange('hook_name', value)
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(AutomationConditionsInputs, {
+      event: this.state.hook_name,
+      conditions: this.state.conditions,
+      changeCondition: this.handleConditionChange,
+      addCondition: this.handleAddCondition,
+      removeCondition: this.handleRemoveCondition
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(AutomationActionsInputs, {
+      event: this.state.hook_name,
+      actions: this.state.actions,
+      changeAction: this.handleActionChange,
+      addAction: this.handleAddAction,
+      removeAction: this.handleRemoveAction,
+      changeActionMeta: this.handleActionMetaChange
+    }), this.state.isSubmitting ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      className: "save-automation",
+      onClick: () => this.saveAutomation(),
+      disabled: "disabled"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+      className: "fas fa-spinner fa-pulse"
+    }), " Saving...") : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      className: "save-automation",
+      onClick: () => this.saveAutomation()
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+      className: "fas fa-save"
+    }), " ", this.state.saveButtonLabel));
+  } //end render()
+
+
+} //end class AutomationsListing
+
+class AutomationInfoInputs extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "automation-info"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "form-group"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      for: "automation-title"
+    }, "Title"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      id: "automation-title",
+      type: "text",
+      value: this.props.title,
+      onChange: e => this.props.changeTitle(e.target.value)
+    })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "form-group"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      for: "automation-description"
+    }, "Description"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
+      id: "automation-description",
+      value: this.props.description,
+      onChange: e => this.props.changeDescription(e.target.value)
+    })));
+  }
+
+} //end class AutomationInfoInputs
+
+
+class AutomationEventInput extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  createSelectOptions(optionsObj) {
+    return Object.keys(optionsObj).map(key => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: key,
+      key: key
+    }, optionsObj[key]));
+  } //end createSelectOptions()
+
+
+  render() {
+    const userEventOptions = this.createSelectOptions(window.ptc_completionist_automations.event_user_options);
+    const postEventOptions = this.createSelectOptions(window.ptc_completionist_automations.event_post_options);
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "automation-event"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "automation-step-number"
+    }, "1"), " Trigger Event"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+      value: this.props.hook_name,
+      onChange: e => this.props.changeEvent(e.target.value)
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: ""
+    }, "(Choose Event)"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("optgroup", {
+      label: "User Events"
+    }, userEventOptions), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("optgroup", {
+      label: "Post Events"
+    }, postEventOptions)));
+  }
+
+} //end class AutomationEventInput
+
+
+class AutomationConditionsInputs extends Component {
+  constructor(props) {
+    super(props);
+    this.loadPropertyOptions = this.loadPropertyOptions.bind(this);
+    this.loadComparisonMethodOptions = this.loadComparisonMethodOptions.bind(this);
+    this.loadConditionFieldsets = this.loadConditionFieldsets.bind(this);
+  } //end constructor()
+
+
+  createSelectOptions(optionsObj) {
+    return Object.keys(optionsObj).map(key => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: key,
+      key: key
+    }, optionsObj[key]));
+  } //end createSelectOptions()
+
+
+  loadPropertyOptions() {
+    if (Object.keys(window.ptc_completionist_automations.event_user_options).includes(this.props.event)) {
+      this.propertyOptions = this.createSelectOptions(window.ptc_completionist_automations.field_user_options);
+    } else if (Object.keys(window.ptc_completionist_automations.event_post_options).includes(this.props.event)) {
+      this.propertyOptions = this.createSelectOptions(window.ptc_completionist_automations.field_post_options);
+    } else {
+      this.propertyOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", null, "(Choose Event)");
+    }
+  } //end loadPropertyOptions()
+
+
+  loadComparisonMethodOptions() {
+    this.comparisonMethodOptions = window.ptc_completionist_automations.field_comparison_methods.map(value => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: value,
+      key: value
+    }, value));
+  } //end loadComparisonMethodOptions()
+
+
+  loadConditionFieldsets() {
+    this.conditionFieldsets = this.props.conditions.map((condition, index) => {
+      let valueInput = null;
+
+      if (condition.comparison_method !== 'is empty' && condition.comparison_method !== 'is filled') {
+        valueInput = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+          type: "text",
+          value: condition.value,
+          key: index,
+          onChange: e => this.props.changeCondition(index, 'value', e.target.value)
+        });
+      }
+
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", {
+        className: "automation-condition",
+        key: index
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, "Condition"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "form-group"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+        value: condition.property,
+        key: index,
+        onChange: e => this.props.changeCondition(index, 'property', e.target.value)
+      }, this.propertyOptions), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+        value: condition.comparison_method,
+        key: index,
+        onChange: e => this.props.changeCondition(index, 'comparison_method', e.target.value)
+      }, this.comparisonMethodOptions), valueInput, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+        className: "remove-item",
+        title: "Remove Condition",
+        onClick: () => this.props.removeCondition(index)
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+        className: "fas fa-minus"
+      }), " Delete")));
+    });
+  } //end loadConditionFieldsets()
+
+
+  render() {
+    // TODO: Do not show add button until an event is set
+    this.loadPropertyOptions();
+    this.loadComparisonMethodOptions();
+    this.loadConditionFieldsets();
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "automation-conditions-list"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "automation-step-number"
+    }, "2"), " Conditions"), this.conditionFieldsets, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      className: "add-item",
+      onClick: this.props.addCondition
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+      className: "fas fa-plus"
+    }), " Add Condition"));
+  } //end render()
+
+
+} //end class AutomationConditionsInputs
+
+
+class AutomationActionsInputs extends Component {
+  constructor(props) {
+    super(props);
+    this.loadActionMetaInputs = this.loadActionMetaInputs.bind(this);
+    this.loadActionFieldsets = this.loadActionFieldsets.bind(this);
+  }
+
+  createSelectOptions(optionsObj) {
+    return Object.keys(optionsObj).map(key => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: key,
+      key: key
+    }, optionsObj[key]));
+  } //end createSelectOptions()
+
+
+  loadActionMetaInputs(action, index) {
+    // TODO: Allow create_tasks to be dynamically pinned to created/updated/delete post if relevent: {post.ID}
+    switch (action.action) {
+      case 'create_task':
+        return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+          className: "action-meta_create_task"
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+          id: "ptc-new-task_name_" + index,
+          type: "text",
+          placeholder: "Write a task name...",
+          value: action.meta.name,
+          onChange: e => this.props.changeActionMeta(index, 'name', e.target.value)
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+          className: "form-group"
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+          for: "ptc-new-task_task_author_" + index
+        }, "Creator"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+          id: "ptc-new-task_task_author_" + index,
+          value: action.meta.task_author,
+          onChange: e => this.props.changeActionMeta(index, 'task_author', e.target.value)
+        }, this.createSelectOptions(window.ptc_completionist_automations.connected_workspace_users))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+          className: "form-group"
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+          for: "ptc-new-task_assignee_" + index
+        }, "Assignee"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+          id: "ptc-new-task_assignee_" + index,
+          value: action.meta.assignee,
+          onChange: e => this.props.changeActionMeta(index, 'assignee', e.target.value)
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+          value: ""
+        }, "None (Unassigned)"), this.createSelectOptions(window.ptc_completionist_automations.workspace_users))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+          className: "form-group"
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+          for: "ptc-new-task_due_on_" + index
+        }, "Due Date"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+          id: "ptc-new-task_due_on_" + index,
+          type: "date",
+          pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\d",
+          placeholder: "yyyy-mm-dd",
+          value: action.meta.due_on,
+          onChange: e => this.props.changeActionMeta(index, 'due_on', e.target.value)
+        })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+          className: "form-group"
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+          for: "ptc-new-task_project_" + index
+        }, "Project"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+          id: "ptc-new-task_project_" + index,
+          value: action.meta.project,
+          onChange: e => this.props.changeActionMeta(index, 'project', e.target.value)
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+          value: ""
+        }, "None (Private Task)"), this.createSelectOptions(window.ptc_completionist_automations.workspace_projects))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+          className: "form-group"
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+          for: "ptc-new-task_notes_" + index
+        }, "Description"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
+          id: "ptc-new-task_notes_" + index,
+          value: action.meta.notes,
+          onChange: e => this.props.changeActionMeta(index, 'notes', e.target.value)
+        })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+          className: "form-group"
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+          for: "ptc-new-task_post_id_" + index
+        }, "Pin to Post"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_PostSearchSelectInput_js__WEBPACK_IMPORTED_MODULE_1__.PostSearchSelectInput, {
+          id: "ptc-new-task_post_id_" + index,
+          initialValue: action.meta.post_id,
+          onSelectOption: value => this.props.changeActionMeta(index, 'post_id', value)
+        })));
+        break;
+
+      default:
+        return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+          className: "automation-meta-default"
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("em", null, "Choose an action to see additional options.")));
+    }
+  }
+
+  loadActionFieldsets() {
+    let actionOptions = this.createSelectOptions(window.ptc_completionist_automations.action_options);
+    this.actionFieldsets = this.props.actions.map((action, index) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("fieldset", {
+      className: "automation-action",
+      key: index
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("legend", null, "Action"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "form-group"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+      value: action.action,
+      onChange: e => this.props.changeAction(index, e.target.value),
+      key: index
+    }, actionOptions), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      className: "remove-item",
+      title: "Remove Action",
+      onClick: () => this.props.removeAction(index)
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+      className: "fas fa-minus"
+    }), " Delete"))), this.loadActionMetaInputs(action, index)));
+  } //end loadActionFieldsets()
+
+
+  render() {
+    // TODO: Do not show add button until an event is set
+    // TODO: Add list of available merge fields based on selected event, similar to Awesome Support email templates
+    this.loadActionFieldsets();
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "automation-actions-list"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "automation-step-number"
+    }, "3"), " Actions"), this.actionFieldsets, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      className: "add-item",
+      onClick: this.props.addAction
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+      className: "fas fa-plus"
+    }), " Add Action"));
+  } //end render()
+
+
+} //end class AutomationActionsInputs
+
+/***/ }),
+
+/***/ "./src/components/AutomationRow.js":
+/*!*****************************************!*\
+  !*** ./src/components/AutomationRow.js ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AutomationRow": function() { return /* binding */ AutomationRow; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+const {
+  Component
+} = wp.element;
+class AutomationRow extends Component {
+  constructor(props) {
+    /*
+    Required Props:
+    - (object) automation
+    - (function) goToAutomation
+    - (function) deleteAutomation
+    */
+    super(props);
+    this.state = { ...props.automation,
+      isDeleting: false
+    };
+    this.goToAutomation = props.goToAutomation;
+    this.deleteAutomation = this.deleteAutomation.bind(this);
+  } //end constructor()
+
+
+  deleteAutomation() {
+    this.setState({
+      isDeleting: true
+    }, () => {
+      this.props.deleteAutomation(this.state.ID, () => {
+        this.setState({
+          isDeleting: false
+        });
+      });
+    });
+  }
+
+  render() {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "ptc-completionist-automation-row"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+      title: 'Automation ID: ' + this.state.ID,
+      onClick: () => this.goToAutomation(this.state.ID)
+    }, this.state.title), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+      className: "last-modified"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("em", null, "Updated ", this.state.last_modified)), this.state.description.length > 0 && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+      className: "description",
+      dangerouslySetInnerHTML: {
+        __html: this.state.description
+      }
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "automation-actions"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      className: "edit",
+      onClick: () => this.goToAutomation(this.state.ID)
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+      className: "fas fa-pen"
+    }), " Edit"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      className: "delete",
+      onClick: this.deleteAutomation,
+      disabled: this.state.isDeleting
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+      className: "fas fa-trash"
+    }), " Delete"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+      title: this.state.total_conditions + ' Conditions'
+    }, this.state.total_conditions), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+      title: this.state.total_actions + ' Actions'
+    }, this.state.total_actions), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+      title: 'Triggered ' + this.state.total_triggered + ' times'
+    }, this.state.total_triggered), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+      title: 'Last Triggered ' + this.state.last_triggered
+    }, this.state.last_triggered)));
+  } //end render()
+
+
+} //end class AutomationsListing
+
+/***/ }),
+
+/***/ "./src/components/AutomationsListing.js":
+/*!**********************************************!*\
+  !*** ./src/components/AutomationsListing.js ***!
+  \**********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AutomationsListing": function() { return /* binding */ AutomationsListing; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _AutomationRow_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AutomationRow.js */ "./src/components/AutomationRow.js");
+
+
+const {
+  Component
+} = wp.element;
+class AutomationsListing extends Component {
+  constructor(props) {
+    /*
+    Required Props:
+    - (object[]) automations
+    - (function) goToAutomation
+    - (function) deleteAutomation
+    */
+    super(props);
+    this.state = {
+      automations: props.automations,
+      orderBy: 'title' //'title' or 'ID' or 'last_modified' or 'last_triggered' or 'triggered_count'
+
+    };
+    this.goToAutomation = props.goToAutomation;
+  } //end constructor()
+
+
+  sortAutomationsListing() {
+    let orderBy = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'title';
+  } //end sortAutomationsListing()
+
+
+  componentDidUpdate(prevProps) {
+    if (this.props.automations !== prevProps.automations) {
+      this.setState({
+        automations: this.props.automations
+      });
+    }
+  }
+
+  render() {
+    // TODO: Add sorting functionality
+    // TODO: Add default/empty state if no automations exist
+
+    /* List Automations... */
+    const automationRows = this.state.automations.map(automation => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AutomationRow_js__WEBPACK_IMPORTED_MODULE_1__.AutomationRow, {
+      key: automation.ID,
+      automation: automation,
+      goToAutomation: this.goToAutomation,
+      deleteAutomation: this.props.deleteAutomation
+    }));
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "ptc-completionist-automations-listing"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "title"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h1", null, "Automations"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "actions"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      onClick: () => this.goToAutomation('new')
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+      className: "fas fa-plus"
+    }), " Add New"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, "Automation"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+      className: "fas fa-question"
+    }), " Conditions"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+      className: "fas fa-running"
+    }), " Actions"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+      className: "fas fa-bolt"
+    }), " Triggers"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+      className: "fas fa-history"
+    }), " Last Triggered")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "ptc-completionist-automations-list"
+    }, automationRows));
+  }
+
+} //end class AutomationsListing
+
+/***/ }),
+
+/***/ "./src/components/PTCCompletionist_Automations.js":
+/*!********************************************************!*\
+  !*** ./src/components/PTCCompletionist_Automations.js ***!
+  \********************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ PTCCompletionist_Automations; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _AutomationsListing_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AutomationsListing.js */ "./src/components/AutomationsListing.js");
+/* harmony import */ var _AutomationDetailsForm_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AutomationDetailsForm.js */ "./src/components/AutomationDetailsForm.js");
+
+
+
+const {
+  Component
+} = wp.element;
+class PTCCompletionist_Automations extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      automations: window.ptc_completionist_automations.automations,
+      isLoading: false
+    };
+    this.goToAutomation = this.goToAutomation.bind(this);
+    this.deleteAutomation = this.deleteAutomation.bind(this);
+  } //end constructor()
+
+
+  goToAutomation() {
+    let automationId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    this.setState({
+      isLoading: true
+    }, () => {
+      if (automationId === 'new') {
+        let queryParams = new URLSearchParams(location.search);
+        queryParams.set('automation', automationId);
+        history.pushState({
+          ID: 'new'
+        }, 'Completionist – Add New Automation', '?' + queryParams.toString());
+        document.title = 'Completionist – Add New Automation';
+        this.setState({
+          isLoading: false
+        });
+      } else if (isNaN(parseInt(automationId)) || automationId <= 0) {
+        let data = {
+          'action': 'ptc_get_automation_overviews',
+          'nonce': window.ptc_completionist_automations.nonce
+        };
+        window.jQuery.post(window.ajaxurl, data, res => {
+          if (res.status == 'success' && typeof res.data == 'object') {
+            let queryParams = new URLSearchParams(location.search);
+            queryParams.delete('automation');
+            history.pushState({
+              ID: 0
+            }, 'Completionist – Automations', '?' + queryParams.toString());
+            document.title = 'Completionist – Automations';
+            this.setState({
+              automations: res.data,
+              isLoading: false
+            });
+          } else {
+            // TODO: Fix infinite requests when error
+            console.error(res);
+            this.setState({
+              isLoading: false
+            });
+          }
+        }, 'json').fail(() => {
+          console.error('Failed to load automation overviews.');
+          let queryParams = new URLSearchParams(location.search);
+          queryParams.delete('automation');
+          history.pushState({
+            ID: 0
+          }, 'Completionist – Automations', '?' + queryParams.toString());
+          document.title = 'Completionist – Automations';
+          this.setState({
+            isLoading: false
+          });
+        });
+      } else {
+        let data = {
+          'action': 'ptc_get_automation',
+          'nonce': window.ptc_completionist_automations.nonce,
+          'ID': automationId
+        };
+        window.jQuery.post(window.ajaxurl, data, res => {
+          if (res.status == 'success' && typeof res.data == 'object') {
+            let docTitle = 'Completionist – Automation ' + res.data.ID + ' – ' + res.data.title;
+            let queryParams = new URLSearchParams(location.search);
+            queryParams.set('automation', automationId);
+            history.pushState(res.data, docTitle, '?' + queryParams.toString());
+            document.title = docTitle;
+            this.setState({
+              isLoading: false
+            });
+          } else {
+            console.error(res);
+            this.goToAutomation();
+          }
+        }, 'json').fail(() => {
+          console.error('Failed to get data for automation ' + automationId);
+          this.goToAutomation();
+        });
+      }
+    });
+  }
+
+  //end goToAutomation()
+  deleteAutomation(automationId, callback) {
+    let data = {
+      'action': 'ptc_delete_automation',
+      'nonce': window.ptc_completionist_automations.nonce,
+      'ID': automationId
+    };
+    window.jQuery.post(window.ajaxurl, data, res => {
+      if (res.status && res.status == 'success' && res.code && res.code == 200 && res.data) {
+        // TODO: display success message in notice section
+        console.log(res.message);
+        this.setState(state => ({
+          automations: state.automations.filter(automation => automation.ID !== res.data)
+        }));
+      } else {
+        // TODO: display error messages in notice section
+        if (res.message && res.code) {
+          alert('Error ' + res.code + '. The automation could not be deleted. ' + res.message);
+        } else {
+          alert('Error. The automation could not be deleted.');
+        }
+      }
+
+      typeof callback === 'function' && callback(res);
+    }, 'json').fail(() => {
+      // TODO: display error messages in notice section
+      alert('Error 500. The automation could not be deleted.');
+      typeof callback === 'function' && callback();
+    });
+  } //end deleteAutomation()
+
+
+  componentDidMount() {
+    /* Go to requested automation */
+    let queryParams = new URLSearchParams(location.search);
+    const automationParam = queryParams.get('automation');
+
+    if (automationParam !== null) {
+      this.goToAutomation(automationParam);
+    }
+    /* Listen to browser history events */
+
+
+    window.addEventListener('popstate', e => {
+      // TODO: goToAutomation calls pushState which breaks history navigation
+      if ('state' in e && e.state && 'ID' in e.state) {
+        this.goToAutomation(e.state.ID);
+      } else {
+        this.goToAutomation();
+      }
+    });
+  } //end componentDidMount()
+
+
+  render() {
+    if (this.state.isLoading) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "loading-screen"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+        className: "fas fa-spinner fa-pulse fa-lg"
+      }), " Loading..."));
+    }
+
+    let queryParams = new URLSearchParams(location.search);
+    const automationParam = queryParams.get('automation');
+
+    if (automationParam === 'new') {
+      /* Add Automation... */
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "ptc-completionist-automation-create"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+        onClick: () => this.goToAutomation()
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+        className: "fas fa-angle-left"
+      }), " Back"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h1", null, "New Automation"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "spacer"
+      })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AutomationDetailsForm_js__WEBPACK_IMPORTED_MODULE_2__.AutomationDetailsForm, {
+        goToAutomation: this.goToAutomation
+      }));
+    }
+
+    if (history.state && 'ID' in history.state && history.state.ID == automationParam) {
+      /* Edit Automation... */
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "ptc-completionist-automation-details"
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+        onClick: () => this.goToAutomation()
+      }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+        className: "fas fa-angle-left"
+      }), " Back"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h1", null, "Edit Automation ", history.state.ID), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+        className: "spacer"
+      })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AutomationDetailsForm_js__WEBPACK_IMPORTED_MODULE_2__.AutomationDetailsForm, {
+        automation: history.state,
+        goToAutomation: this.goToAutomation
+      }));
+    } else {
+      /* List Automations... */
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_AutomationsListing_js__WEBPACK_IMPORTED_MODULE_1__.AutomationsListing, {
+        automations: this.state.automations,
+        goToAutomation: this.goToAutomation,
+        deleteAutomation: this.deleteAutomation
+      });
+    }
+  } //end render()
+
+
+} //end class PTCCompletionist_Automations
+
+/***/ }),
+
+/***/ "./src/components/PostSearchSelectInput.js":
+/*!*************************************************!*\
+  !*** ./src/components/PostSearchSelectInput.js ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "PostSearchSelectInput": function() { return /* binding */ PostSearchSelectInput; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+const {
+  Component
+} = wp.element;
+class PostSearchSelectInput extends Component {
+  constructor(props) {
+    /*
+    Required Props:
+    - (function) onSelectOption(value)
+    Optional Props:
+    - (string) initialValue
+    - (string) initialLabel
+    */
+    super(props);
+    this.state = {
+      isLoading: false,
+      currentRequest: {},
+      textInputHasFocus: false,
+      options: [],
+      currentValue: '',
+      currentLabel: ''
+    };
+
+    if ('initialValue' in props && props.initialValue) {
+      this.state.currentValue = props.initialValue;
+    }
+
+    if ('initialLabel' in props && props.initialLabel) {
+      this.state.currentLabel = props.initialLabel;
+    }
+
+    this.handleSearchChange = this.handleSearchChange.bind(this);
+    this.handleOptionChange = this.handleOptionChange.bind(this);
+    this.createSelectOptions = this.createSelectOptions.bind(this);
+    this.handleSearchBlur = this.handleSearchBlur.bind(this);
+  } //end constructor()
+
+
+  handleSearchChange(input) {
+    if (input.trim().length >= 3) {
+      this.setState({
+        isLoading: true,
+        currentValue: '',
+        currentLabel: input,
+        options: []
+      }, () => {
+        let data = {
+          'action': 'ptc_get_post_options_by_title',
+          'nonce': window.ptc_completionist_automations.nonce,
+          'title': this.state.currentLabel
+        };
+        let post_search_request = window.jQuery.post(window.ajaxurl, data, res => {
+          // TODO: Look at using WP REST API: https://developer.wordpress.org/rest-api/reference/search-results/
+          this.setState({
+            isLoading: false,
+            currentRequest: {},
+            options: res.data
+          }); // TODO: handle error responses
+          // if(res.status == 'success' && res.data != '') {
+          //   remove_task_row(data.task_gid);
+          //   remove_task_gid(data.task_gid, false);
+          // } else if(res.status == 'error' && res.data != '') {
+          //   display_alert_html(res.data);
+          //   disable_element(thisButton, false);
+          //   buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
+          // } else {
+          //   alert('[Completionist] Error '+res.code+': '+res.message);
+          //   disable_element(thisButton, false);
+          //   buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
+          // }
+        }, 'json').fail((jqXHR, exception) => {
+          if (exception != 'abort') {
+            alert('Failed to search for posts by title.');
+            this.setState({
+              isLoading: false,
+              options: []
+            });
+          }
+        });
+        this.setState(state => {
+          if (typeof state.currentRequest === 'object' && typeof state.currentRequest.abort === 'function') {
+            this.state.currentRequest.abort();
+          }
+
+          return {
+            currentRequest: post_search_request
+          };
+        });
+      });
+    } else {
+      this.setState({
+        isLoading: false,
+        currentValue: '',
+        currentLabel: input,
+        options: []
+      });
+    }
+  } //end handleSearchChange()
+
+
+  handleOptionChange(value, label) {
+    this.setState(state => ({
+      currentValue: value,
+      currentLabel: label
+    }), () => {
+      this.props.onSelectOption(this.state.currentValue);
+    });
+  } //end handleOptionChange()
+
+
+  handleSearchBlur() {
+    this.setState(state => ({
+      textInputHasFocus: false,
+      currentLabel: state.currentValue === '' ? '' : state.currentLabel
+    }));
+  } //end handleSearchBlur()
+
+
+  createSelectOptions() {
+    if (this.state.options.length < 1) {
+      if (this.state.isLoading === true) {
+        return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+          className: "fas fa-spinner fa-pulse"
+        }), " Searching for posts...");
+      } else if (this.state.currentLabel.trim().length >= 3) {
+        return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, "No post results.");
+      } else {
+        return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, "Enter at least 3 characters to search...");
+      }
+    }
+
+    return this.state.options.map(post => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+      className: "post-option",
+      "data-value": post.ID,
+      key: post.ID,
+      onMouseDown: () => this.handleOptionChange(post.ID, post.post_title)
+    }, post.post_title + ' [' + post.ID + ']'));
+  } //end createSelectOptions()
+
+
+  componentDidMount() {
+    if (this.state.currentValue.trim() !== '' && this.state.currentLabel.trim() === '') {
+      this.setState({
+        currentLabel: '(Loading...)'
+      }, () => {
+        let data = {
+          'action': 'ptc_get_post_title_by_id',
+          'nonce': window.ptc_completionist_automations.nonce,
+          'post_id': this.state.currentValue
+        };
+        window.jQuery.post(window.ajaxurl, data, res => {
+          if (res.status == 'success' && res.data != '') {
+            this.setState({
+              currentLabel: res.data
+            });
+          } else {
+            console.error('Failed to load initial PostSearchSelectInput label for initial value.');
+            console.error(res);
+            this.setState({
+              currentLabel: '(Error: Failed to load post title)'
+            });
+          }
+        }, 'json').fail(() => {
+          console.error('Failed to load initial PostSearchSelectInput label for initial value.');
+          this.setState({
+            currentLabel: '(Error: Failed to load post title)'
+          });
+        });
+      });
+    }
+  } //end componentDidMount()
+
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.currentValue !== prevState.currentValue) {
+      this.props.onSelectOption(this.state.currentValue);
+    }
+  } //end componentDidUpdate()
+
+
+  render() {
+    let selectList = null;
+
+    if (this.state.textInputHasFocus === true) {
+      const selectOptions = this.createSelectOptions(this.state.options);
+      selectList = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
+        className: "select-options"
+      }, selectOptions);
+    }
+
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "ptc-ajax-search-select-input"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      id: this.props.id,
+      type: "text",
+      value: this.state.currentLabel,
+      onChange: e => this.handleSearchChange(e.target.value),
+      onFocus: () => this.setState({
+        textInputHasFocus: true
+      }),
+      onBlur: () => this.handleSearchBlur()
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      type: "hidden",
+      value: this.state.currentValue
+    }), selectList);
+  } //end render()
+
+
+} //end class PostSearchSelectInput
+
+/***/ }),
+
+/***/ "./src/components/PTCCompletionistTasksDashboardWidget.jsx":
+/*!*****************************************************************!*\
+  !*** ./src/components/PTCCompletionistTasksDashboardWidget.jsx ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ PTCCompletionistTasksDashboardWidget; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _task_TaskList_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task/TaskList.jsx */ "./src/components/task/TaskList.jsx");
+
+
+function PTCCompletionistTasksDashboardWidget() {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskList_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    tasks: window.PTC.tasks
+  });
+}
+
+/***/ }),
+
+/***/ "./src/components/task/TaskList.jsx":
+/*!******************************************!*\
+  !*** ./src/components/task/TaskList.jsx ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TaskList; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _TaskRow_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskRow.jsx */ "./src/components/task/TaskRow.jsx");
+
+
+function TaskList(_ref) {
+  let {
+    tasks
+  } = _ref;
+  const renderedTasks = tasks.map(t => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskRow_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    key: t.gid,
+    task: t
+  }));
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-asana-task-list"
+  }, renderedTasks);
+}
+
+/***/ }),
+
+/***/ "./src/components/task/TaskRow.jsx":
+/*!*****************************************!*\
+  !*** ./src/components/task/TaskRow.jsx ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TaskRow; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+function TaskRow(_ref) {
+  let {
+    task
+  } = _ref;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("section", {
+    className: "ptc-completionist-task"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    title: "Mark Complete",
+    className: "mark-complete",
+    type: "button"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-check"
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "name"
+  }, task.name, task.notes && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "far fa-sticky-note"
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "details"
+  }, task.assignee && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "assignee"
+  }, task.assignee.gid)));
+}
+
+/***/ }),
+
+/***/ "@wordpress/element":
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+/***/ (function(module) {
+
+module.exports = window["wp"]["element"];
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	!function() {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = function(module) {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				function() { return module['default']; } :
+/******/ 				function() { return module; };
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	!function() {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = function(exports, definition) {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	!function() {
+/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	!function() {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = function(exports) {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+!function() {
+/*!**********************!*\
+  !*** ./src/index.js ***!
+  \**********************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _components_PTCCompletionist_Automations_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/PTCCompletionist_Automations.js */ "./src/components/PTCCompletionist_Automations.js");
+/* harmony import */ var _components_PTCCompletionistTasksDashboardWidget_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/PTCCompletionistTasksDashboardWidget.jsx */ "./src/components/PTCCompletionistTasksDashboardWidget.jsx");
+
+
+
+const {
+  render
+} = wp.element;
+jQuery(function ($) {
+  try {
+    const rootNode = document.getElementById('ptc-completionist-automations-root');
+
+    if (rootNode !== null) {
+      render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_PTCCompletionist_Automations_js__WEBPACK_IMPORTED_MODULE_1__["default"], null), rootNode);
+    } //end if rootNode
+
+  } catch (e) {
+    console.error(e);
+  }
+});
+document.addEventListener('DOMContentLoaded', () => {
+  const rootNode = document.getElementById('ptc-completionist-tasks-dashboard-widget');
+
+  if (null !== rootNode) {
+    render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_PTCCompletionistTasksDashboardWidget_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], null), rootNode);
+  }
+});
+}();
+/******/ })()
+;
+//# sourceMappingURL=index.js.map

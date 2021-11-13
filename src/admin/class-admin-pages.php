@@ -128,6 +128,24 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 			switch ( $hook_suffix ) {
 
 				case 'index.php':
+					$asset_file = require_once( PLUGIN_PATH . 'build/index.asset.php' );
+					wp_enqueue_script(
+						'ptc-completionist_build-index-js',
+						PLUGIN_URL . '/build/index.js',
+						$asset_file['dependencies'],
+						PLUGIN_VERSION
+					);
+					// @TODO: Also get map of Asana user GIDs => WordPress users.
+					// This is for displaying assignee information like name and gravatar.
+					$js_data = [
+						'tasks' => Asana_Interface::maybe_get_all_site_tasks( HTML_Builder::TASK_OPT_FIELDS )
+					];
+					$js_data = json_encode( $js_data );
+					wp_add_inline_script(
+						'ptc-completionist_build-index-js',
+						"var PTC = {$js_data};",
+						'before'
+					);
 					wp_enqueue_script(
 						'ptc-completionist_dashboard-widget-js',
 						PLUGIN_URL . '/assets/scripts/dashboard-widget.js',

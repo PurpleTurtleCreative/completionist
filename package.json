@@ -13,8 +13,8 @@
     "url": "https://github.com/PurpleTurtleCreative/completionist/issues"
   },
   "devDependencies": {
-    "@wordpress/scripts": "10.0.0",
-    "node-sass": "^5.0.0"
+    "@wordpress/scripts": "^19.1.0",
+    "node-sass": "^6.0.1"
   },
   "scripts": {
     "build": "wp-scripts build && npm run styles",
