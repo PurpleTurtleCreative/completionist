@@ -1,6 +1,20 @@
 export default function TaskActions({taskGID}) {
+	/*
+	@TODO: useState vars for component state
+	- isProcessing, which action for button loader animation and processing lock down
+	*/
 
 	const task_url = get_asana_task_url(taskGID);
+
+	// @TODO: useMemo to memoize function definition.
+	const handleUnpinTask = (taskGID) => {
+
+	};
+
+	// @TODO: useMemo to memoize function definition.
+	const handleDeleteTask = (taskGID) => {
+
+	};
 
 	return (
 		<div className="ptc-TaskActions">
@@ -9,10 +23,10 @@ export default function TaskActions({taskGID}) {
 					<i className="fas fa-link"></i>
 				</button>
 			</a>
-			<button title="Unpin" className="unpin-task" type="button">
+			<button title="Unpin" className="unpin-task" type="button" onClick={handleUnpinTask(taskGID)}>
 				<i className="fas fa-thumbtack"></i>
 			</button>
-			<button title="Delete" className="delete-task" type="button">
+			<button title="Delete" className="delete-task" type="button" onClick={handleDeleteTask(taskGID)}>
 				<i className="fas fa-minus"></i>
 			</button>
 		</div>

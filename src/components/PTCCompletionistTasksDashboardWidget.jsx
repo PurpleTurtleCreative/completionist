@@ -1,5 +1,5 @@
-import TaskList from './task/TaskList.jsx';
+import TaskListPaginated from './task/TaskListPaginated.jsx';
 
 export default function PTCCompletionistTasksDashboardWidget() {
-	return <TaskList tasks={window.PTC.tasks} />;
+	return <TaskListPaginated limit={3} tasks={window.PTC.tasks} />;
 }

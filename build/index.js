@@ -1180,11 +1180,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _task_TaskList_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task/TaskList.jsx */ "./src/components/task/TaskList.jsx");
+/* harmony import */ var _task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task/TaskListPaginated.jsx */ "./src/components/task/TaskListPaginated.jsx");
 
 
 function PTCCompletionistTasksDashboardWidget() {
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskList_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    limit: 3,
     tasks: window.PTC.tasks
   });
 }
@@ -1211,7 +1212,18 @@ function TaskActions(_ref) {
   let {
     taskGID
   } = _ref;
-  const task_url = get_asana_task_url(taskGID);
+
+  /*
+  @TODO: useState vars for component state
+  - isProcessing, which action for button loader animation and processing lock down
+  */
+  const task_url = get_asana_task_url(taskGID); // @TODO: useMemo to memoize function definition.
+
+  const handleUnpinTask = taskGID => {}; // @TODO: useMemo to memoize function definition.
+
+
+  const handleDeleteTask = taskGID => {};
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-TaskActions"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
@@ -1226,13 +1238,15 @@ function TaskActions(_ref) {
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     title: "Unpin",
     className: "unpin-task",
-    type: "button"
+    type: "button",
+    onClick: handleUnpinTask(taskGID)
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-thumbtack"
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     title: "Delete",
     className: "delete-task",
-    type: "button"
+    type: "button",
+    onClick: handleDeleteTask(taskGID)
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-minus"
   })));
@@ -1275,6 +1289,81 @@ function TaskList(_ref) {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-TaskList"
   }, renderedTasks);
+}
+
+/***/ }),
+
+/***/ "./src/components/task/TaskListPaginated.jsx":
+/*!***************************************************!*\
+  !*** ./src/components/task/TaskListPaginated.jsx ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TaskListPaginated; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _TaskList_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskList.jsx */ "./src/components/task/TaskList.jsx");
+
+
+const {
+  useState,
+  useCallback,
+  useMemo
+} = wp.element;
+function TaskListPaginated(_ref) {
+  let {
+    limit,
+    tasks
+  } = _ref;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = useMemo(() => Math.ceil(tasks.length / limit), [tasks, limit]);
+  const goToPage = useCallback(page => {
+    if (page <= 1) {
+      setCurrentPage(1);
+    } else if (page >= totalPages) {
+      setCurrentPage(totalPages);
+    } else {
+      setCurrentPage(page);
+    }
+  }, [currentPage, setCurrentPage, totalPages]);
+  const start = Math.max(0, (currentPage - 1) * limit);
+  const currentTasks = tasks.slice(start, currentPage * limit);
+  const renderedPageButtons = [];
+
+  for (let i = 1; i <= totalPages; ++i) {
+    renderedPageButtons.push((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      className: "page-option",
+      type: "button",
+      title: `Page ${i}`,
+      disabled: i === currentPage,
+      onClick: () => goToPage(i)
+    }, i));
+  }
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-TaskListPaginated"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskList_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    tasks: currentTasks
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("nav", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    "data-page": "prev",
+    type: "button",
+    title: "Previous Page",
+    disabled: 1 === currentPage,
+    onClick: () => goToPage(currentPage - 1)
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    class: "fas fa-angle-left"
+  })), renderedPageButtons, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    "data-page": "next",
+    type: "button",
+    title: "Next Page",
+    disabled: totalPages === currentPage,
+    onClick: () => goToPage(currentPage + 1)
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    class: "fas fa-angle-right"
+  }))));
 }
 
 /***/ }),
