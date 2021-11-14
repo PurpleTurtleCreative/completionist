@@ -1,6 +1,7 @@
 // @import 'abstracts/colors';
 // @import 'abstracts/effects';
-@import 'components/TaskOverview';
+@import 'components/task/TaskOverview';
+@import 'components/task/TaskFilters';
 
 //----------------------
 
@@ -9,8 +10,6 @@
 	margin: 0;
 
 	.ptc-PTCCompletionistTasksDashboardWidget {
-
-		.ptc-TaskFilters {}//end ptc-TaskFilters
 		.ptc-TaskListPaginated {}//end ptc-TaskListPaginated
 	}//end #ptc-PTCCompletionistTasksDashboardWidget
 }//end #ptc-completionist_site-tasks .inside

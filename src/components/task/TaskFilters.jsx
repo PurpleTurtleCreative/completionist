@@ -49,9 +49,7 @@ export default function TaskFilters({tasks, onChange}) {
 			className += ' --is-active';
 		}
 		return (
-			<button key={f.key} type="button" className={className} onClick={() => handleClickFilter(f.key, f.tasks)} style={{width: 'auto'}}>
-				{f.title} <span class="task-count">({f.tasks.length})</span>
-			</button>
+			<button key={f.key} type="button" className={className} onClick={() => handleClickFilter(f.key, f.tasks)}>{`${f.title} (${f.tasks.length})`}</button>
 		);
 	});
 

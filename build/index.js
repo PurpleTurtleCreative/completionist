@@ -1336,13 +1336,8 @@ function TaskFilters(_ref) {
       key: f.key,
       type: "button",
       className: className,
-      onClick: () => handleClickFilter(f.key, f.tasks),
-      style: {
-        width: 'auto'
-      }
-    }, f.title, " ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-      class: "task-count"
-    }, "(", f.tasks.length, ")"));
+      onClick: () => handleClickFilter(f.key, f.tasks)
+    }, `${f.title} (${f.tasks.length})`);
   });
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-TaskFilters"
