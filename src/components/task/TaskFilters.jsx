@@ -1,4 +1,4 @@
-import { filterCriticalTasks, filterMyTasks, filterGeneralTasks, filterPinnedTasks } from './taskUtil.jsx';
+import { filterIncompleteTasks, filterCriticalTasks, filterMyTasks, filterGeneralTasks, filterPinnedTasks } from './taskUtil.jsx';
 
 const { useState, useCallback, useMemo } = wp.element;
 
@@ -6,6 +6,9 @@ export default function TaskFilters({tasks, onChange}) {
 	const [activeFilter, setActiveFilter] = useState('none');
 
 	const filters = useMemo(() => {
+
+		const incompleteTasks = filterIncompleteTasks(tasks);
+
 		return [
 			{
 				"key": 'none',
@@ -15,22 +18,22 @@ export default function TaskFilters({tasks, onChange}) {
 			{
 				"key": 'pinned',
 				"title": 'Pinned',
-				"tasks": filterPinnedTasks(tasks)
+				"tasks": filterPinnedTasks(incompleteTasks)
 			},
 			{
 				"key": 'general',
 				"title": 'General',
-				"tasks": filterGeneralTasks(tasks)
+				"tasks": filterGeneralTasks(incompleteTasks)
 			},
 			{
 				"key": 'myTasks',
 				"title": 'My Tasks',
-				"tasks": filterMyTasks(window.PTC.me.gid, tasks)
+				"tasks": filterMyTasks(window.PTC.me.gid, incompleteTasks)
 			},
 			{
 				"key": 'critical',
 				"title": 'Critical',
-				"tasks": filterCriticalTasks(tasks)
+				"tasks": filterCriticalTasks(incompleteTasks)
 			},
 		]
 	}, [tasks]);

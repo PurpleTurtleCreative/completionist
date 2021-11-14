@@ -1294,6 +1294,7 @@ function TaskFilters(_ref) {
   } = _ref;
   const [activeFilter, setActiveFilter] = useState('none');
   const filters = useMemo(() => {
+    const incompleteTasks = (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterIncompleteTasks)(tasks);
     return [{
       "key": 'none',
       "title": 'All Tasks',
@@ -1301,19 +1302,19 @@ function TaskFilters(_ref) {
     }, {
       "key": 'pinned',
       "title": 'Pinned',
-      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterPinnedTasks)(tasks)
+      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterPinnedTasks)(incompleteTasks)
     }, {
       "key": 'general',
       "title": 'General',
-      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterGeneralTasks)(tasks)
+      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterGeneralTasks)(incompleteTasks)
     }, {
       "key": 'myTasks',
       "title": 'My Tasks',
-      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterMyTasks)(window.PTC.me.gid, tasks)
+      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterMyTasks)(window.PTC.me.gid, incompleteTasks)
     }, {
       "key": 'critical',
       "title": 'Critical',
-      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterCriticalTasks)(tasks)
+      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterCriticalTasks)(incompleteTasks)
     }];
   }, [tasks]);
   const handleClickFilter = useCallback((key, filteredTasks) => {
@@ -1543,6 +1544,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "unpinTask": function() { return /* binding */ unpinTask; },
 /* harmony export */   "getTaskUrl": function() { return /* binding */ getTaskUrl; },
 /* harmony export */   "isCriticalTask": function() { return /* binding */ isCriticalTask; },
+/* harmony export */   "filterIncompleteTasks": function() { return /* binding */ filterIncompleteTasks; },
 /* harmony export */   "filterCriticalTasks": function() { return /* binding */ filterCriticalTasks; },
 /* harmony export */   "filterMyTasks": function() { return /* binding */ filterMyTasks; },
 /* harmony export */   "filterGeneralTasks": function() { return /* binding */ filterGeneralTasks; },
@@ -1561,6 +1563,9 @@ function isCriticalTask(task) {
   const DAY_IN_SECONDS = 86400;
   const limit = 7 * DAY_IN_SECONDS;
   return Date.parse(task.due_on) - Date.now() < limit;
+}
+function filterIncompleteTasks(tasks) {
+  return tasks.filter(t => !t.completed);
 }
 function filterCriticalTasks(tasks) {
   return tasks.filter(t => isCriticalTask(t));
