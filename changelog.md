@@ -1,3 +1,13 @@
+### 3.1.0 - [Unreleased]
+
+#### Deprecated
+
+- `$opt_fields` arguments in all relevant `Asana_Interface` methods, using new `Asana_Interface::TASK_OPT_FIELDS` member constant instead for consistency.
+
+#### Changed
+
+- Tasks dashboard widget has been converted to ReactJS, offering a better experience.
+
 ### 3.0.1 - 2021-11-09
 
 #### Fixed
