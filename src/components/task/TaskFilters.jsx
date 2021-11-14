@@ -13,7 +13,7 @@ export default function TaskFilters({tasks, onChange}) {
 			{
 				"key": 'none',
 				"title": 'All Tasks',
-				"tasks": tasks
+				"tasks": incompleteTasks
 			},
 			{
 				"key": 'pinned',

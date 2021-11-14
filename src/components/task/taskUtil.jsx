@@ -34,13 +34,19 @@ export function filterMyTasks(userGID, tasks) {
 }
 
 export function filterGeneralTasks(tasks) {
-	// @TODO - Need to figure out storing task pinned post IDs.
-	console.warn('@TODO - filterGeneralTasks');
-	return tasks;
+	return tasks.filter(t => {
+		if ( t.action_link && t.action_link.post_id > 0 ) {
+			return false;
+		}
+		return true;
+	});
 }
 
 export function filterPinnedTasks(tasks) {
-	// @TODO - Need to figure out storing task pinned post IDs.
-	console.warn('@TODO - filterPinnedTasks');
-	return tasks;
+	return tasks.filter(t => {
+		if ( t.action_link && t.action_link.post_id > 0 ) {
+			return true;
+		}
+		return false;
+	});
 }

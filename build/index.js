@@ -1302,7 +1302,7 @@ function TaskFilters(_ref) {
     return [{
       "key": 'none',
       "title": 'All Tasks',
-      "tasks": tasks
+      "tasks": incompleteTasks
     }, {
       "key": 'pinned',
       "title": 'Pinned',
@@ -1476,24 +1476,27 @@ function TaskOverview(_ref) {
     tasks
   } = _ref;
   const incompleteTasks = useMemo(() => (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterIncompleteTasks)(tasks), [tasks]);
+  const completedCount = tasks.length - incompleteTasks.length;
+  const completedPercent = Math.round(completedCount / tasks.length * 100);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-TaskOverview"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    class: "task-box-icon"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    class: "fas fa-clipboard-list"
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    class: "task-box-data"
+    className: "feature"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, completedPercent, "%"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Complete")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "details"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    class: "task-count"
-  }, incompleteTasks.length), " Tasks"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    class: "progress-bar-wrapper"
+    className: "task-count"
+  }, incompleteTasks.length), " Remaining"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "progress-bar-wrapper"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    class: "progress-bar"
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    class: "completed-tasks-count"
-  }, tasks.length - incompleteTasks.length), " of ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    class: "total-tasks-count"
+    className: "progress-bar",
+    style: {
+      width: `${completedPercent}%`
+    }
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Completed ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "completed-tasks-count"
+  }, completedCount), " of ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "total-tasks-count"
   }, tasks.length)))));
 }
 
@@ -1544,6 +1547,19 @@ function TaskRow(_ref) {
     }
   }
 
+  let ctaButton = null;
+
+  if (task.action_link) {
+    ctaButton = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "cta-button"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+      href: task.action_link.href,
+      target: task.action_link.target
+    }, task.action_link.label, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+      className: "fas fa-long-arrow-alt-right"
+    })));
+  }
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-TaskRow"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
@@ -1570,14 +1586,7 @@ function TaskRow(_ref) {
     className: "description"
   }, task.notes), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskActions_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
     taskGID: task.gid
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "cta-button"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    href: "#TODO",
-    target: ""
-  }, "@TODO", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    className: "fas fa-long-arrow-alt-right"
-  }))));
+  }), ctaButton);
 }
 
 /***/ }),
@@ -1630,14 +1639,22 @@ function filterMyTasks(userGID, tasks) {
   });
 }
 function filterGeneralTasks(tasks) {
-  // @TODO - Need to figure out storing task pinned post IDs.
-  console.warn('@TODO - filterGeneralTasks');
-  return tasks;
+  return tasks.filter(t => {
+    if (t.action_link && t.action_link.post_id > 0) {
+      return false;
+    }
+
+    return true;
+  });
 }
 function filterPinnedTasks(tasks) {
-  // @TODO - Need to figure out storing task pinned post IDs.
-  console.warn('@TODO - filterPinnedTasks');
-  return tasks;
+  return tasks.filter(t => {
+    if (t.action_link && t.action_link.post_id > 0) {
+      return true;
+    }
+
+    return false;
+  });
 }
 
 /***/ }),

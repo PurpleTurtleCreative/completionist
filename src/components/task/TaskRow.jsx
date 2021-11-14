@@ -27,6 +27,18 @@ export default function TaskRow({task}) {
 		}
 	}
 
+	let ctaButton = null;
+	if ( task.action_link ) {
+		ctaButton = (
+			<div className="cta-button">
+				<a href={task.action_link.href} target={task.action_link.target}>
+					{task.action_link.label}
+					<i className="fas fa-long-arrow-alt-right"></i>
+				</a>
+			</div>
+		);
+	}
+
 	return (
 		<div className="ptc-TaskRow">
 
@@ -48,13 +60,8 @@ export default function TaskRow({task}) {
 
 			<TaskActions taskGID={task.gid} />
 
-			<div className="cta-button">
-				{/* @TODO: Either view in Asana or edit pinned post. */}
-				<a href="#TODO" target="">
-					@TODO
-					<i className="fas fa-long-arrow-alt-right"></i>
-				</a>
-			</div>
+			{ctaButton}
+
 		</div>
 	);
 }

@@ -733,6 +733,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			$site_tasks = $asana->tasks->findByTag( $site_tag_gid, $params, $options );
 			$all_tasks = [];
 			foreach ( $site_tasks as $task ) {
+				$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
 				$all_tasks[ $task->gid ] = $task;
 			}
 
