@@ -1754,7 +1754,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (null !== rootNode) {
     render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_PTCCompletionistTasksDashboardWidget_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      tasks: window.PTC.tasks
+      tasks: Object.values(window.PTC.tasks)
     }), rootNode);
   }
 });

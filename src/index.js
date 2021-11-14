@@ -17,6 +17,6 @@ jQuery(function($) {
 document.addEventListener('DOMContentLoaded', () => {
 	const rootNode = document.getElementById('ptc-PTCCompletionistTasksDashboardWidget');
 	if ( null !== rootNode ) {
-		render(<PTCCompletionistTasksDashboardWidget tasks={window.PTC.tasks} />, rootNode);
+		render(<PTCCompletionistTasksDashboardWidget tasks={Object.values(window.PTC.tasks)} />, rootNode);
 	}
 });
