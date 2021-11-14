@@ -30,6 +30,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 	class Asana_Interface {
 
 		/**
+		 * The ?opt_fields csv for Asana API requests.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @var string TASK_OPT_FIELDS
+		 */
+		public const TASK_OPT_FIELDS = 'name,completed,notes,due_on,assignee,workspace,tags';
+
+		/**
 		 * The currently authenticated WordPress user's ID.
 		 *
 		 * @since 1.1.0
@@ -542,11 +551,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 * Attempts to retrieve task data. Providing the post id of the provided
 		 * pinned task gid will also attempt data self-healing.
 		 *
+		 * @since 3.1.0 Marked $opt_fields param as deprecated.
 		 * @since 1.0.0
 		 *
 		 * @param string $task_gid The gid of the task to retrieve.
-		 * @param string $opt_fields A csv of task fields to retrieve, excluding
-		 * 'workspace' and 'tags', which are appended for data healing.
+		 * @param string $opt_fields_deprecated Deprecated.
 		 * @param int $post_id Optional. The post ID on which the task belongs to
 		 * attempt self-healing on certain error responses. Default 0 to take no
 		 * action on failure.
@@ -560,7 +569,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 * workspace or have the site tag, so it was unpinned.
 		 * * 0: Failed to get task data - This is presumably unreachable.
 		 */
-		public static function maybe_get_task_data( string $task_gid, string $opt_fields, int $post_id = 0 ) : \stdClass {
+		public static function maybe_get_task_data( string $task_gid, string $opt_fields_deprecated = '', int $post_id = 0 ) : \stdClass {
+
+			if ( ! empty( $opt_fields_deprecated ) ) {
+				_deprecated_argument(
+					__FUNCTION__,
+					'3.1.0',
+					'$opt_fields is now a member constant, ' . __CLASS__ . '::TASK_OPT_FIELDS'
+				);
+			}
 
 			$task_gid = Options::sanitize( 'gid', $task_gid );
 			if ( empty( $task_gid ) ) {
@@ -577,7 +594,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			try {
 
 				$asana = self::get_client();
-				$task = $asana->tasks->findById( $task_gid, [ 'opt_fields' => $opt_fields . ',workspace,tags' ] );
+				$task = $asana->tasks->findById( $task_gid, [ 'opt_fields' => self::TASK_OPT_FIELDS ] );
 
 				if (
 					isset( $task->workspace->gid )
@@ -686,15 +703,24 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		/**
 		 * Attempts to retrieve task data for all site tasks.
 		 *
+		 * @since 3.1.0 Marked $opt_fields param as deprecated.
 		 * @since 1.0.0
 		 *
-		 * @param string $opt_fields A csv of task fields to retrieve.
+		 * @param string $opt_fields_deprecated Deprecated.
 		 * @return \stdClass[] Task data objects.
 		 *
 		 * @throws \Exception Authentication may fail when first loading the client
 		 * or requests could fail due to request limits or server issues.
 		 */
-		public static function maybe_get_all_site_tasks( string $opt_fields ) : array {
+		public static function maybe_get_all_site_tasks( string $opt_fields_deprecated = '' ) : array {
+
+			if ( ! empty( $opt_fields_deprecated ) ) {
+				_deprecated_argument(
+					__FUNCTION__,
+					'3.1.0',
+					'$opt_fields is now a member constant, ' . __CLASS__ . '::TASK_OPT_FIELDS'
+				);
+			}
 
 			$transient_key = Cache_Manager::get_cache_key( 'all_site_tasks' );
 			$transient = get_transient( $transient_key );
@@ -712,7 +738,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			}
 
 			$params = [
-				'opt_fields' => $opt_fields,
+				'opt_fields' => self::TASK_OPT_FIELDS,
 			];
 
 			$options = [
@@ -737,19 +763,28 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		/**
 		 * Sends a batch request to tag and comment on a task in Asana.
 		 *
+		 * @since 3.1.0 Marked $opt_fields param as deprecated.
 		 * @since 1.0.0
 		 *
 		 * @param string $task_gid The task to act on.
 		 * @param string $tag_gid The tag to add.
 		 * @param string $comment The comment text.
-		 * @param string $opt_fields Optional. A csv of task fields to retrieve.
+		 * @param string $opt_fields_deprecated Deprecated.
 		 * @return \stdClass[] An array of response objects. Instance members
 		 * include 'body', 'status_code', and 'headers'.
 		 *
 		 * @throws \Exception Authentication may fail when first loading the client
 		 * or requests could fail due to request limits or server issues.
 		 */
-		public static function tag_and_comment( string $task_gid, string $tag_gid, string $comment, string $opt_fields = '' ) : array {
+		public static function tag_and_comment( string $task_gid, string $tag_gid, string $comment, string $opt_fields_deprecated = '' ) : array {
+
+			if ( ! empty( $opt_fields_deprecated ) ) {
+				_deprecated_argument(
+					__FUNCTION__,
+					'3.1.0',
+					'$opt_fields is now a member constant, ' . __CLASS__ . '::TASK_OPT_FIELDS'
+				);
+			}
 
 			$asana = self::get_client();
 
@@ -757,7 +792,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			$tag_gid = Options::sanitize( 'gid', $tag_gid );
 			$comment = Options::sanitize( 'string', $comment );
 
-			$opt_fields = explode( ',', $opt_fields );
+			$opt_fields = explode( ',', self::TASK_OPT_FIELDS );
 
 			$data = [
 				'actions' => [

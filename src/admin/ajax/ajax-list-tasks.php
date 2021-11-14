@@ -40,7 +40,7 @@ try {
       $detailed_view = FALSE;
     }
 
-    $all_tasks = Asana_Interface::maybe_get_all_site_tasks( HTML_Builder::TASK_OPT_FIELDS );
+    $all_tasks = Asana_Interface::maybe_get_all_site_tasks();
 
     $matched_tasks = [];
     foreach ( $all_tasks as $task ) {

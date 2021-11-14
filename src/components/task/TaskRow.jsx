@@ -6,7 +6,7 @@ export default function TaskRow({task}) {
 	const [showDescription, setShowDescription] = useState(false);
 
 	const handleMarkComplete = useCallback((taskGID) => {
-		console.log(`@TODO - Handle mark complete for task ${taskGID}`);
+		console.warn(`@TODO - Handle mark complete for task ${taskGID}`);
 	}, []);
 
 	const handleToggleDescription = useCallback(() => {

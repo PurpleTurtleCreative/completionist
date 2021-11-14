@@ -32,45 +32,45 @@ try {
 
 	/* Get All Tasks */
 
-	$all_tasks = Asana_Interface::maybe_get_all_site_tasks( HTML_Builder::TASK_OPT_FIELDS );
-	Asana_Interface::delete_pinned_tasks_except( $all_tasks );
+	// $all_tasks = Asana_Interface::maybe_get_all_site_tasks();
+	// Asana_Interface::delete_pinned_tasks_except( $all_tasks );
 
-	$all_incomplete_tasks = [];
-	foreach ( $all_tasks as $task ) {
-		if ( isset( $task->completed ) && is_bool( $task->completed ) ) {
-			if ( false === $task->completed ) {
-				$all_incomplete_tasks[] = $task;
-			}
-		}
-	}
+	// $all_incomplete_tasks = [];
+	// foreach ( $all_tasks as $task ) {
+	// 	if ( isset( $task->completed ) && is_bool( $task->completed ) ) {
+	// 		if ( false === $task->completed ) {
+	// 			$all_incomplete_tasks[] = $task;
+	// 		}
+	// 	}
+	// }
 
-	/* Sort By Due */
+	// /* Sort By Due */
 
-	if ( ! empty( $all_incomplete_tasks ) ) {
-		$sorted_all_incompleted_tasks = HTML_Builder::sort_tasks_by_due( $all_incomplete_tasks );
-		if ( ! empty( $sorted_all_incompleted_tasks ) ) {
-			$all_incomplete_tasks = $sorted_all_incompleted_tasks;
-		}
-	}
+	// if ( ! empty( $all_incomplete_tasks ) ) {
+	// 	$sorted_all_incompleted_tasks = HTML_Builder::sort_tasks_by_due( $all_incomplete_tasks );
+	// 	if ( ! empty( $sorted_all_incompleted_tasks ) ) {
+	// 		$all_incomplete_tasks = $sorted_all_incompleted_tasks;
+	// 	}
+	// }
 
-	/* Counts and Stats */
+	//  Counts and Stats
 
-	$total_tasks_count = count( $all_tasks );
-	$incomplete_tasks_count = count( $all_incomplete_tasks );
-	$completed_tasks_count = ( $total_tasks_count - $incomplete_tasks_count );
+	// $total_tasks_count = count( $all_tasks );
+	// $incomplete_tasks_count = count( $all_incomplete_tasks );
+	// $completed_tasks_count = ( $total_tasks_count - $incomplete_tasks_count );
 
-	/* Categories */
+	// /* Categories */
 
-	$pinned_tasks = new Task_Categorizer\Pinned( $all_incomplete_tasks );
-	$general_tasks = new Task_Categorizer\General( $all_incomplete_tasks );
-	$critical_tasks = new Task_Categorizer\Critical( $all_incomplete_tasks );
-	$my_tasks = new Task_Categorizer\My_Tasks( $all_incomplete_tasks );
+	// $pinned_tasks = new Task_Categorizer\Pinned( $all_incomplete_tasks );
+	// $general_tasks = new Task_Categorizer\General( $all_incomplete_tasks );
+	// $critical_tasks = new Task_Categorizer\Critical( $all_incomplete_tasks );
+	// $my_tasks = new Task_Categorizer\My_Tasks( $all_incomplete_tasks );
 
-	/* Task List Pagination */
+	// /* Task List Pagination */
 
-	$page_size = 10;
-	$total_pages = ceil( $incomplete_tasks_count / $page_size );
-	$disable_next_button = ( $total_pages > 1 ) ? '' : 'disabled="disabled"';
+	// $page_size = 10;
+	// $total_pages = ceil( $incomplete_tasks_count / $page_size );
+	// $disable_next_button = ( $total_pages > 1 ) ? '' : 'disabled="disabled"';
 
 	/* Display */
 	?>
