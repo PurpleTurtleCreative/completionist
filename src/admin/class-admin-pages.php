@@ -138,7 +138,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					// @TODO: Also get map of Asana user GIDs => WordPress users.
 					// This is for displaying assignee information like name and gravatar.
 					$js_data = [
-						'tasks' => Asana_Interface::maybe_get_all_site_tasks( HTML_Builder::TASK_OPT_FIELDS )
+						'tasks' => Asana_Interface::maybe_get_all_site_tasks( HTML_Builder::TASK_OPT_FIELDS ),
+						'users' => Asana_Interface::get_connected_workspace_users(),
 					];
 					$js_data = json_encode( $js_data );
 					wp_add_inline_script(

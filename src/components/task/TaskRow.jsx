@@ -18,6 +18,15 @@ export default function TaskRow({task}) {
 
 	const notesIconClassName = ( showDescription ) ? 'fas' : 'far';
 
+	let assigneeDisplayName = null;
+	if ( task.assignee ) {
+		if ( window.PTC.users[ task.assignee.gid ] ) {
+			assigneeDisplayName = window.PTC.users[ task.assignee.gid ].data.display_name;
+		} else {
+			assigneeDisplayName = '(Not Connected)';
+		}
+	}
+
 	return (
 		<div className="ptc-TaskRow">
 
@@ -31,7 +40,7 @@ export default function TaskRow({task}) {
 			</div>
 
 			<div className="details">
-				{task.assignee && <div className="assignee">{task.assignee.gid}</div>}
+				{assigneeDisplayName && <div className="assignee">{assigneeDisplayName}</div>}
 				{task.due_on && <div className="due"><i className="fas fa-clock"></i>{task.due_on}</div>}
 			</div>
 

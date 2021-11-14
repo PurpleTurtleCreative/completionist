@@ -1390,6 +1390,16 @@ function TaskRow(_ref) {
     setShowDescription(!showDescription);
   }, [task, showDescription, setShowDescription]);
   const notesIconClassName = showDescription ? 'fas' : 'far';
+  let assigneeDisplayName = null;
+
+  if (task.assignee) {
+    if (window.PTC.users[task.assignee.gid]) {
+      assigneeDisplayName = window.PTC.users[task.assignee.gid].data.display_name;
+    } else {
+      assigneeDisplayName = '(Not Connected)';
+    }
+  }
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-TaskRow"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
@@ -1406,9 +1416,9 @@ function TaskRow(_ref) {
     className: `${notesIconClassName} fa-sticky-note`
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "details"
-  }, task.assignee && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, assigneeDisplayName && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "assignee"
-  }, task.assignee.gid), task.due_on && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, assigneeDisplayName), task.due_on && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "due"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-clock"
