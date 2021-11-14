@@ -1314,7 +1314,7 @@ function TaskFilters(_ref) {
     }, {
       "key": 'myTasks',
       "title": 'My Tasks',
-      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterMyTasks)(window.PTC.me.gid, incompleteTasks)
+      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterMyTasks)(window.PTCCompletionist.me.gid, incompleteTasks)
     }, {
       "key": 'critical',
       "title": 'Critical',
@@ -1540,8 +1540,8 @@ function TaskRow(_ref) {
   let assigneeDisplayName = null;
 
   if (task.assignee) {
-    if (window.PTC.users[task.assignee.gid]) {
-      assigneeDisplayName = window.PTC.users[task.assignee.gid].data.display_name;
+    if (window.PTCCompletionist.users[task.assignee.gid]) {
+      assigneeDisplayName = window.PTCCompletionist.users[task.assignee.gid].data.display_name;
     } else {
       assigneeDisplayName = '(Not Connected)';
     }
@@ -1771,7 +1771,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (null !== rootNode) {
     render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_PTCCompletionistTasksDashboardWidget_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      tasks: Object.values(window.PTC.tasks)
+      tasks: Object.values(window.PTCCompletionist.tasks)
     }), rootNode);
   }
 });

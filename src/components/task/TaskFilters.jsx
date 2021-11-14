@@ -28,7 +28,7 @@ export default function TaskFilters({tasks, onChange}) {
 			{
 				"key": 'myTasks',
 				"title": 'My Tasks',
-				"tasks": filterMyTasks(window.PTC.me.gid, incompleteTasks)
+				"tasks": filterMyTasks(window.PTCCompletionist.me.gid, incompleteTasks)
 			},
 			{
 				"key": 'critical',

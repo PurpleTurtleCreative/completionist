@@ -20,8 +20,8 @@ export default function TaskRow({task}) {
 
 	let assigneeDisplayName = null;
 	if ( task.assignee ) {
-		if ( window.PTC.users[ task.assignee.gid ] ) {
-			assigneeDisplayName = window.PTC.users[ task.assignee.gid ].data.display_name;
+		if ( window.PTCCompletionist.users[ task.assignee.gid ] ) {
+			assigneeDisplayName = window.PTCCompletionist.users[ task.assignee.gid ].data.display_name;
 		} else {
 			assigneeDisplayName = '(Not Connected)';
 		}
