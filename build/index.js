@@ -1181,13 +1181,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task/TaskListPaginated.jsx */ "./src/components/task/TaskListPaginated.jsx");
+/* harmony import */ var _task_TaskFilters_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task/TaskFilters.jsx */ "./src/components/task/TaskFilters.jsx");
 
 
-function PTCCompletionistTasksDashboardWidget() {
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+
+const {
+  useState
+} = wp.element;
+function PTCCompletionistTasksDashboardWidget(_ref) {
+  let {
+    tasks
+  } = _ref;
+  const [visibleTasks, setVisibleTasks] = useState(tasks);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-PTCCompletionistTasksDashboardWidget"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskFilters_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    tasks: tasks,
+    onChange: (_key, selectedTasks) => setVisibleTasks(selectedTasks)
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
     limit: 3,
-    tasks: window.PTC.tasks
-  });
+    tasks: visibleTasks
+  }));
 }
 
 /***/ }),
@@ -1249,6 +1263,85 @@ function TaskActions(_ref) {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-minus"
   })));
+}
+
+/***/ }),
+
+/***/ "./src/components/task/TaskFilters.jsx":
+/*!*********************************************!*\
+  !*** ./src/components/task/TaskFilters.jsx ***!
+  \*********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TaskFilters; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./taskUtil.jsx */ "./src/components/task/taskUtil.jsx");
+
+
+const {
+  useState,
+  useCallback,
+  useMemo
+} = wp.element;
+function TaskFilters(_ref) {
+  let {
+    tasks,
+    onChange
+  } = _ref;
+  const [activeFilter, setActiveFilter] = useState('none');
+  const filters = useMemo(() => {
+    return [{
+      "key": 'none',
+      "title": 'All Tasks',
+      "tasks": tasks
+    }, {
+      "key": 'pinned',
+      "title": 'Pinned',
+      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterPinnedTasks)(tasks)
+    }, {
+      "key": 'general',
+      "title": 'General',
+      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterGeneralTasks)(tasks)
+    }, {
+      "key": 'myTasks',
+      "title": 'My Tasks',
+      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterMyTasks)(window.PTC.me.gid, tasks)
+    }, {
+      "key": 'critical',
+      "title": 'Critical',
+      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterCriticalTasks)(tasks)
+    }];
+  }, [tasks]);
+  const handleClickFilter = useCallback((key, filteredTasks) => {
+    setActiveFilter(key);
+    onChange(key, filteredTasks);
+  }, [activeFilter, setActiveFilter, onChange]);
+  const renderedFilterButtons = filters.map(f => {
+    let className = `filter-${f.key}`;
+
+    if (activeFilter === f.key) {
+      className += ' --is-active';
+    }
+
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      key: f.key,
+      type: "button",
+      className: className,
+      onClick: () => handleClickFilter(f.key, f.tasks),
+      style: {
+        width: 'auto'
+      }
+    }, f.title, " ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      class: "task-count"
+    }, "(", f.tasks.length, ")"));
+  });
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-TaskFilters"
+  }, renderedFilterButtons);
 }
 
 /***/ }),
@@ -1448,7 +1541,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "deleteTask": function() { return /* binding */ deleteTask; },
 /* harmony export */   "unpinTask": function() { return /* binding */ unpinTask; },
-/* harmony export */   "getTaskUrl": function() { return /* binding */ getTaskUrl; }
+/* harmony export */   "getTaskUrl": function() { return /* binding */ getTaskUrl; },
+/* harmony export */   "isCriticalTask": function() { return /* binding */ isCriticalTask; },
+/* harmony export */   "filterCriticalTasks": function() { return /* binding */ filterCriticalTasks; },
+/* harmony export */   "filterMyTasks": function() { return /* binding */ filterMyTasks; },
+/* harmony export */   "filterGeneralTasks": function() { return /* binding */ filterGeneralTasks; },
+/* harmony export */   "filterPinnedTasks": function() { return /* binding */ filterPinnedTasks; }
 /* harmony export */ });
 function deleteTask(taskGID) {
   console.log(`@TODO: Delete task ${taskGID}`);
@@ -1458,6 +1556,33 @@ function unpinTask(taskGID) {
 }
 function getTaskUrl(taskGID) {
   return `https://app.asana.com/0/0/${taskGID}/f`;
+}
+function isCriticalTask(task) {
+  const DAY_IN_SECONDS = 86400;
+  const limit = 7 * DAY_IN_SECONDS;
+  return Date.parse(task.due_on) - Date.now() < limit;
+}
+function filterCriticalTasks(tasks) {
+  return tasks.filter(t => isCriticalTask(t));
+}
+function filterMyTasks(userGID, tasks) {
+  return tasks.filter(t => {
+    if (t.assignee) {
+      return userGID === t.assignee.gid;
+    }
+
+    return false;
+  });
+}
+function filterGeneralTasks(tasks) {
+  // @TODO - Need to figure out storing task pinned post IDs.
+  console.warn('@TODO - filterGeneralTasks');
+  return tasks;
+}
+function filterPinnedTasks(tasks) {
+  // @TODO - Need to figure out storing task pinned post IDs.
+  console.warn('@TODO - filterPinnedTasks');
+  return tasks;
 }
 
 /***/ }),
@@ -1573,7 +1698,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const rootNode = document.getElementById('ptc-PTCCompletionistTasksDashboardWidget');
 
   if (null !== rootNode) {
-    render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_PTCCompletionistTasksDashboardWidget_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], null), rootNode);
+    render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_PTCCompletionistTasksDashboardWidget_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      tasks: window.PTC.tasks
+    }), rootNode);
   }
 });
 }();

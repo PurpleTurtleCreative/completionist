@@ -140,6 +140,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					$js_data = [
 						'tasks' => Asana_Interface::maybe_get_all_site_tasks( HTML_Builder::TASK_OPT_FIELDS ),
 						'users' => Asana_Interface::get_connected_workspace_users(),
+						'me' => Asana_Interface::get_me(),
 					];
 					$js_data = json_encode( $js_data );
 					wp_add_inline_script(
