@@ -50,7 +50,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Cache_Manager' ) ) {
 		 */
 		public static function get_transient_lifespan() {
 			// @TODO - Eventually create a plugin setting for this.
-			return 5 * MINUTE_IN_SECONDS;
+			return 30 * MINUTE_IN_SECONDS;
 		}
 
 		/**

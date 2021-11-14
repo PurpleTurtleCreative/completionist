@@ -11,19 +11,29 @@ export default function TaskOverview({tasks}) {
 
 	return (
 		<div className="ptc-TaskOverview">
+
 			<div className="feature">
-				<p>{completedPercent}%</p>
-				<p>Complete</p>
+				<p className="large">{completedPercent}<span className="small">%</span></p>
+				<p className="caption">Complete</p>
 			</div>
+
 			<div className="details">
-				<p><span className="task-count">{incompleteTasks.length}</span> Remaining</p>
-				<div>
+
+				<p className="incomplete">
+					<span className="count">{incompleteTasks.length}</span> Remaining
+				</p>
+
+				<div className="progress">
 					<div className="progress-bar-wrapper">
 						<div className="progress-bar" style={{width: `${completedPercent}%`}}></div>
 					</div>
-					<p>Completed <span className="completed-tasks-count">{completedCount}</span> of <span className="total-tasks-count">{tasks.length}</span></p>
+					<p className="caption">
+						<span className="completed">Completed {completedCount}</span> of {tasks.length}
+					</p>
 				</div>
+
 			</div>
+
 		</div>
 	);
 }
