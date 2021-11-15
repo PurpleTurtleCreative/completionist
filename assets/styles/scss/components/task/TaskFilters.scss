@@ -14,6 +14,21 @@
 	flex-wrap: wrap;
 
 	button {
-		@include btn-pill-outline;
+
+		&.filter-none {
+			@include btn-pill-outline();
+		}
+		&.filter-pinned {
+			@include btn-pill-outline(info);
+		}
+		&.filter-general {
+			@include btn-pill-outline(grey);
+		}
+		&.filter-myTasks {
+			@include btn-pill-outline(warning);
+		}
+		&.filter-critical {
+			@include btn-pill-outline(danger);
+		}
 	}
 }//end ptc-TaskFilters

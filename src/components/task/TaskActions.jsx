@@ -22,10 +22,10 @@ export default function TaskActions({taskGID}) {
 					<i className="fas fa-link"></i>
 				</button>
 			</a>
-			<button title="Unpin" className="unpin" type="button" onClick={() => handleUnpinTask(taskGID)}>
+			<button title="Unpin from Site" className="unpin" type="button" onClick={() => handleUnpinTask(taskGID)}>
 				<i className="fas fa-thumbtack"></i>
 			</button>
-			<button title="Delete" className="delete" type="button" onClick={() => handleDeleteTask(taskGID)}>
+			<button title="Delete from Asana" className="delete" type="button" onClick={() => handleDeleteTask(taskGID)}>
 				<i className="fas fa-minus"></i>
 			</button>
 		</div>

@@ -1253,14 +1253,14 @@ function TaskActions(_ref) {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-link"
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    title: "Unpin",
+    title: "Unpin from Site",
     className: "unpin",
     type: "button",
     onClick: () => handleUnpinTask(taskGID)
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-thumbtack"
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    title: "Delete",
+    title: "Delete from Asana",
     className: "delete",
     type: "button",
     onClick: () => handleDeleteTask(taskGID)
@@ -1574,7 +1574,7 @@ function TaskRow(_ref) {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "name",
     onClick: handleToggleDescription
-  }, task.name, " ", task.notes && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+  }, task.name, task.notes && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: `${notesIconClassName} fa-sticky-note`
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "details"
