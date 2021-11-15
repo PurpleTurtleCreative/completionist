@@ -1418,6 +1418,7 @@ function TaskListPaginated(_ref) {
 
   for (let i = 1; i <= totalPages; ++i) {
     renderedPageButtons.push((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      className: "num",
       type: "button",
       title: `Page ${i}`,
       disabled: i === currentPage,
@@ -1429,20 +1430,24 @@ function TaskListPaginated(_ref) {
     className: "ptc-TaskListPaginated"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskList_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
     tasks: currentTasks
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("nav", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("nav", {
+    className: "pagination"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    className: "prev",
     type: "button",
     title: "Previous Page",
     disabled: 1 === currentPage,
     onClick: () => goToPage(currentPage - 1)
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    class: "fas fa-angle-left"
+    className: "fas fa-angle-left"
   })), renderedPageButtons, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    className: "next",
     type: "button",
     title: "Next Page",
     disabled: totalPages === currentPage,
     onClick: () => goToPage(currentPage + 1)
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    class: "fas fa-angle-right"
+    className: "fas fa-angle-right"
   }))));
 }
 

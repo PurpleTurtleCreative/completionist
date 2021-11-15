@@ -2,15 +2,11 @@
 // @import 'abstracts/effects';
 @import 'components/task/TaskOverview';
 @import 'components/task/TaskFilters';
-@import 'components/task/TaskRow';
+@import 'components/task/TaskListPaginated';
 
 //----------------------
 
-#ptc-completionist_site-tasks .inside{
+#ptc-completionist_site-tasks .inside {
 	padding: 0;
 	margin: 0;
-
-	.ptc-PTCCompletionistTasksDashboardWidget {
-		.ptc-TaskListPaginated {}//end ptc-TaskListPaginated
-	}//end #ptc-PTCCompletionistTasksDashboardWidget
 }//end #ptc-completionist_site-tasks .inside
