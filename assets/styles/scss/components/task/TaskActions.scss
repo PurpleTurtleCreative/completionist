@@ -1,7 +1,23 @@
-@import '../../abstracts/colors';
+// @import '../../abstracts/colors';
+@import '../../abstracts/elements';
 
 //----------------------
 
 .ptc-TaskActions {
 
+	button {
+		margin: 0.3em;
+
+		$btn-size: 1.9em;
+
+		&.view {
+			@include btn-circle-icon($btn-size, grey);
+		}
+		&.unpin {
+			@include btn-circle-icon($btn-size, info);
+		}
+		&.delete {
+			@include btn-circle-icon($btn-size, danger);
+		}
+	}
 }//end .ptc-TaskActions

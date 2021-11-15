@@ -1248,20 +1248,20 @@ function TaskActions(_ref) {
     target: "_asana"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     title: "View in Asana",
-    className: "view-task",
+    className: "view",
     type: "button"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-link"
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     title: "Unpin",
-    className: "unpin-task",
+    className: "unpin",
     type: "button",
     onClick: () => handleUnpinTask(taskGID)
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-thumbtack"
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     title: "Delete",
-    className: "delete-task",
+    className: "delete",
     type: "button",
     onClick: () => handleDeleteTask(taskGID)
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
@@ -1519,7 +1519,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _TaskActions_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskActions.jsx */ "./src/components/task/TaskActions.jsx");
+/* harmony import */ var _taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./taskUtil.jsx */ "./src/components/task/taskUtil.jsx");
+/* harmony import */ var _TaskActions_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TaskActions.jsx */ "./src/components/task/TaskActions.jsx");
+
 
 
 const {
@@ -1552,8 +1554,14 @@ function TaskRow(_ref) {
     }
   }
 
+  let extraClassNames = '';
+
+  if ((0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.isCriticalTask)(task)) {
+    extraClassNames += ' --is-critical';
+  }
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "ptc-TaskRow"
+    className: "ptc-TaskRow" + extraClassNames
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     title: "Mark Complete",
     className: "mark-complete",
@@ -1578,7 +1586,11 @@ function TaskRow(_ref) {
     className: "due"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-clock"
-  }), " ", task.due_on)), showDescription && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+  }), " ", new Date(task.due_on).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  }))), showDescription && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "description"
   }, task.notes)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "actions"
@@ -1588,7 +1600,7 @@ function TaskRow(_ref) {
     target: task.action_link.target
   }, task.action_link.label, " ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-long-arrow-alt-right"
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskActions_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskActions_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
     taskGID: task.gid
   })));
 }
@@ -1614,10 +1626,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "filterPinnedTasks": function() { return /* binding */ filterPinnedTasks; }
 /* harmony export */ });
 function deleteTask(taskGID) {
-  console.log(`@TODO: Delete task ${taskGID}`);
+  console.warn(`@TODO: Delete task ${taskGID}`);
 }
 function unpinTask(taskGID) {
-  console.log(`@TODO: Unpin task ${taskGID}`);
+  console.warn(`@TODO: Unpin task ${taskGID}`);
 }
 function getTaskUrl(taskGID) {
   return `https://app.asana.com/0/0/${taskGID}/f`;

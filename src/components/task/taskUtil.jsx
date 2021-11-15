@@ -1,9 +1,9 @@
 export function deleteTask(taskGID) {
-	console.log(`@TODO: Delete task ${taskGID}`);
+	console.warn(`@TODO: Delete task ${taskGID}`);
 }
 
 export function unpinTask(taskGID) {
-	console.log(`@TODO: Unpin task ${taskGID}`);
+	console.warn(`@TODO: Unpin task ${taskGID}`);
 }
 
 export function getTaskUrl(taskGID) {

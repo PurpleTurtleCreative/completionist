@@ -1,3 +1,5 @@
+import { isCriticalTask } from './taskUtil.jsx';
+
 import TaskActions from './TaskActions.jsx';
 
 const { useState, useCallback } = wp.element;
@@ -27,8 +29,13 @@ export default function TaskRow({task}) {
 		}
 	}
 
+	let extraClassNames = '';
+	if ( isCriticalTask(task) ) {
+		extraClassNames += ' --is-critical';
+	}
+
 	return (
-		<div className="ptc-TaskRow">
+		<div className={"ptc-TaskRow"+extraClassNames}>
 
 			<button title="Mark Complete" className="mark-complete" type="button" onClick={() => handleMarkComplete(task.gid)}>
 				<i className="fas fa-check"></i>
@@ -40,7 +47,7 @@ export default function TaskRow({task}) {
 
 				<div className="details">
 					{assigneeDisplayName && <p className="assignee"><i class="fas fa-user"></i> {assigneeDisplayName}</p>}
-					{task.due_on && <p className="due"><i className="fas fa-clock"></i> {task.due_on}</p>}
+					{task.due_on && <p className="due"><i className="fas fa-clock"></i> {new Date(task.due_on).toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})}</p>}
 				</div>
 
 				{showDescription && <p className="description">{task.notes}</p>}
