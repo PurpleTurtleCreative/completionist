@@ -27,18 +27,6 @@ export default function TaskRow({task}) {
 		}
 	}
 
-	let ctaButton = null;
-	if ( task.action_link ) {
-		ctaButton = (
-			<div className="cta-button">
-				<a href={task.action_link.href} target={task.action_link.target}>
-					{task.action_link.label}
-					<i className="fas fa-long-arrow-alt-right"></i>
-				</a>
-			</div>
-		);
-	}
-
 	return (
 		<div className="ptc-TaskRow">
 
@@ -46,21 +34,23 @@ export default function TaskRow({task}) {
 				<i className="fas fa-check"></i>
 			</button>
 
-			<div className="name" onClick={handleToggleDescription}>
-				{task.name}
-				{task.notes && <i className={`${notesIconClassName} fa-sticky-note`}></i>}
+			<div className="body">
+
+				<p className="name" onClick={handleToggleDescription}>{task.name} {task.notes && <i className={`${notesIconClassName} fa-sticky-note`}></i>}</p>
+
+				<div className="details">
+					{assigneeDisplayName && <p className="assignee"><i class="fas fa-user"></i> {assigneeDisplayName}</p>}
+					{task.due_on && <p className="due"><i className="fas fa-clock"></i> {task.due_on}</p>}
+				</div>
+
+				{showDescription && <p className="description">{task.notes}</p>}
+
 			</div>
 
-			<div className="details">
-				{assigneeDisplayName && <div className="assignee">{assigneeDisplayName}</div>}
-				{task.due_on && <div className="due"><i className="fas fa-clock"></i>{task.due_on}</div>}
+			<div className="actions">
+				<a className="cta-button" href={task.action_link.href} target={task.action_link.target}>{task.action_link.label} <i className="fas fa-long-arrow-alt-right"></i></a>
+				<TaskActions taskGID={task.gid} />
 			</div>
-
-			{showDescription && <div className="description">{task.notes}</div>}
-
-			<TaskActions taskGID={task.gid} />
-
-			{ctaButton}
 
 		</div>
 	);
