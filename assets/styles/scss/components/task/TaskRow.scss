@@ -1,48 +1,25 @@
 @import '../../abstracts/colors';
+@import '../../abstracts/elements';
 
 //----------------------
 
 .ptc-TaskRow {
 	display: flex;
 	align-items: flex-start;
-	padding: 1em 0.5em;
-	border-bottom: 1px solid color(grey-lighter);
+	padding: 1em 0.7em;
+	border-bottom: 1px solid color(grey-light);
 
 	p {
 		margin: 0;
 	}
 
 	button.mark-complete {
-		cursor: pointer;
-		border: 1px solid color(brand-primary);
-		background: none;
-		color: color(brand-primary);
-		border-radius: 999px;
-		padding: 0.3em 0.6em;
-		font-weight: 500;
-		font-size: 1em;
-		margin: 0 0.3em;
-		line-height: 1;
-		text-decoration: none;
-		width: 2em;
-		height: 2em;
-		padding: 0;
-		text-align: center;
-
-		i.fas {
-			position: relative;
-			bottom: -1px;
-		}
-
-		&:hover {
-			background: color(brand-primary);
-			color: color(white);
-		}
+		@include btn-circle-icon(2em);
 	}
 
 	.body {
 		flex: 1;
-		padding: 0 0.3em;
+		padding: 0 0.5em;
 		color: color(grey-darker);
 
 		.name {
@@ -79,33 +56,17 @@
 		text-align: center;
 
 		a.cta-button {
-			cursor: pointer;
-			border: 1px solid color(brand-primary);
-			background: none;
-			color: color(brand-primary);
-			border-radius: 999px;
-			padding: 0.3em 0.6em;
-			font-weight: 500;
-			font-size: 1em;
-			margin: 0.3em;
-			line-height: 1;
-			text-decoration: none;
-			display: inline-block;
+			@include btn-pill-outline;
 
 			i.fas {
 				position: relative;
 				bottom: -1px;
 			}
-
-			&:hover {
-				background: color(brand-primary);
-				color: color(white);
-			}
 		}
 
 		.ptc-TaskActions {
 			visibility: hidden;
-			margin-top: 1em;
+			margin-top: 0.3em;
 		}
 	}
 

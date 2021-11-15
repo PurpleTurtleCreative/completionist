@@ -1,32 +1,19 @@
 @import '../../abstracts/colors';
+@import '../../abstracts/elements';
 
 //----------------------
 
 .ptc-TaskFilters {
-	padding: 0.5em;
+	padding: 0.3em;
 	display: flex;
 	align-items: center;
 	justify-content: space-evenly;
-	border-top: 1px solid color(grey-lighter);
-	border-bottom: 1px solid color(grey-lighter);
+	background: color(grey-lightest);
+	border-top: 1px solid color(grey-light);
+	border-bottom: 1px solid color(grey-light);
 	flex-wrap: wrap;
 
 	button {
-		cursor: pointer;
-		border: 1px solid color(brand-primary);
-		background: none;
-		color: color(brand-primary);
-		border-radius: 999px;
-		padding: 0.3em 0.6em;
-		font-weight: 500;
-		font-size: 1em;
-		margin: 0.3em;
-		line-height: 1;
-
-		&.--is-active,
-		&:hover {
-			background: color(brand-primary);
-			color: color(white);
-		}
+		@include btn-pill-outline;
 	}
 }//end ptc-TaskFilters
