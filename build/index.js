@@ -1183,11 +1183,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _task_TaskOverview_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task/TaskOverview.jsx */ "./src/components/task/TaskOverview.jsx");
 /* harmony import */ var _task_TaskFilters_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task/TaskFilters.jsx */ "./src/components/task/TaskFilters.jsx");
 /* harmony import */ var _task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./task/TaskListPaginated.jsx */ "./src/components/task/TaskListPaginated.jsx");
+/* harmony import */ var _task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./task/TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+
 
 
 
 
 const {
+  useContext,
   useState
 } = wp.element;
 function PTCCompletionistTasksDashboardWidget(_ref) {
@@ -1195,7 +1198,7 @@ function PTCCompletionistTasksDashboardWidget(_ref) {
     tasks
   } = _ref;
   const [visibleTasks, setVisibleTasks] = useState(tasks);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_4__.TaskContextProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-PTCCompletionistTasksDashboardWidget"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskOverview_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
     tasks: tasks
@@ -1205,7 +1208,7 @@ function PTCCompletionistTasksDashboardWidget(_ref) {
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], {
     limit: 3,
     tasks: visibleTasks
-  }));
+  })));
 }
 
 /***/ }),
@@ -1223,23 +1226,33 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./taskUtil.jsx */ "./src/components/task/taskUtil.jsx");
+/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+
 
 
 const {
   useState,
-  useCallback
+  useCallback,
+  useContext
 } = wp.element;
 function TaskActions(_ref) {
   let {
     taskGID
   } = _ref;
   const [isProcessing, setIsProcessing] = useState(false);
+  const {
+    tasks,
+    test
+  } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__.TaskContext); // console.log('TaskActions context:', tasks);
+
   const handleUnpinTask = useCallback(taskGID => {
     console.log(`@TODO - Handle unpin task ${taskGID}`);
   }, []);
   const handleDeleteTask = useCallback(taskGID => {
     console.log(`@TODO - Handle delete task ${taskGID}`);
-  }, []);
+    test();
+    console.log('After handleDeleteTask:', tasks);
+  }, [tasks, test]);
   const task_url = (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.getTaskUrl)(taskGID);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-TaskActions"
@@ -1267,6 +1280,51 @@ function TaskActions(_ref) {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-minus"
   })));
+}
+
+/***/ }),
+
+/***/ "./src/components/task/TaskContext.jsx":
+/*!*********************************************!*\
+  !*** ./src/components/task/TaskContext.jsx ***!
+  \*********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "TaskContext": function() { return /* binding */ TaskContext; },
+/* harmony export */   "TaskContextProvider": function() { return /* binding */ TaskContextProvider; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+const {
+  createContext,
+  useState
+} = wp.element;
+const TaskContext = createContext(false);
+function TaskContextProvider(_ref) {
+  let {
+    children
+  } = _ref;
+  // const [tasks, setTasks] = useState({ ...window.PTCCompletionist.tasks });
+  const [tasks, setTasks] = useState(Object.values(window.PTCCompletionist.tasks));
+  const context = {
+    "tasks": tasks,
+    test: () => {
+      console.log('Starting tasks:', tasks);
+      const newTasks = tasks.slice(0, tasks.length - 1);
+      console.log('After change:', newTasks);
+      setTasks(newTasks);
+    }
+  };
+  console.log('TaskContextProvider context:', context);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TaskContext.Provider, {
+    value: context
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    onClick: context.test
+  }, "Test Context"), children, "}");
 }
 
 /***/ }),
@@ -1466,15 +1524,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./taskUtil.jsx */ "./src/components/task/taskUtil.jsx");
+/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+
 
 
 const {
+  useContext,
   useMemo
 } = wp.element;
-function TaskOverview(_ref) {
-  let {
+function TaskOverview() {
+  const {
     tasks
-  } = _ref;
+  } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__.TaskContext);
+  console.log('TaskOverview context:', tasks);
   const incompleteTasks = useMemo(() => (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterIncompleteTasks)(tasks), [tasks]);
   const completedCount = tasks.length - incompleteTasks.length;
   const completedPercent = Math.round(completedCount / tasks.length * 100);
@@ -1488,7 +1550,9 @@ function TaskOverview(_ref) {
     className: "small"
   }, "%")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "caption"
-  }, "Complete")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, "Complete"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "TESTING"
+  }, "Context Length: ", tasks.length)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "details"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "incomplete"

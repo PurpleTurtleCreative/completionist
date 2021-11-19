@@ -1,8 +1,12 @@
 import { filterIncompleteTasks } from './taskUtil.jsx';
 
-const { useMemo } = wp.element;
+import { TaskContext } from './TaskContext.jsx';
 
-export default function TaskOverview({tasks}) {
+const { useContext, useMemo } = wp.element;
+
+export default function TaskOverview() {
+	const { tasks } = useContext(TaskContext);
+	console.log('TaskOverview context:', tasks);
 
 	const incompleteTasks = useMemo(() => filterIncompleteTasks(tasks), [tasks]);
 
@@ -15,6 +19,7 @@ export default function TaskOverview({tasks}) {
 			<div className="feature">
 				<p className="large">{completedPercent}<span className="small">%</span></p>
 				<p className="caption">Complete</p>
+				<p className="TESTING">Context Length: {tasks.length}</p>
 			</div>
 
 			<div className="details">
