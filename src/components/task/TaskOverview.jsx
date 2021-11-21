@@ -6,12 +6,15 @@ const { useContext, useMemo } = wp.element;
 
 export default function TaskOverview() {
 	const { tasks } = useContext(TaskContext);
-	console.log('TaskOverview context:', tasks);
 
 	const incompleteTasks = useMemo(() => filterIncompleteTasks(tasks), [tasks]);
 
 	const completedCount = tasks.length - incompleteTasks.length;
-	const completedPercent = Math.round( ( completedCount / tasks.length ) * 100 );
+
+	let completedPercent = 0;
+	if ( tasks.length > 0 ) {
+		completedPercent = Math.round( ( completedCount / tasks.length ) * 100 );
+	}
 
 	return (
 		<div className="ptc-TaskOverview">
@@ -19,7 +22,6 @@ export default function TaskOverview() {
 			<div className="feature">
 				<p className="large">{completedPercent}<span className="small">%</span></p>
 				<p className="caption">Complete</p>
-				<p className="TESTING">Context Length: {tasks.length}</p>
 			</div>
 
 			<div className="details">

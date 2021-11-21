@@ -1,6 +1,8 @@
 import PTCCompletionist_Automations from './components/PTCCompletionist_Automations.js';
 import PTCCompletionistTasksDashboardWidget from './components/PTCCompletionistTasksDashboardWidget.jsx';
 
+import { TaskContextProvider } from './components/task/TaskContext.jsx';
+
 const { render } = wp.element;
 
 jQuery(function($) {
@@ -17,6 +19,10 @@ jQuery(function($) {
 document.addEventListener('DOMContentLoaded', () => {
 	const rootNode = document.getElementById('ptc-PTCCompletionistTasksDashboardWidget');
 	if ( null !== rootNode ) {
-		render(<PTCCompletionistTasksDashboardWidget tasks={Object.values(window.PTCCompletionist.tasks)} />, rootNode);
+		render(
+			<TaskContextProvider>
+				<PTCCompletionistTasksDashboardWidget />
+			</TaskContextProvider>
+		, rootNode);
 	}
 });

@@ -1193,12 +1193,12 @@ const {
   useContext,
   useState
 } = wp.element;
-function PTCCompletionistTasksDashboardWidget(_ref) {
-  let {
+function PTCCompletionistTasksDashboardWidget() {
+  const {
     tasks
-  } = _ref;
+  } = useContext(_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_4__.TaskContext);
   const [visibleTasks, setVisibleTasks] = useState(tasks);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_4__.TaskContextProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-PTCCompletionistTasksDashboardWidget"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskOverview_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
     tasks: tasks
@@ -1208,7 +1208,7 @@ function PTCCompletionistTasksDashboardWidget(_ref) {
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], {
     limit: 3,
     tasks: visibleTasks
-  })));
+  }));
 }
 
 /***/ }),
@@ -1321,10 +1321,7 @@ function TaskContextProvider(_ref) {
   console.log('TaskContextProvider context:', context);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TaskContext.Provider, {
     value: context
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    type: "button",
-    onClick: context.test
-  }, "Test Context"), children, "}");
+  }, children);
 }
 
 /***/ }),
@@ -1536,10 +1533,14 @@ function TaskOverview() {
   const {
     tasks
   } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__.TaskContext);
-  console.log('TaskOverview context:', tasks);
   const incompleteTasks = useMemo(() => (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterIncompleteTasks)(tasks), [tasks]);
   const completedCount = tasks.length - incompleteTasks.length;
-  const completedPercent = Math.round(completedCount / tasks.length * 100);
+  let completedPercent = 0;
+
+  if (tasks.length > 0) {
+    completedPercent = Math.round(completedCount / tasks.length * 100);
+  }
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-TaskOverview"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -1550,9 +1551,7 @@ function TaskOverview() {
     className: "small"
   }, "%")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "caption"
-  }, "Complete"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "TESTING"
-  }, "Context Length: ", tasks.length)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, "Complete")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "details"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "incomplete"
@@ -1833,6 +1832,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _components_PTCCompletionist_Automations_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/PTCCompletionist_Automations.js */ "./src/components/PTCCompletionist_Automations.js");
 /* harmony import */ var _components_PTCCompletionistTasksDashboardWidget_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/PTCCompletionistTasksDashboardWidget.jsx */ "./src/components/PTCCompletionistTasksDashboardWidget.jsx");
+/* harmony import */ var _components_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/task/TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+
 
 
 
@@ -1855,9 +1856,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const rootNode = document.getElementById('ptc-PTCCompletionistTasksDashboardWidget');
 
   if (null !== rootNode) {
-    render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_PTCCompletionistTasksDashboardWidget_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      tasks: Object.values(window.PTCCompletionist.tasks)
-    }), rootNode);
+    render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_3__.TaskContextProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_PTCCompletionistTasksDashboardWidget_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], null)), rootNode);
   }
 });
 }();

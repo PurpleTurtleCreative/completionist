@@ -22,9 +22,7 @@ export function TaskContextProvider({ children }) {
 
 	return (
 		<TaskContext.Provider value={context}>
-			<button type="button" onClick={context.test}>Test Context</button>
 			{children}
-		}
 		</TaskContext.Provider>
 	);
 }
