@@ -8,10 +8,12 @@
 
 - Implemented caching for all site tasks per authenticated user, vastly reducing API calls and improving performance.
 - Tasks dashboard widget has been converted to ReactJS, offering a better experience.
+- Task dashboard widget style overhaul, offering a better experience.
 
 #### Fixed
 
 - `Asana_Interface::$wp_user_id` would not be properly set to the current user's ID when loading the Asana client where user ID is `0`, the default value.
+- Newlines not rendering in the dashboard widget's task descriptions.
 
 ### 3.0.1 - 2021-11-09
 
