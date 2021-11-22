@@ -1,9 +1,10 @@
-import { filterIncompleteTasks, filterCriticalTasks, filterMyTasks, filterGeneralTasks, filterPinnedTasks } from './taskUtil.jsx';
+import { TaskContext } from './TaskContext.jsx';
 
-const { useState, useCallback, useMemo } = wp.element;
+const { useState, useCallback, useMemo, useContext } = wp.element;
 
 export default function TaskFilters({tasks, onChange}) {
 	const [activeFilter, setActiveFilter] = useState('none');
+	const { filterIncompleteTasks, filterCriticalTasks, filterMyTasks, filterGeneralTasks, filterPinnedTasks } = useContext(TaskContext);
 
 	const filters = useMemo(() => {
 

@@ -1,13 +1,10 @@
-import { getTaskUrl } from './taskUtil.jsx';
-
 import { TaskContext } from './TaskContext.jsx';
 
 const { useState, useCallback, useContext } = wp.element;
 
 export default function TaskActions({taskGID}) {
 	const [isProcessing, setIsProcessing] = useState(false);
-	const {tasks, test} = useContext(TaskContext);
-	// console.log('TaskActions context:', tasks);
+	const { getTaskUrl } = useContext(TaskContext);
 
 	const handleUnpinTask = useCallback((taskGID) => {
 		console.log(`@TODO - Handle unpin task ${taskGID}`);
@@ -15,9 +12,7 @@ export default function TaskActions({taskGID}) {
 
 	const handleDeleteTask = useCallback((taskGID) => {
 		console.log(`@TODO - Handle delete task ${taskGID}`);
-		test();
-		console.log('After handleDeleteTask:', tasks);
-	}, [tasks, test]);
+	}, []);
 
 	const task_url = getTaskUrl(taskGID);
 

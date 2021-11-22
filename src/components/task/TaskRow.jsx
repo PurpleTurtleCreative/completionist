@@ -1,11 +1,12 @@
-import { isCriticalTask } from './taskUtil.jsx';
-
 import TaskActions from './TaskActions.jsx';
 
-const { useState, useCallback } = wp.element;
+import { TaskContext } from './TaskContext.jsx';
+
+const { useState, useCallback, useContext } = wp.element;
 
 export default function TaskRow({task}) {
 	const [showDescription, setShowDescription] = useState(false);
+	const { isCriticalTask } = useContext(TaskContext);
 
 	const handleMarkComplete = useCallback((taskGID) => {
 		console.warn(`@TODO - Handle mark complete for task ${taskGID}`);

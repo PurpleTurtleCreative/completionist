@@ -1225,9 +1225,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./taskUtil.jsx */ "./src/components/task/taskUtil.jsx");
-/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
-
+/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
 
 
 const {
@@ -1241,19 +1239,15 @@ function TaskActions(_ref) {
   } = _ref;
   const [isProcessing, setIsProcessing] = useState(false);
   const {
-    tasks,
-    test
-  } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__.TaskContext); // console.log('TaskActions context:', tasks);
-
+    getTaskUrl
+  } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__.TaskContext);
   const handleUnpinTask = useCallback(taskGID => {
     console.log(`@TODO - Handle unpin task ${taskGID}`);
   }, []);
   const handleDeleteTask = useCallback(taskGID => {
     console.log(`@TODO - Handle delete task ${taskGID}`);
-    test();
-    console.log('After handleDeleteTask:', tasks);
-  }, [tasks, test]);
-  const task_url = (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.getTaskUrl)(taskGID);
+  }, []);
+  const task_url = getTaskUrl(taskGID);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-TaskActions"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
@@ -1311,14 +1305,54 @@ function TaskContextProvider(_ref) {
   const [tasks, setTasks] = useState(Object.values(window.PTCCompletionist.tasks));
   const context = {
     "tasks": tasks,
-    test: () => {
-      console.log('Starting tasks:', tasks);
-      const newTasks = tasks.slice(0, tasks.length - 1);
-      console.log('After change:', newTasks);
-      setTasks(newTasks);
+    deleteTask: taskGID => {
+      console.warn(`@TODO: Delete task ${taskGID}`);
+    },
+    unpinTask: taskGID => {
+      console.warn(`@TODO: Unpin task ${taskGID}`);
+    },
+    getTaskUrl: taskGID => {
+      return `https://app.asana.com/0/0/${taskGID}/f`;
+    },
+    isCriticalTask: task => {
+      const DAY_IN_SECONDS = 86400;
+      const limit = 7 * DAY_IN_SECONDS;
+      return Date.parse(task.due_on) - Date.now() < limit;
+    },
+    filterIncompleteTasks: tasks => {
+      return tasks.filter(t => !t.completed);
+    },
+    filterCriticalTasks: tasks => {
+      return tasks.filter(t => context.isCriticalTask(t));
+    },
+    filterMyTasks: (userGID, tasks) => {
+      return tasks.filter(t => {
+        if (t.assignee) {
+          return userGID === t.assignee.gid;
+        }
+
+        return false;
+      });
+    },
+    filterGeneralTasks: tasks => {
+      return tasks.filter(t => {
+        if (t.action_link && t.action_link.post_id > 0) {
+          return false;
+        }
+
+        return true;
+      });
+    },
+    filterPinnedTasks: tasks => {
+      return tasks.filter(t => {
+        if (t.action_link && t.action_link.post_id > 0) {
+          return true;
+        }
+
+        return false;
+      });
     }
   };
-  console.log('TaskContextProvider context:', context);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TaskContext.Provider, {
     value: context
   }, children);
@@ -1338,13 +1372,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./taskUtil.jsx */ "./src/components/task/taskUtil.jsx");
+/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
 
 
 const {
   useState,
   useCallback,
-  useMemo
+  useMemo,
+  useContext
 } = wp.element;
 function TaskFilters(_ref) {
   let {
@@ -1352,8 +1387,15 @@ function TaskFilters(_ref) {
     onChange
   } = _ref;
   const [activeFilter, setActiveFilter] = useState('none');
+  const {
+    filterIncompleteTasks,
+    filterCriticalTasks,
+    filterMyTasks,
+    filterGeneralTasks,
+    filterPinnedTasks
+  } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__.TaskContext);
   const filters = useMemo(() => {
-    const incompleteTasks = (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterIncompleteTasks)(tasks);
+    const incompleteTasks = filterIncompleteTasks(tasks);
     return [{
       "key": 'none',
       "title": 'All Tasks',
@@ -1361,19 +1403,19 @@ function TaskFilters(_ref) {
     }, {
       "key": 'pinned',
       "title": 'Pinned',
-      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterPinnedTasks)(incompleteTasks)
+      "tasks": filterPinnedTasks(incompleteTasks)
     }, {
       "key": 'general',
       "title": 'General',
-      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterGeneralTasks)(incompleteTasks)
+      "tasks": filterGeneralTasks(incompleteTasks)
     }, {
       "key": 'myTasks',
       "title": 'My Tasks',
-      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterMyTasks)(window.PTCCompletionist.me.gid, incompleteTasks)
+      "tasks": filterMyTasks(window.PTCCompletionist.me.gid, incompleteTasks)
     }, {
       "key": 'critical',
       "title": 'Critical',
-      "tasks": (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterCriticalTasks)(incompleteTasks)
+      "tasks": filterCriticalTasks(incompleteTasks)
     }];
   }, [tasks]);
   const handleClickFilter = useCallback((key, filteredTasks) => {
@@ -1449,7 +1491,8 @@ __webpack_require__.r(__webpack_exports__);
 const {
   useState,
   useCallback,
-  useMemo
+  useMemo,
+  useContext
 } = wp.element;
 function TaskListPaginated(_ref) {
   let {
@@ -1520,9 +1563,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./taskUtil.jsx */ "./src/components/task/taskUtil.jsx");
-/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
-
+/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
 
 
 const {
@@ -1531,9 +1572,10 @@ const {
 } = wp.element;
 function TaskOverview() {
   const {
-    tasks
-  } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__.TaskContext);
-  const incompleteTasks = useMemo(() => (0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.filterIncompleteTasks)(tasks), [tasks]);
+    tasks,
+    filterIncompleteTasks
+  } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__.TaskContext);
+  const incompleteTasks = useMemo(() => filterIncompleteTasks(tasks), [tasks]);
   const completedCount = tasks.length - incompleteTasks.length;
   let completedPercent = 0;
 
@@ -1587,20 +1629,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./taskUtil.jsx */ "./src/components/task/taskUtil.jsx");
-/* harmony import */ var _TaskActions_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TaskActions.jsx */ "./src/components/task/TaskActions.jsx");
+/* harmony import */ var _TaskActions_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskActions.jsx */ "./src/components/task/TaskActions.jsx");
+/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
 
 
 
 const {
   useState,
-  useCallback
+  useCallback,
+  useContext
 } = wp.element;
 function TaskRow(_ref) {
   let {
     task
   } = _ref;
   const [showDescription, setShowDescription] = useState(false);
+  const {
+    isCriticalTask
+  } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__.TaskContext);
   const handleMarkComplete = useCallback(taskGID => {
     console.warn(`@TODO - Handle mark complete for task ${taskGID}`);
   }, []);
@@ -1624,7 +1670,7 @@ function TaskRow(_ref) {
 
   let extraClassNames = '';
 
-  if ((0,_taskUtil_jsx__WEBPACK_IMPORTED_MODULE_1__.isCriticalTask)(task)) {
+  if (isCriticalTask(task)) {
     extraClassNames += ' --is-critical';
   }
 
@@ -1668,77 +1714,9 @@ function TaskRow(_ref) {
     target: task.action_link.target
   }, task.action_link.label, " ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-long-arrow-alt-right"
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskActions_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskActions_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
     taskGID: task.gid
   })));
-}
-
-/***/ }),
-
-/***/ "./src/components/task/taskUtil.jsx":
-/*!******************************************!*\
-  !*** ./src/components/task/taskUtil.jsx ***!
-  \******************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "deleteTask": function() { return /* binding */ deleteTask; },
-/* harmony export */   "unpinTask": function() { return /* binding */ unpinTask; },
-/* harmony export */   "getTaskUrl": function() { return /* binding */ getTaskUrl; },
-/* harmony export */   "isCriticalTask": function() { return /* binding */ isCriticalTask; },
-/* harmony export */   "filterIncompleteTasks": function() { return /* binding */ filterIncompleteTasks; },
-/* harmony export */   "filterCriticalTasks": function() { return /* binding */ filterCriticalTasks; },
-/* harmony export */   "filterMyTasks": function() { return /* binding */ filterMyTasks; },
-/* harmony export */   "filterGeneralTasks": function() { return /* binding */ filterGeneralTasks; },
-/* harmony export */   "filterPinnedTasks": function() { return /* binding */ filterPinnedTasks; }
-/* harmony export */ });
-function deleteTask(taskGID) {
-  console.warn(`@TODO: Delete task ${taskGID}`);
-}
-function unpinTask(taskGID) {
-  console.warn(`@TODO: Unpin task ${taskGID}`);
-}
-function getTaskUrl(taskGID) {
-  return `https://app.asana.com/0/0/${taskGID}/f`;
-}
-function isCriticalTask(task) {
-  const DAY_IN_SECONDS = 86400;
-  const limit = 7 * DAY_IN_SECONDS;
-  return Date.parse(task.due_on) - Date.now() < limit;
-}
-function filterIncompleteTasks(tasks) {
-  return tasks.filter(t => !t.completed);
-}
-function filterCriticalTasks(tasks) {
-  return tasks.filter(t => isCriticalTask(t));
-}
-function filterMyTasks(userGID, tasks) {
-  return tasks.filter(t => {
-    if (t.assignee) {
-      return userGID === t.assignee.gid;
-    }
-
-    return false;
-  });
-}
-function filterGeneralTasks(tasks) {
-  return tasks.filter(t => {
-    if (t.action_link && t.action_link.post_id > 0) {
-      return false;
-    }
-
-    return true;
-  });
-}
-function filterPinnedTasks(tasks) {
-  return tasks.filter(t => {
-    if (t.action_link && t.action_link.post_id > 0) {
-      return true;
-    }
-
-    return false;
-  });
 }
 
 /***/ }),

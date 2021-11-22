@@ -10,15 +10,59 @@ export function TaskContextProvider({ children }) {
 
 		"tasks": tasks,
 
-		test: () => {
-			console.log('Starting tasks:', tasks);
-			const newTasks = tasks.slice(0, tasks.length - 1);
-			console.log('After change:', newTasks);
-			setTasks(newTasks);
+		deleteTask: (taskGID) => {
+			console.warn(`@TODO: Delete task ${taskGID}`);
+		},
+
+		unpinTask: (taskGID) => {
+			console.warn(`@TODO: Unpin task ${taskGID}`);
+		},
+
+		getTaskUrl: (taskGID) => {
+			return `https://app.asana.com/0/0/${taskGID}/f`;
+		},
+
+		isCriticalTask: (task) => {
+			const DAY_IN_SECONDS = 86400;
+			const limit = 7 * DAY_IN_SECONDS;
+			return ( ( Date.parse(task.due_on) - Date.now() ) < limit );
+		},
+
+		filterIncompleteTasks: (tasks) => {
+			return tasks.filter(t => !t.completed);
+		},
+
+		filterCriticalTasks: (tasks) => {
+			return tasks.filter(t => context.isCriticalTask(t));
+		},
+
+		filterMyTasks: (userGID, tasks) => {
+			return tasks.filter(t => {
+				if ( t.assignee ) {
+					return ( userGID === t.assignee.gid );
+				}
+				return false;
+			});
+		},
+
+		filterGeneralTasks: (tasks) => {
+			return tasks.filter(t => {
+				if ( t.action_link && t.action_link.post_id > 0 ) {
+					return false;
+				}
+				return true;
+			});
+		},
+
+		filterPinnedTasks: (tasks) => {
+			return tasks.filter(t => {
+				if ( t.action_link && t.action_link.post_id > 0 ) {
+					return true;
+				}
+				return false;
+			});
 		}
 	};
-
-	console.log('TaskContextProvider context:', context);
 
 	return (
 		<TaskContext.Provider value={context}>
