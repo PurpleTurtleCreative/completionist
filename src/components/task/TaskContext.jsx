@@ -6,16 +6,61 @@ export function TaskContextProvider({ children }) {
 	// const [tasks, setTasks] = useState({ ...window.PTCCompletionist.tasks });
 	const [tasks, setTasks] = useState(Object.values(window.PTCCompletionist.tasks));
 
+	console.log(`Current Length: ${tasks.length}`);
+
 	const context = {
 
 		"tasks": tasks,
 
-		deleteTask: (taskGID) => {
+		deleteTask: async (taskGID) => {
 			console.warn(`@TODO: Delete task ${taskGID}`);
+			return;//TESTING==============================
+
+			const task = context.tasks[ taskGID ];
+
+			let data = {
+				'action': 'ptc_delete_task',
+				'nonce': window.PTCCompletionist.api.nonce,
+				'task_gid': taskGID
+			};
+
+			if ( task.action_link.post_id ) {
+				data.post_id = task.action_link.post_id;
+			}
+
+			const init = {
+				method: 'POST',
+				body: data
+			};
+
+			await window.fetch(window.ajaxurl, init)
+				.then( res => res.json() )
+				.then( res => {
+
+					if(res.status == 'success' && res.data != '') {
+						context.removeTask(res.data);
+					} else if(res.status == 'error' && res.data != '') {
+						// display_alert_html(res.data);
+					} else {
+						alert('[Completionist] Error '+res.code+': '+res.message);
+					}
+				})
+				.catch(function() {
+					alert('[Completionist] Failed to delete task.');
+				});
 		},
 
 		unpinTask: (taskGID) => {
 			console.warn(`@TODO: Unpin task ${taskGID}`);
+		},
+
+		removeTask: (taskGID) => {
+			console.log(`Removing task ${taskGID}...`);
+			// @TODO: This sometimes causes render and sometimes doesn't...?
+			console.log(`Original Length: ${tasks.length}`);
+			const newTasks = tasks.filter(t => t.gid !== taskGID);
+			console.log(`New Length: ${newTasks.length}`)
+			setTasks(newTasks);
 		},
 
 		getTaskUrl: (taskGID) => {

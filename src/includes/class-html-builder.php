@@ -359,7 +359,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 			if ( $post_id > 0 ) {
 				$post = get_post( $post_id );
 				if ( isset( $post->post_type ) ) {
-					$edit_post_link = get_edit_post_link( $post );
+					$edit_post_link = get_edit_post_link( $post, 'raw' );
 					if ( $edit_post_link ) {
 						$task_action_link['href'] = $edit_post_link;
 						$task_action_link['post_id'] = $post_id;

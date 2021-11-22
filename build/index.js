@@ -1191,13 +1191,16 @@ __webpack_require__.r(__webpack_exports__);
 
 const {
   useContext,
-  useState
+  useState,
+  useEffect
 } = wp.element;
 function PTCCompletionistTasksDashboardWidget() {
   const {
     tasks
   } = useContext(_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_4__.TaskContext);
-  const [visibleTasks, setVisibleTasks] = useState(tasks);
+  const [visibleTasks, setVisibleTasks] = useState(tasks); // @TODO: still having rendering issues with TaskActions being updated...
+
+  useEffect(() => setVisibleTasks(tasks), [tasks, setVisibleTasks]);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-PTCCompletionistTasksDashboardWidget"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskOverview_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
@@ -1239,13 +1242,19 @@ function TaskActions(_ref) {
   } = _ref;
   const [isProcessing, setIsProcessing] = useState(false);
   const {
-    getTaskUrl
+    getTaskUrl,
+    deleteTask,
+    unpinTask,
+    removeTask
   } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__.TaskContext);
   const handleUnpinTask = useCallback(taskGID => {
-    console.log(`@TODO - Handle unpin task ${taskGID}`);
+    // @TODO: Loading state handling.
+    unpinTask(taskGID);
   }, []);
   const handleDeleteTask = useCallback(taskGID => {
-    console.log(`@TODO - Handle delete task ${taskGID}`);
+    // @TODO: Loading state handling.
+    // deleteTask(taskGID);
+    removeTask(taskGID);
   }, []);
   const task_url = getTaskUrl(taskGID);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -1303,13 +1312,49 @@ function TaskContextProvider(_ref) {
   } = _ref;
   // const [tasks, setTasks] = useState({ ...window.PTCCompletionist.tasks });
   const [tasks, setTasks] = useState(Object.values(window.PTCCompletionist.tasks));
+  console.log(`Current Length: ${tasks.length}`);
   const context = {
     "tasks": tasks,
-    deleteTask: taskGID => {
+    deleteTask: async taskGID => {
       console.warn(`@TODO: Delete task ${taskGID}`);
+      return; //TESTING==============================
+
+      const task = context.tasks[taskGID];
+      let data = {
+        'action': 'ptc_delete_task',
+        'nonce': window.PTCCompletionist.api.nonce,
+        'task_gid': taskGID
+      };
+
+      if (task.action_link.post_id) {
+        data.post_id = task.action_link.post_id;
+      }
+
+      const init = {
+        method: 'POST',
+        body: data
+      };
+      await window.fetch(window.ajaxurl, init).then(res => res.json()).then(res => {
+        if (res.status == 'success' && res.data != '') {
+          context.removeTask(res.data);
+        } else if (res.status == 'error' && res.data != '') {// display_alert_html(res.data);
+        } else {
+          alert('[Completionist] Error ' + res.code + ': ' + res.message);
+        }
+      }).catch(function () {
+        alert('[Completionist] Failed to delete task.');
+      });
     },
     unpinTask: taskGID => {
       console.warn(`@TODO: Unpin task ${taskGID}`);
+    },
+    removeTask: taskGID => {
+      console.log(`Removing task ${taskGID}...`); // @TODO: This sometimes causes render and sometimes doesn't...?
+
+      console.log(`Original Length: ${tasks.length}`);
+      const newTasks = tasks.filter(t => t.gid !== taskGID);
+      console.log(`New Length: ${newTasks.length}`);
+      setTasks(newTasks);
     },
     getTaskUrl: taskGID => {
       return `https://app.asana.com/0/0/${taskGID}/f`;

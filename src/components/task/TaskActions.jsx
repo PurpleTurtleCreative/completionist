@@ -4,14 +4,17 @@ const { useState, useCallback, useContext } = wp.element;
 
 export default function TaskActions({taskGID}) {
 	const [isProcessing, setIsProcessing] = useState(false);
-	const { getTaskUrl } = useContext(TaskContext);
+	const { getTaskUrl, deleteTask, unpinTask, removeTask } = useContext(TaskContext);
 
 	const handleUnpinTask = useCallback((taskGID) => {
-		console.log(`@TODO - Handle unpin task ${taskGID}`);
+		// @TODO: Loading state handling.
+		unpinTask(taskGID);
 	}, []);
 
 	const handleDeleteTask = useCallback((taskGID) => {
-		console.log(`@TODO - Handle delete task ${taskGID}`);
+		// @TODO: Loading state handling.
+		// deleteTask(taskGID);
+		removeTask(taskGID);
 	}, []);
 
 	const task_url = getTaskUrl(taskGID);
