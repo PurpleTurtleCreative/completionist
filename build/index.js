@@ -1198,8 +1198,7 @@ function PTCCompletionistTasksDashboardWidget() {
   const {
     tasks
   } = useContext(_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_4__.TaskContext);
-  const [visibleTasks, setVisibleTasks] = useState(tasks); // @TODO: still having rendering issues with TaskActions being updated...
-
+  const [visibleTasks, setVisibleTasks] = useState(tasks);
   useEffect(() => setVisibleTasks(tasks), [tasks, setVisibleTasks]);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-PTCCompletionistTasksDashboardWidget"
@@ -1250,12 +1249,12 @@ function TaskActions(_ref) {
   const handleUnpinTask = useCallback(taskGID => {
     // @TODO: Loading state handling.
     unpinTask(taskGID);
-  }, []);
+  }, [unpinTask]);
   const handleDeleteTask = useCallback(taskGID => {
     // @TODO: Loading state handling.
     // deleteTask(taskGID);
     removeTask(taskGID);
-  }, []);
+  }, [removeTask]);
   const task_url = getTaskUrl(taskGID);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-TaskActions"
@@ -1312,7 +1311,6 @@ function TaskContextProvider(_ref) {
   } = _ref;
   // const [tasks, setTasks] = useState({ ...window.PTCCompletionist.tasks });
   const [tasks, setTasks] = useState(Object.values(window.PTCCompletionist.tasks));
-  console.log(`Current Length: ${tasks.length}`);
   const context = {
     "tasks": tasks,
     deleteTask: async taskGID => {
@@ -1349,11 +1347,7 @@ function TaskContextProvider(_ref) {
       console.warn(`@TODO: Unpin task ${taskGID}`);
     },
     removeTask: taskGID => {
-      console.log(`Removing task ${taskGID}...`); // @TODO: This sometimes causes render and sometimes doesn't...?
-
-      console.log(`Original Length: ${tasks.length}`);
       const newTasks = tasks.filter(t => t.gid !== taskGID);
-      console.log(`New Length: ${newTasks.length}`);
       setTasks(newTasks);
     },
     getTaskUrl: taskGID => {

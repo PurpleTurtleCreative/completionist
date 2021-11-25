@@ -6,8 +6,6 @@ export function TaskContextProvider({ children }) {
 	// const [tasks, setTasks] = useState({ ...window.PTCCompletionist.tasks });
 	const [tasks, setTasks] = useState(Object.values(window.PTCCompletionist.tasks));
 
-	console.log(`Current Length: ${tasks.length}`);
-
 	const context = {
 
 		"tasks": tasks,
@@ -55,11 +53,7 @@ export function TaskContextProvider({ children }) {
 		},
 
 		removeTask: (taskGID) => {
-			console.log(`Removing task ${taskGID}...`);
-			// @TODO: This sometimes causes render and sometimes doesn't...?
-			console.log(`Original Length: ${tasks.length}`);
 			const newTasks = tasks.filter(t => t.gid !== taskGID);
-			console.log(`New Length: ${newTasks.length}`)
 			setTasks(newTasks);
 		},
 

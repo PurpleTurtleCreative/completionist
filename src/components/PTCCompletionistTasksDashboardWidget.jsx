@@ -10,7 +10,6 @@ export default function PTCCompletionistTasksDashboardWidget() {
 	const { tasks } = useContext(TaskContext);
 	const [visibleTasks, setVisibleTasks] = useState(tasks);
 
-	// @TODO: still having rendering issues with TaskActions being updated...
 	useEffect(() => setVisibleTasks(tasks), [tasks, setVisibleTasks]);
 
 	return (

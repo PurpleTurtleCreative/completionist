@@ -9,13 +9,13 @@ export default function TaskActions({taskGID}) {
 	const handleUnpinTask = useCallback((taskGID) => {
 		// @TODO: Loading state handling.
 		unpinTask(taskGID);
-	}, []);
+	}, [unpinTask]);
 
 	const handleDeleteTask = useCallback((taskGID) => {
 		// @TODO: Loading state handling.
 		// deleteTask(taskGID);
 		removeTask(taskGID);
-	}, []);
+	}, [removeTask]);
 
 	const task_url = getTaskUrl(taskGID);
 
