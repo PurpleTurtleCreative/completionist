@@ -1252,8 +1252,9 @@ function TaskActions(_ref) {
   }, [unpinTask]);
   const handleDeleteTask = useCallback(taskGID => {
     // @TODO: Loading state handling.
-    // deleteTask(taskGID);
-    removeTask(taskGID);
+    deleteTask(taskGID).then(success => {
+      console.log('handleDeleteTask success:', success);
+    });
   }, [removeTask]);
   const task_url = getTaskUrl(taskGID);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -1314,10 +1315,7 @@ function TaskContextProvider(_ref) {
   const context = {
     "tasks": tasks,
     deleteTask: async taskGID => {
-      console.warn(`@TODO: Delete task ${taskGID}`);
-      return; //TESTING==============================
-
-      const task = context.tasks[taskGID];
+      const task = context.tasks.find(t => taskGID === t.gid);
       let data = {
         'action': 'ptc_delete_task',
         'nonce': window.PTCCompletionist.api.nonce,
@@ -1329,18 +1327,26 @@ function TaskContextProvider(_ref) {
       }
 
       const init = {
-        method: 'POST',
-        body: data
+        'method': 'POST',
+        'credentials': 'same-origin',
+        'body': new URLSearchParams(data)
       };
-      await window.fetch(window.ajaxurl, init).then(res => res.json()).then(res => {
+      return await window.fetch(window.ajaxurl, init).then(res => res.json()).then(res => {
+        console.log(res);
+
         if (res.status == 'success' && res.data != '') {
           context.removeTask(res.data);
-        } else if (res.status == 'error' && res.data != '') {// display_alert_html(res.data);
+          return true;
+        } else if (res.status == 'error' && res.data != '') {
+          console.error(res.data);
         } else {
           alert('[Completionist] Error ' + res.code + ': ' + res.message);
         }
+
+        return false;
       }).catch(function () {
         alert('[Completionist] Failed to delete task.');
+        return false;
       });
     },
     unpinTask: taskGID => {

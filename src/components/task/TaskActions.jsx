@@ -13,8 +13,9 @@ export default function TaskActions({taskGID}) {
 
 	const handleDeleteTask = useCallback((taskGID) => {
 		// @TODO: Loading state handling.
-		// deleteTask(taskGID);
-		removeTask(taskGID);
+		deleteTask(taskGID).then(success => {
+			console.log('handleDeleteTask success:', success);
+		});
 	}, [removeTask]);
 
 	const task_url = getTaskUrl(taskGID);

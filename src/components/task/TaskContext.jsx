@@ -11,10 +11,8 @@ export function TaskContextProvider({ children }) {
 		"tasks": tasks,
 
 		deleteTask: async (taskGID) => {
-			console.warn(`@TODO: Delete task ${taskGID}`);
-			return;//TESTING==============================
 
-			const task = context.tasks[ taskGID ];
+			const task = context.tasks.find(t => taskGID === t.gid);
 
 			let data = {
 				'action': 'ptc_delete_task',
@@ -27,24 +25,30 @@ export function TaskContextProvider({ children }) {
 			}
 
 			const init = {
-				method: 'POST',
-				body: data
+				'method': 'POST',
+				'credentials': 'same-origin',
+				'body': new URLSearchParams(data)
 			};
 
-			await window.fetch(window.ajaxurl, init)
+			return await window.fetch(window.ajaxurl, init)
 				.then( res => res.json() )
 				.then( res => {
+					console.log(res);
 
 					if(res.status == 'success' && res.data != '') {
 						context.removeTask(res.data);
+						return true;
 					} else if(res.status == 'error' && res.data != '') {
-						// display_alert_html(res.data);
+						console.error(res.data);
 					} else {
 						alert('[Completionist] Error '+res.code+': '+res.message);
 					}
+
+					return false;
 				})
 				.catch(function() {
 					alert('[Completionist] Failed to delete task.');
+					return false;
 				});
 		},
 
