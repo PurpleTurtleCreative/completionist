@@ -1290,14 +1290,16 @@ function TaskActions(_ref) {
     title: "Unpin from Site",
     className: "unpin",
     type: "button",
-    onClick: () => handleUnpinTask(taskGID)
+    onClick: () => handleUnpinTask(taskGID),
+    disabled: !!processingStatus
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: `fas ${unpinIcon}`
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     title: "Delete from Asana",
     className: "delete",
     type: "button",
-    onClick: () => handleDeleteTask(taskGID)
+    onClick: () => handleDeleteTask(taskGID),
+    disabled: !!processingStatus
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: `fas ${deleteIcon}`
   })));
@@ -1349,6 +1351,8 @@ function TaskContextProvider(_ref) {
       console.warn(`@TODO: Complete task ${taskGID}`);
     },
     deleteTask: async taskGID => {
+      context.removeTask(taskGID);
+      return undefined;
       const task = context.tasks.find(t => taskGID === t.gid);
       let data = {
         'action': 'ptc_delete_task',
@@ -1387,7 +1391,7 @@ function TaskContextProvider(_ref) {
       console.warn(`@TODO: Unpin task ${taskGID}`);
     },
     removeTask: taskGID => {
-      const newTasks = tasks.filter(t => t.gid !== taskGID);
+      const newTasks = tasks.filter(t => t.gid != taskGID);
       setTasks(newTasks);
     },
     getTaskUrl: taskGID => {
@@ -1596,7 +1600,7 @@ function TaskListPaginated(_ref) {
     }
   }, [currentPage, setCurrentPage, totalPages]);
   useEffect(() => {
-    setCurrentPage(1);
+    goToPage(currentPage);
   }, [tasks]);
   const start = Math.max(0, (currentPage - 1) * limit);
   const currentTasks = tasks.slice(start, currentPage * limit);
@@ -1794,7 +1798,8 @@ function TaskRow(_ref) {
     title: "Mark Complete",
     className: "mark-complete",
     type: "button",
-    onClick: () => handleMarkComplete(task.gid)
+    onClick: () => handleMarkComplete(task.gid),
+    disabled: !!task.processingStatus
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: `fas ${markCompleteIcon}`
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {

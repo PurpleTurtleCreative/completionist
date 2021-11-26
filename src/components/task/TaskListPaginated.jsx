@@ -17,7 +17,7 @@ export default function TaskListPaginated({limit, tasks}) {
 	}, [currentPage, setCurrentPage, totalPages]);
 
 	useEffect(() => {
-		setCurrentPage(1);
+		goToPage(currentPage);
 	}, [tasks]);
 
 	const start = Math.max(0, (currentPage - 1) * limit);

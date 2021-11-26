@@ -43,10 +43,10 @@ export default function TaskActions({taskGID, processingStatus}) {
 					<i className="fas fa-link"></i>
 				</button>
 			</a>
-			<button title="Unpin from Site" className="unpin" type="button" onClick={() => handleUnpinTask(taskGID)}>
+			<button title="Unpin from Site" className="unpin" type="button" onClick={() => handleUnpinTask(taskGID)} disabled={!!processingStatus}>
 				<i className={`fas ${unpinIcon}`}></i>
 			</button>
-			<button title="Delete from Asana" className="delete" type="button" onClick={() => handleDeleteTask(taskGID)}>
+			<button title="Delete from Asana" className="delete" type="button" onClick={() => handleDeleteTask(taskGID)} disabled={!!processingStatus}>
 				<i className={`fas ${deleteIcon}`}></i>
 			</button>
 		</div>

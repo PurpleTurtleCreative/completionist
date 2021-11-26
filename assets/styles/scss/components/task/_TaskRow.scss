@@ -95,4 +95,8 @@
 			color: color(danger);
 		}
 	}
+
+	&.--is-processing {
+		background: color(grey-lightest);
+	}
 }//end .ptc-TaskRow

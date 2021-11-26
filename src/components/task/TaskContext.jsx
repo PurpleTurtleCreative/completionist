@@ -29,6 +29,8 @@ export function TaskContextProvider({ children }) {
 		},
 
 		deleteTask: async (taskGID) => {
+			context.removeTask(taskGID);
+			return undefined;
 
 			const task = context.tasks.find(t => taskGID === t.gid);
 
@@ -75,7 +77,7 @@ export function TaskContextProvider({ children }) {
 		},
 
 		removeTask: (taskGID) => {
-			const newTasks = tasks.filter(t => t.gid !== taskGID);
+			const newTasks = tasks.filter(t => t.gid != taskGID);
 			setTasks(newTasks);
 		},
 

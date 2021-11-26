@@ -145,18 +145,16 @@
 	text-align: center;
 	display: inline-block;
 
-	i {
-		position: relative;
-		bottom: -1px;
-	}
-
 	&.--is-active,
 	&:hover {
 		background: color($color-key);
 		color: color($secondary-color);
 	}
-}
 
-// @mixin btn-circle-icon-sm($size, $color-key: 'brand-primary') {
-// 	@include btn-circle-icon($size, $color-key);
-// }
+	&[disabled] {
+		cursor: not-allowed;
+		background: color(grey-lighter);
+		border-color: color(grey);
+		color: color(grey-dark);
+	}
+}

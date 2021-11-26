@@ -57,7 +57,7 @@ export default function TaskRow({task}) {
 	return (
 		<div className={"ptc-TaskRow"+extraClassNames}>
 
-			<button title="Mark Complete" className="mark-complete" type="button" onClick={() => handleMarkComplete(task.gid)}>
+			<button title="Mark Complete" className="mark-complete" type="button" onClick={() => handleMarkComplete(task.gid)} disabled={!!task.processingStatus}>
 				<i className={`fas ${markCompleteIcon}`}></i>
 			</button>
 
