@@ -1248,7 +1248,7 @@ function TaskActions(_ref) {
   } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__.TaskContext);
   const handleUnpinTask = useCallback(taskGID => {
     if (processingStatus) {
-      console.error(`Rejected. Currently ${processingStatus} task ${taskGID}.`);
+      console.error(`Rejected handleUnpinTask. Currently ${processingStatus} task ${taskGID}.`);
       return;
     }
 
@@ -1258,20 +1258,21 @@ function TaskActions(_ref) {
       console.log('handleUnpinTask success:', success);
       setTaskProcessingStatus(taskGID, false);
     });
-  }, [processingStatus, unpinTask]);
+  }, [processingStatus, setTaskProcessingStatus, unpinTask]);
   const handleDeleteTask = useCallback(taskGID => {
     if (processingStatus) {
-      console.error(`Rejected. Currently ${processingStatus} task ${taskGID}.`);
+      console.error(`Rejected handleDeleteTask. Currently ${processingStatus} task ${taskGID}.`);
       return;
     }
 
     setTaskProcessingStatus(taskGID, 'deleting');
     deleteTask(taskGID).then(success => {
-      // @TODO: Handle false case. (ie. failure)
-      console.log('handleDeleteTask success:', success);
-      setTaskProcessingStatus(taskGID, false);
+      if (!success) {
+        // Only set processing status if task wasn't removed.
+        setTaskProcessingStatus(taskGID, false);
+      }
     });
-  }, [processingStatus, removeTask]);
+  }, [processingStatus, setTaskProcessingStatus, removeTask]);
   const task_url = getTaskUrl(taskGID);
   const unpinIcon = 'unpinning' === processingStatus ? 'fa-sync-alt fa-spin' : 'fa-thumbtack';
   const deleteIcon = 'deleting' === processingStatus ? 'fa-sync-alt fa-spin' : 'fa-minus';
@@ -1330,7 +1331,6 @@ function TaskContextProvider(_ref) {
   let {
     children
   } = _ref;
-  // const [tasks, setTasks] = useState({ ...window.PTCCompletionist.tasks });
   const [tasks, setTasks] = useState(Object.values(window.PTCCompletionist.tasks));
   const context = {
     "tasks": tasks,
@@ -1351,8 +1351,6 @@ function TaskContextProvider(_ref) {
       console.warn(`@TODO: Complete task ${taskGID}`);
     },
     deleteTask: async taskGID => {
-      context.removeTask(taskGID);
-      return undefined;
       const task = context.tasks.find(t => taskGID === t.gid);
       let data = {
         'action': 'ptc_delete_task',
@@ -1743,7 +1741,7 @@ function TaskRow(_ref) {
   } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__.TaskContext);
   const handleMarkComplete = useCallback(taskGID => {
     if (task.processingStatus) {
-      console.error(`Rejected. Currently ${task.processingStatus} task ${taskGID}.`);
+      console.error(`Rejected handleMarkComplete. Currently ${task.processingStatus} task ${taskGID}.`);
       return;
     }
 
@@ -1753,7 +1751,7 @@ function TaskRow(_ref) {
       console.log('handleMarkComplete success:', success);
       setTaskProcessingStatus(taskGID, false);
     });
-  }, [task.processingStatus, completeTask]);
+  }, [task.processingStatus, setTaskProcessingStatus, completeTask]);
   const handleToggleDescription = useCallback(() => {
     if (!task.notes) {
       return;

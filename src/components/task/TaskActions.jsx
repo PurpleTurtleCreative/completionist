@@ -7,7 +7,7 @@ export default function TaskActions({taskGID, processingStatus}) {
 
 	const handleUnpinTask = useCallback((taskGID) => {
 		if ( processingStatus ) {
-			console.error(`Rejected. Currently ${processingStatus} task ${taskGID}.`);
+			console.error(`Rejected handleUnpinTask. Currently ${processingStatus} task ${taskGID}.`);
 			return;
 		}
 		setTaskProcessingStatus(taskGID, 'unpinning');
@@ -16,20 +16,21 @@ export default function TaskActions({taskGID, processingStatus}) {
 			console.log('handleUnpinTask success:', success);
 			setTaskProcessingStatus(taskGID, false);
 		});
-	}, [processingStatus, unpinTask]);
+	}, [processingStatus, setTaskProcessingStatus, unpinTask]);
 
 	const handleDeleteTask = useCallback((taskGID) => {
 		if ( processingStatus ) {
-			console.error(`Rejected. Currently ${processingStatus} task ${taskGID}.`);
+			console.error(`Rejected handleDeleteTask. Currently ${processingStatus} task ${taskGID}.`);
 			return;
 		}
 		setTaskProcessingStatus(taskGID, 'deleting');
 		deleteTask(taskGID).then(success => {
-			// @TODO: Handle false case. (ie. failure)
-			console.log('handleDeleteTask success:', success);
-			setTaskProcessingStatus(taskGID, false);
+			if ( ! success ) {
+				// Only set processing status if task wasn't removed.
+				setTaskProcessingStatus(taskGID, false);
+			}
 		});
-	}, [processingStatus, removeTask]);
+	}, [processingStatus, setTaskProcessingStatus, removeTask]);
 
 	const task_url = getTaskUrl(taskGID);
 

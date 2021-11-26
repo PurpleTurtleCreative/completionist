@@ -10,7 +10,7 @@ export default function TaskRow({task}) {
 
 	const handleMarkComplete = useCallback((taskGID) => {
 		if ( task.processingStatus ) {
-			console.error(`Rejected. Currently ${task.processingStatus} task ${taskGID}.`);
+			console.error(`Rejected handleMarkComplete. Currently ${task.processingStatus} task ${taskGID}.`);
 			return;
 		}
 		setTaskProcessingStatus(taskGID, 'completing');
@@ -19,7 +19,7 @@ export default function TaskRow({task}) {
 			console.log('handleMarkComplete success:', success);
 			setTaskProcessingStatus(taskGID, false);
 		});
-	}, [task.processingStatus, completeTask]);
+	}, [task.processingStatus, setTaskProcessingStatus, completeTask]);
 
 	const handleToggleDescription = useCallback(() => {
 		if ( ! task.notes ) {

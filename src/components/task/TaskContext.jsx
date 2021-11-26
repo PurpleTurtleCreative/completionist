@@ -2,8 +2,7 @@ const { createContext, useState } = wp.element;
 
 export const TaskContext = createContext(false);
 
-export function TaskContextProvider({ children }) {
-	// const [tasks, setTasks] = useState({ ...window.PTCCompletionist.tasks });
+export function TaskContextProvider({children}) {
 	const [tasks, setTasks] = useState(Object.values(window.PTCCompletionist.tasks));
 
 	const context = {
@@ -29,8 +28,6 @@ export function TaskContextProvider({ children }) {
 		},
 
 		deleteTask: async (taskGID) => {
-			context.removeTask(taskGID);
-			return undefined;
 
 			const task = context.tasks.find(t => taskGID === t.gid);
 
