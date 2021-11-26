@@ -1,24 +1,40 @@
 import { TaskContext } from './TaskContext.jsx';
 
-const { useState, useCallback, useContext } = wp.element;
+const { useCallback, useContext } = wp.element;
 
-export default function TaskActions({taskGID}) {
-	const [isProcessing, setIsProcessing] = useState(false);
-	const { getTaskUrl, deleteTask, unpinTask, removeTask } = useContext(TaskContext);
+export default function TaskActions({taskGID, processingStatus}) {
+	const { getTaskUrl, deleteTask, unpinTask, removeTask, setTaskProcessingStatus } = useContext(TaskContext);
 
 	const handleUnpinTask = useCallback((taskGID) => {
-		// @TODO: Loading state handling.
-		unpinTask(taskGID);
-	}, [unpinTask]);
+		if ( processingStatus ) {
+			console.error(`Rejected. Currently ${processingStatus} task ${taskGID}.`);
+			return;
+		}
+		setTaskProcessingStatus(taskGID, 'unpinning');
+		unpinTask(taskGID).then(success => {
+			// @TODO: Handle false case. (ie. failure)
+			console.log('handleUnpinTask success:', success);
+			setTaskProcessingStatus(taskGID, false);
+		});
+	}, [processingStatus, unpinTask]);
 
 	const handleDeleteTask = useCallback((taskGID) => {
-		// @TODO: Loading state handling.
+		if ( processingStatus ) {
+			console.error(`Rejected. Currently ${processingStatus} task ${taskGID}.`);
+			return;
+		}
+		setTaskProcessingStatus(taskGID, 'deleting');
 		deleteTask(taskGID).then(success => {
+			// @TODO: Handle false case. (ie. failure)
 			console.log('handleDeleteTask success:', success);
+			setTaskProcessingStatus(taskGID, false);
 		});
-	}, [removeTask]);
+	}, [processingStatus, removeTask]);
 
 	const task_url = getTaskUrl(taskGID);
+
+	const unpinIcon = ('unpinning' === processingStatus) ? 'fa-sync-alt fa-spin' : 'fa-thumbtack';
+	const deleteIcon = ('deleting' === processingStatus) ? 'fa-sync-alt fa-spin' : 'fa-minus';
 
 	return (
 		<div className="ptc-TaskActions">
@@ -28,10 +44,10 @@ export default function TaskActions({taskGID}) {
 				</button>
 			</a>
 			<button title="Unpin from Site" className="unpin" type="button" onClick={() => handleUnpinTask(taskGID)}>
-				<i className="fas fa-thumbtack"></i>
+				<i className={`fas ${unpinIcon}`}></i>
 			</button>
 			<button title="Delete from Asana" className="delete" type="button" onClick={() => handleDeleteTask(taskGID)}>
-				<i className="fas fa-minus"></i>
+				<i className={`fas ${deleteIcon}`}></i>
 			</button>
 		</div>
 	);

@@ -1231,32 +1231,50 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const {
-  useState,
   useCallback,
   useContext
 } = wp.element;
 function TaskActions(_ref) {
   let {
-    taskGID
+    taskGID,
+    processingStatus
   } = _ref;
-  const [isProcessing, setIsProcessing] = useState(false);
   const {
     getTaskUrl,
     deleteTask,
     unpinTask,
-    removeTask
+    removeTask,
+    setTaskProcessingStatus
   } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__.TaskContext);
   const handleUnpinTask = useCallback(taskGID => {
-    // @TODO: Loading state handling.
-    unpinTask(taskGID);
-  }, [unpinTask]);
-  const handleDeleteTask = useCallback(taskGID => {
-    // @TODO: Loading state handling.
-    deleteTask(taskGID).then(success => {
-      console.log('handleDeleteTask success:', success);
+    if (processingStatus) {
+      console.error(`Rejected. Currently ${processingStatus} task ${taskGID}.`);
+      return;
+    }
+
+    setTaskProcessingStatus(taskGID, 'unpinning');
+    unpinTask(taskGID).then(success => {
+      // @TODO: Handle false case. (ie. failure)
+      console.log('handleUnpinTask success:', success);
+      setTaskProcessingStatus(taskGID, false);
     });
-  }, [removeTask]);
+  }, [processingStatus, unpinTask]);
+  const handleDeleteTask = useCallback(taskGID => {
+    if (processingStatus) {
+      console.error(`Rejected. Currently ${processingStatus} task ${taskGID}.`);
+      return;
+    }
+
+    setTaskProcessingStatus(taskGID, 'deleting');
+    deleteTask(taskGID).then(success => {
+      // @TODO: Handle false case. (ie. failure)
+      console.log('handleDeleteTask success:', success);
+      setTaskProcessingStatus(taskGID, false);
+    });
+  }, [processingStatus, removeTask]);
   const task_url = getTaskUrl(taskGID);
+  const unpinIcon = 'unpinning' === processingStatus ? 'fa-sync-alt fa-spin' : 'fa-thumbtack';
+  const deleteIcon = 'deleting' === processingStatus ? 'fa-sync-alt fa-spin' : 'fa-minus';
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-TaskActions"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
@@ -1274,14 +1292,14 @@ function TaskActions(_ref) {
     type: "button",
     onClick: () => handleUnpinTask(taskGID)
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    className: "fas fa-thumbtack"
+    className: `fas ${unpinIcon}`
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     title: "Delete from Asana",
     className: "delete",
     type: "button",
     onClick: () => handleDeleteTask(taskGID)
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    className: "fas fa-minus"
+    className: `fas ${deleteIcon}`
   })));
 }
 
@@ -1314,6 +1332,22 @@ function TaskContextProvider(_ref) {
   const [tasks, setTasks] = useState(Object.values(window.PTCCompletionist.tasks));
   const context = {
     "tasks": tasks,
+    setTaskProcessingStatus: (taskGID, processingStatus) => {
+      const newTasks = context.tasks.map(t => {
+        if (t.gid === taskGID) {
+          return { ...t,
+            'processingStatus': processingStatus
+          };
+        } else {
+          return { ...t
+          };
+        }
+      });
+      setTasks(newTasks);
+    },
+    completeTask: taskGID => {
+      console.warn(`@TODO: Complete task ${taskGID}`);
+    },
     deleteTask: async taskGID => {
       const task = context.tasks.find(t => taskGID === t.gid);
       let data = {
@@ -1690,11 +1724,23 @@ function TaskRow(_ref) {
   } = _ref;
   const [showDescription, setShowDescription] = useState(false);
   const {
-    isCriticalTask
+    isCriticalTask,
+    completeTask,
+    setTaskProcessingStatus
   } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__.TaskContext);
   const handleMarkComplete = useCallback(taskGID => {
-    console.warn(`@TODO - Handle mark complete for task ${taskGID}`);
-  }, []);
+    if (task.processingStatus) {
+      console.error(`Rejected. Currently ${task.processingStatus} task ${taskGID}.`);
+      return;
+    }
+
+    setTaskProcessingStatus(taskGID, 'completing');
+    completeTask(taskGID).then(success => {
+      // @TODO: Handle false case. (ie. failure)
+      console.log('handleMarkComplete success:', success);
+      setTaskProcessingStatus(taskGID, false);
+    });
+  }, [task.processingStatus, completeTask]);
   const handleToggleDescription = useCallback(() => {
     if (!task.notes) {
       return;
@@ -1719,6 +1765,20 @@ function TaskRow(_ref) {
     extraClassNames += ' --is-critical';
   }
 
+  if (true === task.completed) {
+    extraClassNames += ' --is-complete';
+  }
+
+  if (task.processingStatus) {
+    extraClassNames += ` --is-processing --is-${task.processingStatus}`;
+  }
+
+  const markCompleteIcon = 'completing' === task.processingStatus ? 'fa-sync-alt fa-spin' : 'fa-check';
+  const dueOnDateString = new Date(task.due_on).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-TaskRow" + extraClassNames
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
@@ -1727,7 +1787,7 @@ function TaskRow(_ref) {
     type: "button",
     onClick: () => handleMarkComplete(task.gid)
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    className: "fas fa-check"
+    className: `fas ${markCompleteIcon}`
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "body"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
@@ -1745,11 +1805,7 @@ function TaskRow(_ref) {
     className: "due"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-clock"
-  }), " ", new Date(task.due_on).toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  }))), showDescription && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+  }), " ", dueOnDateString)), showDescription && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     className: "description"
   }, task.notes)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "actions"
@@ -1760,7 +1816,8 @@ function TaskRow(_ref) {
   }, task.action_link.label, " ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-long-arrow-alt-right"
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskActions_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    taskGID: task.gid
+    taskGID: task.gid,
+    processingStatus: task.processingStatus
   })));
 }
 

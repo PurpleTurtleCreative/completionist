@@ -6,11 +6,20 @@ const { useState, useCallback, useContext } = wp.element;
 
 export default function TaskRow({task}) {
 	const [showDescription, setShowDescription] = useState(false);
-	const { isCriticalTask } = useContext(TaskContext);
+	const { isCriticalTask, completeTask, setTaskProcessingStatus } = useContext(TaskContext);
 
 	const handleMarkComplete = useCallback((taskGID) => {
-		console.warn(`@TODO - Handle mark complete for task ${taskGID}`);
-	}, []);
+		if ( task.processingStatus ) {
+			console.error(`Rejected. Currently ${task.processingStatus} task ${taskGID}.`);
+			return;
+		}
+		setTaskProcessingStatus(taskGID, 'completing');
+		completeTask(taskGID).then(success => {
+			// @TODO: Handle false case. (ie. failure)
+			console.log('handleMarkComplete success:', success);
+			setTaskProcessingStatus(taskGID, false);
+		});
+	}, [task.processingStatus, completeTask]);
 
 	const handleToggleDescription = useCallback(() => {
 		if ( ! task.notes ) {
@@ -34,12 +43,22 @@ export default function TaskRow({task}) {
 	if ( isCriticalTask(task) ) {
 		extraClassNames += ' --is-critical';
 	}
+	if ( true === task.completed ) {
+		extraClassNames += ' --is-complete';
+	}
+	if ( task.processingStatus ) {
+		extraClassNames += ` --is-processing --is-${task.processingStatus}`;
+	}
+
+	const markCompleteIcon = ('completing' === task.processingStatus) ? 'fa-sync-alt fa-spin' : 'fa-check';
+
+	const dueOnDateString = new Date(task.due_on).toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'});
 
 	return (
 		<div className={"ptc-TaskRow"+extraClassNames}>
 
 			<button title="Mark Complete" className="mark-complete" type="button" onClick={() => handleMarkComplete(task.gid)}>
-				<i className="fas fa-check"></i>
+				<i className={`fas ${markCompleteIcon}`}></i>
 			</button>
 
 			<div className="body">
@@ -48,7 +67,7 @@ export default function TaskRow({task}) {
 
 				<div className="details">
 					{assigneeDisplayName && <p className="assignee"><i class="fas fa-user"></i> {assigneeDisplayName}</p>}
-					{task.due_on && <p className="due"><i className="fas fa-clock"></i> {new Date(task.due_on).toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})}</p>}
+					{task.due_on && <p className="due"><i className="fas fa-clock"></i> {dueOnDateString}</p>}
 				</div>
 
 				{showDescription && <p className="description">{task.notes}</p>}
@@ -57,7 +76,7 @@ export default function TaskRow({task}) {
 
 			<div className="actions">
 				<a className="cta-button" href={task.action_link.href} target={task.action_link.target}>{task.action_link.label} <i className="fas fa-long-arrow-alt-right"></i></a>
-				<TaskActions taskGID={task.gid} />
+				<TaskActions taskGID={task.gid} processingStatus={task.processingStatus} />
 			</div>
 
 		</div>

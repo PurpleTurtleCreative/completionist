@@ -10,6 +10,24 @@ export function TaskContextProvider({ children }) {
 
 		"tasks": tasks,
 
+		setTaskProcessingStatus: (taskGID, processingStatus) => {
+			const newTasks = context.tasks.map(t => {
+				if ( t.gid === taskGID ) {
+					return {
+						...t,
+						'processingStatus': processingStatus
+					};
+				} else {
+					return { ...t };
+				}
+			});
+			setTasks(newTasks);
+		},
+
+		completeTask: (taskGID) => {
+			console.warn(`@TODO: Complete task ${taskGID}`);
+		},
+
 		deleteTask: async (taskGID) => {
 
 			const task = context.tasks.find(t => taskGID === t.gid);
