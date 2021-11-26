@@ -23,8 +23,45 @@ export function TaskContextProvider({children}) {
 			setTasks(newTasks);
 		},
 
-		completeTask: (taskGID) => {
+		completeTask: async (taskGID, completed = true) => {
 			console.warn(`@TODO: Complete task ${taskGID}`);
+
+			const task = context.tasks.find(t => taskGID === t.gid);
+
+			let data = {
+				'action': 'ptc_update_task',
+				'nonce': window.PTCCompletionist.api.nonce,
+				'task_gid': taskGID,
+				'completed': completed
+			};
+
+			const init = {
+				'method': 'POST',
+				'credentials': 'same-origin',
+				'body': new URLSearchParams(data)
+			};
+
+			return await window.fetch(window.ajaxurl, init)
+				.then( res => res.json() )
+				.then( res => {
+					console.log(res);
+
+					if(res.status == 'success' && res.data != '') {
+						task.completed = completed;
+						context.updateTask(task);
+						return true;
+					} else if(res.status == 'error' && res.data != '') {
+						console.error(res.data);
+					} else {
+						alert('[Completionist] Error '+res.code+': '+res.message);
+					}
+
+					return false;
+				})
+				.catch(function() {
+					alert('[Completionist] Failed to delete task.');
+					return false;
+				});
 		},
 
 		deleteTask: async (taskGID) => {
@@ -71,6 +108,17 @@ export function TaskContextProvider({children}) {
 
 		unpinTask: (taskGID) => {
 			console.warn(`@TODO: Unpin task ${taskGID}`);
+		},
+
+		updateTask: (task) => {
+			const newTasks = context.tasks.map(t => {
+				if ( t.gid === task.gid ) {
+					return { ...task };
+				} else {
+					return { ...t };
+				}
+			});
+			setTasks(newTasks);
 		},
 
 		removeTask: (taskGID) => {

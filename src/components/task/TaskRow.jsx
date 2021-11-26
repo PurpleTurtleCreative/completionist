@@ -15,8 +15,6 @@ export default function TaskRow({task}) {
 		}
 		setTaskProcessingStatus(taskGID, 'completing');
 		completeTask(taskGID).then(success => {
-			// @TODO: Handle false case. (ie. failure)
-			console.log('handleMarkComplete success:', success);
 			setTaskProcessingStatus(taskGID, false);
 		});
 	}, [task.processingStatus, setTaskProcessingStatus, completeTask]);

@@ -178,7 +178,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 							'nonce_list' => wp_create_nonce( 'ptc_completionist_list_task' ),
 							'nonce_create' => wp_create_nonce( 'ptc_completionist_create_task' ),
 							'nonce_delete' => wp_create_nonce( 'ptc_completionist' ),
-							'nonce_update' => wp_create_nonce( 'ptc_completionist_update_task' ),
+							'nonce_update' => wp_create_nonce( 'ptc_completionist' ),
 						]
 					);
 					wp_enqueue_style(
