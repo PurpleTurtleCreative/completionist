@@ -1,6 +1,6 @@
 import { TaskContext } from './TaskContext.jsx';
 
-const { useState, useCallback, useMemo, useContext } = wp.element;
+const { useState, useCallback, useMemo, useContext, useEffect } = wp.element;
 
 export default function TaskFilters({tasks, onChange}) {
 	const [activeFilter, setActiveFilter] = useState('none');
@@ -38,6 +38,11 @@ export default function TaskFilters({tasks, onChange}) {
 			},
 		]
 	}, [tasks]);
+
+	useEffect(() => {
+		const filteredTasks = filters.find(f => activeFilter === f.key).tasks;
+		onChange(activeFilter, filteredTasks);
+	}, [filters, activeFilter, onChange]);
 
 	const handleClickFilter = useCallback((key, filteredTasks) => {
 		setActiveFilter(key);

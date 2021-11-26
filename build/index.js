@@ -1458,7 +1458,8 @@ const {
   useState,
   useCallback,
   useMemo,
-  useContext
+  useContext,
+  useEffect
 } = wp.element;
 function TaskFilters(_ref) {
   let {
@@ -1497,6 +1498,10 @@ function TaskFilters(_ref) {
       "tasks": filterCriticalTasks(incompleteTasks)
     }];
   }, [tasks]);
+  useEffect(() => {
+    const filteredTasks = filters.find(f => activeFilter === f.key).tasks;
+    onChange(activeFilter, filteredTasks);
+  }, [filters, activeFilter, onChange]);
   const handleClickFilter = useCallback((key, filteredTasks) => {
     setActiveFilter(key);
     onChange(key, filteredTasks);
@@ -1571,7 +1576,8 @@ const {
   useState,
   useCallback,
   useMemo,
-  useContext
+  useContext,
+  useEffect
 } = wp.element;
 function TaskListPaginated(_ref) {
   let {
@@ -1589,6 +1595,9 @@ function TaskListPaginated(_ref) {
       setCurrentPage(page);
     }
   }, [currentPage, setCurrentPage, totalPages]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [tasks]);
   const start = Math.max(0, (currentPage - 1) * limit);
   const currentTasks = tasks.slice(start, currentPage * limit);
   const renderedPageButtons = [];
