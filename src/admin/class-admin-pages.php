@@ -135,15 +135,25 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 						$asset_file['dependencies'],
 						PLUGIN_VERSION
 					);
-					$js_data = [
-						'api' => [
-							'nonce' => wp_create_nonce( 'ptc_completionist' ),
-							'url' => get_rest_url(),
-						],
-						'tasks' => Asana_Interface::maybe_get_all_site_tasks(),
-						'users' => Asana_Interface::get_connected_workspace_users(),
-						'me' => Asana_Interface::get_me(),
-					];
+					try {
+						$js_data = [
+							'api' => [
+								'nonce' => wp_create_nonce( 'ptc_completionist' ),
+								'url' => get_rest_url(),
+							],
+							'tasks' => Asana_Interface::maybe_get_all_site_tasks(),
+							'users' => Asana_Interface::get_connected_workspace_users(),
+							'me' => Asana_Interface::get_me(),
+						];
+					} catch ( \Exception $err ) {
+						// @TODO: Test this error state. Ensure frontend is coded to handle.
+						$js_data = [
+							'error' => [
+								'code' => $err->getCode(),
+								'message' => $err->getMessage(),
+							],
+						];
+					}
 					$js_data = json_encode( $js_data );
 					wp_add_inline_script(
 						'ptc-completionist_build-index-js',
@@ -174,7 +184,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 						[
 							'post_id' => get_the_ID(),
 							'pinned_task_gids' => Options::get( Options::PINNED_TASK_GID, get_the_ID() ),
-							'nonce_pin' => wp_create_nonce( 'ptc_completionist_pin_task' ),
+							'nonce_pin' => wp_create_nonce( 'ptc_completionist' ),
 							'nonce_list' => wp_create_nonce( 'ptc_completionist_list_task' ),
 							'nonce_create' => wp_create_nonce( 'ptc_completionist_create_task' ),
 							'nonce_delete' => wp_create_nonce( 'ptc_completionist' ),

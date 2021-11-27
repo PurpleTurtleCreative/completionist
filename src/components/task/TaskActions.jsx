@@ -12,9 +12,10 @@ export default function TaskActions({taskGID, processingStatus}) {
 		}
 		setTaskProcessingStatus(taskGID, 'unpinning');
 		unpinTask(taskGID).then(success => {
-			// @TODO: Handle false case. (ie. failure)
-			console.log('handleUnpinTask success:', success);
-			setTaskProcessingStatus(taskGID, false);
+			if ( ! success ) {
+				// Only set processing status if task wasn't removed.
+				setTaskProcessingStatus(taskGID, false);
+			}
 		});
 	}, [processingStatus, setTaskProcessingStatus, unpinTask]);
 

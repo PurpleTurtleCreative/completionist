@@ -25,7 +25,7 @@ try {
     isset( $_POST['task_link'] )
     && isset( $_POST['post_id'] )
     && isset( $_POST['nonce'] )
-    && wp_verify_nonce( $_POST['nonce'], 'ptc_completionist_pin_task' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+    && wp_verify_nonce( $_POST['nonce'], 'ptc_completionist' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     && Asana_Interface::has_connected_asana()
   ) {
 

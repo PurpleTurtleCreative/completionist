@@ -106,8 +106,45 @@ export function TaskContextProvider({children}) {
 				});
 		},
 
-		unpinTask: (taskGID) => {
-			console.warn(`@TODO: Unpin task ${taskGID}`);
+		unpinTask: async (taskGID, postID = null) => {
+			const task = context.tasks.find(t => taskGID === t.gid);
+
+			let data = {
+				'action': 'ptc_unpin_task',
+				'nonce': window.PTCCompletionist.api.nonce,
+				'task_gid': taskGID
+			};
+
+			if ( postID ) {
+				data.post_id = postID;
+			}
+
+			const init = {
+				'method': 'POST',
+				'credentials': 'same-origin',
+				'body': new URLSearchParams(data)
+			};
+
+			return await window.fetch(window.ajaxurl, init)
+				.then( res => res.json() )
+				.then( res => {
+					console.log(res);
+
+					if(res.status == 'success' && res.data != '') {
+						context.removeTask(res.data);
+						return true;
+					} else if(res.status == 'error' && res.data != '') {
+						console.error(res.data);
+					} else {
+						alert('[Completionist] Error '+res.code+': '+res.message);
+					}
+
+					return false;
+				})
+				.catch(function() {
+					alert('[Completionist] Failed to delete task.');
+					return false;
+				});
 		},
 
 		updateTask: (task) => {

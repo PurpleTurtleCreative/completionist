@@ -1254,9 +1254,10 @@ function TaskActions(_ref) {
 
     setTaskProcessingStatus(taskGID, 'unpinning');
     unpinTask(taskGID).then(success => {
-      // @TODO: Handle false case. (ie. failure)
-      console.log('handleUnpinTask success:', success);
-      setTaskProcessingStatus(taskGID, false);
+      if (!success) {
+        // Only set processing status if task wasn't removed.
+        setTaskProcessingStatus(taskGID, false);
+      }
     });
   }, [processingStatus, setTaskProcessingStatus, unpinTask]);
   const handleDeleteTask = useCallback(taskGID => {
@@ -1416,8 +1417,41 @@ function TaskContextProvider(_ref) {
         return false;
       });
     },
-    unpinTask: taskGID => {
-      console.warn(`@TODO: Unpin task ${taskGID}`);
+    unpinTask: async function (taskGID) {
+      let postID = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      const task = context.tasks.find(t => taskGID === t.gid);
+      let data = {
+        'action': 'ptc_unpin_task',
+        'nonce': window.PTCCompletionist.api.nonce,
+        'task_gid': taskGID
+      };
+
+      if (postID) {
+        data.post_id = postID;
+      }
+
+      const init = {
+        'method': 'POST',
+        'credentials': 'same-origin',
+        'body': new URLSearchParams(data)
+      };
+      return await window.fetch(window.ajaxurl, init).then(res => res.json()).then(res => {
+        console.log(res);
+
+        if (res.status == 'success' && res.data != '') {
+          context.removeTask(res.data);
+          return true;
+        } else if (res.status == 'error' && res.data != '') {
+          console.error(res.data);
+        } else {
+          alert('[Completionist] Error ' + res.code + ': ' + res.message);
+        }
+
+        return false;
+      }).catch(function () {
+        alert('[Completionist] Failed to delete task.');
+        return false;
+      });
     },
     updateTask: task => {
       const newTasks = context.tasks.map(t => {
