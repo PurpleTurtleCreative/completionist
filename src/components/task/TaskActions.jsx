@@ -13,7 +13,7 @@ export default function TaskActions({taskGID, processingStatus}) {
 		setTaskProcessingStatus(taskGID, 'unpinning');
 		unpinTask(taskGID).then(success => {
 			if ( ! success ) {
-				// Only set processing status if task wasn't removed.
+				// Only set processing status if task wasn't successfully removed.
 				setTaskProcessingStatus(taskGID, false);
 			}
 		});
@@ -26,6 +26,7 @@ export default function TaskActions({taskGID, processingStatus}) {
 		}
 		setTaskProcessingStatus(taskGID, 'deleting');
 		deleteTask(taskGID).then(success => {
+			console.log('deleteTask success:', success);
 			if ( ! success ) {
 				// Only set processing status if task wasn't removed.
 				setTaskProcessingStatus(taskGID, false);

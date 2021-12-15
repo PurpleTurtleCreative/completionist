@@ -8,6 +8,7 @@ export default function TaskFilters({tasks, onChange}) {
 
 	const filters = useMemo(() => {
 
+		console.log('TaskFilters filterIncompleteTasks:', tasks);
 		const incompleteTasks = filterIncompleteTasks(tasks);
 
 		return [

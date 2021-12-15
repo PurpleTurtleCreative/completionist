@@ -10,21 +10,21 @@ export function TaskContextProvider({children}) {
 		"tasks": tasks,
 
 		setTaskProcessingStatus: (taskGID, processingStatus) => {
-			const newTasks = context.tasks.map(t => {
-				if ( t.gid === taskGID ) {
-					return {
-						...t,
-						'processingStatus': processingStatus
-					};
-				} else {
-					return { ...t };
-				}
+			setTasks(prevTasks => {
+				return prevTasks.map(t => {
+					if ( t.gid === taskGID ) {
+						return {
+							...t,
+							'processingStatus': processingStatus
+						};
+					} else {
+						return { ...t };
+					}
+				});
 			});
-			setTasks(newTasks);
 		},
 
 		completeTask: async (taskGID, completed = true) => {
-			console.warn(`@TODO: Complete task ${taskGID}`);
 
 			const task = context.tasks.find(t => taskGID === t.gid);
 
@@ -46,11 +46,11 @@ export function TaskContextProvider({children}) {
 				.then( res => {
 					console.log(res);
 
-					if(res.status == 'success' && res.data != '') {
+					if(res.status == 'success' && res.data) {
 						task.completed = completed;
 						context.updateTask(task);
 						return true;
-					} else if(res.status == 'error' && res.data != '') {
+					} else if(res.status == 'error' && res.data) {
 						console.error(res.data);
 					} else {
 						alert('[Completionist] Error '+res.code+': '+res.message);
@@ -58,8 +58,9 @@ export function TaskContextProvider({children}) {
 
 					return false;
 				})
-				.catch(function() {
-					alert('[Completionist] Failed to delete task.');
+				.catch( err => {
+					console.error('Promise catch:', err);
+					alert('[Completionist] Failed to complete task.');
 					return false;
 				});
 		},
@@ -89,10 +90,10 @@ export function TaskContextProvider({children}) {
 				.then( res => {
 					console.log(res);
 
-					if(res.status == 'success' && res.data != '') {
+					if(res.status == 'success' && res.data) {
 						context.removeTask(res.data);
 						return true;
-					} else if(res.status == 'error' && res.data != '') {
+					} else if(res.status == 'error' && res.data) {
 						console.error(res.data);
 					} else {
 						alert('[Completionist] Error '+res.code+': '+res.message);
@@ -100,7 +101,8 @@ export function TaskContextProvider({children}) {
 
 					return false;
 				})
-				.catch(function() {
+				.catch( err => {
+					console.error('Promise catch:', err);
 					alert('[Completionist] Failed to delete task.');
 					return false;
 				});
@@ -130,10 +132,10 @@ export function TaskContextProvider({children}) {
 				.then( res => {
 					console.log(res);
 
-					if(res.status == 'success' && res.data != '') {
+					if(res.status == 'success' && res.data) {
 						context.removeTask(res.data);
 						return true;
-					} else if(res.status == 'error' && res.data != '') {
+					} else if(res.status == 'error' && res.data) {
 						console.error(res.data);
 					} else {
 						alert('[Completionist] Error '+res.code+': '+res.message);
@@ -141,26 +143,40 @@ export function TaskContextProvider({children}) {
 
 					return false;
 				})
-				.catch(function() {
-					alert('[Completionist] Failed to delete task.');
+				.catch( err => {
+					console.error('Promise catch:', err);
+					alert('[Completionist] Failed to unpin task.');
 					return false;
 				});
 		},
 
-		updateTask: (task) => {
-			const newTasks = context.tasks.map(t => {
-				if ( t.gid === task.gid ) {
-					return { ...task };
-				} else {
-					return { ...t };
-				}
+		/**
+		 * @param object taskUpdates A task object containing the "gid" and only
+		 * the necessary fields to override.
+		 */
+		updateTask: (taskUpdates) => {
+			setTasks(prevTasks => {
+				return prevTasks.map(t => {
+					if ( t.gid === task.gid ) {
+						return {
+							...t,
+							...taskUpdates
+						};
+					} else {
+						return { ...t };
+					}
+				});
 			});
-			setTasks(newTasks);
 		},
 
 		removeTask: (taskGID) => {
-			const newTasks = tasks.filter(t => t.gid != taskGID);
-			setTasks(newTasks);
+			setTasks(prevTasks => {
+				return prevTasks.map(t => {
+					if ( t.gid != taskGID ) {
+						return { ...t };
+					}
+				}).filter(t => !!t);
+			});
 		},
 
 		getTaskUrl: (taskGID) => {
