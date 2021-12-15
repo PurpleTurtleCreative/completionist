@@ -12,7 +12,7 @@ export function TaskContextProvider({children}) {
 		setTaskProcessingStatus: (taskGID, processingStatus) => {
 			setTasks(prevTasks => {
 				return prevTasks.map(t => {
-					if ( t.gid === taskGID ) {
+					if ( t.gid == taskGID ) {
 						return {
 							...t,
 							'processingStatus': processingStatus
@@ -47,8 +47,10 @@ export function TaskContextProvider({children}) {
 					console.log(res);
 
 					if(res.status == 'success' && res.data) {
-						task.completed = completed;
-						context.updateTask(task);
+						context.updateTask({
+							"gid": task.gid,
+							"completed": completed
+						});
 						return true;
 					} else if(res.status == 'error' && res.data) {
 						console.error(res.data);
@@ -157,7 +159,7 @@ export function TaskContextProvider({children}) {
 		updateTask: (taskUpdates) => {
 			setTasks(prevTasks => {
 				return prevTasks.map(t => {
-					if ( t.gid === task.gid ) {
+					if ( t.gid == taskUpdates.gid ) {
 						return {
 							...t,
 							...taskUpdates
