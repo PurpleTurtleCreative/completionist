@@ -1,5 +1,4 @@
-// @import 'abstracts/colors';
-// @import 'abstracts/effects';
+@import 'abstracts/colors';
 @import 'components/task/TaskOverview';
 @import 'components/task/TaskFilters';
 @import 'components/task/TaskListPaginated';
@@ -9,4 +8,19 @@
 #ptc-completionist_site-tasks .inside {
 	padding: 0;
 	margin: 0;
+
+	.ptc-loading {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		font-size: 1em;
+		color: color(grey);
+
+		i.fas {
+			color: color(brand-primary);
+			font-size: 1.2em;
+			margin: 0.4em;
+		}
+	}
 }//end #ptc-completionist_site-tasks .inside

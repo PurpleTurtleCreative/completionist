@@ -27,7 +27,7 @@ try {
 	/* Display */
 	?>
 	<div id="ptc-PTCCompletionistTasksDashboardWidget">
-		<p><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>Loading...</p>
+		<p class="ptc-loading"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>Loading...</p>
 	</div>
 	<?php
 } catch ( Errors\NoAuthorization $e ) {
