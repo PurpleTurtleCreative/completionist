@@ -704,7 +704,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			// Use cached data if not forcing update.
 			if ( false === $force_update ) {
 				$transient = get_transient( $transient_key );
-				if (false !== $transient ) {
+				if ( false !== $transient ) {
 					self::$all_site_tasks = $transient;
 					return $transient;
 				}
@@ -1051,6 +1051,28 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		}
 
 		/**
+		 * Deletes a task in Asana.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param string $task_gid The task gid to delete.
+		 *
+		 * @throws \Exception Authentication may fail when first loading the client
+		 * or requests could fail due to request limits or server issues.
+		 */
+		public static function delete_task( string $task_gid ) {
+			// Request the deletion in Asana.
+			$asana = self::get_client();
+			$asana->tasks->delete( $task_gid );
+			// Remove the task from all site tasks.
+			$all_tasks = self::maybe_get_all_site_tasks();
+			unset( $all_tasks[ $task_gid ] );
+			// Update the site tasks cache.
+			$transient_key = Cache_Manager::get_cache_key( 'all_site_tasks_' . self::$wp_user_id );
+			set_transient( $transient_key, $all_tasks, Cache_Manager::get_transient_lifespan() );
+		}
+
+		/**
 		 * Creates a task in Asana and optionally pins it to a WordPress post.
 		 *
 		 * @since 1.1.0
@@ -1164,6 +1186,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				}
 			}
 
+			// @TODO - Update cache to contain new task.
 			return $task;
 		}//end create_task()
 	}//end class

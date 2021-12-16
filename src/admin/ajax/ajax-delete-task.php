@@ -44,8 +44,7 @@ try {
 
 		/* Delete the task */
 
-		$asana = Asana_Interface::get_client();
-		$task = $asana->tasks->delete( $task_gid );
+		Asana_Interface::delete_task( $task_gid );
 
 		/* Unpin from post */
 
