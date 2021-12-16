@@ -61,6 +61,7 @@ try {
         $res['code'] = 200;
         $res['message'] = "Successfully unpinned task $task_gid from post $the_post_id.";
         $res['data'] = $task_gid;
+        // @TODO - Update the cache.
       }
 
     }
@@ -76,6 +77,8 @@ try {
       $res['code'] = 200;
       $res['message'] = "Successfully untagged task $task_gid.";
       $res['data'] = $task_gid;
+
+      // @TODO - Update the cache.
 
     } catch ( \Exception $e ) {
       if ( isset( $the_post_id ) && $the_post_id > 0 ) {

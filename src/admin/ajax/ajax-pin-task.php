@@ -61,6 +61,7 @@ try {
     if ( $did_pin_task === FALSE ) {
       throw new \Exception( "Failed to pin the existing task to post $the_post_id.", 409 );
     }
+    // @TODO - Else, update the cache on success.
 
     $res['status'] = 'success';
     $res['code'] = 200;

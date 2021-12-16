@@ -93,6 +93,8 @@ try {
       throw new Exception( 'Unrecognized API response to task update request.', 409 );
     }
 
+    // @TODO - Update the cache.
+
     $res['status'] = 'success';
     $res['code'] = 200;
     $res['message'] = "Successfully updated task {$task->gid}.";

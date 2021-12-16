@@ -38,8 +38,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Cache_Manager' ) ) {
 		 *
 		 * @param string $key The cache key name after the plugin prefix. Should not
 		 * exceed 150 characters in length.
+		 * @return string The full cache key name.
 		 */
-		public static function get_cache_key( string $key ) {
+		public static function get_cache_key( string $key ) : string {
 			return self::TRANSIENT_PREFIX . $key;
 		}
 
@@ -55,12 +56,24 @@ if ( ! class_exists( __NAMESPACE__ . '\Cache_Manager' ) ) {
 		}
 
 		/**
+		 * Gets all active transient keys for this plugin.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @return string[] The transient key names.
+		 */
+		public static function get_all_transient_keys() : array {
+			// @TODO - Query all transient keys with our prefix.
+			return [];
+		}
+
+		/**
 		 * Deletes all transients from the database.
 		 *
 		 * @since 3.1.0
 		 */
 		public static function purge_transients() {
-			// @TODO.
+			// @TODO - IMPORTANT: Purge the cache.
 		}
 	}//end class
 }//end if class_exists

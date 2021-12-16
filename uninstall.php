@@ -31,6 +31,8 @@ if ( function_exists( 'get_sites' ) ) {
 
 function uninstall_for_current_blog() {
 
+	// @TODO - Delete all cache data related to this plugin.
+
 	if ( class_exists( __NAMESPACE__ . '\Options' ) ) {
 		if ( method_exists( __NAMESPACE__ . '\Options', 'delete_all' ) ) {
 			Options::delete_all();
