@@ -4,10 +4,10 @@
 *.log
 *.map
 *.sh
-*/exclude.lst
-*/composer.json
-*/composer.lock
-*/node_modules/*
-*/package-lock.json
-*/package.json
-*/assets/styles/scss/*
+completionist/exclude.lst
+completionist/composer.json
+completionist/composer.lock
+completionist/node_modules/*
+completionist/package-lock.json
+completionist/package.json
+completionist/assets/styles/scss/*
