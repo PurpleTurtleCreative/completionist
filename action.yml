@@ -6,8 +6,8 @@ runs:
   using: composite
   steps:
 
-    - run: composer install --optimize-autoloader
-      shell: bash
+    # - run: composer install --optimize-autoloader
+    #   shell: bash
 
     # Confirm Downloaded Code.
     - run: pwd
