@@ -13,7 +13,3 @@ runs:
     # Remove excludes.
     - run: for pattern in $(cat "${{ github.action_path }}/exclude.lst") ; do rm -rfv ${{ github.action_path }}/../$pattern ; done
       shell: bash
-
-    # Review code... will this run after this action.yml file was deleted in previous step?
-    - run: ls -la "${{ github.action_path }}"
-      shell: bash
