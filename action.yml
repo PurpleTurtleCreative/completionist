@@ -11,7 +11,7 @@ runs:
       shell: bash
 
     # Remove excludes.
-    - run: xargs rm -rf < "${{ github.action_path }}"/exclude.lst
+    - run: for pattern in $(cat "${{ github.action_path }}/exclude.lst") ; do rm -rfv $pattern ; done
       shell: bash
 
     # Review code.
