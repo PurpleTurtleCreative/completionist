@@ -6,15 +6,9 @@ runs:
   using: composite
   steps:
 
-    # - run: composer install --optimize-autoloader
-    #   shell: bash
+    - run: composer install --optimize-autoloader --working-dir="${{ github.action_path }}"
+      shell: bash
 
     # Confirm Downloaded Code.
-    - run: pwd
-      shell: bash
-
-    - run: ls -la
-      shell: bash
-
-    - run: echo "${{ github.action_path }}"
+    - run: ls -la "${{ github.action_path }}"
       shell: bash
