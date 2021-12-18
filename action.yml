@@ -1,13 +1,16 @@
 # Composite action to build this project in another workflow.
 
 name: Build Completionist
-steps:
 
-  - name: Install Dependencies
-    run: composer install --optimize-autoloader
+runs:
+  using: composite
+  steps:
 
-  # Confirm Downloaded Code.
-  - name: Print Working Dir
-    run: pwd
-  - name: List Working Dir Contents
-    run: ls -la
+    - name: Install Dependencies
+      run: composer install --optimize-autoloader
+
+    # Confirm Downloaded Code.
+    - name: Print Working Dir
+      run: pwd
+    - name: List Working Dir Contents
+      run: ls -la
