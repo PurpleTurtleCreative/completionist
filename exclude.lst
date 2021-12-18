@@ -1,9 +1,9 @@
-*/.git*
-*/.DS_Store
-*.zip
-*.log
-*.map
-*.sh
+completionist/*.zip
+completionist/*.log
+completionist/*.map
+completionist/*.sh
+completionist/*.DS_Store
+completionist/.git*
 completionist/exclude.lst
 completionist/composer.json
 completionist/composer.lock
