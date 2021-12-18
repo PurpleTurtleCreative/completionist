@@ -1,0 +1,13 @@
+*/.git*
+*/.DS_Store
+*.zip
+*.log
+*.map
+*.sh
+*/exclude.lst
+*/composer.json
+*/composer.lock
+*/node_modules/*
+*/package-lock.json
+*/package.json
+*/assets/styles/scss/*
