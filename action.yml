@@ -6,11 +6,15 @@ runs:
   using: composite
   steps:
 
-    - name: Install Dependencies
-      run: composer install --optimize-autoloader
+    - run: composer install --optimize-autoloader
+      shell: bash
 
     # Confirm Downloaded Code.
-    - name: Print Working Dir
-      run: pwd
-    - name: List Working Dir Contents
-      run: ls -la
+    - run: pwd
+      shell: bash
+
+    - run: ls -la
+      shell: bash
+
+    - run: echo "${{ github.action_path }}"
+      shell: bash
