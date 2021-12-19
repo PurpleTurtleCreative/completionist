@@ -11,5 +11,5 @@ runs:
       shell: bash
 
     # Remove excludes.
-    - run: for pattern in $(cat "${{ github.action_path }}/exclude.lst") ; do rm -rfv ${{ github.action_path }}/../$pattern ; done
+    - run: for PATTERN in $(cat "${{ github.action_path }}/exclude.lst") ; do rm -rf "${{ github.action_path }}/../${PATTERN}" ; done
       shell: bash
