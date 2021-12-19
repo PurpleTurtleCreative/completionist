@@ -1,0 +1,15 @@
+# Composite action to build this project in another workflow.
+
+name: Build Completionist
+
+runs:
+  using: composite
+  steps:
+
+    # Install dependencies.
+    - run: composer install --optimize-autoloader --working-dir="${{ github.action_path }}"
+      shell: bash
+
+    # Remove excludes.
+    - run: for PATTERN in $(cat "${{ github.action_path }}/exclude.lst") ; do rm -rf "${{ github.action_path }}/../${PATTERN}" ; done
+      shell: bash
