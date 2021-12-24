@@ -25,18 +25,10 @@
 		color: color(grey-darker);
 
 		.name {
-			cursor: help;
 			font-weight: 900;
 			font-size: 1.3em;
 			line-height: 1.3;
 			margin-top: 0.2em;
-
-			&:hover {
-				text-decoration: underline;
-				text-decoration-style: dotted;
-				text-decoration-color: color(grey-dark);
-				text-underline-offset: 2px;
-			}
 
 			i.fa-sticky-note {
 				color: color(warning);
@@ -98,5 +90,20 @@
 
 	&.--is-processing {
 		background: color(grey-lightest);
+	}
+
+	&.--has-description {
+		.body {
+			.name {
+				cursor: help;
+
+				&:hover {
+					text-decoration: underline;
+					text-decoration-style: dotted;
+					text-decoration-color: color(grey-dark);
+					text-underline-offset: 2px;
+				}
+			}
+		}
 	}
 }//end .ptc-TaskRow

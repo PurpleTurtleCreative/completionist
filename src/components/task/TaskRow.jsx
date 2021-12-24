@@ -47,6 +47,9 @@ export default function TaskRow({task}) {
 	if ( task.processingStatus ) {
 		extraClassNames += ` --is-processing --is-${task.processingStatus}`;
 	}
+	if ( !!task.notes ) {
+		extraClassNames += ' --has-description';
+	}
 
 	const markCompleteIcon = ('completing' === task.processingStatus) ? 'fa-sync-alt fa-spin' : 'fa-check';
 
@@ -61,7 +64,7 @@ export default function TaskRow({task}) {
 
 			<div className="body">
 
-				<p className="name" onClick={handleToggleDescription}>{task.name}{task.notes && <i className={`${notesIconClassName} fa-sticky-note`}></i>}</p>
+				<p className="name" onClick={handleToggleDescription}>{task.name}{!!task.notes && <i className={`${notesIconClassName} fa-sticky-note`}></i>}</p>
 
 				<div className="details">
 					{assigneeDisplayName && <p className="assignee"><i class="fas fa-user"></i> {assigneeDisplayName}</p>}
