@@ -584,13 +584,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				throw new \Exception( 'Invalid task gid', 400 );
 			}
 
-			// Get from cache.
-			$transient_key = Cache_Manager::get_cache_key( "task_{$task_gid}" );
-			$transient = get_transient( $transient_key );
-			if ( false !== $transient ) {
-				return $transient;
-			}
-
 			try {
 
 				$asana = self::get_client();
@@ -619,7 +612,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 					}
 				}
 
-				set_transient( $transient_key, $task, Cache_Manager::get_transient_lifespan() );
 				return $task;
 			} catch ( \Exception $e ) {
 
