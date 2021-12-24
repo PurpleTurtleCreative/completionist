@@ -6,7 +6,6 @@
 
 #### Changed
 
-- Implemented caching for all site tasks per authenticated user, vastly reducing API calls and improving performance.
 - Tasks dashboard widget has been converted to ReactJS, offering a better experience.
 - Task dashboard widget style overhaul, offering a better experience.
 

@@ -17,7 +17,6 @@ defined( 'ABSPATH' ) || die();
 require_once 'class-options.php';
 require_once 'errors.php';
 require_once 'class-html-builder.php';
-require_once 'class-cache-manager.php';
 
 if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 	/**
@@ -37,16 +36,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 * @var string TASK_OPT_FIELDS
 		 */
 		public const TASK_OPT_FIELDS = 'name,completed,notes,due_on,assignee,workspace,tags';
-
-		/**
-		 * The collection of all site tasks which are accessible by the currently
-		 * authenticated user, mapped by Asana task GID.
-		 *
-		 * @since 3.1.0
-		 *
-		 * @var \stdClass[] $all_site_tasks;
-		 */
-		public static $all_site_tasks;
 
 		/**
 		 * The currently authenticated WordPress user's ID.
@@ -595,24 +584,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				throw new \Exception( 'Invalid task gid.', 400 );
 			}
 
-			// If already in memory.
-			$all_site_tasks = self::maybe_get_all_site_tasks();
-			if ( ! empty( $all_site_tasks[ $task_gid ] ) ) {
-				return $all_site_tasks[ $task_gid ];
-			}
-
-			// Force cache update to ensure task is actually invalid.
-			/*
-			** Note that this is inefficient for invalidating many removed
-			** tasks since the ENTIRE cache object is being reloaded for every
-			** single invalid task. Use a bulk getter instead so this situation can
-			** be handled efficiently with just one forced update.
-			*/
-			$all_site_tasks = self::maybe_get_all_site_tasks( '', true );
-			if ( ! empty( $all_site_tasks[ $task_gid ] ) ) {
-				return $all_site_tasks[ $task_gid ];
-			}
-
 			// Task is no longer valid, handle accordingly.
 			if ( $post_id > 0 ) {
 				if ( Options::delete( Options::PINNED_TASK_GID, $post_id, $task_gid ) ) {
@@ -673,19 +644,16 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		/**
 		 * Attempts to retrieve task data for all site tasks.
 		 *
-		 * @since 3.1.0 Added optional param $force_update.
 		 * @since 3.1.0 Marked $opt_fields param as deprecated.
 		 * @since 1.0.0
 		 *
 		 * @param string $opt_fields_deprecated Deprecated.
-		 * @param bool $force_update Optional. If the cache should be invalidated
-		 * regardless of its expiration time. Default false.
 		 * @return \stdClass[] Task data objects.
 		 *
 		 * @throws \Exception Authentication may fail when first loading the client
 		 * or requests could fail due to request limits or server issues.
 		 */
-		public static function maybe_get_all_site_tasks( string $opt_fields_deprecated = '', bool $force_update = false ) : array {
+		public static function maybe_get_all_site_tasks( string $opt_fields_deprecated = '' ) : array {
 
 			if ( ! empty( $opt_fields_deprecated ) ) {
 				_deprecated_argument(
@@ -697,18 +665,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
 			// Load client to ensure current user is authenticated and set.
 			$asana = self::get_client();
-
-			// Get all site tasks for the authenticated user.
-			$transient_key = Cache_Manager::get_cache_key( 'all_site_tasks_' . self::$wp_user_id );
-
-			// Use cached data if not forcing update.
-			if ( false === $force_update ) {
-				$transient = get_transient( $transient_key );
-				if ( false !== $transient ) {
-					self::$all_site_tasks = $transient;
-					return $transient;
-				}
-			}
 
 			$tasks = [];
 
@@ -737,8 +693,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$all_tasks[ $task->gid ] = $task;
 			}
 
-			self::$all_site_tasks = $all_tasks;
-			set_transient( $transient_key, $all_tasks, Cache_Manager::get_transient_lifespan() );
 			return $all_tasks;
 		}
 
@@ -1064,12 +1018,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			// Request the deletion in Asana.
 			$asana = self::get_client();
 			$asana->tasks->delete( $task_gid );
-			// Remove the task from all site tasks.
-			$all_tasks = self::maybe_get_all_site_tasks();
-			unset( $all_tasks[ $task_gid ] );
-			// Update the site tasks cache.
-			$transient_key = Cache_Manager::get_cache_key( 'all_site_tasks_' . self::$wp_user_id );
-			set_transient( $transient_key, $all_tasks, Cache_Manager::get_transient_lifespan() );
+			// @TODO - Update the cache.
 		}
 
 		/**
