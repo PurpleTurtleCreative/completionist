@@ -581,19 +581,78 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
 			$task_gid = Options::sanitize( 'gid', $task_gid );
 			if ( empty( $task_gid ) ) {
-				throw new \Exception( 'Invalid task gid.', 400 );
+				throw new \Exception( 'Invalid task gid', 400 );
 			}
 
-			// Task is no longer valid, handle accordingly.
-			if ( $post_id > 0 ) {
-				if ( Options::delete( Options::PINNED_TASK_GID, $post_id, $task_gid ) ) {
-					$err_msg = "Unpinned invalid task {$task_gid} from post {$post_id}.";
-					error_log( $err_msg );
-					throw new \Exception( $err_msg, 410 );
+			// Get from cache.
+			$transient_key = Cache_Manager::get_cache_key( "task_{$task_gid}" );
+			$transient = get_transient( $transient_key );
+			if ( false !== $transient ) {
+				return $transient;
+			}
+
+			try {
+
+				$asana = self::get_client();
+				$task = $asana->tasks->findById( $task_gid, [ 'opt_fields' => self::TASK_OPT_FIELDS ] );
+
+				if (
+					isset( $task->workspace->gid )
+					&& $task->workspace->gid != Options::get( Options::ASANA_WORKSPACE_GID )
+					&& $post_id > 0
+				) {
+					if ( '' != $task_gid && Options::delete( Options::PINNED_TASK_GID, $post_id, $task_gid ) ) {
+						error_log( "Unpinned foreign task from post $post_id." );
+						throw new \Exception( 'Unpinned Foreign Task', 410 );
+					}
 				}
+
+				if (
+					isset( $task->tags )
+					&& is_array( $task->tags )
+					&& ! self::has_tag( $task, Options::get( Options::ASANA_TAG_GID ) )
+					&& $post_id > 0
+				) {
+					if ( '' != $task_gid && Options::delete( Options::PINNED_TASK_GID, $post_id, $task_gid ) ) {
+						error_log( "Unpinned task missing site tag from post $post_id." );
+						throw new \Exception( 'Unpinned Foreign Task', 410 );
+					}
+				}
+
+				set_transient( $transient_key, $task, Cache_Manager::get_transient_lifespan() );
+				return $task;
+			} catch ( \Exception $e ) {
+
+				$error_code = $e->getCode();
+				if (
+					0 === $error_code
+					&& isset( $e->status )
+					&& $e->status > 0
+				) {
+					$error_code = $e->status;
+				}
+
+				$error_msg = $e->getMessage();
+
+				if (
+					404 == $error_code
+					&& $post_id > 0
+				) {
+					if ( '' != $task_gid && Options::delete( Options::PINNED_TASK_GID, $post_id, $task_gid ) ) {
+						error_log( "Unpinned [404: Not Found] task from post $post_id." );
+						throw new \Exception( 'Unpinned Task', 410 );
+					}
+				} elseif (
+					403 != $error_code
+					&& 410 != $error_code
+				) {
+					error_log( "Failed to fetch task data, error $error_code: $error_msg" );
+				}
+
+				throw $e;
 			}
 
-			throw new \Exception( "Invalid task {$task_gid}.", 410 );
+			throw new \Exception( 'Failed to get task data.', 0 );
 		}
 
 		/**
