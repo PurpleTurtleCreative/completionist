@@ -148,7 +148,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 							'tag_url' => HTML_Builder::get_asana_tag_url(),
 						];
 					} catch ( \Exception $err ) {
-						// @TODO: Test this error state. Ensure frontend is coded to handle.
 						$js_data = [
 							'error' => [
 								'code' => $err->getCode(),
