@@ -49,6 +49,12 @@ export default function TaskListPaginated({limit, tasks}) {
 
 			</nav>
 
+			<a href={window.PTCCompletionist.tag_url} target="_asana" className="view-tag">
+				<button title="View All Site Tasks in Asana" className="view" type="button">
+					<i class="fas fa-link"></i>
+				</button>
+			</a>
+
 		</div>
 	);
 }

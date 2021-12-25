@@ -136,6 +136,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 						PLUGIN_VERSION
 					);
 					try {
+						require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
 						$js_data = [
 							'api' => [
 								'nonce' => wp_create_nonce( 'ptc_completionist' ),
@@ -144,6 +145,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 							'tasks' => Asana_Interface::maybe_get_all_site_tasks(),
 							'users' => Asana_Interface::get_connected_workspace_users(),
 							'me' => Asana_Interface::get_me(),
+							'tag_url' => HTML_Builder::get_asana_tag_url(),
 						];
 					} catch ( \Exception $err ) {
 						// @TODO: Test this error state. Ensure frontend is coded to handle.

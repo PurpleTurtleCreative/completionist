@@ -6,6 +6,7 @@
 //----------------------
 
 .ptc-TaskListPaginated {
+	position: relative;
 
 	.ptc-TaskRow {
 
@@ -15,13 +16,13 @@
 	}
 
 	nav.pagination {
-		padding: 0.6em;
+		padding: 0.6em 3em;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		background: color(grey-lightest);
 		border-top: 1px solid color(grey-light);
-		flex-wrap: nowrap;
+		flex-wrap: wrap;
 
 		button {
 			cursor: pointer;
@@ -58,6 +59,18 @@
 			&.next {
 				border-radius: 0 999px 999px 0;
 			}
+		}
+	}
+
+	a.view-tag {
+		display: inline-block;
+		position: absolute;
+		bottom: 0.3em;
+		right: 0.3em;
+
+		button {
+			margin: 0.3em;
+			@include btn-circle-icon(2em, grey);
 		}
 	}
 }//end .ptc-TaskListPaginated
