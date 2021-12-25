@@ -45,7 +45,7 @@ try {
       $detailed_view = FALSE;
     }
 
-    $task = Asana_Interface::maybe_get_task_data( $task_gid, HTML_Builder::TASK_OPT_FIELDS, $the_post_id );
+    $task = Asana_Interface::maybe_get_task_data( $task_gid, '', $the_post_id );
     $html = HTML_Builder::format_task_row( $task, $detailed_view );
 
     $res['status'] = 'success';

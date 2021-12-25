@@ -118,42 +118,10 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 			$due_status = $relative_due->status;
 			$due_date = $relative_due->label;
 
-			/* Post ID */
-
-			if ( $detailed_view ) {
-
-				$cta_button_link = '';
-				$cta_button_label = '';
-				$cta_button_target = '_self';
-
-				$post_id = Options::get_task_pin_post_id( $task_gid );
-
-				if ( $post_id > 0 ) {
-					$post = get_post( $post_id );
-					if ( isset( $post->post_type ) ) {
-						$edit_post_link = get_edit_post_link( $post );
-						if ( $edit_post_link ) {
-							$cta_button_link = $edit_post_link;
-							$post_type_obj = get_post_type_object( $post->post_type );
-							if (
-								$post_type_obj
-								&& isset( $post_type_obj->labels->singular_name )
-								&& ! empty( $post_type_obj->labels->singular_name )
-							) {
-								$cta_button_label = "Edit {$post_type_obj->labels->singular_name}";
-							} else {
-								$cta_button_label = "Edit {$post->post_type}";
-							}
-						}
-					}
-				}
-
-				if ( '' === $cta_button_link ) {
-					$cta_button_link = $task_url;
-					$cta_button_label = 'View in Asana';
-					$cta_button_target = '_asana';
-				}
-			}
+			$task_action_link = self::get_task_action_link( $task_gid );
+			$cta_button_link = $task_action_link['href'];
+			$cta_button_label = $task_action_link['label'];
+			$cta_button_target = $task_action_link['target'];
 
 			ob_start();
 			?>
@@ -368,6 +336,57 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 			}
 
 			return '';
+		}
+
+		/**
+		 * Gets the task action link information.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param string $task_gid The Asana task GID.
+		 */
+		public static function get_task_action_link( string $task_gid ) : array {
+
+			$task_action_link = [
+				'href' => '',
+				'label' => '',
+				'target' => '_self',
+				'post_id' => 0,
+			];
+
+			// Get first pinned post, if applicable.
+			$post_id = Options::get_task_pin_post_id( $task_gid );
+			if ( $post_id > 0 ) {
+				$post = get_post( $post_id );
+				if ( isset( $post->post_type ) ) {
+					$edit_post_link = get_edit_post_link( $post, 'raw' );
+					if ( $edit_post_link ) {
+						$task_action_link['href'] = $edit_post_link;
+						$task_action_link['post_id'] = $post_id;
+						$post_type_obj = get_post_type_object( $post->post_type );
+						if (
+							$post_type_obj
+							&& isset( $post_type_obj->labels->singular_name )
+							&& ! empty( $post_type_obj->labels->singular_name )
+						) {
+							$task_action_link['label'] = "Edit {$post_type_obj->labels->singular_name}";
+						} else {
+							$task_action_link['label'] = "Edit {$post->post_type}";
+						}
+					}
+				}
+			}
+
+			// Use Asana task link if no pinned post.
+			if ( empty( $task_action_link['href'] ) || empty( $task_action_link['label'] ) ) {
+				$task_action_link = [
+					'href' => self::get_asana_task_url( $task_gid ),
+					'label' => 'View in Asana',
+					'target' => '_asana',
+				];
+			}
+
+			return $task_action_link;
 		}
 
 		/**

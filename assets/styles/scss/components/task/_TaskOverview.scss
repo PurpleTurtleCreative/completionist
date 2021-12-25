@@ -1,0 +1,86 @@
+@import '../../abstracts/colors';
+
+//----------------------
+
+.ptc-TaskOverview {
+	display: flex;
+	align-items: flex-end;
+	padding: 1.5em;
+	letter-spacing: 0.03em;
+	font-weight: 600;
+
+	.feature {
+		width: 30%;
+		color: color(brand-primary);
+		text-align: center;
+
+		.large {
+			font-size: 4em;
+			line-height: 1;
+			font-weight: 900;
+			margin: 0;
+
+			.small {
+				font-size: 0.6em;
+				font-weight: 600;
+				position: relative;
+				bottom: 0.2em;
+				left: 0.1em;
+			}
+		}
+
+		.caption {
+			font-size: 0.9em;
+			line-height: 1.3rem;
+			margin: 0;
+		}
+	}
+
+	.details {
+		flex: 1;
+		color: color(grey-dark);
+		padding: 0 3em;
+
+		.incomplete {
+			margin: 0;
+			line-height: 1;
+			font-size: 0.9em;
+
+			.count {
+				font-size: 2.5em;
+				font-weight: 900;
+				line-height: 1;
+				bottom: -1px;
+				position: relative;
+			}
+		}
+
+		.progress {
+			margin-top: 1em;
+
+			.progress-bar-wrapper {
+				flex: 1;
+				background: color(grey-lighter);
+				height: 10px;
+				border-radius: 999px;
+				margin-right: 0.3em;
+				overflow: hidden;
+
+				.progress-bar {
+					height: inherit;
+					background: color(brand-primary);
+				}
+			}
+
+			.caption {
+				font-size: 0.9em;
+				margin: 0.2em 0 0;
+				line-height: 1.3rem;
+
+				.completed {
+					color: color(brand-primary);
+				}
+			}
+		}
+	}
+}//end ptc-TaskOverview

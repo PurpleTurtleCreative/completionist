@@ -269,5 +269,22 @@ div.note-box {
 			color: #D64545;
 			border-color: #F29B9B;
 		}
+
+		.note-box-cta {
+			display: inline-block;
+			background: #E12D39;
+			color: #fff;
+			font-size: 1em;
+			padding: 0.5em 1em;
+			text-decoration: none;
+			margin: 0.7em 0 0;
+			border-radius: 999px;
+
+			i {
+				display: inline-block;
+				padding: 0;
+				margin-left: 0.5em;
+			}
+		}
 	}
 }//end .note-box

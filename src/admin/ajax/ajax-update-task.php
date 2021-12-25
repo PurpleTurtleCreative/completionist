@@ -24,7 +24,7 @@ try {
   if (
     isset( $_POST['task_gid'] )
     && isset( $_POST['nonce'] )
-    && wp_verify_nonce( $_POST['nonce'], 'ptc_completionist_update_task' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+    && wp_verify_nonce( $_POST['nonce'], 'ptc_completionist' ) !== FALSE//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     && Asana_Interface::has_connected_asana()
   ) {
 
@@ -92,6 +92,8 @@ try {
     if ( ! isset( $task->gid ) ) {
       throw new Exception( 'Unrecognized API response to task update request.', 409 );
     }
+
+    // @TODO - Update the cache.
 
     $res['status'] = 'success';
     $res['code'] = 200;

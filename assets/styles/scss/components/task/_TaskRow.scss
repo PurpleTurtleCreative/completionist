@@ -1,0 +1,109 @@
+@import '../../abstracts/colors';
+@import '../../abstracts/elements';
+
+@import 'TaskActions';
+
+//----------------------
+
+.ptc-TaskRow {
+	display: flex;
+	align-items: flex-start;
+	padding: 1em 0.7em;
+	border-bottom: 1px solid color(grey-light);
+
+	p {
+		margin: 0;
+	}
+
+	button.mark-complete {
+		@include btn-circle-icon(2em);
+	}
+
+	.body {
+		flex: 1;
+		padding: 0 0.5em;
+		color: color(grey-darker);
+
+		.name {
+			font-weight: 900;
+			font-size: 1.3em;
+			line-height: 1.3;
+			margin-top: 0.2em;
+
+			i.fa-sticky-note {
+				color: color(warning);
+				margin-left: 0.3em;
+			}
+		}
+
+		.details {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			flex-wrap: wrap;
+			margin: 0.3em 0;
+
+			.assignee {
+				margin-right: 0.7em;
+			}
+		}
+
+		.description {
+			white-space: pre-wrap;
+			margin-top: 0.7em;
+			color: color(grey-darker);
+		}
+	}
+
+	.actions {
+		text-align: center;
+
+		a.cta-button {
+			@include btn-pill-outline;
+			margin: 0.2em;
+
+			i.fas {
+				position: relative;
+				bottom: -1px;
+			}
+		}
+
+		.ptc-TaskActions {
+			visibility: hidden;
+			margin-top: 0.3em;
+		}
+	}
+
+	// Special State Overrides
+
+	&:hover {
+		.ptc-TaskActions {
+			visibility: visible;
+		}
+	}
+
+	&.--is-critical {
+		.due {
+			color: color(danger);
+		}
+	}
+
+	&.--is-processing {
+		background: color(grey-lightest);
+	}
+
+	&.--has-description {
+		.body {
+			.name {
+				cursor: help;
+
+				&:hover {
+					text-decoration: underline;
+					text-decoration-style: dotted;
+					text-decoration-color: color(grey-dark);
+					text-underline-offset: 2px;
+				}
+			}
+		}
+	}
+}//end .ptc-TaskRow

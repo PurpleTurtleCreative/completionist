@@ -1,0 +1,76 @@
+@import '../../abstracts/colors';
+@import '../../abstracts/elements';
+
+@import 'TaskRow';
+
+//----------------------
+
+.ptc-TaskListPaginated {
+	position: relative;
+
+	.ptc-TaskRow {
+
+		&:last-of-type {
+			border-bottom: none;
+		}
+	}
+
+	nav.pagination {
+		padding: 0.6em 3em;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: color(grey-lightest);
+		border-top: 1px solid color(grey-light);
+		flex-wrap: wrap;
+
+		button {
+			cursor: pointer;
+			font-size: 1em;
+			color: color(grey);
+			border-radius: 0;
+			border: none;
+			border-top: 1px solid color(grey-light);
+			border-bottom: 1px solid color(grey-light);
+			line-height: 1;
+			padding: 0.5em 0.7em;
+			background: color(white);
+
+			&:hover {
+				background: color(grey-lightest);
+				color: color(grey-dark);
+			}
+
+			&[disabled] {
+				cursor: not-allowed;
+				background: color(grey-lighter);
+				color: color(grey-darker);
+			}
+
+			&.prev,
+			&.next {
+				border: 1px solid color(grey-light);
+			}
+
+			&.prev {
+				border-radius: 999px 0 0 999px;
+			}
+
+			&.next {
+				border-radius: 0 999px 999px 0;
+			}
+		}
+	}
+
+	a.view-tag {
+		display: inline-block;
+		position: absolute;
+		bottom: 0.3em;
+		right: 0.3em;
+
+		button {
+			margin: 0.3em;
+			@include btn-circle-icon(2em, grey);
+		}
+	}
+}//end .ptc-TaskListPaginated

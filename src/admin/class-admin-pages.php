@@ -128,26 +128,40 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 			switch ( $hook_suffix ) {
 
 				case 'index.php':
+					$asset_file = require_once( PLUGIN_PATH . 'build/index.asset.php' );
 					wp_enqueue_script(
-						'ptc-completionist_dashboard-widget-js',
-						PLUGIN_URL . '/assets/scripts/dashboard-widget.js',
-						[ 'jquery', 'fontawesome-5' ],
+						'ptc-completionist_build-index-js',
+						PLUGIN_URL . '/build/index.js',
+						$asset_file['dependencies'],
 						PLUGIN_VERSION
 					);
-					wp_localize_script(
-						'ptc-completionist_dashboard-widget-js',
-						'ptc_completionist_dashboard_widget',
-						[
-							'nonce_pin' => wp_create_nonce( 'ptc_completionist_pin_task' ),
-							'nonce_list' => wp_create_nonce( 'ptc_completionist_list_task' ),
-							'nonce_create' => wp_create_nonce( 'ptc_completionist_create_task' ),
-							'nonce_delete' => wp_create_nonce( 'ptc_completionist_delete_task' ),
-							'nonce_update' => wp_create_nonce( 'ptc_completionist_update_task' ),
-							'page_size' => 10,
-							'current_category' => 'all-site-tasks',
-							'current_page' => 1,
-						]
+					try {
+						require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
+						$js_data = [
+							'api' => [
+								'nonce' => wp_create_nonce( 'ptc_completionist' ),
+								'url' => get_rest_url(),
+							],
+							'tasks' => Asana_Interface::maybe_get_all_site_tasks(),
+							'users' => Asana_Interface::get_connected_workspace_users(),
+							'me' => Asana_Interface::get_me(),
+							'tag_url' => HTML_Builder::get_asana_tag_url(),
+						];
+					} catch ( \Exception $err ) {
+						$js_data = [
+							'error' => [
+								'code' => $err->getCode(),
+								'message' => $err->getMessage(),
+							],
+						];
+					}
+					$js_data = json_encode( $js_data );
+					wp_add_inline_script(
+						'ptc-completionist_build-index-js',
+						"var PTCCompletionist = {$js_data};",
+						'before'
 					);
+					wp_enqueue_script( 'fontawesome-5' );
 					wp_enqueue_style(
 						'ptc-completionist_dashboard-widget-css',
 						PLUGIN_URL . '/assets/styles/dashboard-widget.css',
@@ -171,11 +185,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 						[
 							'post_id' => get_the_ID(),
 							'pinned_task_gids' => Options::get( Options::PINNED_TASK_GID, get_the_ID() ),
-							'nonce_pin' => wp_create_nonce( 'ptc_completionist_pin_task' ),
+							'nonce_pin' => wp_create_nonce( 'ptc_completionist' ),
 							'nonce_list' => wp_create_nonce( 'ptc_completionist_list_task' ),
 							'nonce_create' => wp_create_nonce( 'ptc_completionist_create_task' ),
-							'nonce_delete' => wp_create_nonce( 'ptc_completionist_delete_task' ),
-							'nonce_update' => wp_create_nonce( 'ptc_completionist_update_task' ),
+							'nonce_delete' => wp_create_nonce( 'ptc_completionist' ),
+							'nonce_update' => wp_create_nonce( 'ptc_completionist' ),
 						]
 					);
 					wp_enqueue_style(
