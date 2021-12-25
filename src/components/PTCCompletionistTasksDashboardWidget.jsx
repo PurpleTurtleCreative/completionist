@@ -16,7 +16,7 @@ export default function PTCCompletionistTasksDashboardWidget() {
 		<div className="ptc-PTCCompletionistTasksDashboardWidget">
 			<TaskOverview tasks={tasks} />
 			<TaskFilters tasks={tasks} onChange={(_key, selectedTasks) => setVisibleTasks(selectedTasks)} />
-			<TaskListPaginated limit={3} tasks={visibleTasks} />
+			<TaskListPaginated limit={5} tasks={visibleTasks} />
 		</div>
 	);
 }
