@@ -1,5 +1,6 @@
 import PTCCompletionist_Automations from './components/PTCCompletionist_Automations.js';
 import PTCCompletionistTasksDashboardWidget from './components/PTCCompletionistTasksDashboardWidget.jsx';
+import NoteBox from './components/notice/NoteBox.jsx';
 
 import { TaskContextProvider } from './components/task/TaskContext.jsx';
 
@@ -19,10 +20,16 @@ jQuery(function($) {
 document.addEventListener('DOMContentLoaded', () => {
 	const rootNode = document.getElementById('ptc-PTCCompletionistTasksDashboardWidget');
 	if ( null !== rootNode ) {
-		render(
-			<TaskContextProvider>
-				<PTCCompletionistTasksDashboardWidget />
-			</TaskContextProvider>
-		, rootNode);
+		if ( 'error' in window.PTCCompletionist ) {
+			render(
+				<NoteBox type="error" message={window.PTCCompletionist.error.message} code={window.PTCCompletionist.error.code} />
+			, rootNode);
+		} else {
+			render(
+				<TaskContextProvider>
+					<PTCCompletionistTasksDashboardWidget />
+				</TaskContextProvider>
+			, rootNode);
+		}
 	}
 });
