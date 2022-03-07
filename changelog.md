@@ -7,6 +7,7 @@
 #### Fixed
 
 - Task descriptions with long words (such as link URLs) causing layout breaks in the Tasks dashboard widget.
+- Completed tasks showing in Tasks dashboard widget on initial load.
 
 ### 3.1.0 - 2021-12-25
 
