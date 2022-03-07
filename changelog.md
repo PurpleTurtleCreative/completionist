@@ -4,6 +4,10 @@
 
 - Separated ReactJS build entrypoints to ensure only necessary scripts are enqueued for the Tasks dashboard widget and Automations screen.
 
+#### Fixed
+
+- Task descriptions with long words (such as link URLs) causing layout breaks in the Tasks dashboard widget.
+
 ### 3.1.0 - 2021-12-25
 
 #### Deprecated
