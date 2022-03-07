@@ -128,10 +128,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 			switch ( $hook_suffix ) {
 
 				case 'index.php':
-					$asset_file = require_once( PLUGIN_PATH . 'build/index.asset.php' );
+					$asset_file = require_once( PLUGIN_PATH . 'build/index_DashboardWidget.jsx.asset.php' );
 					wp_enqueue_script(
-						'ptc-completionist_build-index-js',
-						PLUGIN_URL . '/build/index.js',
+						'ptc-completionist_DashboardWidget',
+						PLUGIN_URL . '/build/index_DashboardWidget.jsx.js',
 						$asset_file['dependencies'],
 						PLUGIN_VERSION
 					);
@@ -157,7 +157,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					}
 					$js_data = json_encode( $js_data );
 					wp_add_inline_script(
-						'ptc-completionist_build-index-js',
+						'ptc-completionist_DashboardWidget',
 						"var PTCCompletionist = {$js_data};",
 						'before'
 					);
@@ -240,10 +240,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 						$has_required_settings = false;
 					}
 					if ( $has_required_settings && Asana_Interface::has_connected_asana() ) {
-						$asset_file = require_once( PLUGIN_PATH . 'build/index.asset.php' );
+						$asset_file = require_once( PLUGIN_PATH . 'build/index_Automations.jsx.asset.php' );
 						wp_enqueue_script(
-							'ptc-completionist_build-index-js',
-							PLUGIN_URL . '/build/index.js',
+							'ptc-completionist_Automations',
+							PLUGIN_URL . '/build/index_Automations.jsx.js',
 							$asset_file['dependencies'],
 							PLUGIN_VERSION
 						);
@@ -252,7 +252,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 						require_once PLUGIN_PATH . 'src/includes/automations/class-actions.php';
 						require_once PLUGIN_PATH . 'src/includes/automations/class-data.php';
 						wp_localize_script(
-							'ptc-completionist_build-index-js',
+							'ptc-completionist_Automations',
 							'ptc_completionist_automations',
 							[
 								'automations' => Automations\Data::get_automation_overviews( null, true ),

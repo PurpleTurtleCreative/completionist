@@ -3,7 +3,7 @@ import { AutomationDetailsForm } from './AutomationDetailsForm.js';
 
 const { Component } = wp.element;
 
-export default class PTCCompletionist_Automations extends Component {
+export default class PTCCompletionistAutomations extends Component {
 
   constructor(props) {
 

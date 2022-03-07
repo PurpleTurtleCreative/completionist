@@ -1,3 +1,9 @@
+### [Unreleased] - 2022-03-06
+
+#### Changed
+
+- Separated ReactJS build entrypoints to ensure only necessary scripts are enqueued for the Tasks dashboard widget and Automations screen.
+
 ### 3.1.0 - 2021-12-25
 
 #### Deprecated

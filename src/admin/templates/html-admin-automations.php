@@ -20,7 +20,9 @@ try {
 
 	if ( Asana_Interface::has_connected_asana() ) {
 		?>
-		<div id="ptc-completionist-automations-root"></div>
+		<div id="ptc-PTCCompletionistAutomations">
+			<p class="ptc-loading"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>Loading...</p>
+		</div>
 		<?php
 	} else {
 		throw new \Exception( 'Not Authorized. Please connect your Asana account to use Completionist.', 401 );
