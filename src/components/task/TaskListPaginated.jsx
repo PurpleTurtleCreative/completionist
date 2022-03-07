@@ -30,12 +30,15 @@ export default function TaskListPaginated({limit, tasks}) {
 		);
 	}
 
+	console.log('totalPages', totalPages);
+
 	return (
 		<div className="ptc-TaskListPaginated">
 
 			<TaskList tasks={currentTasks} />
 
 			<nav className="pagination">
+			{ totalPages > 1 && <>
 
 				<button className="prev" type="button" title="Previous Page" disabled={1 === currentPage} onClick={() => goToPage(currentPage - 1)}>
 					<i className="fas fa-angle-left"></i>
@@ -47,6 +50,7 @@ export default function TaskListPaginated({limit, tasks}) {
 					<i className="fas fa-angle-right"></i>
 				</button>
 
+			</>}
 			</nav>
 
 			<a href={window.PTCCompletionist.tag_url} target="_asana" className="view-tag">

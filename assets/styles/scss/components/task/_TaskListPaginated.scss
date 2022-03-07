@@ -8,6 +8,19 @@
 .ptc-TaskListPaginated {
 	position: relative;
 
+	.ptc-no-results {
+		padding: 2em 1em;
+		color: #829ab1;
+		text-align: center;
+		margin: 0;
+		font-size: 1.15em;
+
+		i {
+			font-size: 1.15em;
+			margin-right: 0.5em;
+		}
+	}
+
 	.ptc-TaskRow {
 
 		&:last-of-type {
@@ -23,6 +36,7 @@
 		background: color(grey-lightest);
 		border-top: 1px solid color(grey-light);
 		flex-wrap: wrap;
+		min-height: 2.3em;
 
 		button {
 			cursor: pointer;

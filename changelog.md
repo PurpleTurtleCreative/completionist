@@ -3,6 +3,8 @@
 #### Changed
 
 - Separated ReactJS build entrypoints to ensure only necessary scripts are enqueued for the Tasks dashboard widget and Automations screen.
+- Display a message when there are no tasks to display for the selected filter in the Tasks dashboard widget.
+- Hide the pagination navigation when there is only 1 page of tasks in the Tasks dashboard widget.
 
 #### Fixed
 
