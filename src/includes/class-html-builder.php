@@ -195,14 +195,17 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		/**
 		 * Builds HTML for an error note box.
 		 *
+		 * @since 3.1.1 Added optional parameter $show_dismiss_button.
 		 * @since 1.0.0
 		 *
 		 * @param \Exception $e The exception object data to output.
 		 * @param string $context_message Optional. Text to output before the
 		 * exception's message. Default ''.
+		 * @param bool $show_dismiss_button Optional. If a dismiss button for the
+		 * note box should be displayed. Default true.
 		 * @return string The HTML. Default ''.
 		 */
-		public static function format_error_box( \Exception $e, string $context_message = '' ) : string {
+		public static function format_error_box( \Exception $e, string $context_message = '', bool $show_dismiss_button = true ) : string {
 
 			$code = $e->getCode();
 			if (
@@ -221,9 +224,11 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 					<br>
 					<?php echo Options::sanitize( 'html', $context_message . $e->getMessage() ); ?>
 				</p>
+				<?php if ( true === $show_dismiss_button ) : ?>
 				<div class="note-box-dismiss">
 					<i class="fas fa-times"></i>
 				</div>
+				<?php endif; ?>
 			</div>
 			<?php
 			$html = ob_get_clean();

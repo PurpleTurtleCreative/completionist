@@ -45,5 +45,5 @@ try {
 	<?php
 } catch ( \Exception $e ) {
 	require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
-	echo HTML_Builder::format_error_box( $e, 'Feature unavailable. ' );
+	echo HTML_Builder::format_error_box( $e, 'Feature unavailable. ', false );
 }//end try catch asana client
