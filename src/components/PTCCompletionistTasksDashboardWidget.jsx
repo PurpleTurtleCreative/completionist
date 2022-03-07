@@ -11,9 +11,6 @@ export default function PTCCompletionistTasksDashboardWidget() {
 	const { tasks } = useContext(TaskContext);
 	const [visibleTasks, setVisibleTasks] = useState(filterIncompleteTasks(tasks));
 
-	// When tasks change from being deleted, completed, or otherwise.
-	useEffect(() => setVisibleTasks(filterIncompleteTasks(tasks)), [tasks, setVisibleTasks]);
-
 	const handleFilterChange = useCallback((_key, selectedTasks) => setVisibleTasks(selectedTasks), []);
 
 	return (
