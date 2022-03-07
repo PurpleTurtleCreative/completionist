@@ -1,12 +1,13 @@
 import TaskActions from './TaskActions.jsx';
 
 import { TaskContext } from './TaskContext.jsx';
+import { isCriticalTask } from './util';
 
 const { useState, useCallback, useContext } = wp.element;
 
 export default function TaskRow({task}) {
 	const [showDescription, setShowDescription] = useState(false);
-	const { isCriticalTask, completeTask, setTaskProcessingStatus } = useContext(TaskContext);
+	const { completeTask, setTaskProcessingStatus } = useContext(TaskContext);
 
 	const handleMarkComplete = useCallback((taskGID) => {
 		if ( task.processingStatus ) {

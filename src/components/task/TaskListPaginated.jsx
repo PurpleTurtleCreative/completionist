@@ -1,6 +1,6 @@
 import TaskList from './TaskList.jsx';
 
-const { useState, useCallback, useMemo, useContext, useEffect } = wp.element;
+const { useState, useCallback, useMemo, useEffect } = wp.element;
 
 export default function TaskListPaginated({limit, tasks}) {
 	const [currentPage, setCurrentPage] = useState(1);

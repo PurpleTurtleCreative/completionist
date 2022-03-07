@@ -1,9 +1,10 @@
 import { TaskContext } from './TaskContext.jsx';
+import { filterIncompleteTasks } from './util';
 
 const { useContext, useMemo } = wp.element;
 
 export default function TaskOverview() {
-	const { tasks, filterIncompleteTasks } = useContext(TaskContext);
+	const { tasks } = useContext(TaskContext);
 
 	const incompleteTasks = useMemo(() => filterIncompleteTasks(tasks), [tasks]);
 

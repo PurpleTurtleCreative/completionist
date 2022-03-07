@@ -1,9 +1,10 @@
 import { TaskContext } from './TaskContext.jsx';
+import { getTaskUrl } from './util';
 
 const { useCallback, useContext } = wp.element;
 
 export default function TaskActions({taskGID, processingStatus}) {
-	const { getTaskUrl, deleteTask, unpinTask, removeTask, setTaskProcessingStatus } = useContext(TaskContext);
+	const { deleteTask, unpinTask, removeTask, setTaskProcessingStatus } = useContext(TaskContext);
 
 	const handleUnpinTask = useCallback((taskGID) => {
 		if ( processingStatus ) {

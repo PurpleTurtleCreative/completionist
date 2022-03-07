@@ -1,15 +1,19 @@
 import { TaskContext } from './TaskContext.jsx';
+import {
+	filterIncompleteTasks,
+	filterPinnedTasks,
+	filterGeneralTasks,
+	filterMyTasks,
+	filterCriticalTasks
+} from './util';
 
-const { useState, useCallback, useMemo, useContext, useEffect } = wp.element;
+const { useState, useCallback, useMemo, useEffect } = wp.element;
 
 export default function TaskFilters({tasks, onChange}) {
 	const [activeFilter, setActiveFilter] = useState('none');
-	const { filterIncompleteTasks, filterCriticalTasks, filterMyTasks, filterGeneralTasks, filterPinnedTasks } = useContext(TaskContext);
 
 	const filters = useMemo(() => {
-
 		const incompleteTasks = filterIncompleteTasks(tasks);
-
 		return [
 			{
 				"key": 'none',
@@ -46,8 +50,7 @@ export default function TaskFilters({tasks, onChange}) {
 
 	const handleClickFilter = useCallback((key, filteredTasks) => {
 		setActiveFilter(key);
-		onChange(key, filteredTasks);
-	}, [activeFilter, setActiveFilter, onChange]);
+	}, [setActiveFilter]);
 
 	const renderedFilterButtons = filters.map(f => {
 		let className = `filter-${f.key}`;
