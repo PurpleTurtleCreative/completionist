@@ -13,3 +13,5 @@ completionist/package-lock.json
 completionist/package.json
 completionist/assets/styles/scss/*
 completionist/src/components/*
+completionist/src/*.js
+completionist/src/*.jsx
