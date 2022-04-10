@@ -3,7 +3,7 @@
  * Completionist
  *
  * @author            Michelle Blanchette
- * @copyright         2021 Michelle Blanchette
+ * @copyright         2022 Purple Turtle Creative, LLC
  * @license           GPL-3.0-or-later
  *
  * @wordpress-plugin
@@ -13,7 +13,7 @@
  * Version:           3.1.1
  * Requires PHP:      7.1
  * Requires at least: 5.0.0
- * Tested up to:      5.8.1
+ * Tested up to:      5.9.3
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
  * License:           GPL v3 or later
