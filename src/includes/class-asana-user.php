@@ -252,7 +252,7 @@ class Asana_User {
 			if ( ! empty( $workspace_gid ) ) {
 				$params['workspace'] = $workspace_gid;
 			} else {
-				throw new \Exception( 'Please set a Workspace in Completionist\'s settings before creating a task.', 400 );
+				throw new \Exception( 'Please set an Asana workspace in Completionist\'s settings before creating a task.', 400 );
 			}
 		}
 
