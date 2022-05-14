@@ -172,7 +172,7 @@ class Asana_Cache_Manager {
 		return self::get_transient_names_like( self::TRANSIENT_PREFIX . '%' );
 	}
 
-	// .. Modifiers .. //
+	// .. Setters .. //
 
 	/**
 	 * Caches an Asana task object.
@@ -194,7 +194,7 @@ class Asana_Cache_Manager {
 	 *
 	 * @since [UNRELEASED]
 	 *
-	 * @param string[] $task_gids The tasks visible to the user.
+	 * @param string[] $task_gids The task GIDs visible to the user.
 	 * @param int      $user_id The WordPress user's ID.
 	 */
 	public static function save_visible_tasks_for_user( array $task_gids, int $user_id ) {
@@ -203,6 +203,32 @@ class Asana_Cache_Manager {
 			$task_gids,
 			self::get_task_expiration_seconds()
 		);
+	}
+
+	// .. Getters .. //
+
+	/**
+	 * Attempts to retrieve a cached Asana task object.
+	 *
+	 * @since [UNRELEASED]
+	 *
+	 * @param \stdClass $task The task object.
+	 * @return \stdClass|bool The task or false if the cache is invalid.
+	 */
+	public static function get_task( string $task_gid ) : \stdClass|bool {
+		return \get_transient( self::get_task_key( $task_gid ) );
+	}
+
+	/**
+	 * Attempts to retrieve a user's cached visible Asana task GIDs.
+	 *
+	 * @since [UNRELEASED]
+	 *
+	 * @param int $user_id The WordPress user's ID.
+	 * @return string[]|bool The task GIDs or false if the cache is invalid.
+	 */
+	public static function get_visible_tasks_for_user( int $user_id ) : array|bool {
+		return \get_transient( self::get_user_task_visibility_key( $user_id ) );
 	}
 
 	// .. Purging .. //
@@ -227,9 +253,7 @@ class Asana_Cache_Manager {
 	 * @param string $task_gid The task's GID.
 	 */
 	public static function purge_task( string $task_gid ) {
-		\delete_transient(
-			self::get_task_key( $task_gid )
-		);
+		\delete_transient( self::get_task_key( $task_gid ) );
 	}
 
 	/**
@@ -240,9 +264,7 @@ class Asana_Cache_Manager {
 	 * @param int $user_id The WordPress user's ID.
 	 */
 	public static function purge_visible_tasks_for_user( int $user_id ) {
-		\delete_transient(
-			self::get_user_task_visibility_key( $user_id )
-		);
+		\delete_transient( self::get_user_task_visibility_key( $user_id ) );
 	}
 
 	/**
