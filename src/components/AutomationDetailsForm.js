@@ -260,13 +260,13 @@ class AutomationInfoInputs extends Component {
   render() {
     return (
       <div className="automation-info">
-        <div className='form-group'>
-          <label for='automation-title'>Title</label>
-          <input id='automation-title' type="text" value={this.props.title} onChange={(e) => this.props.changeTitle(e.target.value)} />
+        <div className="form-group">
+          <label for="automation-title">Title</label>
+          <input id="automation-title" type="text" value={this.props.title} onChange={(e) => this.props.changeTitle(e.target.value)} />
         </div>
-        <div className='form-group'>
-          <label for='automation-description'>Description</label>
-          <textarea id='automation-description' value={this.props.description} onChange={(e) => this.props.changeDescription(e.target.value)} />
+        <div className="form-group">
+          <label for="automation-description">Description</label>
+          <textarea id="automation-description" value={this.props.description} onChange={(e) => this.props.changeDescription(e.target.value)} />
         </div>
       </div>
     );
@@ -278,21 +278,73 @@ class AutomationEventInput extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      selected_hook_name: this.getHookOptionValueFromName(this.props.hook_name),
+      custom_hook_name: this.getCustomHookNameFromValue(this.props.hook_name)
+    }
+  }
+
+  isCustomHookName( hook_name ) {
+    return ( true === Object.keys(window.ptc_completionist_automations.event_custom_options).some(option => hook_name.startsWith(option)));
+  }
+
+  getCustomHookNameFromValue( option ) {
+    if ( true === this.isCustomHookName( option ) ) {
+      return option.replace( this.getHookOptionValueFromName( option ), '' );
+    }
+    return '';
+  }
+
+  getHookOptionValueFromName( hook_name ) {
+    let actualHookName = Object.keys(window.ptc_completionist_automations.event_custom_options).find(option => hook_name.startsWith(option));
+    return actualHookName ?? hook_name;
   }
 
   createSelectOptions( optionsObj ) {
-    return Object.keys( optionsObj ).map((key) => (
+    return Object.keys(optionsObj).map((key) => (
       <option value={key} key={key}>{optionsObj[key]}</option>
     ));
   }//end createSelectOptions()
 
+  handleCustomHookNameChange( value ) {
+    this.setState({ custom_hook_name: value }, () => {
+      if ( true === this.isCustomHookName(this.state.selected_hook_name) ) {
+        this.props.changeEvent(this.state.selected_hook_name + this.state.custom_hook_name);
+      } else {
+        this.props.changeEvent(this.state.selected_hook_name);
+      }
+    });
+  }
+
+  handleEventChange( value ) {
+    if ( this.isCustomHookName(value) ) {
+      this.setState({
+        selected_hook_name: value,
+        custom_hook_name: ''
+      });
+    } else {
+      this.setState(
+        { selected_hook_name: value },
+        () => this.props.changeEvent(this.state.selected_hook_name)
+      );
+    }
+  }
+
   render() {
-    const userEventOptions = this.createSelectOptions( window.ptc_completionist_automations.event_user_options );
-    const postEventOptions = this.createSelectOptions( window.ptc_completionist_automations.event_post_options );
+
+    const userEventOptions = this.createSelectOptions(window.ptc_completionist_automations.event_user_options);
+    const postEventOptions = this.createSelectOptions(window.ptc_completionist_automations.event_post_options);
+    const customEventOptions = this.createSelectOptions(window.ptc_completionist_automations.event_custom_options);
+
+    let customHookNameInput = null;
+    if ( true === this.isCustomHookName(this.state.selected_hook_name) ) {
+      customHookNameInput = <input type="text" value={this.state.custom_hook_name} placeholder="Enter custom hook name..." onChange={e => this.handleCustomHookNameChange(e.target.value)} />;
+    }
+
     return (
       <div className="automation-event">
         <h2><span className="automation-step-number">1</span> Trigger Event</h2>
-        <select value={this.props.hook_name} onChange={(e) => this.props.changeEvent(e.target.value)}>
+        <select value={this.getHookOptionValueFromName(this.state.selected_hook_name)} onChange={(e) => this.handleEventChange(e.target.value)}>
           <option value="">(Choose Event)</option>
           <optgroup label="User Events">
             {userEventOptions}
@@ -300,11 +352,14 @@ class AutomationEventInput extends Component {
           <optgroup label="Post Events">
             {postEventOptions}
           </optgroup>
+          <optgroup label="Custom Events">
+            {customEventOptions}
+          </optgroup>
         </select>
+        {customHookNameInput}
       </div>
     );
   }
-
 }//end class AutomationEventInput
 
 class AutomationConditionsInputs extends Component {

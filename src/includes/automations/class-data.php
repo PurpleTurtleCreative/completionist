@@ -1108,20 +1108,28 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 		/**
 		 * Selects all automation IDs for a given hook.
 		 *
+		 * @since [UNRELEASED] $hook_name now supports the "%" wildcard character.
 		 * @since 1.1.0
 		 *
-		 * @param string $hook_name The hook name.
+		 * @param string $hook_name The hook name. Supports the "%" wildcard
+		 * character.
 		 * @return int[] The IDs.
 		 */
 		public static function get_all_automation_ids_for( string $hook_name ) : array {
+
+			// Ensure quotes and other characters are properly escaped.
+			$hook_name_like = esc_sql( $hook_name );
+			// Ensure underscores and dashes are taken literally.
+			$hook_name_like = str_replace( '_', '\_', $hook_name_like );
+			$hook_name_like = str_replace( '-', '\-', $hook_name_like );
 
 			global $wpdb;
 			$table = Database_Manager::$automations_table;
 			$res = $wpdb->get_col(
 				$wpdb->prepare(
 					"SELECT DISTINCT ID FROM $table
-						WHERE hook_name = %s",
-					$hook_name
+						WHERE hook_name LIKE %s ESCAPE '\\\\'",
+					$hook_name_like
 				)
 			);
 
@@ -1230,9 +1238,19 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 		 * @return bool If the hook name is valid.
 		 */
 		public static function validate_automation_hook_name( string $hook_name ) : bool {
+
+			$is_custom_hook = false;
+			foreach ( Events::CUSTOM_OPTIONS as $key => $option_label ) {
+				if ( 0 === strpos( $hook_name, $key ) ) {
+					$is_custom_hook = true;
+					break;
+				}
+			}
+
 			return (
 				in_array( $hook_name, array_keys( Events::USER_OPTIONS ) )
 				|| in_array( $hook_name, array_keys( Events::POST_OPTIONS ) )
+				|| true === $is_custom_hook
 			);
 		}
 
