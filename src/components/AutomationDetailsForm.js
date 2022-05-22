@@ -160,7 +160,7 @@ export class AutomationDetailsForm extends Component {
       "conditions": [
         ...state.conditions,
         {
-          "ID": 0,
+          "ID": -Date.now(),
           "property": '',
           "comparison_method": window.ptc_completionist_automations.field_comparison_methods[0],
           "value": ''
@@ -208,7 +208,7 @@ export class AutomationDetailsForm extends Component {
       "actions": [
         ...state.actions,
         {
-          "ID": 0,
+          "ID": -Date.now(),
           "action": 'create_task',
           "triggered_count": 0,
           "last_triggered": '',
@@ -395,16 +395,16 @@ class AutomationConditionsInputs extends Component {
       this.conditionFieldsets = this.props.conditions.map((condition, index) => {
         let valueInput = null;
         if ( condition.comparison_method !== 'is empty' && condition.comparison_method !== 'is filled' ) {
-          valueInput = <input type="text" value={condition.value} key={index} onChange={(e) => this.props.changeCondition(index, 'value', e.target.value)} placeholder="value" />;
+          valueInput = <input type="text" value={condition.value} onChange={(e) => this.props.changeCondition(index, 'value', e.target.value)} placeholder="value" />;
         }
         return (
-          <fieldset className="automation-condition" key={index}>
+          <fieldset className="automation-condition" key={condition.ID}>
             <legend>Condition</legend>
             <div className='form-group'>
-              <select value={condition.property} key={index} onChange={(e) => this.props.changeCondition(index, 'property', e.target.value)}>
+              <select value={condition.property} onChange={(e) => this.props.changeCondition(index, 'property', e.target.value)}>
                 {this.propertyOptions}
               </select>
-              <select value={condition.comparison_method} key={index} onChange={(e) => this.props.changeCondition(index, 'comparison_method', e.target.value)}>
+              <select value={condition.comparison_method} onChange={(e) => this.props.changeCondition(index, 'comparison_method', e.target.value)}>
                 {this.comparisonMethodOptions}
               </select>
               {valueInput}
@@ -530,10 +530,10 @@ class AutomationActionsInputs extends Component {
   loadActionFieldsets() {
     let actionOptions = createSelectOptions( window.ptc_completionist_automations.action_options );
     this.actionFieldsets = this.props.actions.map((action, index) => (
-      <fieldset className="automation-action" key={index}>
+      <fieldset className="automation-action" key={action.ID}>
         <legend>Action</legend>
         <div className='form-group'>
-          <select value={action.action} onChange={(e) => this.props.changeAction(index, e.target.value)} key={index}>
+          <select value={action.action} onChange={(e) => this.props.changeAction(index, e.target.value)}>
             {actionOptions}
           </select>
           <div>

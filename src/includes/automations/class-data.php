@@ -180,7 +180,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 
 				if ( isset( $automation->conditions ) && is_array( $automation->conditions ) ) {
 					foreach ( $automation->conditions as $i => $condition ) {
-						if ( 0 == $condition->ID ) {
+						if ( $condition->ID <= 0 ) {
 							if (
 								self::add_condition(
 									$automation->ID,

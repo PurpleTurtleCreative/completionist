@@ -513,9 +513,9 @@
         font-size: 1.5em;
         border-radius: px(md);
         border: 2px solid color(brand-primary);
-        margin: 0 auto;
+        margin: em(md) auto;
         display: block;
-        width: 33%;
+        min-width: 33%;
         letter-spacing: em(sm)/5;
 
         &:hover {
