@@ -1108,7 +1108,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 		/**
 		 * Selects all automation IDs for a given hook.
 		 *
-		 * @since [UNRELEASED] $hook_name now supports the "%" wildcard character.
+		 * @since 3.2.0 $hook_name now supports the "%" wildcard character.
 		 * @since 1.1.0
 		 *
 		 * @param string $hook_name The hook name. Supports the "%" wildcard
