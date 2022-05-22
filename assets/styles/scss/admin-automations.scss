@@ -21,7 +21,7 @@
     padding: 0;
 
     strong {
-      font-weight: 800;
+      font-weight: bolder;
       font-size: 1.3em;
     }
 
@@ -239,12 +239,13 @@
         background: color(white);
         border-radius: px(md);
         border: 2px solid color(grey-light);
-        padding: em(lg) em(lg) em(lg)+em(sm);
+        padding: em(lg);
         margin: px(md) 0;
 
-        > h2 {
+        h2 {
           font-size: 1.5em;
-          margin: 0 0 px(lg);
+          margin: 0;
+          white-space: nowrap;
 
           > span.automation-step-number {
             background: color(brand-primary);
@@ -257,6 +258,41 @@
             text-align: center;
             vertical-align: baseline;
             margin-right: em(sm);
+          }
+
+          + p.ptc-message {
+            margin: 0;
+            text-align: right;
+          }
+        }
+
+        p.ptc-message {
+          text-align: center;
+          font-size: 1em;
+          margin: 0.5em 0 1.5em;
+
+          strong {
+            display: block;
+            font-size: 1.3em;
+            font-weight: bolder;
+            font-style: normal;
+          }
+        }
+
+        .section-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          margin-bottom: px(md);
+
+          p.ptc-message {
+            flex: 1;
+            font-style: italic;
+          }
+
+          + button.add-item {
+            margin-top: -#{px(md)};
           }
         }
 
@@ -276,11 +312,12 @@
 
         button.add-item {
           @extend %button-sm-brand-primary;
+          display: block;
           color: color(white);
           text-shadow: 1px 1px 3px #{color(brand-primary-dark)}99;
           border: 1px solid color(brand-primary);
           padding: em(md) - .25em em(lg) em(md) - .15em;
-          margin: em(md) 0 0;
+          margin: 0 auto;
           letter-spacing: .03em;
           font-size: .95em;
 
@@ -293,13 +330,17 @@
           border: 1px solid color(grey-light);
           border-radius: px(md);
           padding: padding(full);
-          margin: px(md) 0;
+          margin: px(sm) 0;
           background: color(grey-lightest);
 
           legend {
             font-weight: 600;
             color: color(grey);
             padding: 0 px(md);
+          }
+
+          + button.add-item {
+            margin-top: px(lg);
           }
         }
 
@@ -356,19 +397,25 @@
           align-items: center;
 
           > h2 {
-            margin: 0;
+            margin: 0 em(lg) 0 0;
             flex: 1;
           }
 
           > select {
             flex: 2;
           }
+
+          > input {
+            flex: 2;
+            margin: 0 0 0 px(md);
+          }
         }//end automation event
 
         &.automation-conditions-list {
 
-          fieldset {
+          fieldset.automation-condition {
             padding-top: em(md) - .25em;
+            position: relative;
 
             .form-group {
               display: flex;
@@ -466,9 +513,9 @@
         font-size: 1.5em;
         border-radius: px(md);
         border: 2px solid color(brand-primary);
-        margin: 0 auto;
+        margin: em(md) auto;
         display: block;
-        width: 33%;
+        min-width: 33%;
         letter-spacing: em(sm)/5;
 
         &:hover {

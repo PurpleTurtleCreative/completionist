@@ -36,6 +36,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Events' ) ) {
 			'trash_post' => 'Post is Trashed',
 		];
 
+		public const CUSTOM_OPTIONS = [
+			'custom_action__' => 'Custom Action Hook',
+			'custom_filter__' => 'Custom Filter Hook',
+		];
+
 		/**
 		 * Hook all automations into WordPress execution.
 		 *
@@ -107,6 +112,35 @@ if ( ! class_exists( __NAMESPACE__ . '\Events' ) ) {
 						}
 					}
 				}, 10, 1 );
+			}
+
+			/* Custom Events */
+
+			$automation_ids = Data::get_all_automation_ids_for( 'custom_action__%' );
+			foreach ( $automation_ids as $id ) {
+				$automation = new Automation( $id );
+				add_action(
+					str_replace( 'custom_action__', '', $automation->hook_name ),
+					function() use ( $automation ) {
+						$automation->maybe_run_actions();
+					},
+					10,
+					0
+				);
+			}
+
+			$automation_ids = Data::get_all_automation_ids_for( 'custom_filter__%' );
+			foreach ( $automation_ids as $id ) {
+				$automation = new Automation( $id );
+				add_filter(
+					str_replace( 'custom_filter__', '', $automation->hook_name ),
+					function( $filtered_value ) use ( $automation ) {
+						$automation->maybe_run_actions();
+						return $filtered_value;
+					},
+					10,
+					1
+				);
 			}
 		}//end add_actions()
 	}//end class

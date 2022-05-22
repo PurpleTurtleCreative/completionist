@@ -107,6 +107,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Automation' ) ) {
 
 			foreach ( $actions as $action_with_meta ) {
 				if ( Automations\Actions::run_action( $action_with_meta, $this->translation_objects ) ) {
+					error_log( 'Successfully ran action for Completionist Automation hook name: ' . $this->hook_name );
 					Automations\Data::update_action_last_triggered( $action_with_meta->ID );
 				}
 			}

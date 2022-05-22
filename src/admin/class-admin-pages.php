@@ -258,6 +258,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 								'automations' => Automations\Data::get_automation_overviews( null, true ),
 								'event_user_options' => Automations\Events::USER_OPTIONS,
 								'event_post_options' => Automations\Events::POST_OPTIONS,
+								'event_custom_options' => Automations\Events::CUSTOM_OPTIONS,
 								'field_user_options' => Automations\Fields::USER_OPTIONS,
 								'field_post_options' => Automations\Fields::POST_OPTIONS,
 								'field_comparison_methods' => Automations\Fields::COMPARISON_METHODS,
