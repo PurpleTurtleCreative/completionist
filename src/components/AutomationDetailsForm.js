@@ -136,7 +136,7 @@ export class AutomationDetailsForm extends Component {
   /** Core Info **/
 
   handleAutomationChange(property_key, value) {
-    this.setState((state) => ({
+    this.setState(state => ({
       ...state,
       [ property_key ]: value
     }));
@@ -144,19 +144,23 @@ export class AutomationDetailsForm extends Component {
 
   /** Conditions **/
 
-  handleConditionChange(index, property_key, value) {
-    this.setState((state) => {
-      let conditions = [...state.conditions];
-      conditions[ index ] = {
-        ...state.conditions[ index ],
-        [ property_key ]: value
-      };
+  handleConditionChange(condition_id, property_key, value) {
+    this.setState(state => {
+      const conditions = state.conditions.map(c => {
+        if ( c.ID === condition_id ) {
+          return {
+            ...c,
+            [ property_key ]: value
+          };
+        }
+        return c;
+      });
       return { "conditions": conditions };
     });
   }
 
   handleAddCondition() {
-    this.setState((state) => ({
+    this.setState(state => ({
       "conditions": [
         ...state.conditions,
         {
@@ -169,23 +173,23 @@ export class AutomationDetailsForm extends Component {
     }));
   }
 
-  handleRemoveCondition(index) {
-    this.setState((state) => ({
-      "conditions": state.conditions.filter((_, i) => i !== index)
+  handleRemoveCondition(condition_id) {
+    this.setState(state => ({
+      "conditions": state.conditions.filter(c => c.ID !== condition_id)
     }));
   }
 
   /** Actions **/
 
   handleActionChange(action_id, action) {
-    this.setState((state) => {
+    this.setState(state => {
       const actions = state.actions.map(a => {
         if ( a.ID === action_id ) {
           return {
             ...a,
             "action": action,
             "meta": this.getDefaultActionMeta(action)
-          }
+          };
         }
         return a;
       });
@@ -194,7 +198,7 @@ export class AutomationDetailsForm extends Component {
   }
 
   handleActionMetaChange(action_id, meta_key, meta_value) {
-    this.setState((state) => {
+    this.setState(state => {
       const actions = state.actions.map(a => {
         if ( a.ID === action_id ) {
           return {
@@ -203,7 +207,7 @@ export class AutomationDetailsForm extends Component {
               ...a.meta,
               [ meta_key ]: meta_value
             }
-          }
+          };
         }
         return a;
       });
@@ -212,7 +216,7 @@ export class AutomationDetailsForm extends Component {
   }
 
   handleAddAction() {
-    this.setState((state) => ({
+    this.setState(state => ({
       "actions": [
         ...state.actions,
         {
@@ -227,7 +231,7 @@ export class AutomationDetailsForm extends Component {
   }
 
   handleRemoveAction(action_id) {
-    this.setState((state) => ({
+    this.setState(state => ({
       "actions": state.actions.filter(a => a.ID !== action_id)
     }));
   }
@@ -400,23 +404,23 @@ class AutomationConditionsInputs extends Component {
     if ( true === isCustomHookName( this.props.event ) ) {
       this.conditionFieldsets = <p className="ptc-error-not-supported">Custom events do not support conditions. Be careful when choosing a custom hook.</p>;
     } else {
-      this.conditionFieldsets = this.props.conditions.map((condition, index) => {
+      this.conditionFieldsets = this.props.conditions.map(condition => {
         let valueInput = null;
         if ( condition.comparison_method !== 'is empty' && condition.comparison_method !== 'is filled' ) {
-          valueInput = <input type="text" value={condition.value} onChange={(e) => this.props.changeCondition(index, 'value', e.target.value)} placeholder="value" />;
+          valueInput = <input type="text" value={condition.value} onChange={(e) => this.props.changeCondition(condition.ID, 'value', e.target.value)} placeholder="value" />;
         }
         return (
           <fieldset className="automation-condition" key={condition.ID}>
             <legend>Condition</legend>
             <div className='form-group'>
-              <select value={condition.property} onChange={(e) => this.props.changeCondition(index, 'property', e.target.value)}>
+              <select value={condition.property} onChange={(e) => this.props.changeCondition(condition.ID, 'property', e.target.value)}>
                 {this.propertyOptions}
               </select>
-              <select value={condition.comparison_method} onChange={(e) => this.props.changeCondition(index, 'comparison_method', e.target.value)}>
+              <select value={condition.comparison_method} onChange={(e) => this.props.changeCondition(condition.ID, 'comparison_method', e.target.value)}>
                 {this.comparisonMethodOptions}
               </select>
               {valueInput}
-              <button className='remove-item' title='Remove Condition' onClick={() => this.props.removeCondition(index)}><i className="fas fa-minus"></i> Delete</button>
+              <button className='remove-item' title='Remove Condition' onClick={() => this.props.removeCondition(condition.ID)}><i className="fas fa-minus"></i> Delete</button>
             </div>
           </fieldset>
         );
