@@ -177,28 +177,36 @@ export class AutomationDetailsForm extends Component {
 
   /** Actions **/
 
-  handleActionChange(index, action) {
+  handleActionChange(action_id, action) {
     this.setState((state) => {
-      let actions = [...state.actions];
-      actions[ index ] = {
-        ...state.actions[ index ],
-        "action": action,
-        "meta": this.getDefaultActionMeta(action)
-      };
+      const actions = state.actions.map(a => {
+        if ( a.ID === action_id ) {
+          return {
+            ...a,
+            "action": action,
+            "meta": this.getDefaultActionMeta(action)
+          }
+        }
+        return a;
+      });
       return { "actions": actions };
     });
   }
 
-  handleActionMetaChange(index, meta_key, meta_value) {
+  handleActionMetaChange(action_id, meta_key, meta_value) {
     this.setState((state) => {
-      let actions = [...state.actions];
-      actions[ index ] = {
-        ...state.actions[ index ],
-        "meta": {
-          ...state.actions[ index ].meta,
-          [ meta_key ]: meta_value
+      const actions = state.actions.map(a => {
+        if ( a.ID === action_id ) {
+          return {
+            ...a,
+            "meta": {
+              ...a.meta,
+              [ meta_key ]: meta_value
+            }
+          }
         }
-      };
+        return a;
+      });
       return { "actions": actions };
     });
   }
@@ -218,9 +226,9 @@ export class AutomationDetailsForm extends Component {
     }));
   }
 
-  handleRemoveAction(index) {
+  handleRemoveAction(action_id) {
     this.setState((state) => ({
-      "actions": state.actions.filter((_, i) => i !== index)
+      "actions": state.actions.filter(a => a.ID !== action_id)
     }));
   }
 
@@ -454,11 +462,11 @@ class AutomationActionsInputs extends Component {
 
   constructor(props) {
     super(props);
-    this.loadActionMetaInputs = this.loadActionMetaInputs.bind(this);
+    this.getActionMetaFields = this.getActionMetaFields.bind(this);
     this.loadActionFieldsets = this.loadActionFieldsets.bind(this);
   }
 
-  loadActionMetaInputs(action, index) {
+  getActionMetaFields(action, index) {
     // TODO: Allow create_tasks to be dynamically pinned to created/updated/delete post if relevent: {post.ID}
     switch(action.action) {
       case 'create_task':
@@ -470,19 +478,19 @@ class AutomationActionsInputs extends Component {
               type="text"
               placeholder="Write a task name..."
               value={action.meta.name}
-              onChange={(e) => this.props.changeActionMeta(index, 'name', e.target.value)}
+              onChange={(e) => this.props.changeActionMeta(action.ID, 'name', e.target.value)}
             />
 
             <div className='form-group'>
               <label for={"ptc-new-task_task_author_"+index}>Creator</label>
-              <select id={"ptc-new-task_task_author_"+index} value={action.meta.task_author} onChange={(e) => this.props.changeActionMeta(index, 'task_author', e.target.value)}>
+              <select id={"ptc-new-task_task_author_"+index} value={action.meta.task_author} onChange={(e) => this.props.changeActionMeta(action.ID, 'task_author', e.target.value)}>
                 {createSelectOptions(window.ptc_completionist_automations.connected_workspace_users)}
               </select>
             </div>
 
             <div className='form-group'>
               <label for={"ptc-new-task_assignee_"+index}>Assignee</label>
-              <select id={"ptc-new-task_assignee_"+index} value={action.meta.assignee} onChange={(e) => this.props.changeActionMeta(index, 'assignee', e.target.value)}>
+              <select id={"ptc-new-task_assignee_"+index} value={action.meta.assignee} onChange={(e) => this.props.changeActionMeta(action.ID, 'assignee', e.target.value)}>
                 <option value="">None (Unassigned)</option>
                 {createSelectOptions(window.ptc_completionist_automations.workspace_users)}
               </select>
@@ -490,12 +498,12 @@ class AutomationActionsInputs extends Component {
 
             <div className='form-group'>
               <label for={"ptc-new-task_due_on_"+index}>Due Date</label>
-              <input id={"ptc-new-task_due_on_"+index} type="date" pattern="\d\d\d\d-\d\d-\d\d" placeholder="yyyy-mm-dd" value={action.meta.due_on} onChange={(e) => this.props.changeActionMeta(index, 'due_on', e.target.value)} />
+              <input id={"ptc-new-task_due_on_"+index} type="date" pattern="\d\d\d\d-\d\d-\d\d" placeholder="yyyy-mm-dd" value={action.meta.due_on} onChange={(e) => this.props.changeActionMeta(action.ID, 'due_on', e.target.value)} />
             </div>
 
             <div className='form-group'>
               <label for={"ptc-new-task_project_"+index}>Project</label>
-              <select id={"ptc-new-task_project_"+index} value={action.meta.project} onChange={(e) => this.props.changeActionMeta(index, 'project', e.target.value)}>
+              <select id={"ptc-new-task_project_"+index} value={action.meta.project} onChange={(e) => this.props.changeActionMeta(action.ID, 'project', e.target.value)}>
                 <option value="">None (Private Task)</option>
                 {createSelectOptions(window.ptc_completionist_automations.workspace_projects)}
               </select>
@@ -503,7 +511,7 @@ class AutomationActionsInputs extends Component {
 
             <div className='form-group'>
               <label for={"ptc-new-task_notes_"+index}>Description</label>
-              <textarea id={"ptc-new-task_notes_"+index} value={action.meta.notes} onChange={(e) => this.props.changeActionMeta(index, 'notes', e.target.value)} />
+              <textarea id={"ptc-new-task_notes_"+index} value={action.meta.notes} onChange={(e) => this.props.changeActionMeta(action.ID, 'notes', e.target.value)} />
             </div>
 
             <div className='form-group'>
@@ -511,7 +519,7 @@ class AutomationActionsInputs extends Component {
               <PostSearchSelectInput
                 id={"ptc-new-task_post_id_"+index}
                 initialValue={action.meta.post_id}
-                onSelectOption={(value) => this.props.changeActionMeta(index, 'post_id', value)}
+                onSelectOption={(value) => this.props.changeActionMeta(action.ID, 'post_id', value)}
               />
             </div>
 
@@ -533,15 +541,15 @@ class AutomationActionsInputs extends Component {
       <fieldset className="automation-action" key={action.ID}>
         <legend>Action</legend>
         <div className='form-group'>
-          <select value={action.action} onChange={(e) => this.props.changeAction(index, e.target.value)}>
+          <select value={action.action} onChange={(e) => this.props.changeAction(action.ID, e.target.value)}>
             {actionOptions}
           </select>
           <div>
             { this.props.actions.length > 1 &&
-              <button className='remove-item' title='Remove Action' onClick={() => this.props.removeAction(index)}><i className="fas fa-minus"></i> Delete</button> }
+              <button className='remove-item' title='Remove Action' onClick={() => this.props.removeAction(action.ID)}><i className="fas fa-minus"></i> Delete</button> }
           </div>
         </div>
-        {this.loadActionMetaInputs(action, index)}
+        {this.getActionMetaFields(action, index)}
       </fieldset>
     ));
   }//end loadActionFieldsets()
