@@ -219,7 +219,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 
 				if ( isset( $automation->actions ) && is_array( $automation->actions ) ) {
 					foreach ( $automation->actions as $action ) {
-						if ( 0 == $action->ID ) {
+						if ( $action->ID <= 0 ) {
 							$action->ID = (int) $action->ID;
 							try {
 								$new_action_id = self::add_action(
