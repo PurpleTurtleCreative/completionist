@@ -1,3 +1,18 @@
+### [UNRELEASED]
+
+#### Added
+
+- Per user request, Automations now supports entering a custom action or filter hook name as the Event Trigger.
+- Helpful messaging in Automations. For example, when no Event Trigger is selected, the Conditions section will display an informative message rather than empty fields.
+
+#### Changed
+
+- Improved the UX of Automations' edit screens by tweaking some styles and messaging.
+
+#### Fixed
+
+- The Automations edit screen is now more reliable. In certain cases, for example, the deleted Action would not reflect as deleted. The underlying data would become out-of-sync with the frontend display.
+
 ### 3.1.1 - 2022-04-10
 
 #### Changed
