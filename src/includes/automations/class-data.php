@@ -1238,19 +1238,16 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 		 * @return bool If the hook name is valid.
 		 */
 		public static function validate_automation_hook_name( string $hook_name ) : bool {
-
-			$is_custom_hook = false;
+			// Check if custom hook name format.
 			foreach ( Events::CUSTOM_OPTIONS as $key => $option_label ) {
 				if ( 0 === strpos( $hook_name, $key ) ) {
-					$is_custom_hook = true;
-					break;
+					return true;
 				}
 			}
-
+			// Check if exact hook name is in another options group.
 			return (
 				in_array( $hook_name, array_keys( Events::USER_OPTIONS ) )
 				|| in_array( $hook_name, array_keys( Events::POST_OPTIONS ) )
-				|| true === $is_custom_hook
 			);
 		}
 
