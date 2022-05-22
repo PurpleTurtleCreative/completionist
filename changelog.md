@@ -12,6 +12,7 @@
 #### Fixed
 
 - The Automations edit screen is now more reliable. In certain cases, for example, the deleted Action would not reflect as deleted. The underlying data would become out-of-sync with the frontend display.
+- Removed usage of `FILTER_SANITIZE_STRING` PHP filter, which is deprecated in PHP 8.1.
 
 ### 3.1.1 - 2022-04-10
 

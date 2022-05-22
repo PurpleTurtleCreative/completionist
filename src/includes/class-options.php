@@ -415,7 +415,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 				case self::ASANA_PAT:
 					$filtered_asana_pat = filter_var(
 						$value,
-						FILTER_SANITIZE_STRING,
+						FILTER_UNSAFE_RAW,
 						FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
 					);
 					$sanitized_asana_pat = trim( preg_replace( '/[^a-z0-9\/:]+/', '', $filtered_asana_pat ) );
@@ -436,7 +436,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 				case 'datetime':
 					$filtered_datetime = filter_var(
 						$value,
-						FILTER_SANITIZE_STRING,
+						FILTER_UNSAFE_RAW,
 						FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
 					);
 					$sanitized_datetime = trim( preg_replace( '/[^0-9:\- ]+/', '', $filtered_datetime ) );
@@ -452,7 +452,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 				case 'date':
 					$filtered_date = filter_var(
 						$value,
-						FILTER_SANITIZE_STRING,
+						FILTER_UNSAFE_RAW,
 						FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
 					);
 					$sanitized_date = trim( preg_replace( '/[^0-9\-]+/', '', $filtered_date ) );
@@ -468,7 +468,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 				case 'string':
 					$filtered_value = filter_var(
 						$value,
-						FILTER_SANITIZE_STRING,
+						FILTER_UNSAFE_RAW,
 						FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
 					);
 					return ( false !== $filtered_value ) ? trim( $filtered_value ) : '';
