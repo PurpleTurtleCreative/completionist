@@ -68,6 +68,13 @@ define( __NAMESPACE__ . '\PLUGIN_VERSION', get_file_data( __FILE__, [ 'Version' 
 define( __NAMESPACE__ . '\PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
 /**
+ * This plugin's directory basename.
+ *
+ * @since [UNRELEASED]
+ */
+define( __NAMESPACE__ . '\PLUGIN_SLUG', dirname( PLUGIN_BASENAME ) );
+
+/**
  * The full url to this plugin's directory, NOT ending with a slash.
  *
  * @since 3.0.0
@@ -77,40 +84,44 @@ define( __NAMESPACE__ . '\PLUGIN_URL', plugins_url( '', __FILE__ ) );
 /* REGISTER PLUGIN FUNCTIONS ---------------------- */
 
 /* Activation Hook */
-register_activation_hook( PLUGIN_FILE, function() {
-	require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
-	Database_Manager::init();
-	Database_Manager::install_all_tables();
-});
+register_activation_hook(
+	PLUGIN_FILE,
+	function() {
+		require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
+		Database_Manager::init();
+		Database_Manager::install_all_tables();
+	}
+);
 
 /* Plugins Loaded */
-add_action( 'plugins_loaded', function() {
-
-	/* Ensure Database Tables are Installed */
-	require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
-	Database_Manager::init();
-	Database_Manager::install_all_tables();
-
-	/* Enqueue Automation Actions */
-	require_once PLUGIN_PATH . 'src/includes/automations/class-events.php';
-	Automations\Events::add_actions();
-
-	/* YahnisElsts/plugin-update-checker */
-	require_once PLUGIN_PATH . 'vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php';
-	if ( class_exists( '\Puc_v4_Factory' ) ) {
-		global $wp_version;
-		$url = add_query_arg(
-			'wp_version',
-			$wp_version,
-			'https://purpleturtlecreative.com/wp-json/ptc-resources/v1/plugins/completionist/latest'
-		);
-		\Puc_v4_Factory::buildUpdateChecker(
-			$url,
-			PLUGIN_FILE,
-			'completionist'
-		);
+add_action(
+	'plugins_loaded',
+	function() {
+		/* Ensure Database Tables are Installed */
+		require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
+		Database_Manager::init();
+		Database_Manager::install_all_tables();
+		/* Enqueue Automation Actions */
+		require_once PLUGIN_PATH . 'src/includes/automations/class-events.php';
+		Automations\Events::add_actions();
+		/* YahnisElsts/plugin-update-checker */
+		require_once PLUGIN_PATH . 'vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php';
+		if ( class_exists( '\Puc_v4_Factory' ) ) {
+			$plugin_server_endpoint = add_query_arg(
+				[
+					'wp_version' => $GLOBALS['wp_version'],
+					'site_domain' => rawurlencode( get_site_url( null, '', 'https' ) ),
+				],
+				'https://purpleturtlecreative.com/wp-json/ptc-resources/v1/plugins/completionist/latest'
+			);
+			\Puc_v4_Factory::buildUpdateChecker(
+				$plugin_server_endpoint,
+				PLUGIN_FILE,
+				PLUGIN_SLUG
+			);
+		}
 	}
-});
+);
 
 /* Register Admin Functionality */
 if ( is_admin() ) {
