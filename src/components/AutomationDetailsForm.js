@@ -321,26 +321,32 @@ class AutomationEventInput extends Component {
       "selected_hook_name": getHookOptionValueFromName(this.props.hook_name),
       "custom_hook_name": getCustomHookNameFromValue(this.props.hook_name)
     }
+
+    this.updateEventHookName = this.updateEventHookName.bind(this);
+    this.handleCustomHookNameChange = this.handleCustomHookNameChange.bind(this);
+    this.handleEventChange = this.handleEventChange.bind(this);
   }
 
-  handleCustomHookNameChange( value ) {
-    this.setState({ "custom_hook_name": value }, () => {
-      if ( true === isCustomHookName(this.state.selected_hook_name) ) {
-        this.props.changeEvent(this.state.selected_hook_name + this.state.custom_hook_name);
-      } else {
-        this.props.changeEvent(this.state.selected_hook_name);
-      }
-    });
+  updateEventHookName(state) {
+    if ( true === isCustomHookName(state.selected_hook_name) ) {
+      this.props.changeEvent(state.selected_hook_name + state.custom_hook_name);
+    } else {
+      this.props.changeEvent(state.selected_hook_name);
+    }
   }
 
-  handleEventChange( value ) {
-    this.setState(state => {
-      this.props.changeEvent(value);
-      return {
-        ...state,
-        "selected_hook_name": value
-      };
-    });
+  handleCustomHookNameChange(value) {
+    this.setState(
+      { "custom_hook_name": value },
+      () => { this.updateEventHookName(this.state) }
+    );
+  }
+
+  handleEventChange(value) {
+    this.setState(
+      { "selected_hook_name": value },
+      () => { this.updateEventHookName(this.state) }
+    );
   }
 
   render() {
