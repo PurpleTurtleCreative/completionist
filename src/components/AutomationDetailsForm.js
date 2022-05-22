@@ -2,6 +2,32 @@ import { PostSearchSelectInput } from './PostSearchSelectInput.js';
 
 const { Component } = wp.element;
 
+// --- Helpers --- //
+
+function isCustomHookName( hook_name ) {
+  return ( true === Object.keys(window.ptc_completionist_automations.event_custom_options).some(option => hook_name.startsWith(option)));
+}
+
+function getCustomHookNameFromValue( option ) {
+  if ( true === isCustomHookName( option ) ) {
+    return option.replace( getHookOptionValueFromName( option ), '' );
+  }
+  return '';
+}
+
+function getHookOptionValueFromName( hook_name ) {
+  let actualHookName = Object.keys(window.ptc_completionist_automations.event_custom_options).find(option => hook_name.startsWith(option));
+  return actualHookName ?? hook_name;
+}
+
+function createSelectOptions( optionsObj ) {
+  return Object.keys(optionsObj).map((key) => (
+    <option value={key} key={key}>{optionsObj[key]}</option>
+  ));
+}
+
+// --- Components --- //
+
 export class AutomationDetailsForm extends Component {
 
   constructor(props) {
@@ -24,15 +50,15 @@ export class AutomationDetailsForm extends Component {
       this.state.isSubmitting = false;
     } else {
       this.state = {
-        ID: 0,
-        title: '',
-        description: '',
-        hook_name: '',
-        last_modified: '',
-        conditions: [],
-        actions: [],
-        saveButtonLabel: 'Create',
-        isSubmitting: false
+        "ID": 0,
+        "title": '',
+        "description": '',
+        "hook_name": '',
+        "last_modified": '',
+        "conditions": [],
+        "actions": [],
+        "saveButtonLabel": 'Create',
+        "isSubmitting": false
       };
     }
 
@@ -56,12 +82,12 @@ export class AutomationDetailsForm extends Component {
 
       // TODO: validate data for submission
 
-      this.setState({ isSubmitting: true }, () => {
+      this.setState({ "isSubmitting": true }, () => {
 
         let data = {
-          'action': 'ptc_save_automation',
-          'nonce': window.ptc_completionist_automations.nonce,
-          'automation': this.state
+          "action": 'ptc_save_automation',
+          "nonce": window.ptc_completionist_automations.nonce,
+          "automation": this.state
         };
 
         window.jQuery.post(window.ajaxurl, data, (res) => {
@@ -84,7 +110,7 @@ export class AutomationDetailsForm extends Component {
 //               console.log( res.message );
               this.setState({
                 ...res.data,
-                isSubmitting: false
+                "isSubmitting": false
               });
             }
           } else {
@@ -94,13 +120,13 @@ export class AutomationDetailsForm extends Component {
             } else {
               alert( 'Error 409. The automation could not be saved.' );
             }
-            this.setState({ isSubmitting: false });
+            this.setState({ "isSubmitting": false });
           }
 
         }, 'json')
           .fail(() => {
             alert( 'Error 500. The automation could not be saved.' );
-            this.setState({ isSubmitting: false });
+            this.setState({ "isSubmitting": false });
           });
 
       });
@@ -111,6 +137,7 @@ export class AutomationDetailsForm extends Component {
 
   handleAutomationChange(property_key, value) {
     this.setState((state) => ({
+      ...state,
       [ property_key ]: value
     }));
   }
@@ -124,19 +151,19 @@ export class AutomationDetailsForm extends Component {
         ...state.conditions[ index ],
         [ property_key ]: value
       };
-      return { conditions: conditions };
+      return { "conditions": conditions };
     });
   }
 
   handleAddCondition() {
     this.setState((state) => ({
-      conditions: [
+      "conditions": [
         ...state.conditions,
         {
-          ID: 0,
-          property: '',
-          comparison_method: window.ptc_completionist_automations.field_comparison_methods[0],
-          value: ''
+          "ID": 0,
+          "property": '',
+          "comparison_method": window.ptc_completionist_automations.field_comparison_methods[0],
+          "value": ''
         }
       ]
     }));
@@ -144,7 +171,7 @@ export class AutomationDetailsForm extends Component {
 
   handleRemoveCondition(index) {
     this.setState((state) => ({
-      conditions: state.conditions.filter((_, i) => i !== index)
+      "conditions": state.conditions.filter((_, i) => i !== index)
     }));
   }
 
@@ -155,10 +182,10 @@ export class AutomationDetailsForm extends Component {
       let actions = [...state.actions];
       actions[ index ] = {
         ...state.actions[ index ],
-        action: action,
-        meta: this.getDefaultActionMeta(action)
+        "action": action,
+        "meta": this.getDefaultActionMeta(action)
       };
-      return { actions: actions };
+      return { "actions": actions };
     });
   }
 
@@ -167,25 +194,25 @@ export class AutomationDetailsForm extends Component {
       let actions = [...state.actions];
       actions[ index ] = {
         ...state.actions[ index ],
-        meta: {
+        "meta": {
           ...state.actions[ index ].meta,
           [ meta_key ]: meta_value
         }
       };
-      return { actions: actions };
+      return { "actions": actions };
     });
   }
 
   handleAddAction() {
     this.setState((state) => ({
-      actions: [
+      "actions": [
         ...state.actions,
         {
-          ID: 0,
-          action: 'create_task',
-          triggered_count: 0,
-          last_triggered: '',
-          meta: this.getDefaultActionMeta('create_task')
+          "ID": 0,
+          "action": 'create_task',
+          "triggered_count": 0,
+          "last_triggered": '',
+          "meta": this.getDefaultActionMeta('create_task')
         }
       ]
     }));
@@ -193,7 +220,7 @@ export class AutomationDetailsForm extends Component {
 
   handleRemoveAction(index) {
     this.setState((state) => ({
-      actions: state.actions.filter((_, i) => i !== index)
+      "actions": state.actions.filter((_, i) => i !== index)
     }));
   }
 
@@ -203,7 +230,7 @@ export class AutomationDetailsForm extends Component {
     switch(action) {
       case 'create_task':
         return {
-          task_author: Object.keys( window.ptc_completionist_automations.connected_workspace_users )[0]
+          "task_author": Object.keys( window.ptc_completionist_automations.connected_workspace_users )[0]
         };
         break;
       default:
@@ -279,36 +306,14 @@ class AutomationEventInput extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected_hook_name: this.getHookOptionValueFromName(this.props.hook_name),
-      custom_hook_name: this.getCustomHookNameFromValue(this.props.hook_name)
+      "selected_hook_name": getHookOptionValueFromName(this.props.hook_name),
+      "custom_hook_name": getCustomHookNameFromValue(this.props.hook_name)
     }
   }
-
-  isCustomHookName( hook_name ) {
-    return ( true === Object.keys(window.ptc_completionist_automations.event_custom_options).some(option => hook_name.startsWith(option)));
-  }
-
-  getCustomHookNameFromValue( option ) {
-    if ( true === this.isCustomHookName( option ) ) {
-      return option.replace( this.getHookOptionValueFromName( option ), '' );
-    }
-    return '';
-  }
-
-  getHookOptionValueFromName( hook_name ) {
-    let actualHookName = Object.keys(window.ptc_completionist_automations.event_custom_options).find(option => hook_name.startsWith(option));
-    return actualHookName ?? hook_name;
-  }
-
-  createSelectOptions( optionsObj ) {
-    return Object.keys(optionsObj).map((key) => (
-      <option value={key} key={key}>{optionsObj[key]}</option>
-    ));
-  }//end createSelectOptions()
 
   handleCustomHookNameChange( value ) {
-    this.setState({ custom_hook_name: value }, () => {
-      if ( true === this.isCustomHookName(this.state.selected_hook_name) ) {
+    this.setState({ "custom_hook_name": value }, () => {
+      if ( true === isCustomHookName(this.state.selected_hook_name) ) {
         this.props.changeEvent(this.state.selected_hook_name + this.state.custom_hook_name);
       } else {
         this.props.changeEvent(this.state.selected_hook_name);
@@ -317,34 +322,30 @@ class AutomationEventInput extends Component {
   }
 
   handleEventChange( value ) {
-    if ( this.isCustomHookName(value) ) {
-      this.setState({
-        selected_hook_name: value,
-        custom_hook_name: ''
-      });
-    } else {
-      this.setState(
-        { selected_hook_name: value },
-        () => this.props.changeEvent(this.state.selected_hook_name)
-      );
-    }
+    this.setState(state => {
+      this.props.changeEvent(value);
+      return {
+        ...state,
+        "selected_hook_name": value
+      };
+    });
   }
 
   render() {
 
-    const userEventOptions = this.createSelectOptions(window.ptc_completionist_automations.event_user_options);
-    const postEventOptions = this.createSelectOptions(window.ptc_completionist_automations.event_post_options);
-    const customEventOptions = this.createSelectOptions(window.ptc_completionist_automations.event_custom_options);
+    const userEventOptions = createSelectOptions(window.ptc_completionist_automations.event_user_options);
+    const postEventOptions = createSelectOptions(window.ptc_completionist_automations.event_post_options);
+    const customEventOptions = createSelectOptions(window.ptc_completionist_automations.event_custom_options);
 
     let customHookNameInput = null;
-    if ( true === this.isCustomHookName(this.state.selected_hook_name) ) {
-      customHookNameInput = <input type="text" value={this.state.custom_hook_name} placeholder="Enter custom hook name..." onChange={e => this.handleCustomHookNameChange(e.target.value)} />;
+    if ( true === isCustomHookName(this.state.selected_hook_name) ) {
+      customHookNameInput = <input type="text" value={this.state.custom_hook_name} placeholder="custom_hook_name" onChange={e => this.handleCustomHookNameChange(e.target.value)} />;
     }
 
     return (
       <div className="automation-event">
-        <h2><span className="automation-step-number">1</span> Trigger Event</h2>
-        <select value={this.getHookOptionValueFromName(this.state.selected_hook_name)} onChange={(e) => this.handleEventChange(e.target.value)}>
+        <h2><span className="automation-step-number">1</span>Trigger&nbsp;Event</h2>
+        <select value={getHookOptionValueFromName(this.state.selected_hook_name)} onChange={(e) => this.handleEventChange(e.target.value)}>
           <option value="">(Choose Event)</option>
           <optgroup label="User Events">
             {userEventOptions}
@@ -371,17 +372,11 @@ class AutomationConditionsInputs extends Component {
     this.loadConditionFieldsets = this.loadConditionFieldsets.bind(this);
   }//end constructor()
 
-  createSelectOptions( optionsObj ) {
-    return Object.keys( optionsObj ).map((key) => (
-      <option value={key} key={key}>{optionsObj[key]}</option>
-    ));
-  }//end createSelectOptions()
-
   loadPropertyOptions() {
     if ( Object.keys( window.ptc_completionist_automations.event_user_options ).includes( this.props.event ) ) {
-      this.propertyOptions = this.createSelectOptions( window.ptc_completionist_automations.field_user_options );
+      this.propertyOptions = createSelectOptions( window.ptc_completionist_automations.field_user_options );
     } else if ( Object.keys( window.ptc_completionist_automations.event_post_options ).includes( this.props.event ) ) {
-      this.propertyOptions = this.createSelectOptions( window.ptc_completionist_automations.field_post_options );
+      this.propertyOptions = createSelectOptions( window.ptc_completionist_automations.field_post_options );
     } else {
       this.propertyOptions = <option>(Choose Event)</option>;
     }
@@ -394,46 +389,65 @@ class AutomationConditionsInputs extends Component {
   }//end loadComparisonMethodOptions()
 
   loadConditionFieldsets() {
-    this.conditionFieldsets = this.props.conditions.map((condition, index) => {
-      let valueInput = null;
-      if ( condition.comparison_method !== 'is empty' && condition.comparison_method !== 'is filled' ) {
-        valueInput = <input type="text" value={condition.value} key={index} onChange={(e) => this.props.changeCondition(index, 'value', e.target.value)} />;
-      }
-      return (
-        <fieldset className="automation-condition" key={index}>
-          <legend>Condition</legend>
-          <div className='form-group'>
-            <select value={condition.property} key={index} onChange={(e) => this.props.changeCondition(index, 'property', e.target.value)}>
-              {this.propertyOptions}
-            </select>
-            <select value={condition.comparison_method} key={index} onChange={(e) => this.props.changeCondition(index, 'comparison_method', e.target.value)}>
-              {this.comparisonMethodOptions}
-            </select>
-            {valueInput}
-            <button className='remove-item' title='Remove Condition' onClick={() => this.props.removeCondition(index)}><i className="fas fa-minus"></i> Delete</button>
-          </div>
-        </fieldset>
-      );
-    });
+    if ( true === isCustomHookName( this.props.event ) ) {
+      this.conditionFieldsets = <p className="ptc-error-not-supported">Custom events do not support conditions. Be careful when choosing a custom hook.</p>;
+    } else {
+      this.conditionFieldsets = this.props.conditions.map((condition, index) => {
+        let valueInput = null;
+        if ( condition.comparison_method !== 'is empty' && condition.comparison_method !== 'is filled' ) {
+          valueInput = <input type="text" value={condition.value} key={index} onChange={(e) => this.props.changeCondition(index, 'value', e.target.value)} placeholder="value" />;
+        }
+        return (
+          <fieldset className="automation-condition" key={index}>
+            <legend>Condition</legend>
+            <div className='form-group'>
+              <select value={condition.property} key={index} onChange={(e) => this.props.changeCondition(index, 'property', e.target.value)}>
+                {this.propertyOptions}
+              </select>
+              <select value={condition.comparison_method} key={index} onChange={(e) => this.props.changeCondition(index, 'comparison_method', e.target.value)}>
+                {this.comparisonMethodOptions}
+              </select>
+              {valueInput}
+              <button className='remove-item' title='Remove Condition' onClick={() => this.props.removeCondition(index)}><i className="fas fa-minus"></i> Delete</button>
+            </div>
+          </fieldset>
+        );
+      });
+    }
   }//end loadConditionFieldsets()
 
   render() {
 
-    // TODO: Do not show add button until an event is set
+    let allowAllConditionsMessage = true;
 
-    this.loadPropertyOptions();
-    this.loadComparisonMethodOptions();
-    this.loadConditionFieldsets();
+    let content;
+    if ( ! this.props.event.length ) {
+      content = <p className="ptc-message"><strong>No trigger event selected.</strong>Conditions control if Actions should run after a trigger event.</p>;
+      allowAllConditionsMessage = false;
+    } else if ( true === isCustomHookName( this.props.event ) ) {
+      content = <p className="ptc-message"><strong>Custom events do not support conditions.</strong>Actions will always run for the specified custom event.</p>;
+      allowAllConditionsMessage = false;
+    } else {
+      this.loadPropertyOptions();
+      this.loadComparisonMethodOptions();
+      this.loadConditionFieldsets();
+      content = (<>
+        {this.conditionFieldsets}
+        <button className='add-item' onClick={this.props.addCondition}><i className="fas fa-plus"></i> Add Condition</button>
+      </>);
+    }
 
     return (
       <div className="automation-conditions-list">
-        <h2><span className="automation-step-number">2</span> Conditions</h2>
-        {this.conditionFieldsets}
-        <button className='add-item' onClick={this.props.addCondition}><i className="fas fa-plus"></i> Add Condition</button>
+        <div className="section-header">
+          <h2><span className="automation-step-number">2</span>Conditions</h2>
+          { true === allowAllConditionsMessage && this.conditionFieldsets.length > 1 &&
+            <p className="ptc-message"><em>All</em> conditions must evaluate to true for the Actions to run.</p> }
+        </div>
+        {content}
       </div>
     );
   }//end render()
-
 }//end class AutomationConditionsInputs
 
 class AutomationActionsInputs extends Component {
@@ -443,12 +457,6 @@ class AutomationActionsInputs extends Component {
     this.loadActionMetaInputs = this.loadActionMetaInputs.bind(this);
     this.loadActionFieldsets = this.loadActionFieldsets.bind(this);
   }
-
-  createSelectOptions( optionsObj ) {
-    return Object.keys( optionsObj ).map((key) => (
-      <option value={key} key={key}>{optionsObj[key]}</option>
-    ));
-  }//end createSelectOptions()
 
   loadActionMetaInputs(action, index) {
     // TODO: Allow create_tasks to be dynamically pinned to created/updated/delete post if relevent: {post.ID}
@@ -468,7 +476,7 @@ class AutomationActionsInputs extends Component {
             <div className='form-group'>
               <label for={"ptc-new-task_task_author_"+index}>Creator</label>
               <select id={"ptc-new-task_task_author_"+index} value={action.meta.task_author} onChange={(e) => this.props.changeActionMeta(index, 'task_author', e.target.value)}>
-                {this.createSelectOptions(window.ptc_completionist_automations.connected_workspace_users)}
+                {createSelectOptions(window.ptc_completionist_automations.connected_workspace_users)}
               </select>
             </div>
 
@@ -476,7 +484,7 @@ class AutomationActionsInputs extends Component {
               <label for={"ptc-new-task_assignee_"+index}>Assignee</label>
               <select id={"ptc-new-task_assignee_"+index} value={action.meta.assignee} onChange={(e) => this.props.changeActionMeta(index, 'assignee', e.target.value)}>
                 <option value="">None (Unassigned)</option>
-                {this.createSelectOptions(window.ptc_completionist_automations.workspace_users)}
+                {createSelectOptions(window.ptc_completionist_automations.workspace_users)}
               </select>
             </div>
 
@@ -489,7 +497,7 @@ class AutomationActionsInputs extends Component {
               <label for={"ptc-new-task_project_"+index}>Project</label>
               <select id={"ptc-new-task_project_"+index} value={action.meta.project} onChange={(e) => this.props.changeActionMeta(index, 'project', e.target.value)}>
                 <option value="">None (Private Task)</option>
-                {this.createSelectOptions(window.ptc_completionist_automations.workspace_projects)}
+                {createSelectOptions(window.ptc_completionist_automations.workspace_projects)}
               </select>
             </div>
 
@@ -520,7 +528,7 @@ class AutomationActionsInputs extends Component {
   }
 
   loadActionFieldsets() {
-    let actionOptions = this.createSelectOptions( window.ptc_completionist_automations.action_options );
+    let actionOptions = createSelectOptions( window.ptc_completionist_automations.action_options );
     this.actionFieldsets = this.props.actions.map((action, index) => (
       <fieldset className="automation-action" key={index}>
         <legend>Action</legend>
@@ -529,7 +537,8 @@ class AutomationActionsInputs extends Component {
             {actionOptions}
           </select>
           <div>
-            <button className='remove-item' title='Remove Action' onClick={() => this.props.removeAction(index)}><i className="fas fa-minus"></i> Delete</button>
+            { this.props.actions.length > 1 &&
+              <button className='remove-item' title='Remove Action' onClick={() => this.props.removeAction(index)}><i className="fas fa-minus"></i> Delete</button> }
           </div>
         </div>
         {this.loadActionMetaInputs(action, index)}
@@ -539,14 +548,17 @@ class AutomationActionsInputs extends Component {
 
   render() {
 
-    // TODO: Do not show add button until an event is set
     // TODO: Add list of available merge fields based on selected event, similar to Awesome Support email templates
 
     this.loadActionFieldsets();
 
     return (
       <div className="automation-actions-list">
-        <h2><span className="automation-step-number">3</span> Actions</h2>
+        <div className="section-header">
+          <h2><span className="automation-step-number">3</span>Actions</h2>
+          { this.props.actions.length <= 1 &&
+            <p className="ptc-message">At least 1 Action is required.</p> }
+        </div>
         {this.actionFieldsets}
         <button className='add-item' onClick={this.props.addAction}><i className="fas fa-plus"></i> Add Action</button>
       </div>
