@@ -1,1 +1,972 @@
-!function(){"use strict";var e=window.wp.element;const{createContext:t,useState:a}=wp.element,s=t(!1);function n(t){let{children:n}=t;const[l,o]=a(Object.values(window.PTCCompletionist.tasks)),c={tasks:l,setTaskProcessingStatus:(e,t)=>{o((a=>a.map((a=>a.gid==e?{...a,processingStatus:t}:{...a}))))},completeTask:async function(e){let t=!(arguments.length>1&&void 0!==arguments[1])||arguments[1];const a=c.tasks.find((t=>e===t.gid));let s={action:"ptc_update_task",nonce:window.PTCCompletionist.api.nonce,task_gid:e,completed:t};const n={method:"POST",credentials:"same-origin",body:new URLSearchParams(s)};return await window.fetch(window.ajaxurl,n).then((e=>e.json())).then((e=>(console.log(e),"success"==e.status&&e.data?(c.updateTask({gid:a.gid,completed:t}),!0):("error"==e.status&&e.data?console.error(e.data):alert("[Completionist] Error "+e.code+": "+e.message),!1)))).catch((e=>(console.error("Promise catch:",e),alert("[Completionist] Failed to complete task."),!1)))},deleteTask:async e=>{const t=c.tasks.find((t=>e===t.gid));let a={action:"ptc_delete_task",nonce:window.PTCCompletionist.api.nonce,task_gid:e};t.action_link.post_id&&(a.post_id=t.action_link.post_id);const s={method:"POST",credentials:"same-origin",body:new URLSearchParams(a)};return await window.fetch(window.ajaxurl,s).then((e=>e.json())).then((e=>(console.log(e),"success"==e.status&&e.data?(c.removeTask(e.data),!0):("error"==e.status&&e.data?console.error(e.data):alert("[Completionist] Error "+e.code+": "+e.message),!1)))).catch((e=>(console.error("Promise catch:",e),alert("[Completionist] Failed to delete task."),!1)))},unpinTask:async function(e){let t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:null;c.tasks.find((t=>e===t.gid));let a={action:"ptc_unpin_task",nonce:window.PTCCompletionist.api.nonce,task_gid:e};t&&(a.post_id=t);const s={method:"POST",credentials:"same-origin",body:new URLSearchParams(a)};return await window.fetch(window.ajaxurl,s).then((e=>e.json())).then((e=>(console.log(e),"success"==e.status&&e.data?(c.removeTask(e.data),!0):("error"==e.status&&e.data?console.error(e.data):alert("[Completionist] Error "+e.code+": "+e.message),!1)))).catch((e=>(console.error("Promise catch:",e),alert("[Completionist] Failed to unpin task."),!1)))},updateTask:e=>{o((t=>t.map((t=>t.gid==e.gid?{...t,...e}:{...t}))))},removeTask:e=>{o((t=>t.map((t=>{if(t.gid!=e)return{...t}})).filter((e=>!!e))))}};return(0,e.createElement)(s.Provider,{value:c},n)}function l(e){return Date.parse(e.due_on)-Date.now()<604800}function o(e){return e.filter((e=>!e.completed))}function c(e){return e.filter((e=>l(e)))}function i(e,t){return t.filter((t=>!!t.assignee&&e===t.assignee.gid))}function r(e){return e.filter((e=>!(e.action_link&&e.action_link.post_id>0)))}function m(e){return e.filter((e=>!!(e.action_link&&e.action_link.post_id>0)))}const{useContext:d,useMemo:u}=wp.element;function p(){const{tasks:t}=d(s),a=u((()=>o(t)),[t]),n=t.length-a.length;let l=0;return t.length>0&&(l=Math.round(n/t.length*100)),(0,e.createElement)("div",{className:"ptc-TaskOverview"},(0,e.createElement)("div",{className:"feature"},(0,e.createElement)("p",{className:"large"},l,(0,e.createElement)("span",{className:"small"},"%")),(0,e.createElement)("p",{className:"caption"},"Complete")),(0,e.createElement)("div",{className:"details"},(0,e.createElement)("p",{className:"incomplete"},(0,e.createElement)("span",{className:"count"},a.length)," Remaining"),(0,e.createElement)("div",{className:"progress"},(0,e.createElement)("div",{className:"progress-bar-wrapper"},(0,e.createElement)("div",{className:"progress-bar",style:{width:`${l}%`}})),(0,e.createElement)("p",{className:"caption"},(0,e.createElement)("span",{className:"completed"},"Completed ",n)," of ",t.length))))}const{useState:k,useCallback:g,useMemo:f,useEffect:E}=wp.element;function w(t){let{tasks:a,onChange:s}=t;const[n,l]=k("none"),d=f((()=>{const e=o(a);return[{key:"none",title:"All Tasks",tasks:e},{key:"pinned",title:"Pinned",tasks:m(e)},{key:"general",title:"General",tasks:r(e)},{key:"myTasks",title:"My Tasks",tasks:i(window.PTCCompletionist.me.gid,e)},{key:"critical",title:"Critical",tasks:c(e)}]}),[a]);E((()=>{const e=d.find((e=>n===e.key)).tasks;s(n,e)}),[d,n,s]);const u=g(((e,t)=>{l(e)}),[l]),p=d.map((t=>{let a=`filter-${t.key}`;return n===t.key&&(a+=" --is-active"),(0,e.createElement)("button",{key:t.key,type:"button",className:a,onClick:()=>u(t.key,t.tasks)},`${t.title} (${t.tasks.length})`)}));return(0,e.createElement)("div",{className:"ptc-TaskFilters"},p)}const{useCallback:h,useContext:C}=wp.element;function N(t){let{taskGID:a,processingStatus:n}=t;const{deleteTask:l,unpinTask:o,removeTask:c,setTaskProcessingStatus:i}=C(s),r=h((e=>{n?console.error(`Rejected handleUnpinTask. Currently ${n} task ${e}.`):(i(e,"unpinning"),o(e).then((t=>{t||i(e,!1)})))}),[n,i,o]),m=h((e=>{n?console.error(`Rejected handleDeleteTask. Currently ${n} task ${e}.`):(i(e,"deleting"),l(e).then((t=>{t||i(e,!1)})))}),[n,i,c]),d=function(e){return`https://app.asana.com/0/0/${e}/f`}(a),u="unpinning"===n?"fa-sync-alt fa-spin":"fa-thumbtack",p="deleting"===n?"fa-sync-alt fa-spin":"fa-minus";return(0,e.createElement)("div",{className:"ptc-TaskActions"},(0,e.createElement)("a",{href:d,target:"_asana"},(0,e.createElement)("button",{title:"View in Asana",className:"view",type:"button"},(0,e.createElement)("i",{className:"fas fa-link"}))),(0,e.createElement)("button",{title:"Unpin from Site",className:"unpin",type:"button",onClick:()=>r(a),disabled:!!n},(0,e.createElement)("i",{className:`fas ${u}`})),(0,e.createElement)("button",{title:"Delete from Asana",className:"delete",type:"button",onClick:()=>m(a),disabled:!!n},(0,e.createElement)("i",{className:`fas ${p}`})))}const{useState:y,useCallback:T,useContext:b}=wp.element;function v(t){let{task:a}=t;const[n,o]=y(!1),{completeTask:c,setTaskProcessingStatus:i}=b(s),r=T((e=>{a.processingStatus?console.error(`Rejected handleMarkComplete. Currently ${a.processingStatus} task ${e}.`):(i(e,"completing"),c(e).then((t=>{i(e,!1)})))}),[a.processingStatus,i,c]),m=T((()=>{a.notes&&o(!n)}),[a,n,o]),d=n?"fas":"far";let u=null;a.assignee&&(u=window.PTCCompletionist.users[a.assignee.gid]?window.PTCCompletionist.users[a.assignee.gid].data.display_name:"(Not Connected)");let p="";l(a)&&(p+=" --is-critical"),!0===a.completed&&(p+=" --is-complete"),a.processingStatus&&(p+=` --is-processing --is-${a.processingStatus}`),a.notes&&(p+=" --has-description");const k="completing"===a.processingStatus?"fa-sync-alt fa-spin":"fa-check",g=new Date(a.due_on).toLocaleDateString(void 0,{month:"short",day:"numeric",year:"numeric"});return(0,e.createElement)("div",{className:"ptc-TaskRow"+p},(0,e.createElement)("button",{title:"Mark Complete",className:"mark-complete",type:"button",onClick:()=>r(a.gid),disabled:!!a.processingStatus},(0,e.createElement)("i",{className:`fas ${k}`})),(0,e.createElement)("div",{className:"body"},(0,e.createElement)("p",{className:"name",onClick:m},a.name,!!a.notes&&(0,e.createElement)("i",{className:`${d} fa-sticky-note`})),(0,e.createElement)("div",{className:"details"},u&&(0,e.createElement)("p",{className:"assignee"},(0,e.createElement)("i",{class:"fas fa-user"})," ",u),a.due_on&&(0,e.createElement)("p",{className:"due"},(0,e.createElement)("i",{className:"fas fa-clock"})," ",g)),n&&(0,e.createElement)("p",{className:"description"},a.notes)),(0,e.createElement)("div",{className:"actions"},(0,e.createElement)("a",{className:"cta-button",href:a.action_link.href,target:a.action_link.target},a.action_link.label," ",(0,e.createElement)("i",{className:"fas fa-long-arrow-alt-right"})),(0,e.createElement)(N,{taskGID:a.gid,processingStatus:a.processingStatus})))}function P(t){let{tasks:a}=t,s=(0,e.createElement)("p",{className:"ptc-no-results"},(0,e.createElement)("i",{className:"fas fa-clipboard-check"}),"No tasks to display.");return a.length>0&&(s=a.map((t=>(0,e.createElement)(v,{key:t.gid,task:t})))),(0,e.createElement)("div",{className:"ptc-TaskList"},s)}const{useState:_,useCallback:S,useMemo:$,useEffect:x}=wp.element;function D(t){let{limit:a,tasks:s}=t;const[n,l]=_(1),o=$((()=>Math.ceil(s.length/a)),[s,a]),c=S((e=>{l(e<=1?1:e>=o?o:e)}),[n,l,o]);x((()=>{c(n)}),[s]);const i=Math.max(0,(n-1)*a),r=s.slice(i,n*a),m=[];for(let t=1;t<=o;++t)m.push((0,e.createElement)("button",{className:"num",type:"button",title:`Page ${t}`,disabled:t===n,onClick:()=>c(t)},t));return console.log("totalPages",o),(0,e.createElement)("div",{className:"ptc-TaskListPaginated"},(0,e.createElement)(P,{tasks:r}),(0,e.createElement)("nav",{className:"pagination"},o>1&&(0,e.createElement)(e.Fragment,null,(0,e.createElement)("button",{className:"prev",type:"button",title:"Previous Page",disabled:1===n,onClick:()=>c(n-1)},(0,e.createElement)("i",{className:"fas fa-angle-left"})),m,(0,e.createElement)("button",{className:"next",type:"button",title:"Next Page",disabled:o===n,onClick:()=>c(n+1)},(0,e.createElement)("i",{className:"fas fa-angle-right"})))),(0,e.createElement)("a",{href:window.PTCCompletionist.tag_url,target:"_asana",className:"view-tag"},(0,e.createElement)("button",{title:"View All Site Tasks in Asana",className:"view",type:"button"},(0,e.createElement)("i",{class:"fas fa-link"}))))}const{useContext:j,useCallback:M,useState:L,useEffect:R}=wp.element;function A(){const{tasks:t}=j(s),[a,n]=L(o(t)),l=M(((e,t)=>n(t)),[]);return(0,e.createElement)("div",{className:"ptc-PTCCompletionistTasksDashboardWidget"},(0,e.createElement)(p,{tasks:t}),(0,e.createElement)(w,{tasks:t,onChange:l}),(0,e.createElement)(D,{limit:5,tasks:a}))}function O(t){let{type:a,message:s,code:n}=t,l=null;"error"===a&&(l="Error",n&&(l+=` ${n}`));let o=null;l&&(o=(0,e.createElement)("strong",null,l+". "));let c="";return a&&(c+=` --has-type-${a}`),(0,e.createElement)("div",{className:"ptc-NoteBox"+c},(0,e.createElement)("p",null,o,s))}const{render:F}=wp.element;document.addEventListener("DOMContentLoaded",(()=>{const t=document.getElementById("ptc-PTCCompletionistTasksDashboardWidget");null!==t&&("error"in window.PTCCompletionist?F((0,e.createElement)(O,{type:"error",message:window.PTCCompletionist.error.message,code:window.PTCCompletionist.error.code}),t):F((0,e.createElement)(n,null,(0,e.createElement)(A,null)),t))}))}();
+/******/ (function() { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/components/task/util.js":
+/*!*************************************!*\
+  !*** ./src/components/task/util.js ***!
+  \*************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getTaskUrl": function() { return /* binding */ getTaskUrl; },
+/* harmony export */   "isCriticalTask": function() { return /* binding */ isCriticalTask; },
+/* harmony export */   "filterIncompleteTasks": function() { return /* binding */ filterIncompleteTasks; },
+/* harmony export */   "filterCriticalTasks": function() { return /* binding */ filterCriticalTasks; },
+/* harmony export */   "filterMyTasks": function() { return /* binding */ filterMyTasks; },
+/* harmony export */   "filterGeneralTasks": function() { return /* binding */ filterGeneralTasks; },
+/* harmony export */   "filterPinnedTasks": function() { return /* binding */ filterPinnedTasks; }
+/* harmony export */ });
+/**
+ * Utility functions unrelated to application state.
+ */
+function getTaskUrl(taskGID) {
+  return `https://app.asana.com/0/0/${taskGID}/f`;
+}
+function isCriticalTask(task) {
+  const DAY_IN_SECONDS = 86400;
+  const limit = 7 * DAY_IN_SECONDS;
+  return Date.parse(task.due_on) - Date.now() < limit;
+}
+function filterIncompleteTasks(tasks) {
+  return tasks.filter(t => !t.completed);
+}
+function filterCriticalTasks(tasks) {
+  return tasks.filter(t => isCriticalTask(t));
+}
+function filterMyTasks(userGID, tasks) {
+  return tasks.filter(t => {
+    if (t.assignee) {
+      return userGID === t.assignee.gid;
+    }
+
+    return false;
+  });
+}
+function filterGeneralTasks(tasks) {
+  return tasks.filter(t => {
+    if (t.action_link && t.action_link.post_id > 0) {
+      return false;
+    }
+
+    return true;
+  });
+}
+function filterPinnedTasks(tasks) {
+  return tasks.filter(t => {
+    if (t.action_link && t.action_link.post_id > 0) {
+      return true;
+    }
+
+    return false;
+  });
+}
+
+/***/ }),
+
+/***/ "./src/components/PTCCompletionistTasksDashboardWidget.jsx":
+/*!*****************************************************************!*\
+  !*** ./src/components/PTCCompletionistTasksDashboardWidget.jsx ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ PTCCompletionistTasksDashboardWidget; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _task_TaskOverview_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task/TaskOverview.jsx */ "./src/components/task/TaskOverview.jsx");
+/* harmony import */ var _task_TaskFilters_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task/TaskFilters.jsx */ "./src/components/task/TaskFilters.jsx");
+/* harmony import */ var _task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./task/TaskListPaginated.jsx */ "./src/components/task/TaskListPaginated.jsx");
+/* harmony import */ var _task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./task/TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+/* harmony import */ var _task_util__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./task/util */ "./src/components/task/util.js");
+
+
+
+
+
+
+const {
+  useContext,
+  useCallback,
+  useState,
+  useEffect
+} = wp.element;
+function PTCCompletionistTasksDashboardWidget() {
+  const {
+    tasks
+  } = useContext(_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_4__.TaskContext);
+  const [visibleTasks, setVisibleTasks] = useState((0,_task_util__WEBPACK_IMPORTED_MODULE_5__.filterIncompleteTasks)(tasks));
+  const handleFilterChange = useCallback((_key, selectedTasks) => setVisibleTasks(selectedTasks), []);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-PTCCompletionistTasksDashboardWidget"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskOverview_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    tasks: tasks
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskFilters_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    tasks: tasks,
+    onChange: handleFilterChange
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    limit: 5,
+    tasks: visibleTasks
+  }));
+}
+
+/***/ }),
+
+/***/ "./src/components/notice/NoteBox.jsx":
+/*!*******************************************!*\
+  !*** ./src/components/notice/NoteBox.jsx ***!
+  \*******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ NoteBox; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+function NoteBox(_ref) {
+  let {
+    type,
+    message,
+    code
+  } = _ref;
+  let titleText = null;
+
+  if ('error' === type) {
+    titleText = 'Error';
+
+    if (!!code) {
+      titleText += ` ${code}`;
+    }
+  }
+
+  let title = null;
+
+  if (!!titleText) {
+    title = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, titleText + '. ');
+  }
+
+  let extraClassNames = '';
+
+  if (!!type) {
+    extraClassNames += ` --has-type-${type}`;
+  }
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-NoteBox" + extraClassNames
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, title, message));
+}
+
+/***/ }),
+
+/***/ "./src/components/task/TaskActions.jsx":
+/*!*********************************************!*\
+  !*** ./src/components/task/TaskActions.jsx ***!
+  \*********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TaskActions; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./util */ "./src/components/task/util.js");
+
+
+
+const {
+  useCallback,
+  useContext
+} = wp.element;
+function TaskActions(_ref) {
+  let {
+    taskGID,
+    processingStatus
+  } = _ref;
+  const {
+    deleteTask,
+    unpinTask,
+    removeTask,
+    setTaskProcessingStatus
+  } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__.TaskContext);
+  const handleUnpinTask = useCallback(taskGID => {
+    if (processingStatus) {
+      console.error(`Rejected handleUnpinTask. Currently ${processingStatus} task ${taskGID}.`);
+      return;
+    }
+
+    setTaskProcessingStatus(taskGID, 'unpinning');
+    unpinTask(taskGID).then(success => {
+      if (!success) {
+        // Only set processing status if task wasn't successfully removed.
+        setTaskProcessingStatus(taskGID, false);
+      }
+    });
+  }, [processingStatus, setTaskProcessingStatus, unpinTask]);
+  const handleDeleteTask = useCallback(taskGID => {
+    if (processingStatus) {
+      console.error(`Rejected handleDeleteTask. Currently ${processingStatus} task ${taskGID}.`);
+      return;
+    }
+
+    setTaskProcessingStatus(taskGID, 'deleting');
+    deleteTask(taskGID).then(success => {
+      if (!success) {
+        // Only set processing status if task wasn't removed.
+        setTaskProcessingStatus(taskGID, false);
+      }
+    });
+  }, [processingStatus, setTaskProcessingStatus, removeTask]);
+  const task_url = (0,_util__WEBPACK_IMPORTED_MODULE_2__.getTaskUrl)(taskGID);
+  const unpinIcon = 'unpinning' === processingStatus ? 'fa-sync-alt fa-spin' : 'fa-thumbtack';
+  const deleteIcon = 'deleting' === processingStatus ? 'fa-sync-alt fa-spin' : 'fa-minus';
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-TaskActions"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: task_url,
+    target: "_asana"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    title: "View in Asana",
+    className: "view",
+    type: "button"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-link"
+  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    title: "Unpin from Site",
+    className: "unpin",
+    type: "button",
+    onClick: () => handleUnpinTask(taskGID),
+    disabled: !!processingStatus
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: `fas ${unpinIcon}`
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    title: "Delete from Asana",
+    className: "delete",
+    type: "button",
+    onClick: () => handleDeleteTask(taskGID),
+    disabled: !!processingStatus
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: `fas ${deleteIcon}`
+  })));
+}
+
+/***/ }),
+
+/***/ "./src/components/task/TaskContext.jsx":
+/*!*********************************************!*\
+  !*** ./src/components/task/TaskContext.jsx ***!
+  \*********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "TaskContext": function() { return /* binding */ TaskContext; },
+/* harmony export */   "TaskContextProvider": function() { return /* binding */ TaskContextProvider; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+const {
+  createContext,
+  useState
+} = wp.element;
+const TaskContext = createContext(false);
+function TaskContextProvider(_ref) {
+  let {
+    children
+  } = _ref;
+  const [tasks, setTasks] = useState(Object.values(window.PTCCompletionist.tasks));
+  const context = {
+    "tasks": tasks,
+    setTaskProcessingStatus: (taskGID, processingStatus) => {
+      setTasks(prevTasks => {
+        return prevTasks.map(t => {
+          if (t.gid == taskGID) {
+            return { ...t,
+              'processingStatus': processingStatus
+            };
+          } else {
+            return { ...t
+            };
+          }
+        });
+      });
+    },
+    completeTask: async function (taskGID) {
+      let completed = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      const task = context.tasks.find(t => taskGID === t.gid);
+      let data = {
+        'action': 'ptc_update_task',
+        'nonce': window.PTCCompletionist.api.nonce,
+        'task_gid': taskGID,
+        'completed': completed
+      };
+      const init = {
+        'method': 'POST',
+        'credentials': 'same-origin',
+        'body': new URLSearchParams(data)
+      };
+      return await window.fetch(window.ajaxurl, init).then(res => res.json()).then(res => {
+        console.log(res);
+
+        if (res.status == 'success' && res.data) {
+          context.updateTask({
+            "gid": task.gid,
+            "completed": completed
+          });
+          return true;
+        } else if (res.status == 'error' && res.data) {
+          console.error(res.data);
+        } else {
+          alert('[Completionist] Error ' + res.code + ': ' + res.message);
+        }
+
+        return false;
+      }).catch(err => {
+        console.error('Promise catch:', err);
+        alert('[Completionist] Failed to complete task.');
+        return false;
+      });
+    },
+    deleteTask: async taskGID => {
+      const task = context.tasks.find(t => taskGID === t.gid);
+      let data = {
+        'action': 'ptc_delete_task',
+        'nonce': window.PTCCompletionist.api.nonce,
+        'task_gid': taskGID
+      };
+
+      if (task.action_link.post_id) {
+        data.post_id = task.action_link.post_id;
+      }
+
+      const init = {
+        'method': 'POST',
+        'credentials': 'same-origin',
+        'body': new URLSearchParams(data)
+      };
+      return await window.fetch(window.ajaxurl, init).then(res => res.json()).then(res => {
+        console.log(res);
+
+        if (res.status == 'success' && res.data) {
+          context.removeTask(res.data);
+          return true;
+        } else if (res.status == 'error' && res.data) {
+          console.error(res.data);
+        } else {
+          alert('[Completionist] Error ' + res.code + ': ' + res.message);
+        }
+
+        return false;
+      }).catch(err => {
+        console.error('Promise catch:', err);
+        alert('[Completionist] Failed to delete task.');
+        return false;
+      });
+    },
+    unpinTask: async function (taskGID) {
+      let postID = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      const task = context.tasks.find(t => taskGID === t.gid);
+      let data = {
+        'action': 'ptc_unpin_task',
+        'nonce': window.PTCCompletionist.api.nonce,
+        'task_gid': taskGID
+      };
+
+      if (postID) {
+        data.post_id = postID;
+      }
+
+      const init = {
+        'method': 'POST',
+        'credentials': 'same-origin',
+        'body': new URLSearchParams(data)
+      };
+      return await window.fetch(window.ajaxurl, init).then(res => res.json()).then(res => {
+        console.log(res);
+
+        if (res.status == 'success' && res.data) {
+          context.removeTask(res.data);
+          return true;
+        } else if (res.status == 'error' && res.data) {
+          console.error(res.data);
+        } else {
+          alert('[Completionist] Error ' + res.code + ': ' + res.message);
+        }
+
+        return false;
+      }).catch(err => {
+        console.error('Promise catch:', err);
+        alert('[Completionist] Failed to unpin task.');
+        return false;
+      });
+    },
+
+    /**
+     * @param object taskUpdates A task object containing the "gid" and only
+     * the necessary fields to override.
+     */
+    updateTask: taskUpdates => {
+      setTasks(prevTasks => {
+        return prevTasks.map(t => {
+          if (t.gid == taskUpdates.gid) {
+            return { ...t,
+              ...taskUpdates
+            };
+          } else {
+            return { ...t
+            };
+          }
+        });
+      });
+    },
+    removeTask: taskGID => {
+      setTasks(prevTasks => {
+        return prevTasks.map(t => {
+          if (t.gid != taskGID) {
+            return { ...t
+            };
+          }
+        }).filter(t => !!t);
+      });
+    }
+  };
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TaskContext.Provider, {
+    value: context
+  }, children);
+}
+
+/***/ }),
+
+/***/ "./src/components/task/TaskFilters.jsx":
+/*!*********************************************!*\
+  !*** ./src/components/task/TaskFilters.jsx ***!
+  \*********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TaskFilters; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./util */ "./src/components/task/util.js");
+
+
+
+const {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect
+} = wp.element;
+function TaskFilters(_ref) {
+  let {
+    tasks,
+    onChange
+  } = _ref;
+  const [activeFilter, setActiveFilter] = useState('none');
+  const filters = useMemo(() => {
+    const incompleteTasks = (0,_util__WEBPACK_IMPORTED_MODULE_2__.filterIncompleteTasks)(tasks);
+    return [{
+      "key": 'none',
+      "title": 'All Tasks',
+      "tasks": incompleteTasks
+    }, {
+      "key": 'pinned',
+      "title": 'Pinned',
+      "tasks": (0,_util__WEBPACK_IMPORTED_MODULE_2__.filterPinnedTasks)(incompleteTasks)
+    }, {
+      "key": 'general',
+      "title": 'General',
+      "tasks": (0,_util__WEBPACK_IMPORTED_MODULE_2__.filterGeneralTasks)(incompleteTasks)
+    }, {
+      "key": 'myTasks',
+      "title": 'My Tasks',
+      "tasks": (0,_util__WEBPACK_IMPORTED_MODULE_2__.filterMyTasks)(window.PTCCompletionist.me.gid, incompleteTasks)
+    }, {
+      "key": 'critical',
+      "title": 'Critical',
+      "tasks": (0,_util__WEBPACK_IMPORTED_MODULE_2__.filterCriticalTasks)(incompleteTasks)
+    }];
+  }, [tasks]);
+  useEffect(() => {
+    const filteredTasks = filters.find(f => activeFilter === f.key).tasks;
+    onChange(activeFilter, filteredTasks);
+  }, [filters, activeFilter, onChange]);
+  const handleClickFilter = useCallback((key, filteredTasks) => {
+    setActiveFilter(key);
+  }, [setActiveFilter]);
+  const renderedFilterButtons = filters.map(f => {
+    let className = `filter-${f.key}`;
+
+    if (activeFilter === f.key) {
+      className += ' --is-active';
+    }
+
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      key: f.key,
+      type: "button",
+      className: className,
+      onClick: () => handleClickFilter(f.key, f.tasks)
+    }, `${f.title} (${f.tasks.length})`);
+  });
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-TaskFilters"
+  }, renderedFilterButtons);
+}
+
+/***/ }),
+
+/***/ "./src/components/task/TaskList.jsx":
+/*!******************************************!*\
+  !*** ./src/components/task/TaskList.jsx ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TaskList; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _TaskRow_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskRow.jsx */ "./src/components/task/TaskRow.jsx");
+
+
+function TaskList(_ref) {
+  let {
+    tasks
+  } = _ref;
+  let listContent = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "ptc-no-results"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-clipboard-check"
+  }), "No tasks to display.");
+
+  if (tasks.length > 0) {
+    listContent = tasks.map(t => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskRow_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      key: t.gid,
+      task: t
+    }));
+  }
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-TaskList"
+  }, listContent);
+}
+
+/***/ }),
+
+/***/ "./src/components/task/TaskListPaginated.jsx":
+/*!***************************************************!*\
+  !*** ./src/components/task/TaskListPaginated.jsx ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TaskListPaginated; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _TaskList_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskList.jsx */ "./src/components/task/TaskList.jsx");
+
+
+const {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect
+} = wp.element;
+function TaskListPaginated(_ref) {
+  let {
+    limit,
+    tasks
+  } = _ref;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = useMemo(() => Math.ceil(tasks.length / limit), [tasks, limit]);
+  const goToPage = useCallback(page => {
+    if (page <= 1) {
+      setCurrentPage(1);
+    } else if (page >= totalPages) {
+      setCurrentPage(totalPages);
+    } else {
+      setCurrentPage(page);
+    }
+  }, [currentPage, setCurrentPage, totalPages]);
+  useEffect(() => {
+    goToPage(currentPage);
+  }, [tasks]);
+  const start = Math.max(0, (currentPage - 1) * limit);
+  const currentTasks = tasks.slice(start, currentPage * limit);
+  const renderedPageButtons = [];
+
+  for (let i = 1; i <= totalPages; ++i) {
+    renderedPageButtons.push((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      className: "num",
+      type: "button",
+      title: `Page ${i}`,
+      disabled: i === currentPage,
+      onClick: () => goToPage(i)
+    }, i));
+  }
+
+  console.log('totalPages', totalPages);
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-TaskListPaginated"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskList_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    tasks: currentTasks
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("nav", {
+    className: "pagination"
+  }, totalPages > 1 && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    className: "prev",
+    type: "button",
+    title: "Previous Page",
+    disabled: 1 === currentPage,
+    onClick: () => goToPage(currentPage - 1)
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-angle-left"
+  })), renderedPageButtons, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    className: "next",
+    type: "button",
+    title: "Next Page",
+    disabled: totalPages === currentPage,
+    onClick: () => goToPage(currentPage + 1)
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-angle-right"
+  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: window.PTCCompletionist.tag_url,
+    target: "_asana",
+    className: "view-tag"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    title: "View All Site Tasks in Asana",
+    className: "view",
+    type: "button"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    class: "fas fa-link"
+  }))));
+}
+
+/***/ }),
+
+/***/ "./src/components/task/TaskOverview.jsx":
+/*!**********************************************!*\
+  !*** ./src/components/task/TaskOverview.jsx ***!
+  \**********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TaskOverview; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./util */ "./src/components/task/util.js");
+
+
+
+const {
+  useContext,
+  useMemo
+} = wp.element;
+function TaskOverview() {
+  const {
+    tasks
+  } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__.TaskContext);
+  const incompleteTasks = useMemo(() => (0,_util__WEBPACK_IMPORTED_MODULE_2__.filterIncompleteTasks)(tasks), [tasks]);
+  const completedCount = tasks.length - incompleteTasks.length;
+  let completedPercent = 0;
+
+  if (tasks.length > 0) {
+    completedPercent = Math.round(completedCount / tasks.length * 100);
+  }
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-TaskOverview"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "feature"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "large"
+  }, completedPercent, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "small"
+  }, "%")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "caption"
+  }, "Complete")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "details"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "incomplete"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "count"
+  }, incompleteTasks.length), " Remaining"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "progress"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "progress-bar-wrapper"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "progress-bar",
+    style: {
+      width: `${completedPercent}%`
+    }
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "caption"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "completed"
+  }, "Completed ", completedCount), " of ", tasks.length))));
+}
+
+/***/ }),
+
+/***/ "./src/components/task/TaskRow.jsx":
+/*!*****************************************!*\
+  !*** ./src/components/task/TaskRow.jsx ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TaskRow; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _TaskActions_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskActions.jsx */ "./src/components/task/TaskActions.jsx");
+/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./util */ "./src/components/task/util.js");
+
+
+
+
+const {
+  useState,
+  useCallback,
+  useContext
+} = wp.element;
+function TaskRow(_ref) {
+  let {
+    task
+  } = _ref;
+  const [showDescription, setShowDescription] = useState(false);
+  const {
+    completeTask,
+    setTaskProcessingStatus
+  } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__.TaskContext);
+  const handleMarkComplete = useCallback(taskGID => {
+    if (task.processingStatus) {
+      console.error(`Rejected handleMarkComplete. Currently ${task.processingStatus} task ${taskGID}.`);
+      return;
+    }
+
+    setTaskProcessingStatus(taskGID, 'completing');
+    completeTask(taskGID).then(success => {
+      setTaskProcessingStatus(taskGID, false);
+    });
+  }, [task.processingStatus, setTaskProcessingStatus, completeTask]);
+  const handleToggleDescription = useCallback(() => {
+    if (!task.notes) {
+      return;
+    }
+
+    setShowDescription(!showDescription);
+  }, [task, showDescription, setShowDescription]);
+  const notesIconClassName = showDescription ? 'fas' : 'far';
+  let assigneeDisplayName = null;
+
+  if (task.assignee) {
+    if (window.PTCCompletionist.users[task.assignee.gid]) {
+      assigneeDisplayName = window.PTCCompletionist.users[task.assignee.gid].data.display_name;
+    } else {
+      assigneeDisplayName = '(Not Connected)';
+    }
+  }
+
+  let extraClassNames = '';
+
+  if ((0,_util__WEBPACK_IMPORTED_MODULE_3__.isCriticalTask)(task)) {
+    extraClassNames += ' --is-critical';
+  }
+
+  if (true === task.completed) {
+    extraClassNames += ' --is-complete';
+  }
+
+  if (task.processingStatus) {
+    extraClassNames += ` --is-processing --is-${task.processingStatus}`;
+  }
+
+  if (!!task.notes) {
+    extraClassNames += ' --has-description';
+  }
+
+  const markCompleteIcon = 'completing' === task.processingStatus ? 'fa-sync-alt fa-spin' : 'fa-check';
+  const dueOnDateString = new Date(task.due_on).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-TaskRow" + extraClassNames
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    title: "Mark Complete",
+    className: "mark-complete",
+    type: "button",
+    onClick: () => handleMarkComplete(task.gid),
+    disabled: !!task.processingStatus
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: `fas ${markCompleteIcon}`
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "body"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "name",
+    onClick: handleToggleDescription
+  }, task.name, !!task.notes && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: `${notesIconClassName} fa-sticky-note`
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "details"
+  }, assigneeDisplayName && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "assignee"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    class: "fas fa-user"
+  }), " ", assigneeDisplayName), task.due_on && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "due"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-clock"
+  }), " ", dueOnDateString)), showDescription && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "description"
+  }, task.notes)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "actions"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    className: "cta-button",
+    href: task.action_link.href,
+    target: task.action_link.target
+  }, task.action_link.label, " ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-long-arrow-alt-right"
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskActions_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    taskGID: task.gid,
+    processingStatus: task.processingStatus
+  })));
+}
+
+/***/ }),
+
+/***/ "@wordpress/element":
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+/***/ (function(module) {
+
+module.exports = window["wp"]["element"];
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	!function() {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = function(module) {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				function() { return module['default']; } :
+/******/ 				function() { return module; };
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	!function() {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = function(exports, definition) {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	!function() {
+/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	!function() {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = function(exports) {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+!function() {
+/*!***************************************!*\
+  !*** ./src/index_DashboardWidget.jsx ***!
+  \***************************************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _components_PTCCompletionistTasksDashboardWidget_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/PTCCompletionistTasksDashboardWidget.jsx */ "./src/components/PTCCompletionistTasksDashboardWidget.jsx");
+/* harmony import */ var _components_notice_NoteBox_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/notice/NoteBox.jsx */ "./src/components/notice/NoteBox.jsx");
+/* harmony import */ var _components_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/task/TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+
+
+
+
+const {
+  render
+} = wp.element;
+document.addEventListener('DOMContentLoaded', () => {
+  const rootNode = document.getElementById('ptc-PTCCompletionistTasksDashboardWidget');
+
+  if (null !== rootNode) {
+    if ('error' in window.PTCCompletionist) {
+      render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_notice_NoteBox_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        type: "error",
+        message: window.PTCCompletionist.error.message,
+        code: window.PTCCompletionist.error.code
+      }), rootNode);
+    } else {
+      render((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_3__.TaskContextProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_PTCCompletionistTasksDashboardWidget_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], null)), rootNode);
+    }
+  }
+});
+}();
+/******/ })()
+;
+//# sourceMappingURL=index_DashboardWidget.jsx.js.map

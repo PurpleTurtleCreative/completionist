@@ -35,6 +35,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 			add_action( 'admin_menu', [ __CLASS__, 'add_admin_pages' ] );
 			add_filter( 'plugin_action_links_' . PLUGIN_BASENAME, [ __CLASS__, 'filter_plugin_action_links' ] );
 			add_action( 'admin_enqueue_scripts', [ __CLASS__, 'register_scripts' ] );
+			add_action( 'enqueue_block_editor_assets', [ __CLASS__, 'register_block_editor_assets' ] );
 		}
 
 		/**
@@ -280,5 +281,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					break;
 			}//end switch hook suffix
 		}//end register_scripts()
+
+		public static function register_block_editor_assets() {
+			$asset_file = require_once( PLUGIN_PATH . 'build/index_PinnedTasksMetabox.jsx.asset.php' );
+			wp_enqueue_script(
+				'ptc-completionist-block-editor',
+				PLUGIN_URL . '/build/index_PinnedTasksMetabox.jsx.js',
+				$asset_file['dependencies'],
+				PLUGIN_VERSION
+			);
+		}
 	}//end class
 }
