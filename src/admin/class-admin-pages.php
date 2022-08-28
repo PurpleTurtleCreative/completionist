@@ -282,13 +282,65 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 			}//end switch hook suffix
 		}//end register_scripts()
 
+		/**
+		 * Register assets for the Block Editor screen.
+		 *
+		 * @since [unreleased]
+		 */
 		public static function register_block_editor_assets() {
-			$asset_file = require_once( PLUGIN_PATH . 'build/index_PinnedTasksMetabox.jsx.asset.php' );
+			$asset_file = require_once( PLUGIN_PATH . 'build/index_BlockEditor.jsx.asset.php' );
 			wp_enqueue_script(
 				'ptc-completionist-block-editor',
-				PLUGIN_URL . '/build/index_PinnedTasksMetabox.jsx.js',
+				PLUGIN_URL . '/build/index_BlockEditor.jsx.js',
 				$asset_file['dependencies'],
 				PLUGIN_VERSION
+			);
+			wp_enqueue_style(
+				'ptc-completionist-block-editor',
+				PLUGIN_URL . '/build/index_BlockEditor.jsx.css',
+				[],
+				PLUGIN_VERSION
+			);
+			try {
+				require_once PLUGIN_PATH . 'src/includes/class-options.php';
+				require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
+
+				$all_site_tasks = Asana_Interface::maybe_get_all_site_tasks();
+				$pinned_task_gids = Options::get( Options::PINNED_TASK_GID, get_the_ID() );
+				// Map pinned task gids to full task objects.
+				$pinned_tasks = [];
+				foreach ( $pinned_task_gids as &$task_gid ) {
+					$pinned_tasks[ $task_gid ] = $all_site_tasks[ $task_gid ];
+				}
+
+				$js_data = [
+					'api' => [
+						'nonce_pin' => wp_create_nonce( 'ptc_completionist' ),
+						'nonce_list' => wp_create_nonce( 'ptc_completionist_list_task' ),
+						'nonce_create' => wp_create_nonce( 'ptc_completionist_create_task' ),
+						'nonce_delete' => wp_create_nonce( 'ptc_completionist' ),
+						'nonce_update' => wp_create_nonce( 'ptc_completionist' ),
+						'nonce' => wp_create_nonce( 'ptc_completionist' ),
+						'url' => get_rest_url(),
+					],
+					'tasks' => $pinned_tasks,
+					'users' => Asana_Interface::get_connected_workspace_users(),
+					'me' => Asana_Interface::get_me(),
+					'tag_url' => HTML_Builder::get_asana_tag_url(),
+				];
+			} catch ( \Exception $err ) {
+				$js_data = [
+					'error' => [
+						'code' => $err->getCode(),
+						'message' => $err->getMessage(),
+					],
+				];
+			}
+			$js_data = json_encode( $js_data );
+			wp_add_inline_script(
+				'ptc-completionist-block-editor',
+				"var PTCCompletionist = {$js_data};",
+				'before'
 			);
 		}
 	}//end class
