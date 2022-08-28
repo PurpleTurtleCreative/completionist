@@ -1,0 +1,67 @@
+@import '../abstracts/colors';
+
+@import 'task/TaskListPaginated';
+
+//----------------------
+
+.components-panel__body.ptc-completionist-tasks {
+	padding: 0;
+
+	.components-panel__body-title {
+		margin-top: 0;
+		margin-left: 0;
+		margin-right: 0;
+	}
+
+	&.is-opened {
+
+		.ptc-BlockEditorPanelTasks {
+
+			.ptc-TaskListPaginated {
+
+				.ptc-TaskList {
+
+					.ptc-TaskRow {
+						flex-wrap: wrap;
+						padding: 10px 16px;
+
+						.body {
+							.name {
+								font-size: 1.15em;
+								word-break: break-word;
+							}
+						}
+
+						.actions {
+
+							.cta-button {
+								display: none;
+							}
+
+							.ptc-TaskActions {
+								margin: 0;
+								display: flex;
+								flex-direction: column;
+
+								button {
+									font-size: 0.9em;
+									margin-left: 0;
+									margin-right: 0;
+								}
+							}//end .ptc-TaskActions
+						}
+					}
+				}
+
+				nav.pagination {
+					padding-left: 16px;
+					padding-right: 16px;
+				}
+
+				a.view-tag {
+					display: none;
+				}
+			}
+		}//.ptc-BlockEditorPanelTasks
+	}//&.is-opened
+}

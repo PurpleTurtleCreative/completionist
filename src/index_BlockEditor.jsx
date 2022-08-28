@@ -1,12 +1,10 @@
 import { registerPlugin } from '@wordpress/plugins';
 import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 
-import PTCCompletionistTasksDashboardWidget from './components/PTCCompletionistTasksDashboardWidget.jsx';
+import BlockEditorPanelTasks from './components/BlockEditorPanelTasks.jsx';
 import NoteBox from './components/notice/NoteBox.jsx';
 
 import { TaskContextProvider } from './components/task/TaskContext.jsx';
-
-import '../assets/styles/scss/dashboard-widget.scss';
 
 const registerCompletionistPlugin = () => {
 
@@ -18,7 +16,7 @@ const registerCompletionistPlugin = () => {
 	} else {
 		tasksPanelContent = (
 			<TaskContextProvider>
-				<PTCCompletionistTasksDashboardWidget />
+				<BlockEditorPanelTasks />
 			</TaskContextProvider>
 		);
 	}
@@ -29,7 +27,6 @@ const registerCompletionistPlugin = () => {
 				title="Completionist"
 				className="ptc-completionist-tasks"
 		>
-			<p>The current post ID is: { wp.data.select("core/editor").getCurrentPostId() }</p>
 			{ tasksPanelContent }
 		</PluginDocumentSettingPanel>
 	);

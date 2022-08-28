@@ -65,51 +65,37 @@ function filterPinnedTasks(tasks) {
 
 /***/ }),
 
-/***/ "./src/components/PTCCompletionistTasksDashboardWidget.jsx":
-/*!*****************************************************************!*\
-  !*** ./src/components/PTCCompletionistTasksDashboardWidget.jsx ***!
-  \*****************************************************************/
+/***/ "./src/components/BlockEditorPanelTasks.jsx":
+/*!**************************************************!*\
+  !*** ./src/components/BlockEditorPanelTasks.jsx ***!
+  \**************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ PTCCompletionistTasksDashboardWidget; }
+/* harmony export */   "default": function() { return /* binding */ BlockEditorPanelTasks; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _task_TaskOverview_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task/TaskOverview.jsx */ "./src/components/task/TaskOverview.jsx");
-/* harmony import */ var _task_TaskFilters_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task/TaskFilters.jsx */ "./src/components/task/TaskFilters.jsx");
-/* harmony import */ var _task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./task/TaskListPaginated.jsx */ "./src/components/task/TaskListPaginated.jsx");
-/* harmony import */ var _task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./task/TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
-/* harmony import */ var _task_util__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./task/util */ "./src/components/task/util.js");
-
-
+/* harmony import */ var _task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task/TaskListPaginated.jsx */ "./src/components/task/TaskListPaginated.jsx");
+/* harmony import */ var _task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task/TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+/* harmony import */ var _assets_styles_scss_components_BlockEditorPanelTasks_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../../../assets/styles/scss/components/BlockEditorPanelTasks.scss */ "./assets/styles/scss/components/BlockEditorPanelTasks.scss");
 
 
 
 
 const {
-  useContext,
-  useCallback,
-  useState,
-  useEffect
+  useContext
 } = wp.element;
-function PTCCompletionistTasksDashboardWidget() {
+function BlockEditorPanelTasks() {
   const {
     tasks
-  } = useContext(_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_4__.TaskContext);
-  const [visibleTasks, setVisibleTasks] = useState((0,_task_util__WEBPACK_IMPORTED_MODULE_5__.filterIncompleteTasks)(tasks));
-  const handleFilterChange = useCallback((_key, selectedTasks) => setVisibleTasks(selectedTasks), []);
+  } = useContext(_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__.TaskContext);
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "ptc-PTCCompletionistTasksDashboardWidget"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskOverview_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    className: "ptc-BlockEditorPanelTasks"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    limit: 3,
     tasks: tasks
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskFilters_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    tasks: tasks,
-    onChange: handleFilterChange
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    limit: 5,
-    tasks: visibleTasks
   }));
 }
 
@@ -444,87 +430,6 @@ function TaskContextProvider(_ref) {
 
 /***/ }),
 
-/***/ "./src/components/task/TaskFilters.jsx":
-/*!*********************************************!*\
-  !*** ./src/components/task/TaskFilters.jsx ***!
-  \*********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ TaskFilters; }
-/* harmony export */ });
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./util */ "./src/components/task/util.js");
-
-
-
-const {
-  useState,
-  useCallback,
-  useMemo,
-  useEffect
-} = wp.element;
-function TaskFilters(_ref) {
-  let {
-    tasks,
-    onChange
-  } = _ref;
-  const [activeFilter, setActiveFilter] = useState('none');
-  const filters = useMemo(() => {
-    const incompleteTasks = (0,_util__WEBPACK_IMPORTED_MODULE_2__.filterIncompleteTasks)(tasks);
-    return [{
-      "key": 'none',
-      "title": 'All Tasks',
-      "tasks": incompleteTasks
-    }, {
-      "key": 'pinned',
-      "title": 'Pinned',
-      "tasks": (0,_util__WEBPACK_IMPORTED_MODULE_2__.filterPinnedTasks)(incompleteTasks)
-    }, {
-      "key": 'general',
-      "title": 'General',
-      "tasks": (0,_util__WEBPACK_IMPORTED_MODULE_2__.filterGeneralTasks)(incompleteTasks)
-    }, {
-      "key": 'myTasks',
-      "title": 'My Tasks',
-      "tasks": (0,_util__WEBPACK_IMPORTED_MODULE_2__.filterMyTasks)(window.PTCCompletionist.me.gid, incompleteTasks)
-    }, {
-      "key": 'critical',
-      "title": 'Critical',
-      "tasks": (0,_util__WEBPACK_IMPORTED_MODULE_2__.filterCriticalTasks)(incompleteTasks)
-    }];
-  }, [tasks]);
-  useEffect(() => {
-    const filteredTasks = filters.find(f => activeFilter === f.key).tasks;
-    onChange(activeFilter, filteredTasks);
-  }, [filters, activeFilter, onChange]);
-  const handleClickFilter = useCallback((key, filteredTasks) => {
-    setActiveFilter(key);
-  }, [setActiveFilter]);
-  const renderedFilterButtons = filters.map(f => {
-    let className = `filter-${f.key}`;
-
-    if (activeFilter === f.key) {
-      className += ' --is-active';
-    }
-
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-      key: f.key,
-      type: "button",
-      className: className,
-      onClick: () => handleClickFilter(f.key, f.tasks)
-    }, `${f.title} (${f.tasks.length})`);
-  });
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "ptc-TaskFilters"
-  }, renderedFilterButtons);
-}
-
-/***/ }),
-
 /***/ "./src/components/task/TaskList.jsx":
 /*!******************************************!*\
   !*** ./src/components/task/TaskList.jsx ***!
@@ -652,73 +557,6 @@ function TaskListPaginated(_ref) {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     class: "fas fa-link"
   }))));
-}
-
-/***/ }),
-
-/***/ "./src/components/task/TaskOverview.jsx":
-/*!**********************************************!*\
-  !*** ./src/components/task/TaskOverview.jsx ***!
-  \**********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ TaskOverview; }
-/* harmony export */ });
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./util */ "./src/components/task/util.js");
-
-
-
-const {
-  useContext,
-  useMemo
-} = wp.element;
-function TaskOverview() {
-  const {
-    tasks
-  } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__.TaskContext);
-  const incompleteTasks = useMemo(() => (0,_util__WEBPACK_IMPORTED_MODULE_2__.filterIncompleteTasks)(tasks), [tasks]);
-  const completedCount = tasks.length - incompleteTasks.length;
-  let completedPercent = 0;
-
-  if (tasks.length > 0) {
-    completedPercent = Math.round(completedCount / tasks.length * 100);
-  }
-
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "ptc-TaskOverview"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "feature"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "large"
-  }, completedPercent, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "small"
-  }, "%")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "caption"
-  }, "Complete")), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "details"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "incomplete"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "count"
-  }, incompleteTasks.length), " Remaining"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "progress"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "progress-bar-wrapper"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "progress-bar",
-    style: {
-      width: `${completedPercent}%`
-    }
-  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
-    className: "caption"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: "completed"
-  }, "Completed ", completedCount), " of ", tasks.length))));
 }
 
 /***/ }),
@@ -854,10 +692,10 @@ function TaskRow(_ref) {
 
 /***/ }),
 
-/***/ "./assets/styles/scss/dashboard-widget.scss":
-/*!**************************************************!*\
-  !*** ./assets/styles/scss/dashboard-widget.scss ***!
-  \**************************************************/
+/***/ "./assets/styles/scss/components/BlockEditorPanelTasks.scss":
+/*!******************************************************************!*\
+  !*** ./assets/styles/scss/components/BlockEditorPanelTasks.scss ***!
+  \******************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -977,11 +815,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_plugins__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_plugins__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_edit_post__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/edit-post */ "@wordpress/edit-post");
 /* harmony import */ var _wordpress_edit_post__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_edit_post__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _components_PTCCompletionistTasksDashboardWidget_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/PTCCompletionistTasksDashboardWidget.jsx */ "./src/components/PTCCompletionistTasksDashboardWidget.jsx");
+/* harmony import */ var _components_BlockEditorPanelTasks_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/BlockEditorPanelTasks.jsx */ "./src/components/BlockEditorPanelTasks.jsx");
 /* harmony import */ var _components_notice_NoteBox_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/notice/NoteBox.jsx */ "./src/components/notice/NoteBox.jsx");
 /* harmony import */ var _components_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/task/TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
-/* harmony import */ var _assets_styles_scss_dashboard_widget_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../assets/styles/scss/dashboard-widget.scss */ "./assets/styles/scss/dashboard-widget.scss");
-
 
 
 
@@ -1000,14 +836,14 @@ const registerCompletionistPlugin = () => {
       code: window.PTCCompletionist.error.code
     });
   } else {
-    tasksPanelContent = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_5__.TaskContextProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_PTCCompletionistTasksDashboardWidget_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], null));
+    tasksPanelContent = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_5__.TaskContextProvider, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_BlockEditorPanelTasks_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], null));
   }
 
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_edit_post__WEBPACK_IMPORTED_MODULE_2__.PluginDocumentSettingPanel, {
     name: "ptc-completionist-tasks",
     title: "Completionist",
     className: "ptc-completionist-tasks"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "The current post ID is: ", wp.data.select("core/editor").getCurrentPostId()), tasksPanelContent);
+  }, tasksPanelContent);
 };
 
 (0,_wordpress_plugins__WEBPACK_IMPORTED_MODULE_1__.registerPlugin)('ptc-completionist', {
