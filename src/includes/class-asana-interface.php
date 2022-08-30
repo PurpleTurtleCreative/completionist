@@ -612,6 +612,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 					}
 				}
 
+				$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
+
 				return $task;
 			} catch ( \Exception $e ) {
 

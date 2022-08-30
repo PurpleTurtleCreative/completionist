@@ -443,6 +443,37 @@ function TaskContextProvider(_ref) {
         return false;
       });
     },
+    pinTask: async (taskLink, postID) => {
+      let data = {
+        'action': 'ptc_pin_task',
+        'nonce': window.PTCCompletionist.api.nonce_pin,
+        'task_link': taskLink,
+        'post_id': postID
+      };
+      const init = {
+        'method': 'POST',
+        'credentials': 'same-origin',
+        'body': new URLSearchParams(data)
+      };
+      return await window.fetch(window.ajaxurl, init).then(res => res.json()).then(res => {
+        console.log(res);
+
+        if (res.status == 'success' && res.data) {
+          context.addTask(res.data);
+          return true;
+        } else if (res.status == 'error' && res.data) {
+          console.error(res.data);
+        } else {
+          alert('[Completionist] Error ' + res.code + ': ' + res.message);
+        }
+
+        return false;
+      }).catch(err => {
+        console.error('Promise catch:', err);
+        alert('[Completionist] Failed to pin task.');
+        return false;
+      });
+    },
 
     /**
      * @param object taskUpdates A task object containing the "gid" and only
@@ -460,6 +491,12 @@ function TaskContextProvider(_ref) {
             };
           }
         });
+      });
+    },
+    addTask: task => {
+      setTasks(prevTasks => {
+        return [{ ...task
+        }, ...prevTasks];
       });
     },
     removeTask: taskGID => {
@@ -763,31 +800,58 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
 
-// import { TaskContext } from './TaskContext.jsx';
-// const { useState, useCallback, useMemo, useEffect } = wp.element;
+
+const {
+  useState,
+  useContext
+} = wp.element;
 function TaskPinToPostForm(_ref) {
   let {
     postId
   } = _ref;
+  const [taskLink, setTaskLink] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const {
+    pinTask
+  } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__.TaskContext);
 
   const handleFormSubmit = event => {
     event.preventDefault();
     window.console.log(`== Submitted TaskPinToPostForm for postId ${postId} ==`);
     window.console.log(event);
+
+    if (isProcessing) {
+      return;
+    }
+
+    setIsProcessing(true);
+    pinTask(taskLink, postId).then(success => {
+      if (success) {
+        setTaskLink('');
+      }
+
+      setIsProcessing(false);
+    });
   };
 
+  const submitIconClass = isProcessing ? 'fas fa-sync-alt fa-spin' : 'fas fa-thumbtack';
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
     className: "ptc-TaskPinToPostForm",
     onSubmit: handleFormSubmit
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
     type: "url",
-    placeholder: "Paste a task link..."
+    placeholder: "Paste a task link...",
+    value: taskLink,
+    onChange: e => setTaskLink(e.target.value),
+    disabled: isProcessing
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     title: "Pin existing Asana task",
     type: "submit"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    className: "fas fa-thumbtack"
+    className: submitIconClass,
+    disabled: isProcessing
   })));
 }
 

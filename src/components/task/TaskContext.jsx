@@ -152,6 +152,44 @@ export function TaskContextProvider({children}) {
 				});
 		},
 
+		pinTask: async (taskLink, postID) => {
+
+			let data = {
+				'action': 'ptc_pin_task',
+				'nonce': window.PTCCompletionist.api.nonce_pin,
+				'task_link': taskLink,
+				'post_id': postID
+			};
+
+			const init = {
+				'method': 'POST',
+				'credentials': 'same-origin',
+				'body': new URLSearchParams(data)
+			};
+
+			return await window.fetch(window.ajaxurl, init)
+				.then( res => res.json() )
+				.then( res => {
+					console.log(res);
+
+					if(res.status == 'success' && res.data) {
+						context.addTask(res.data);
+						return true;
+					} else if(res.status == 'error' && res.data) {
+						console.error(res.data);
+					} else {
+						alert('[Completionist] Error '+res.code+': '+res.message);
+					}
+
+					return false;
+				})
+				.catch( err => {
+					console.error('Promise catch:', err);
+					alert('[Completionist] Failed to pin task.');
+					return false;
+				});
+		},
+
 		/**
 		 * @param object taskUpdates A task object containing the "gid" and only
 		 * the necessary fields to override.
@@ -168,6 +206,15 @@ export function TaskContextProvider({children}) {
 						return { ...t };
 					}
 				});
+			});
+		},
+
+		addTask: (task) => {
+			setTasks(prevTasks => {
+				return [
+					{ ...task },
+					...prevTasks
+				]
 			});
 		},
 
