@@ -16,8 +16,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "filterCriticalTasks": function() { return /* binding */ filterCriticalTasks; },
 /* harmony export */   "filterMyTasks": function() { return /* binding */ filterMyTasks; },
 /* harmony export */   "filterGeneralTasks": function() { return /* binding */ filterGeneralTasks; },
-/* harmony export */   "filterPinnedTasks": function() { return /* binding */ filterPinnedTasks; }
+/* harmony export */   "filterPinnedTasks": function() { return /* binding */ filterPinnedTasks; },
+/* harmony export */   "getAssigneeDisplayName": function() { return /* binding */ getAssigneeDisplayName; },
+/* harmony export */   "getWorkspaceProjectSelectOptions": function() { return /* binding */ getWorkspaceProjectSelectOptions; },
+/* harmony export */   "getWorkspaceUserSelectOptions": function() { return /* binding */ getWorkspaceUserSelectOptions; }
 /* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+
 /**
  * Utility functions unrelated to application state.
  */
@@ -61,6 +68,44 @@ function filterPinnedTasks(tasks) {
 
     return false;
   });
+}
+function getAssigneeDisplayName(task) {
+  let assigneeDisplayName = null;
+
+  if (task.assignee) {
+    if (window.PTCCompletionist.users[task.assignee.gid]) {
+      assigneeDisplayName = window.PTCCompletionist.users[task.assignee.gid].data.display_name;
+    } else {
+      assigneeDisplayName = '(Not Connected)';
+    }
+  }
+
+  return assigneeDisplayName;
+}
+function getWorkspaceProjectSelectOptions() {
+  const projectOptions = [];
+
+  for (const projectGID in window.PTCCompletionist.projects) {
+    projectOptions.push((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: projectGID,
+      key: projectGID
+    }, window.PTCCompletionist.projects[projectGID]));
+  }
+
+  return projectOptions;
+}
+function getWorkspaceUserSelectOptions() {
+  const userOptions = [];
+
+  for (const userGID in window.PTCCompletionist.users) {
+    const user = window.PTCCompletionist.users[userGID].data;
+    userOptions.push((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: userGID,
+      key: userGID
+    }, `${user.display_name} (${user.user_email})`));
+  }
+
+  return userOptions;
 }
 
 /***/ }),
@@ -775,16 +820,7 @@ function TaskRow(_ref) {
     setShowDescription(!showDescription);
   }, [task, showDescription, setShowDescription]);
   const notesIconClassName = showDescription ? 'fas' : 'far';
-  let assigneeDisplayName = null;
-
-  if (task.assignee) {
-    if (window.PTCCompletionist.users[task.assignee.gid]) {
-      assigneeDisplayName = window.PTCCompletionist.users[task.assignee.gid].data.display_name;
-    } else {
-      assigneeDisplayName = '(Not Connected)';
-    }
-  }
-
+  let assigneeDisplayName = (0,_util__WEBPACK_IMPORTED_MODULE_3__.getAssigneeDisplayName)(task);
   let extraClassNames = '';
 
   if ((0,_util__WEBPACK_IMPORTED_MODULE_3__.isCriticalTask)(task)) {

@@ -16,8 +16,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "filterCriticalTasks": function() { return /* binding */ filterCriticalTasks; },
 /* harmony export */   "filterMyTasks": function() { return /* binding */ filterMyTasks; },
 /* harmony export */   "filterGeneralTasks": function() { return /* binding */ filterGeneralTasks; },
-/* harmony export */   "filterPinnedTasks": function() { return /* binding */ filterPinnedTasks; }
+/* harmony export */   "filterPinnedTasks": function() { return /* binding */ filterPinnedTasks; },
+/* harmony export */   "getAssigneeDisplayName": function() { return /* binding */ getAssigneeDisplayName; },
+/* harmony export */   "getWorkspaceProjectSelectOptions": function() { return /* binding */ getWorkspaceProjectSelectOptions; },
+/* harmony export */   "getWorkspaceUserSelectOptions": function() { return /* binding */ getWorkspaceUserSelectOptions; }
 /* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+
 /**
  * Utility functions unrelated to application state.
  */
@@ -62,6 +69,44 @@ function filterPinnedTasks(tasks) {
     return false;
   });
 }
+function getAssigneeDisplayName(task) {
+  let assigneeDisplayName = null;
+
+  if (task.assignee) {
+    if (window.PTCCompletionist.users[task.assignee.gid]) {
+      assigneeDisplayName = window.PTCCompletionist.users[task.assignee.gid].data.display_name;
+    } else {
+      assigneeDisplayName = '(Not Connected)';
+    }
+  }
+
+  return assigneeDisplayName;
+}
+function getWorkspaceProjectSelectOptions() {
+  const projectOptions = [];
+
+  for (const projectGID in window.PTCCompletionist.projects) {
+    projectOptions.push((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: projectGID,
+      key: projectGID
+    }, window.PTCCompletionist.projects[projectGID]));
+  }
+
+  return projectOptions;
+}
+function getWorkspaceUserSelectOptions() {
+  const userOptions = [];
+
+  for (const userGID in window.PTCCompletionist.users) {
+    const user = window.PTCCompletionist.users[userGID].data;
+    userOptions.push((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: userGID,
+      key: userGID
+    }, `${user.display_name} (${user.user_email})`));
+  }
+
+  return userOptions;
+}
 
 /***/ }),
 
@@ -77,9 +122,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task/TaskListPaginated.jsx */ "./src/components/task/TaskListPaginated.jsx");
-/* harmony import */ var _task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task/TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
-/* harmony import */ var _assets_styles_scss_components_BlockEditorPanelTasks_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../../../assets/styles/scss/components/BlockEditorPanelTasks.scss */ "./assets/styles/scss/components/BlockEditorPanelTasks.scss");
+/* harmony import */ var _task_TaskPinToPostBar_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task/TaskPinToPostBar.jsx */ "./src/components/task/TaskPinToPostBar.jsx");
+/* harmony import */ var _task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task/TaskListPaginated.jsx */ "./src/components/task/TaskListPaginated.jsx");
+/* harmony import */ var _task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./task/TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+/* harmony import */ var _assets_styles_scss_components_BlockEditorPanelTasks_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../../../../assets/styles/scss/components/BlockEditorPanelTasks.scss */ "./assets/styles/scss/components/BlockEditorPanelTasks.scss");
+
 
 
 
@@ -90,10 +137,13 @@ const {
 function BlockEditorPanelTasks() {
   const {
     tasks
-  } = useContext(_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_2__.TaskContext);
+  } = useContext(_task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_3__.TaskContext);
+  const currentPostId = wp.data.select('core/editor').getCurrentPostId();
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "ptc-BlockEditorPanelTasks"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskPinToPostBar_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    postId: currentPostId
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
     limit: 3,
     tasks: tasks
   }));
@@ -430,6 +480,87 @@ function TaskContextProvider(_ref) {
 
 /***/ }),
 
+/***/ "./src/components/task/TaskCreationForm.jsx":
+/*!**************************************************!*\
+  !*** ./src/components/task/TaskCreationForm.jsx ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TaskCreationForm; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./util */ "./src/components/task/util.js");
+
+// import { TaskContext } from './TaskContext.jsx';
+
+const {
+  useMemo
+} = wp.element;
+function TaskCreationForm(_ref) {
+  let {
+    postId = null
+  } = _ref;
+  const workspaceProjectSelectOptions = useMemo(_util__WEBPACK_IMPORTED_MODULE_1__.getWorkspaceProjectSelectOptions, []);
+  const workspaceUserSelectOptions = useMemo(_util__WEBPACK_IMPORTED_MODULE_1__.getWorkspaceUserSelectOptions, []);
+
+  const handleFormSubmit = event => {
+    event.preventDefault();
+    window.console.log(`== Submitted TaskCreationForm for postId ${postId} ==`);
+    window.console.log(event);
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
+    className: "ptc-TaskCreationForm",
+    onSubmit: handleFormSubmit
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    id: "ptc-new-task_name",
+    type: "text",
+    placeholder: "Write a task name...",
+    required: true
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "form-group"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    for: "ptc-new-task_assignee"
+  }, "Assignee"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    id: "ptc-new-task_assignee"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: ""
+  }, "None (Unassigned)"), workspaceUserSelectOptions)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "form-group"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    for: "ptc-new-task_due_on"
+  }, "Due Date"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    id: "ptc-new-task_due_on",
+    type: "date",
+    pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\d",
+    placeholder: "yyyy-mm-dd"
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "form-group"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    for: "ptc-new-task_project"
+  }, "Project"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    id: "ptc-new-task_project"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: ""
+  }, "None (Private Task)"), workspaceProjectSelectOptions)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "form-group"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    for: "ptc-new-task_notes"
+  }, "Description"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
+    id: "ptc-new-task_notes"
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "submit"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-plus",
+    "aria-hidden": "true"
+  }), "Add Task"));
+}
+
+/***/ }),
+
 /***/ "./src/components/task/TaskList.jsx":
 /*!******************************************!*\
   !*** ./src/components/task/TaskList.jsx ***!
@@ -561,6 +692,107 @@ function TaskListPaginated(_ref) {
 
 /***/ }),
 
+/***/ "./src/components/task/TaskPinToPostBar.jsx":
+/*!**************************************************!*\
+  !*** ./src/components/task/TaskPinToPostBar.jsx ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TaskPinToPostBar; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _TaskPinToPostForm_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskPinToPostForm.jsx */ "./src/components/task/TaskPinToPostForm.jsx");
+/* harmony import */ var _TaskCreationForm_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TaskCreationForm.jsx */ "./src/components/task/TaskCreationForm.jsx");
+/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+
+
+
+
+const {
+  useState
+} = wp.element;
+function TaskPinToPostBar(_ref) {
+  let {
+    postId
+  } = _ref;
+  const [showTaskCreationForm, setShowTaskCreationForm] = useState(false);
+
+  const toggleTaskCreationForm = () => {
+    setShowTaskCreationForm(!showTaskCreationForm);
+  };
+
+  const creationFormToggleIconClass = showTaskCreationForm ? 'fas fa-times' : 'fas fa-plus';
+  let extraClassNames = '';
+
+  if (showTaskCreationForm) {
+    extraClassNames += ' --is-showing-creation-form';
+  }
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "ptc-TaskPinToPostBar" + extraClassNames
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "toolbar"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskPinToPostForm_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    postId: postId
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    title: "Create new task",
+    onClick: toggleTaskCreationForm
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: creationFormToggleIconClass,
+    "aria-hidden": "true"
+  }))), showTaskCreationForm && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskCreationForm_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    postId: postId
+  }));
+}
+
+/***/ }),
+
+/***/ "./src/components/task/TaskPinToPostForm.jsx":
+/*!***************************************************!*\
+  !*** ./src/components/task/TaskPinToPostForm.jsx ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ TaskPinToPostForm; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+// import { TaskContext } from './TaskContext.jsx';
+// const { useState, useCallback, useMemo, useEffect } = wp.element;
+function TaskPinToPostForm(_ref) {
+  let {
+    postId
+  } = _ref;
+
+  const handleFormSubmit = event => {
+    event.preventDefault();
+    window.console.log(`== Submitted TaskPinToPostForm for postId ${postId} ==`);
+    window.console.log(event);
+  };
+
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
+    className: "ptc-TaskPinToPostForm",
+    onSubmit: handleFormSubmit
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "url",
+    placeholder: "Paste a task link..."
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    title: "Pin existing Asana task",
+    type: "submit"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-thumbtack"
+  })));
+}
+
+/***/ }),
+
 /***/ "./src/components/task/TaskRow.jsx":
 /*!*****************************************!*\
   !*** ./src/components/task/TaskRow.jsx ***!
@@ -613,16 +845,7 @@ function TaskRow(_ref) {
     setShowDescription(!showDescription);
   }, [task, showDescription, setShowDescription]);
   const notesIconClassName = showDescription ? 'fas' : 'far';
-  let assigneeDisplayName = null;
-
-  if (task.assignee) {
-    if (window.PTCCompletionist.users[task.assignee.gid]) {
-      assigneeDisplayName = window.PTCCompletionist.users[task.assignee.gid].data.display_name;
-    } else {
-      assigneeDisplayName = '(Not Connected)';
-    }
-  }
-
+  let assigneeDisplayName = (0,_util__WEBPACK_IMPORTED_MODULE_3__.getAssigneeDisplayName)(task);
   let extraClassNames = '';
 
   if ((0,_util__WEBPACK_IMPORTED_MODULE_3__.isCriticalTask)(task)) {

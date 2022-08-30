@@ -46,3 +46,32 @@ export function filterPinnedTasks(tasks) {
 		return false;
 	});
 }
+
+export function getAssigneeDisplayName(task) {
+	let assigneeDisplayName = null;
+	if ( task.assignee ) {
+		if ( window.PTCCompletionist.users[ task.assignee.gid ] ) {
+			assigneeDisplayName = window.PTCCompletionist.users[ task.assignee.gid ].data.display_name;
+		} else {
+			assigneeDisplayName = '(Not Connected)';
+		}
+	}
+	return assigneeDisplayName;
+}
+
+export function getWorkspaceProjectSelectOptions() {
+	const projectOptions = [];
+	for ( const projectGID in window.PTCCompletionist.projects ) {
+		projectOptions.push(<option value={projectGID} key={projectGID}>{window.PTCCompletionist.projects[projectGID]}</option>);
+	}
+	return projectOptions;
+}
+
+export function getWorkspaceUserSelectOptions() {
+	const userOptions = [];
+	for ( const userGID in window.PTCCompletionist.users ) {
+		const user = window.PTCCompletionist.users[userGID].data;
+		userOptions.push(<option value={userGID} key={userGID}>{`${user.display_name} (${user.user_email})`}</option>);
+	}
+	return userOptions;
+}

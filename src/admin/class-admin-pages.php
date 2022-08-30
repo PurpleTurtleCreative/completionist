@@ -313,6 +313,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					$pinned_tasks[ $task_gid ] = $all_site_tasks[ $task_gid ];
 				}
 
+				// @TODO - extract this object to generic getter with caching on it
+				// This is something like get_frontend_data_global() which is also
+				// used for the Dashboard Widget ReactJS code.
 				$js_data = [
 					'api' => [
 						'nonce_pin' => wp_create_nonce( 'ptc_completionist' ),
@@ -325,6 +328,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					],
 					'tasks' => $pinned_tasks,
 					'users' => Asana_Interface::get_connected_workspace_users(),
+					'projects' => Asana_Interface::get_workspace_project_options(),
 					'me' => Asana_Interface::get_me(),
 					'tag_url' => HTML_Builder::get_asana_tag_url(),
 				];
