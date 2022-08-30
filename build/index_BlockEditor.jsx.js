@@ -443,6 +443,11 @@ function TaskContextProvider(_ref) {
         return false;
       });
     },
+
+    /**
+     * @param string taskLink The Asana task link.
+     * @param int postID The WordPress post ID to pin the task.
+     */
     pinTask: async (taskLink, postID) => {
       let data = {
         'action': 'ptc_pin_task',
@@ -450,6 +455,48 @@ function TaskContextProvider(_ref) {
         'task_link': taskLink,
         'post_id': postID
       };
+      const init = {
+        'method': 'POST',
+        'credentials': 'same-origin',
+        'body': new URLSearchParams(data)
+      };
+      return await window.fetch(window.ajaxurl, init).then(res => res.json()).then(res => {
+        console.log(res);
+
+        if (res.status == 'success' && res.data) {
+          context.addTask(res.data);
+          return true;
+        } else if (res.status == 'error' && res.data) {
+          console.error(res.data);
+        } else {
+          alert('[Completionist] Error ' + res.code + ': ' + res.message);
+        }
+
+        return false;
+      }).catch(err => {
+        console.error('Promise catch:', err);
+        alert('[Completionist] Failed to pin task.');
+        return false;
+      });
+    },
+
+    /**
+     * @param object taskData The new task's data.
+     * @param int postID (Optional) The WordPress post ID
+     * to pin the new task. Default null to simply create the task.
+     */
+    createTask: async function (taskData) {
+      let postID = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      let data = {
+        'action': 'ptc_create_task',
+        'nonce': window.PTCCompletionist.api.nonce_create,
+        ...taskData
+      };
+
+      if (postID) {
+        data.post_id = postID;
+      }
+
       const init = {
         'method': 'POST',
         'credentials': 'same-origin',
@@ -529,40 +576,88 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./util */ "./src/components/task/util.js");
+/* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./util */ "./src/components/task/util.js");
 
-// import { TaskContext } from './TaskContext.jsx';
+
 
 const {
+  useContext,
+  useState,
   useMemo
 } = wp.element;
 function TaskCreationForm(_ref) {
   let {
     postId = null
   } = _ref;
-  const workspaceProjectSelectOptions = useMemo(_util__WEBPACK_IMPORTED_MODULE_1__.getWorkspaceProjectSelectOptions, []);
-  const workspaceUserSelectOptions = useMemo(_util__WEBPACK_IMPORTED_MODULE_1__.getWorkspaceUserSelectOptions, []);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [taskName, setTaskName] = useState('');
+  const [taskAssigneeGID, setTaskAssigneeGID] = useState('');
+  const [taskDueDate, setTaskDueDate] = useState('');
+  const [taskProjectGID, setTaskProjectGID] = useState('');
+  const [taskNotes, setTaskNotes] = useState('');
+  const {
+    createTask
+  } = useContext(_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__.TaskContext);
+  const workspaceProjectSelectOptions = useMemo(_util__WEBPACK_IMPORTED_MODULE_2__.getWorkspaceProjectSelectOptions, []);
+  const workspaceUserSelectOptions = useMemo(_util__WEBPACK_IMPORTED_MODULE_2__.getWorkspaceUserSelectOptions, []);
 
   const handleFormSubmit = event => {
     event.preventDefault();
-    window.console.log(`== Submitted TaskCreationForm for postId ${postId} ==`);
-    window.console.log(event);
+
+    if (isProcessing) {
+      return;
+    }
+
+    setIsProcessing(true);
+    const taskData = {
+      'name': taskName,
+      'assignee': taskAssigneeGID,
+      'due_on': taskDueDate,
+      'project': taskProjectGID,
+      'notes': taskNotes
+    };
+    createTask(taskData, postId).then(success => {
+      if (success) {
+        setTaskName('');
+        setTaskAssigneeGID('');
+        setTaskDueDate('');
+        setTaskProjectGID('');
+        setTaskNotes('');
+      }
+
+      setIsProcessing(false);
+    });
   };
 
+  const submitButtonContent = isProcessing ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-circle-notch fa-spin",
+    "aria-hidden": "true"
+  }), "Creating task...") : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
+    className: "fas fa-plus",
+    "aria-hidden": "true"
+  }), "Add Task");
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
     className: "ptc-TaskCreationForm",
-    onSubmit: handleFormSubmit
+    onSubmit: handleFormSubmit,
+    disabled: isProcessing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
     id: "ptc-new-task_name",
     type: "text",
     placeholder: "Write a task name...",
+    value: taskName,
+    onChange: e => setTaskName(e.target.value),
+    disabled: isProcessing,
     required: true
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "form-group"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     for: "ptc-new-task_assignee"
   }, "Assignee"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
-    id: "ptc-new-task_assignee"
+    id: "ptc-new-task_assignee",
+    value: taskAssigneeGID,
+    onChange: e => setTaskAssigneeGID(e.target.value),
+    disabled: isProcessing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
     value: ""
   }, "None (Unassigned)"), workspaceUserSelectOptions)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -573,13 +668,19 @@ function TaskCreationForm(_ref) {
     id: "ptc-new-task_due_on",
     type: "date",
     pattern: "\\d\\d\\d\\d-\\d\\d-\\d\\d",
-    placeholder: "yyyy-mm-dd"
+    placeholder: "yyyy-mm-dd",
+    value: taskDueDate,
+    onChange: e => setTaskDueDate(e.target.value),
+    disabled: isProcessing
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "form-group"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     for: "ptc-new-task_project"
   }, "Project"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
-    id: "ptc-new-task_project"
+    id: "ptc-new-task_project",
+    value: taskProjectGID,
+    onChange: e => setTaskProjectGID(e.target.value),
+    disabled: isProcessing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
     value: ""
   }, "None (Private Task)"), workspaceProjectSelectOptions)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -587,13 +688,14 @@ function TaskCreationForm(_ref) {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     for: "ptc-new-task_notes"
   }, "Description"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
-    id: "ptc-new-task_notes"
+    id: "ptc-new-task_notes",
+    value: taskNotes,
+    onChange: e => setTaskNotes(e.target.value),
+    disabled: isProcessing
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    type: "submit"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    className: "fas fa-plus",
-    "aria-hidden": "true"
-  }), "Add Task"));
+    type: "submit",
+    disabled: isProcessing
+  }, submitButtonContent));
 }
 
 /***/ }),
@@ -819,8 +921,6 @@ function TaskPinToPostForm(_ref) {
 
   const handleFormSubmit = event => {
     event.preventDefault();
-    window.console.log(`== Submitted TaskPinToPostForm for postId ${postId} ==`);
-    window.console.log(event);
 
     if (isProcessing) {
       return;
@@ -839,13 +939,15 @@ function TaskPinToPostForm(_ref) {
   const submitIconClass = isProcessing ? 'fas fa-sync-alt fa-spin' : 'fas fa-thumbtack';
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
     className: "ptc-TaskPinToPostForm",
-    onSubmit: handleFormSubmit
+    onSubmit: handleFormSubmit,
+    disabled: isProcessing
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
     type: "url",
     placeholder: "Paste a task link...",
     value: taskLink,
     onChange: e => setTaskLink(e.target.value),
-    disabled: isProcessing
+    disabled: isProcessing,
+    required: true
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     title: "Pin existing Asana task",
     type: "submit"

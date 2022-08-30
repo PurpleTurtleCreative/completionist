@@ -1188,7 +1188,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				}
 			}
 
-			// @TODO - Update cache to contain new task.
+			$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
+
 			return $task;
 		}//end create_task()
 	}//end class
