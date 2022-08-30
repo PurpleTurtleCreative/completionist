@@ -1,5 +1,5 @@
 import TaskPinToPostBar from './task/TaskPinToPostBar.jsx';
-import TaskListPaginated from './task/TaskListPaginated.jsx';
+import TaskList from './task/TaskList.jsx';
 
 import { TaskContext } from './task/TaskContext.jsx';
 
@@ -15,7 +15,7 @@ export default function BlockEditorPanelTasks() {
 	return (
 		<div className="ptc-BlockEditorPanelTasks">
 			<TaskPinToPostBar postId={currentPostId} />
-			<TaskListPaginated limit={3} tasks={tasks} />
+			<TaskList tasks={tasks} />
 		</div>
 	);
 }

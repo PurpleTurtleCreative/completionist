@@ -1,6 +1,6 @@
 @import '../abstracts/colors';
 
-@import 'task/TaskListPaginated';
+@import 'task/TaskRow';
 
 //----------------------
 
@@ -17,49 +17,39 @@
 
 		.ptc-BlockEditorPanelTasks {
 
-			.ptc-TaskListPaginated {
+			.ptc-TaskList {
+				overflow-y: auto;
+				max-height: max(400px, 30vh);
 
-				.ptc-TaskList {
+				.ptc-TaskRow {
+					flex-wrap: wrap;
+					padding: 10px 16px;
 
-					.ptc-TaskRow {
-						flex-wrap: wrap;
-						padding: 10px 16px;
-
-						.body {
-							.name {
-								font-size: 1.15em;
-								word-break: break-word;
-							}
-						}
-
-						.actions {
-
-							.cta-button {
-								display: none;
-							}
-
-							.ptc-TaskActions {
-								margin: 0;
-								display: flex;
-								flex-direction: column;
-
-								button {
-									font-size: 0.9em;
-									margin-left: 0;
-									margin-right: 0;
-								}
-							}//end .ptc-TaskActions
+					.body {
+						.name {
+							font-size: 1.15em;
+							word-break: break-word;
 						}
 					}
-				}
 
-				nav.pagination {
-					padding-left: 16px;
-					padding-right: 16px;
-				}
+					.actions {
 
-				a.view-tag {
-					display: none;
+						.cta-button {
+							display: none;
+						}
+
+						.ptc-TaskActions {
+							margin: 0;
+							display: flex;
+							flex-direction: column;
+
+							button {
+								font-size: 0.9em;
+								margin-left: 0;
+								margin-right: 0;
+							}
+						}//end .ptc-TaskActions
+					}
 				}
 			}
 		}//.ptc-BlockEditorPanelTasks

@@ -123,7 +123,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _task_TaskPinToPostBar_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task/TaskPinToPostBar.jsx */ "./src/components/task/TaskPinToPostBar.jsx");
-/* harmony import */ var _task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task/TaskListPaginated.jsx */ "./src/components/task/TaskListPaginated.jsx");
+/* harmony import */ var _task_TaskList_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task/TaskList.jsx */ "./src/components/task/TaskList.jsx");
 /* harmony import */ var _task_TaskContext_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./task/TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
 /* harmony import */ var _assets_styles_scss_components_BlockEditorPanelTasks_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../../../../assets/styles/scss/components/BlockEditorPanelTasks.scss */ "./assets/styles/scss/components/BlockEditorPanelTasks.scss");
 
@@ -143,8 +143,7 @@ function BlockEditorPanelTasks() {
     className: "ptc-BlockEditorPanelTasks"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskPinToPostBar_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
     postId: currentPostId
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskListPaginated_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    limit: 3,
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_task_TaskList_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
     tasks: tasks
   }));
 }
@@ -739,98 +738,6 @@ function TaskList(_ref) {
 
 /***/ }),
 
-/***/ "./src/components/task/TaskListPaginated.jsx":
-/*!***************************************************!*\
-  !*** ./src/components/task/TaskListPaginated.jsx ***!
-  \***************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ TaskListPaginated; }
-/* harmony export */ });
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _TaskList_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskList.jsx */ "./src/components/task/TaskList.jsx");
-
-
-const {
-  useState,
-  useCallback,
-  useMemo,
-  useEffect
-} = wp.element;
-function TaskListPaginated(_ref) {
-  let {
-    limit,
-    tasks
-  } = _ref;
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = useMemo(() => Math.ceil(tasks.length / limit), [tasks, limit]);
-  const goToPage = useCallback(page => {
-    if (page <= 1) {
-      setCurrentPage(1);
-    } else if (page >= totalPages) {
-      setCurrentPage(totalPages);
-    } else {
-      setCurrentPage(page);
-    }
-  }, [currentPage, setCurrentPage, totalPages]);
-  useEffect(() => {
-    goToPage(currentPage);
-  }, [tasks]);
-  const start = Math.max(0, (currentPage - 1) * limit);
-  const currentTasks = tasks.slice(start, currentPage * limit);
-  const renderedPageButtons = [];
-
-  for (let i = 1; i <= totalPages; ++i) {
-    renderedPageButtons.push((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-      className: "num",
-      type: "button",
-      title: `Page ${i}`,
-      disabled: i === currentPage,
-      onClick: () => goToPage(i)
-    }, i));
-  }
-
-  console.log('totalPages', totalPages);
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "ptc-TaskListPaginated"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskList_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    tasks: currentTasks
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("nav", {
-    className: "pagination"
-  }, totalPages > 1 && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "prev",
-    type: "button",
-    title: "Previous Page",
-    disabled: 1 === currentPage,
-    onClick: () => goToPage(currentPage - 1)
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    className: "fas fa-angle-left"
-  })), renderedPageButtons, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "next",
-    type: "button",
-    title: "Next Page",
-    disabled: totalPages === currentPage,
-    onClick: () => goToPage(currentPage + 1)
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    className: "fas fa-angle-right"
-  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    href: window.PTCCompletionist.tag_url,
-    target: "_asana",
-    className: "view-tag"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    title: "View All Site Tasks in Asana",
-    className: "view",
-    type: "button"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    class: "fas fa-link"
-  }))));
-}
-
-/***/ }),
-
 /***/ "./src/components/task/TaskPinToPostBar.jsx":
 /*!**************************************************!*\
   !*** ./src/components/task/TaskPinToPostBar.jsx ***!
@@ -999,7 +906,7 @@ function TaskRow(_ref) {
     }
 
     setTaskProcessingStatus(taskGID, 'completing');
-    completeTask(taskGID).then(success => {
+    completeTask(taskGID, !task.completed).then(success => {
       setTaskProcessingStatus(taskGID, false);
     });
   }, [task.processingStatus, setTaskProcessingStatus, completeTask]);

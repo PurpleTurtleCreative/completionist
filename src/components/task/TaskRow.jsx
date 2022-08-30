@@ -15,7 +15,7 @@ export default function TaskRow({task}) {
 			return;
 		}
 		setTaskProcessingStatus(taskGID, 'completing');
-		completeTask(taskGID).then(success => {
+		completeTask(taskGID, !task.completed).then(success => {
 			setTaskProcessingStatus(taskGID, false);
 		});
 	}, [task.processingStatus, setTaskProcessingStatus, completeTask]);
