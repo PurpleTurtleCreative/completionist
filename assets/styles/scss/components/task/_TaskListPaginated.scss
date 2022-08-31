@@ -1,25 +1,12 @@
 @import '../../abstracts/colors';
 @import '../../abstracts/elements';
 
-@import 'TaskRow';
+@import 'TaskList';
 
 //----------------------
 
 .ptc-TaskListPaginated {
 	position: relative;
-
-	.ptc-no-results {
-		padding: 2em 1em;
-		color: #829ab1;
-		text-align: center;
-		margin: 0;
-		font-size: 1.15em;
-
-		i {
-			font-size: 1.15em;
-			margin-right: 0.5em;
-		}
-	}
 
 	.ptc-TaskRow {
 

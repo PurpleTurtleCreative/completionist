@@ -319,7 +319,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 				// Map pinned task gids to full task objects.
 				$pinned_tasks = [];
 				foreach ( $pinned_task_gids as &$task_gid ) {
-					$pinned_tasks[ $task_gid ] = $all_site_tasks[ $task_gid ];
+					if ( isset( $all_site_tasks[ $task_gid ] ) ) {
+						$pinned_tasks[ $task_gid ] = $all_site_tasks[ $task_gid ];
+					}
 				}
 
 				// @TODO - extract this object to generic getter with caching on it

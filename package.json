@@ -14,13 +14,13 @@
   },
   "devDependencies": {
     "@wordpress/scripts": "^19.1.0",
-    "node-sass": "^6.0.1"
+    "sass": "^1.54.7"
   },
   "scripts": {
     "build": "wp-scripts build src/index_DashboardWidget.jsx src/index_Automations.jsx src/index_BlockEditor.jsx --output-path=build && npm run styles",
     "start": "wp-scripts start src/index_DashboardWidget.jsx src/index_Automations.jsx src/index_BlockEditor.jsx --output-path=build && npm run watch:styles",
     "bundle": "npm run build && bash bundle.sh",
-    "styles": "node-sass assets/styles/scss/ -o assets/styles/ --source-map true --output-style compressed",
-    "watch:styles": "node-sass assets/styles/scss/ -o assets/styles/ --source-map true --output-style compressed -wr"
+    "styles": "sass --stop-on-error --style=compressed assets/styles/scss:assets/styles",
+    "watch:styles": "sass --stop-on-error --style=expanded --watch assets/styles/scss:assets/styles"
   }
 }

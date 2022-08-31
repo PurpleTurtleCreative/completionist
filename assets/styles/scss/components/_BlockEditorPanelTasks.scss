@@ -1,6 +1,6 @@
 @import '../abstracts/colors';
 
-@import 'task/TaskRow';
+@import 'task/TaskList';
 
 //----------------------
 
@@ -22,6 +22,10 @@
 			.ptc-TaskList {
 				overflow-y: auto;
 				max-height: max(400px, 30vh);
+
+				.ptc-no-results {
+					padding: 16px;
+				}
 
 				.ptc-TaskRow {
 					flex-wrap: wrap;
