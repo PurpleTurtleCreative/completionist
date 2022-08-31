@@ -417,6 +417,11 @@
 .ptc-TaskRow.--is-complete .body {
   opacity: 0.5;
 }
+.ptc-TaskRow.--is-complete .body .name {
+  text-decoration: line-through;
+  -webkit-text-decoration-color: #1f2933;
+          text-decoration-color: #1f2933;
+}
 
 .components-panel__body.ptc-completionist-tasks {
   padding: 0;

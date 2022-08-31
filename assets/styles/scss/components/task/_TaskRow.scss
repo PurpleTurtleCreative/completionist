@@ -122,6 +122,11 @@
 
 		.body {
 			opacity: 0.5;
+
+			.name {
+				text-decoration: line-through;
+				text-decoration-color: color(black);
+			}
 		}
 	}
 }//end .ptc-TaskRow
