@@ -577,6 +577,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./util */ "./src/components/task/util.js");
+/* harmony import */ var _assets_styles_scss_components_task_TaskCreationForm_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../../../assets/styles/scss/components/task/_TaskCreationForm.scss */ "./assets/styles/scss/components/task/_TaskCreationForm.scss");
+
 
 
 
@@ -630,7 +632,7 @@ function TaskCreationForm(_ref) {
   };
 
   const submitButtonContent = isProcessing ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    className: "fas fa-circle-notch fa-spin",
+    className: "fas fa-sync-alt fa-spin",
     "aria-hidden": "true"
   }), "Creating task...") : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
     className: "fas fa-plus",
@@ -753,6 +755,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _TaskPinToPostForm_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskPinToPostForm.jsx */ "./src/components/task/TaskPinToPostForm.jsx");
 /* harmony import */ var _TaskCreationForm_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TaskCreationForm.jsx */ "./src/components/task/TaskCreationForm.jsx");
 /* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+/* harmony import */ var _assets_styles_scss_components_task_TaskPinToPostBar_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../../../../assets/styles/scss/components/task/_TaskPinToPostBar.scss */ "./assets/styles/scss/components/task/_TaskPinToPostBar.scss");
+
 
 
 
@@ -782,8 +786,10 @@ function TaskPinToPostBar(_ref) {
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "toolbar"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_TaskPinToPostForm_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    postId: postId
+    postId: postId,
+    disabled: showTaskCreationForm
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    className: "creation-form-toggle",
     type: "button",
     title: "Create new task",
     onClick: toggleTaskCreationForm
@@ -810,6 +816,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _TaskContext_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TaskContext.jsx */ "./src/components/task/TaskContext.jsx");
+/* harmony import */ var _assets_styles_scss_components_task_TaskPinToPostForm_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../../assets/styles/scss/components/task/_TaskPinToPostForm.scss */ "./assets/styles/scss/components/task/_TaskPinToPostForm.scss");
+
 
 
 const {
@@ -818,7 +826,8 @@ const {
 } = wp.element;
 function TaskPinToPostForm(_ref) {
   let {
-    postId
+    postId,
+    disabled = false
   } = _ref;
   const [taskLink, setTaskLink] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -847,20 +856,20 @@ function TaskPinToPostForm(_ref) {
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
     className: "ptc-TaskPinToPostForm",
     onSubmit: handleFormSubmit,
-    disabled: isProcessing
+    disabled: isProcessing || disabled
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
     type: "url",
     placeholder: "Paste a task link...",
     value: taskLink,
     onChange: e => setTaskLink(e.target.value),
-    disabled: isProcessing,
+    disabled: isProcessing || disabled,
     required: true
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     title: "Pin existing Asana task",
-    type: "submit"
+    type: "submit",
+    disabled: isProcessing || disabled
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-    className: submitIconClass,
-    disabled: isProcessing
+    className: submitIconClass
   })));
 }
 
@@ -992,6 +1001,42 @@ function TaskRow(_ref) {
 /*!******************************************************************!*\
   !*** ./assets/styles/scss/components/BlockEditorPanelTasks.scss ***!
   \******************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./assets/styles/scss/components/task/_TaskCreationForm.scss":
+/*!*******************************************************************!*\
+  !*** ./assets/styles/scss/components/task/_TaskCreationForm.scss ***!
+  \*******************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./assets/styles/scss/components/task/_TaskPinToPostBar.scss":
+/*!*******************************************************************!*\
+  !*** ./assets/styles/scss/components/task/_TaskPinToPostBar.scss ***!
+  \*******************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./assets/styles/scss/components/task/_TaskPinToPostForm.scss":
+/*!********************************************************************!*\
+  !*** ./assets/styles/scss/components/task/_TaskPinToPostForm.scss ***!
+  \********************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);

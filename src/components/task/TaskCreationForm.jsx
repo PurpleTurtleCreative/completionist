@@ -4,6 +4,8 @@ import {
 	getWorkspaceUserSelectOptions
 } from './util';
 
+import '/assets/styles/scss/components/task/_TaskCreationForm.scss';
+
 const { useContext, useState, useMemo } = wp.element;
 
 export default function TaskCreationForm({ postId = null }) {
@@ -48,7 +50,7 @@ export default function TaskCreationForm({ postId = null }) {
 	}
 
 	const submitButtonContent = ( isProcessing )
-		? <><i className="fas fa-circle-notch fa-spin" aria-hidden="true"></i>Creating task...</>
+		? <><i className="fas fa-sync-alt fa-spin" aria-hidden="true"></i>Creating task...</>
 		: <><i className="fas fa-plus" aria-hidden="true"></i>Add Task</>;
 
 	return (

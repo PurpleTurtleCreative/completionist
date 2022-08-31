@@ -154,9 +154,9 @@
 	}
 
 	&[disabled] {
-		cursor: not-allowed;
-		background: color(grey-lighter);
-		border-color: color(grey);
-		color: color(grey-dark);
+		cursor: not-allowed !important;
+		background: color(grey-lighter) !important;
+		border-color: color(grey) !important;
+		color: color(grey-dark) !important;
 	}
 }

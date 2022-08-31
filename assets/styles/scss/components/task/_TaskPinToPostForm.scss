@@ -1,0 +1,49 @@
+@import '../../abstracts/elements';
+@import '../../abstracts/colors';
+
+//----------------------
+
+.ptc-TaskPinToPostForm {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+
+	input[type="url"] {
+		flex: 1;
+		border: 1px solid color(info);
+		font-size: 1em;
+		line-height: 2.3em;
+		height: 2.3em;
+		min-height: 2.3em;
+		border-radius: 999px 0 0 999px;
+		padding-left: 0.9em;
+		padding-right: 1.5em;
+
+		&::placeholder {
+			color: color(grey);
+		}
+
+		&:active,
+		&:focus {
+			outline: none;
+			box-shadow: none;
+		}
+
+		&[disabled] {
+			cursor: not-allowed !important;
+			background: color(grey-lightest) !important;
+			border-color: color(grey) !important;
+		}
+	}
+
+	button[type="submit"] {
+		@include btn-circle-icon(2.15em, info);
+		background: color(info);
+		color: color(white);
+		margin-left: -1.07em;
+
+		&:hover {
+			color: color(info-dark);
+		}
+	}
+}//end ptc-TaskFilters

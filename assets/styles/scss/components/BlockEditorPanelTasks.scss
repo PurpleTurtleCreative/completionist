@@ -8,12 +8,14 @@
 	padding: 0;
 
 	.components-panel__body-title {
-		margin-top: 0;
-		margin-left: 0;
-		margin-right: 0;
+		margin: 0;
 	}
 
 	&.is-opened {
+
+		.components-panel__icon {
+			fill: color(brand-primary);
+		}
 
 		.ptc-BlockEditorPanelTasks {
 

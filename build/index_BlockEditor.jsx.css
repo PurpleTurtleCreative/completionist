@@ -1,3 +1,214 @@
+/*!***********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./assets/styles/scss/components/task/_TaskPinToPostForm.scss ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************/
+.ptc-TaskPinToPostForm {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.ptc-TaskPinToPostForm input[type=url] {
+  flex: 1;
+  border: 1px solid #47a3f3;
+  font-size: 1em;
+  line-height: 2.3em;
+  height: 2.3em;
+  min-height: 2.3em;
+  border-radius: 999px 0 0 999px;
+  padding-left: 0.9em;
+  padding-right: 1.5em;
+}
+.ptc-TaskPinToPostForm input[type=url]::-moz-placeholder {
+  color: #829ab1;
+}
+.ptc-TaskPinToPostForm input[type=url]:-ms-input-placeholder {
+  color: #829ab1;
+}
+.ptc-TaskPinToPostForm input[type=url]::placeholder {
+  color: #829ab1;
+}
+.ptc-TaskPinToPostForm input[type=url]:active, .ptc-TaskPinToPostForm input[type=url]:focus {
+  outline: none;
+  box-shadow: none;
+}
+.ptc-TaskPinToPostForm input[type=url][disabled] {
+  cursor: not-allowed !important;
+  background: #f0f4f8 !important;
+  border-color: #829ab1 !important;
+}
+.ptc-TaskPinToPostForm button[type=submit] {
+  cursor: pointer;
+  border: 1px solid #47a3f3;
+  background: #ffffff;
+  color: #47a3f3;
+  border-radius: 999px;
+  font-size: 1.075em;
+  line-height: 1;
+  text-decoration: none;
+  width: 2.15em;
+  height: 2.15em;
+  padding: 0;
+  text-align: center;
+  display: inline-block;
+  background: #47a3f3;
+  color: #ffffff;
+  margin-left: -1.07em;
+}
+.ptc-TaskPinToPostForm button[type=submit].--is-active, .ptc-TaskPinToPostForm button[type=submit]:hover {
+  background: #47a3f3;
+  color: #ffffff;
+}
+.ptc-TaskPinToPostForm button[type=submit][disabled] {
+  cursor: not-allowed !important;
+  background: #d9e2ec !important;
+  border-color: #829ab1 !important;
+  color: #627d98 !important;
+}
+.ptc-TaskPinToPostForm button[type=submit]:hover {
+  color: #035388;
+}
+/*!**********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./assets/styles/scss/components/task/_TaskCreationForm.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************/
+.ptc-TaskCreationForm {
+  margin-top: 10px;
+  text-align: right;
+}
+.ptc-TaskCreationForm input#ptc-new-task_name {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+.ptc-TaskCreationForm input#ptc-new-task_name[disabled] {
+  cursor: not-allowed !important;
+  background: #f0f4f8 !important;
+  border-color: #829ab1 !important;
+}
+.ptc-TaskCreationForm .form-group {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+  width: 100%;
+  max-width: 100%;
+}
+.ptc-TaskCreationForm .form-group label {
+  width: 5rem;
+  display: block;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.ptc-TaskCreationForm .form-group input,
+.ptc-TaskCreationForm .form-group select,
+.ptc-TaskCreationForm .form-group textarea {
+  width: calc(100% - 5rem);
+  margin: 0 0 0 0.5em;
+}
+.ptc-TaskCreationForm .form-group input[disabled],
+.ptc-TaskCreationForm .form-group select[disabled],
+.ptc-TaskCreationForm .form-group textarea[disabled] {
+  cursor: not-allowed !important;
+  background: #f0f4f8 !important;
+  border-color: #829ab1 !important;
+}
+.ptc-TaskCreationForm .form-group textarea {
+  min-height: 5em;
+}
+.ptc-TaskCreationForm .form-group:last-of-type {
+  align-items: flex-start;
+}
+.ptc-TaskCreationForm .form-group:last-of-type label {
+  margin-top: 0.5em;
+}
+.ptc-TaskCreationForm button[type=submit] {
+  cursor: pointer;
+  border: 1px solid #ffffff;
+  background: #6cd410;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 0.3em 0.6em;
+  font-weight: 500;
+  font-size: 1em;
+  margin: 0.3em;
+  line-height: 1;
+  display: inline-block;
+  text-decoration: none;
+  border-color: #6cd410;
+  margin-right: 0;
+  font-size: 1.07em;
+  padding: 0 1em 0 0.3em;
+}
+.ptc-TaskCreationForm button[type=submit].--is-active, .ptc-TaskCreationForm button[type=submit]:hover {
+  background: #ffffff;
+  color: #6cd410;
+}
+.ptc-TaskCreationForm button[type=submit].--is-active, .ptc-TaskCreationForm button[type=submit]:hover {
+  background: #6cd410;
+  color: #1e5303;
+}
+.ptc-TaskCreationForm button[type=submit][disabled] {
+  cursor: not-allowed !important;
+  background: #bcccdc !important;
+  border-color: #829ab1 !important;
+  color: #829ab1 !important;
+}
+.ptc-TaskCreationForm button[type=submit] i.fas {
+  margin: 0.5em;
+}
+/*!**********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./assets/styles/scss/components/task/_TaskPinToPostBar.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************/
+.ptc-TaskPinToPostBar {
+  padding: 10px;
+  background: #f0f4f8;
+  border-top: 1px solid #bcccdc;
+  border-bottom: 1px solid #bcccdc;
+}
+.ptc-TaskPinToPostBar .toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.ptc-TaskPinToPostBar .ptc-TaskPinToPostForm {
+  flex: 1;
+  margin-right: 5px;
+}
+.ptc-TaskPinToPostBar button.creation-form-toggle {
+  cursor: pointer;
+  border: 1px solid #6cd410;
+  background: #ffffff;
+  color: #6cd410;
+  border-radius: 999px;
+  font-size: 1.075em;
+  line-height: 1;
+  text-decoration: none;
+  width: 2.15em;
+  height: 2.15em;
+  padding: 0;
+  text-align: center;
+  display: inline-block;
+  background: #6cd410;
+  color: #ffffff;
+}
+.ptc-TaskPinToPostBar button.creation-form-toggle.--is-active, .ptc-TaskPinToPostBar button.creation-form-toggle:hover {
+  background: #6cd410;
+  color: #ffffff;
+}
+.ptc-TaskPinToPostBar button.creation-form-toggle[disabled] {
+  cursor: not-allowed !important;
+  background: #d9e2ec !important;
+  border-color: #829ab1 !important;
+  color: #627d98 !important;
+}
+.ptc-TaskPinToPostBar button.creation-form-toggle.--is-active, .ptc-TaskPinToPostBar button.creation-form-toggle:hover {
+  color: #1e5303;
+}
+.ptc-TaskPinToPostBar.--is-showing-creation-form button.creation-form-toggle {
+  border-color: #ef4e4e;
+  background: #ef4e4e;
+}
+.ptc-TaskPinToPostBar.--is-showing-creation-form button.creation-form-toggle.--is-active, .ptc-TaskPinToPostBar.--is-showing-creation-form button.creation-form-toggle:hover {
+  color: #610316;
+}
 /*!*********************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./assets/styles/scss/components/BlockEditorPanelTasks.scss ***!
   \*********************************************************************************************************************************************************************************************************************************************************************************/
@@ -24,10 +235,10 @@
   color: #ffffff;
 }
 .ptc-TaskActions button.view[disabled] {
-  cursor: not-allowed;
-  background: #d9e2ec;
-  border-color: #829ab1;
-  color: #627d98;
+  cursor: not-allowed !important;
+  background: #d9e2ec !important;
+  border-color: #829ab1 !important;
+  color: #627d98 !important;
 }
 .ptc-TaskActions button.unpin {
   cursor: pointer;
@@ -49,10 +260,10 @@
   color: #ffffff;
 }
 .ptc-TaskActions button.unpin[disabled] {
-  cursor: not-allowed;
-  background: #d9e2ec;
-  border-color: #829ab1;
-  color: #627d98;
+  cursor: not-allowed !important;
+  background: #d9e2ec !important;
+  border-color: #829ab1 !important;
+  color: #627d98 !important;
 }
 .ptc-TaskActions button.delete {
   cursor: pointer;
@@ -74,10 +285,10 @@
   color: #ffffff;
 }
 .ptc-TaskActions button.delete[disabled] {
-  cursor: not-allowed;
-  background: #d9e2ec;
-  border-color: #829ab1;
-  color: #627d98;
+  cursor: not-allowed !important;
+  background: #d9e2ec !important;
+  border-color: #829ab1 !important;
+  color: #627d98 !important;
 }
 
 .ptc-TaskRow {
@@ -109,10 +320,10 @@
   color: #ffffff;
 }
 .ptc-TaskRow button.mark-complete[disabled] {
-  cursor: not-allowed;
-  background: #d9e2ec;
-  border-color: #829ab1;
-  color: #627d98;
+  cursor: not-allowed !important;
+  background: #d9e2ec !important;
+  border-color: #829ab1 !important;
+  color: #627d98 !important;
 }
 .ptc-TaskRow .body {
   flex: 1;
@@ -211,9 +422,10 @@
   padding: 0;
 }
 .components-panel__body.ptc-completionist-tasks .components-panel__body-title {
-  margin-top: 0;
-  margin-left: 0;
-  margin-right: 0;
+  margin: 0;
+}
+.components-panel__body.ptc-completionist-tasks.is-opened .components-panel__icon {
+  fill: #17b897;
 }
 .components-panel__body.ptc-completionist-tasks.is-opened .ptc-BlockEditorPanelTasks .ptc-TaskList {
   overflow-y: auto;
