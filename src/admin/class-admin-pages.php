@@ -126,6 +126,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 				PLUGIN_VERSION
 			);
 
+			$current_screen = get_current_screen();
+			if (
+				method_exists( $current_screen, 'is_block_editor' )
+				&& $current_screen->is_block_editor()
+			) {
+				wp_enqueue_script( 'fontawesome-5' );
+				return;
+			}
+
 			switch ( $hook_suffix ) {
 
 				case 'index.php':

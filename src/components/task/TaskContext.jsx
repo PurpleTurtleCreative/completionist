@@ -262,8 +262,8 @@ export function TaskContextProvider({children}) {
 		addTask: (task) => {
 			setTasks(prevTasks => {
 				return [
-					{ ...task },
-					...prevTasks
+					...prevTasks,
+					{ ...task }
 				]
 			});
 		},

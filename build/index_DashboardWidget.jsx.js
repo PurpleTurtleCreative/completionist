@@ -551,8 +551,8 @@ function TaskContextProvider(_ref) {
     },
     addTask: task => {
       setTasks(prevTasks => {
-        return [{ ...task
-        }, ...prevTasks];
+        return [...prevTasks, { ...task
+        }];
       });
     },
     removeTask: taskGID => {
