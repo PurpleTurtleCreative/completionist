@@ -1,3 +1,17 @@
+### [unreleased]
+
+#### Added
+
+- Pinned Tasks post editor metabox has been converted to ReactJS, offering a better experience.
+- Several new ReactJS components to compose the new Pinned Tasks plugin panel in the Block Editor.
+
+#### Changed
+
+- The original, jQuery-based Pinned Tasks metabox is now marked as existing only for backwards compatibility with WordPress's Classic Editor.
+- The `ptc_create_task` AJAX action now returns the full Asana task object in `response.data` instead of the generated HTML representation.
+- The `ptc_pin_task` AJAX action now returns the full Asana task object in `response.data` instead of just the task GID. This also helps ensure proper task visibility permissions are enforced.
+- `Asana_Interface::maybe_get_task_data()` and `Asana_Interface::create_task()` now also include the task's `action_link` for frontend component compatibility.
+
 ### 3.2.0 - 2022-05-22
 
 #### Added
