@@ -47,7 +47,22 @@ export default function TaskRow({task}) {
 
 	const markCompleteIcon = ('completing' === task.processingStatus) ? 'fa-sync-alt fa-spin' : 'fa-check';
 
-	const dueOnDateString = new Date(task.due_on).toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'});
+	/**
+	 * Note `timeZone` is set to UTC so no time conversion takes place
+	 * since this is simply a date (which gets interpreted as midnight UTC).
+	 * The displayed date should directly match what was set within Asana.
+	 *
+	 * However, Asana does claim their times are dynamic per the user's
+	 * computer. This leads me to think they get the client's timezone code,
+	 * then properly store the date/time in their database in UTC. Perhaps they
+	 * didn't actually do that for simple date fields, though. Not sure how
+	 * that works for companies spread across Europe and America, though many
+	 * seem to regularly complain about this in the Asana forums.
+	 *
+	 * @link https://asana.com/guide/help/faq/common-questions#gl-timezone
+	 * @link https://forum.asana.com/t/what-time-zone-is-being-used/2701/16
+	 */
+	const dueOnDateString = new Date(task.due_on).toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC'});
 
 	return (
 		<div className={"ptc-TaskRow"+extraClassNames}>
