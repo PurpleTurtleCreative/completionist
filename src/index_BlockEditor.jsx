@@ -8,8 +8,6 @@ import { TaskContextProvider } from './components/task/TaskContext.jsx';
 
 const registerCompletionistPlugin = () => {
 
-	window.console.log('!! ptc-completionist plugin ReactJS !!');
-
 	let tasksPanelContent = null;
 	if ( 'error' in window.PTCCompletionist ) {
 		tasksPanelContent = <NoteBox type="error" message={window.PTCCompletionist.error.message} code={window.PTCCompletionist.error.code} />;

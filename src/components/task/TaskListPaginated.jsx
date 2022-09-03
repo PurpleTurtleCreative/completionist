@@ -30,8 +30,6 @@ export default function TaskListPaginated({limit, tasks}) {
 		);
 	}
 
-	console.log('totalPages', totalPages);
-
 	return (
 		<div className="ptc-TaskListPaginated">
 
