@@ -152,7 +152,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 								'nonce' => wp_create_nonce( 'ptc_completionist' ),
 								'url' => get_rest_url(),
 							],
-							'tasks' => Asana_Interface::maybe_get_all_site_tasks(),
+							'tasks' => array_values( Asana_Interface::maybe_get_all_site_tasks() ),
 							'users' => Asana_Interface::get_connected_workspace_users(),
 							'me' => Asana_Interface::get_me(),
 							'tag_url' => HTML_Builder::get_asana_tag_url(),
@@ -321,7 +321,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 				foreach ( $pinned_task_gids as &$task_gid ) {
 					// Ignore tasks this user doesn't have permission to view.
 					if ( isset( $all_site_tasks[ $task_gid ] ) ) {
-						$pinned_tasks[ $task_gid ] = $all_site_tasks[ $task_gid ];
+						$pinned_tasks[] = $all_site_tasks[ $task_gid ];
 					}
 				}
 
