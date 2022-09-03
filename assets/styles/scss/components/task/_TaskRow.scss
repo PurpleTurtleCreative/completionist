@@ -107,4 +107,26 @@
 			}
 		}
 	}
+
+	&.--is-complete {
+
+		button.mark-complete {
+			background: color(brand-primary);
+			color: color(white);
+
+			&:hover {
+				background: color(brand-primary);
+				color: color(white);
+			}
+		}
+
+		.body {
+			opacity: 0.5;
+
+			.name {
+				text-decoration: line-through;
+				text-decoration-color: color(black);
+			}
+		}
+	}
 }//end .ptc-TaskRow

@@ -35,6 +35,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 			add_action( 'admin_menu', [ __CLASS__, 'add_admin_pages' ] );
 			add_filter( 'plugin_action_links_' . PLUGIN_BASENAME, [ __CLASS__, 'filter_plugin_action_links' ] );
 			add_action( 'admin_enqueue_scripts', [ __CLASS__, 'register_scripts' ] );
+			add_action( 'enqueue_block_editor_assets', [ __CLASS__, 'register_block_editor_assets' ] );
 		}
 
 		/**
@@ -124,6 +125,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 				[],
 				PLUGIN_VERSION
 			);
+
+			$current_screen = get_current_screen();
+			if (
+				method_exists( $current_screen, 'is_block_editor' )
+				&& $current_screen->is_block_editor()
+			) {
+				wp_enqueue_script( 'fontawesome-5' );
+				return;
+			}
 
 			switch ( $hook_suffix ) {
 
@@ -280,5 +290,74 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					break;
 			}//end switch hook suffix
 		}//end register_scripts()
+
+		/**
+		 * Register assets for the Block Editor screen.
+		 *
+		 * @since [unreleased]
+		 */
+		public static function register_block_editor_assets() {
+			$asset_file = require_once( PLUGIN_PATH . 'build/index_BlockEditor.jsx.asset.php' );
+			wp_enqueue_script(
+				'ptc-completionist-block-editor',
+				PLUGIN_URL . '/build/index_BlockEditor.jsx.js',
+				$asset_file['dependencies'],
+				PLUGIN_VERSION
+			);
+			wp_enqueue_style(
+				'ptc-completionist-block-editor',
+				PLUGIN_URL . '/build/index_BlockEditor.jsx.css',
+				[],
+				PLUGIN_VERSION
+			);
+			try {
+				require_once PLUGIN_PATH . 'src/includes/class-options.php';
+				require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
+
+				$all_site_tasks = Asana_Interface::maybe_get_all_site_tasks();
+				$pinned_task_gids = Options::get( Options::PINNED_TASK_GID, get_the_ID() );
+				// Map pinned task gids to full task objects.
+				$pinned_tasks = [];
+				foreach ( $pinned_task_gids as &$task_gid ) {
+					// Ignore tasks this user doesn't have permission to view.
+					if ( isset( $all_site_tasks[ $task_gid ] ) ) {
+						$pinned_tasks[ $task_gid ] = $all_site_tasks[ $task_gid ];
+					}
+				}
+
+				// @TODO - extract this object to generic getter with caching on it
+				// This is something like get_frontend_data_global() which is also
+				// used for the Dashboard Widget ReactJS code.
+				$js_data = [
+					'api' => [
+						'nonce_pin' => wp_create_nonce( 'ptc_completionist' ),
+						'nonce_list' => wp_create_nonce( 'ptc_completionist_list_task' ),
+						'nonce_create' => wp_create_nonce( 'ptc_completionist_create_task' ),
+						'nonce_delete' => wp_create_nonce( 'ptc_completionist' ),
+						'nonce_update' => wp_create_nonce( 'ptc_completionist' ),
+						'nonce' => wp_create_nonce( 'ptc_completionist' ),
+						'url' => get_rest_url(),
+					],
+					'tasks' => $pinned_tasks,
+					'users' => Asana_Interface::get_connected_workspace_users(),
+					'projects' => Asana_Interface::get_workspace_project_options(),
+					'me' => Asana_Interface::get_me(),
+					'tag_url' => HTML_Builder::get_asana_tag_url(),
+				];
+			} catch ( \Exception $err ) {
+				$js_data = [
+					'error' => [
+						'code' => $err->getCode(),
+						'message' => $err->getMessage(),
+					],
+				];
+			}
+			$js_data = json_encode( $js_data );
+			wp_add_inline_script(
+				'ptc-completionist-block-editor',
+				"var PTCCompletionist = {$js_data};",
+				'before'
+			);
+		}
 	}//end class
 }

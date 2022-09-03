@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @import 'abstracts/colors';
 @import 'abstracts/layout';
 @import 'abstracts/elements';
@@ -516,7 +518,7 @@
         margin: em(md) auto;
         display: block;
         min-width: 33%;
-        letter-spacing: em(sm)/5;
+        letter-spacing: math.div(em(sm),5);
 
         &:hover {
           background: color(brand-primary-light);

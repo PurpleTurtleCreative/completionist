@@ -39,11 +39,15 @@ try {
       throw new \Exception( 'Failed to get task from the submitted task link.', 400 );
     }
 
+    // Ensure the task data may be retrieved by the current user.
+    $task = Asana_Interface::maybe_get_task_data( $task_gid );
+
     $the_post_id = (int) Options::sanitize( 'gid', $_POST['post_id'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
     if ( $the_post_id < 1 ) {
       throw new \Exception( 'Invalid post identifier.', 400 );
     }
 
+    // @TODO - API call is repeated here to retrieve the task again from Asana.
     if ( ! Asana_Interface::is_workspace_task( $task_gid ) ) {
       throw new \Exception( 'Task does not belong to this site\'s assigned workspace.', 409 );
     }
@@ -61,12 +65,11 @@ try {
     if ( $did_pin_task === FALSE ) {
       throw new \Exception( "Failed to pin the existing task to post $the_post_id.", 409 );
     }
-    // @TODO - Else, update the cache on success.
 
     $res['status'] = 'success';
     $res['code'] = 200;
     $res['message'] = "Successfully pinned task $task_gid to post $the_post_id.";
-    $res['data'] = $task_gid;
+    $res['data'] = $task;
 
     /* Leave comment in Asana with pin link */
 

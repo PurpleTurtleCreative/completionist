@@ -134,7 +134,7 @@ jQuery(function($) {
       $.post(ajaxurl, data, function(res) {
 
         if(res.status == 'success' && res.data != '') {
-          load_task(res.data, data.post_id);
+          load_task(res.data.gid, data.post_id);
           inputField.val('');
         } else if(res.status == 'error' && res.data != '') {
           display_alert_html(res.data);
@@ -202,9 +202,7 @@ jQuery(function($) {
 
     $.post(ajaxurl, data, function(res) {
       if(res.status == 'success' && res.data != '') {
-        $('#ptc-completionist_pinned-tasks #task-list').append(res.data);
-        var task_gid = jQuery('#task-list .ptc-completionist-task:first-of-type').data('gid');
-        taskContainer.children(':not(.ptc-completionist-task):not(.task-loader)').remove();
+        load_task(res.data.gid, data.post_id);
         inputFields.val('');
         inputFields.prop('selectedIndex',0);
         $('#ptc-completionist_pinned-tasks #pin-a-task button#toggle-create-new').click();

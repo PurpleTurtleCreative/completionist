@@ -1,7 +1,7 @@
 import TaskActions from './TaskActions.jsx';
 
 import { TaskContext } from './TaskContext.jsx';
-import { isCriticalTask } from './util';
+import { isCriticalTask, getAssigneeDisplayName } from './util';
 
 const { useState, useCallback, useContext } = wp.element;
 
@@ -15,7 +15,7 @@ export default function TaskRow({task}) {
 			return;
 		}
 		setTaskProcessingStatus(taskGID, 'completing');
-		completeTask(taskGID).then(success => {
+		completeTask(taskGID, !task.completed).then(success => {
 			setTaskProcessingStatus(taskGID, false);
 		});
 	}, [task.processingStatus, setTaskProcessingStatus, completeTask]);
@@ -29,14 +29,7 @@ export default function TaskRow({task}) {
 
 	const notesIconClassName = ( showDescription ) ? 'fas' : 'far';
 
-	let assigneeDisplayName = null;
-	if ( task.assignee ) {
-		if ( window.PTCCompletionist.users[ task.assignee.gid ] ) {
-			assigneeDisplayName = window.PTCCompletionist.users[ task.assignee.gid ].data.display_name;
-		} else {
-			assigneeDisplayName = '(Not Connected)';
-		}
-	}
+	let assigneeDisplayName = getAssigneeDisplayName(task);
 
 	let extraClassNames = '';
 	if ( isCriticalTask(task) ) {

@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @import 'colors';
 @import 'layout';
 
@@ -136,7 +138,7 @@
 	background: color($secondary-color);
 	color: color($color-key);
 	border-radius: 999px;
-	font-size: $size / 2;
+	font-size: math.div($size, 2);
 	line-height: 1;
 	text-decoration: none;
 	width: $size;
@@ -152,9 +154,9 @@
 	}
 
 	&[disabled] {
-		cursor: not-allowed;
-		background: color(grey-lighter);
-		border-color: color(grey);
-		color: color(grey-dark);
+		cursor: not-allowed !important;
+		background: color(grey-lighter) !important;
+		border-color: color(grey) !important;
+		color: color(grey-dark) !important;
 	}
 }

@@ -32,7 +32,7 @@ try {
     $res['status'] = 'success';
     $res['code'] = 200;
     $res['message'] = "Successfully created task {$task->gid}.";
-    $res['data'] = HTML_Builder::format_task_row( $task );
+    $res['data'] = $task;
 
     /* Leave comment in Asana with pin link */
 

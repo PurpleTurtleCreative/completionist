@@ -1,0 +1,87 @@
+@import '../../abstracts/elements';
+@import '../../abstracts/colors';
+
+//----------------------
+
+.ptc-TaskCreationForm {
+	margin-top: 10px;
+	text-align: right;
+
+	input#ptc-new-task_name {
+		width: 100%;
+		max-width: 100%;
+		margin: 0;
+
+		&[disabled] {
+			cursor: not-allowed !important;
+			background: color(grey-lightest) !important;
+			border-color: color(grey) !important;
+		}
+	}
+
+	.form-group {
+		display: flex;
+		align-items: center;
+		margin: 5px 0;
+		width: 100%;
+		max-width: 100%;
+
+		label {
+			width: 5rem;
+			display: block;
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		input,
+		select,
+		textarea {
+			width: calc( 100% - 5rem);
+			margin: 0 0 0 0.5em;
+
+			&[disabled] {
+				cursor: not-allowed !important;
+				background: color(grey-lightest) !important;
+				border-color: color(grey) !important;
+			}
+		}
+
+		textarea {
+			min-height: 5em;
+		}
+
+		&:last-of-type {
+			align-items: flex-start;
+
+			label {
+				margin-top: 0.5em;
+			}
+		}
+	}
+
+	button[type="submit"] {
+		@include btn-pill-outline(white, success);
+		border-color: color(success);
+		margin-right: 0;
+		font-size: 1.07em;
+		padding: 0 1em 0 0.3em;
+
+		&.--is-active,
+		&:hover {
+			background: color(success);
+			color: color(success-dark);
+		}
+
+		&[disabled] {
+			cursor: not-allowed !important;
+			background: color(grey-light) !important;
+			border-color: color(grey) !important;
+			color: color(grey) !important;
+		}
+
+		i.fas {
+			margin: 0.5em;
+		}
+	}
+}//end ptc-TaskFilters

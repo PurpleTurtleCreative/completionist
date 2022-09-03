@@ -43,7 +43,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Widgets' ) ) {
 					include_once PLUGIN_PATH . 'src/admin/templates/html-metabox-pinned-tasks.php';
 				},
 				null,
-				'side'
+				'side',
+				'default',
+				[ '__back_compat_meta_box' => true ]
 			);
 		}
 

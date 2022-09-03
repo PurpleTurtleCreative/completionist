@@ -1,0 +1,22 @@
+@import '../../abstracts/colors';
+@import '../../abstracts/elements';
+
+@import 'TaskRow';
+
+//----------------------
+
+.ptc-TaskList {
+
+	.ptc-no-results {
+		padding: 2em 1em;
+		color: color(grey);
+		text-align: center;
+		margin: 0;
+		font-size: 1.15em;
+
+		i {
+			font-size: 1.15em;
+			margin-right: 0.5em;
+		}
+	}
+}//.ptc-TaskList
