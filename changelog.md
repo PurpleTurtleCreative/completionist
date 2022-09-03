@@ -12,6 +12,10 @@
 - The `ptc_pin_task` AJAX action now returns the full Asana task object in `response.data` instead of just the task GID. This also helps ensure proper task visibility permissions are enforced.
 - `Asana_Interface::maybe_get_task_data()` and `Asana_Interface::create_task()` now also include the task's `action_link` for frontend component compatibility.
 
+#### Fixed
+
+- Task due dates being one day off in the Dashboard Widget, depending on your local timezone.
+
 ### 3.2.0 - 2022-05-22
 
 #### Added
