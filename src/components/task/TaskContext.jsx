@@ -1,9 +1,19 @@
-const { createContext, useState } = wp.element;
+const { createContext, useState, useEffect } = wp.element;
 
 export const TaskContext = createContext(false);
 
 export function TaskContextProvider({children}) {
-	const [tasks, setTasks] = useState(Object.values(window.PTCCompletionist.tasks));
+	const [tasks, setTasks] = useState(window.PTCCompletionist.tasks);
+
+	useEffect(() => {
+		/*
+		Save the current state on unmount,
+		so it can be correctly restored on re-mount.
+		*/
+		return () => {
+			window.PTCCompletionist.tasks = tasks;
+		};
+	}, [tasks]);
 
 	const context = {
 
