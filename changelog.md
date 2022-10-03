@@ -2,7 +2,7 @@
 
 #### Added
 
-- Pinned Tasks post editor metabox has been converted to ReactJS, offering a better experience.
+- Pinned Tasks post editor metabox has been converted to ReactJS, offering a better experience, and is now directly integrated into the Block Editor as a plugin panel.
 - Several new ReactJS components to compose the new Pinned Tasks plugin panel in the Block Editor.
 
 #### Changed
@@ -11,6 +11,7 @@
 - The `ptc_create_task` AJAX action now returns the full Asana task object in `response.data` instead of the generated HTML representation.
 - The `ptc_pin_task` AJAX action now returns the full Asana task object in `response.data` instead of just the task GID. This also helps ensure proper task visibility permissions are enforced.
 - `Asana_Interface::maybe_get_task_data()` and `Asana_Interface::create_task()` now also include the task's `action_link` for frontend component compatibility.
+- The ReactJS Pinned Tasks panel and Dashboard Widget styles are now imported as SCSS modules for automatic compiling and composition ease.
 
 #### Fixed
 
