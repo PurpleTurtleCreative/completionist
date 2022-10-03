@@ -12,6 +12,7 @@
 - The `ptc_pin_task` AJAX action now returns the full Asana task object in `response.data` instead of just the task GID. This also helps ensure proper task visibility permissions are enforced.
 - `Asana_Interface::maybe_get_task_data()` and `Asana_Interface::create_task()` now also include the task's `action_link` for frontend component compatibility.
 - The ReactJS Pinned Tasks panel and Dashboard Widget styles are now imported as SCSS modules for automatic compiling and composition ease.
+- Simplified the Dashboard Widget's HTML `id` from `ptc-PTCCompletionistTasksDashboardWidget` to simply `ptc-DashboardWidget`.
 
 #### Fixed
 
