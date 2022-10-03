@@ -1,5 +1,7 @@
 import TaskRow from './TaskRow.jsx';
 
+import '/assets/styles/scss/components/task/TaskList.scss';
+
 export default function TaskList({tasks}) {
 
 	let listContent = <p className="ptc-no-results"><i className="fas fa-clipboard-check"></i>No tasks to display.</p>;

@@ -1,4 +1,4 @@
-import PTCCompletionistTasksDashboardWidget from './components/PTCCompletionistTasksDashboardWidget.jsx';
+import DashboardWidget from './components/DashboardWidget.jsx';
 import NoteBox from './components/notice/NoteBox.jsx';
 
 import { TaskContextProvider } from './components/task/TaskContext.jsx';
@@ -6,7 +6,7 @@ import { TaskContextProvider } from './components/task/TaskContext.jsx';
 const { render } = wp.element;
 
 document.addEventListener('DOMContentLoaded', () => {
-	const rootNode = document.getElementById('ptc-PTCCompletionistTasksDashboardWidget');
+	const rootNode = document.getElementById('ptc-DashboardWidget');
 	if ( null !== rootNode ) {
 		if ( 'error' in window.PTCCompletionist ) {
 			render(
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		} else {
 			render(
 				<TaskContextProvider>
-					<PTCCompletionistTasksDashboardWidget />
+					<DashboardWidget />
 				</TaskContextProvider>
 			, rootNode);
 		}

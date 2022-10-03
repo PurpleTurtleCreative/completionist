@@ -1,8 +1,5 @@
 @import '../abstracts/colors';
 
-@import 'notice/NoteBox';
-@import 'task/TaskList';
-
 //----------------------
 
 .components-panel__body.ptc-completionist-tasks {
@@ -30,7 +27,7 @@
 
 				.ptc-TaskRow {
 					flex-wrap: wrap;
-					padding: 10px 16px;
+					padding: 10px;
 
 					.body {
 						.name {

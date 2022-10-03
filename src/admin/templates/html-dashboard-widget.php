@@ -25,7 +25,7 @@ try {
 
 	/* Display */
 	?>
-	<div id="ptc-PTCCompletionistTasksDashboardWidget">
+	<div id="ptc-DashboardWidget">
 		<p class="ptc-loading"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>Loading...</p>
 	</div>
 	<?php

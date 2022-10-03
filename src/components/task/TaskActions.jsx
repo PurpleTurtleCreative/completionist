@@ -1,6 +1,8 @@
 import { TaskContext } from './TaskContext.jsx';
 import { getTaskUrl } from './util';
 
+import '/assets/styles/scss/components/task/TaskActions.scss';
+
 const { useCallback, useContext } = wp.element;
 
 export default function TaskActions({taskGID, processingStatus}) {

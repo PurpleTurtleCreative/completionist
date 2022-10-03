@@ -7,6 +7,8 @@ import {
 	filterCriticalTasks
 } from './util';
 
+import '/assets/styles/scss/components/task/TaskFilters.scss';
+
 const { useState, useCallback, useMemo, useEffect } = wp.element;
 
 export default function TaskFilters({tasks, onChange}) {

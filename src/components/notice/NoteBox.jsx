@@ -1,3 +1,5 @@
+import '/assets/styles/scss/components/notice/NoteBox.scss';
+
 export default function NoteBox({type, message, code}) {
 
 	let titleText = null;

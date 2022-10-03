@@ -131,6 +131,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 				method_exists( $current_screen, 'is_block_editor' )
 				&& $current_screen->is_block_editor()
 			) {
+				// Exit; assets are enqueued in enqueue_block_editor_assets.
 				wp_enqueue_script( 'fontawesome-5' );
 				return;
 			}
@@ -173,8 +174,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					);
 					wp_enqueue_script( 'fontawesome-5' );
 					wp_enqueue_style(
-						'ptc-completionist_dashboard-widget-css',
-						PLUGIN_URL . '/assets/styles/dashboard-widget.css',
+						'ptc-completionist_DashboardWidget',
+						PLUGIN_URL . '/build/index_DashboardWidget.jsx.css',
 						[],
 						PLUGIN_VERSION
 					);
@@ -292,7 +293,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 		}//end register_scripts()
 
 		/**
-		 * Register assets for the Block Editor screen.
+		 * Registers assets for the Block Editor screen.
 		 *
 		 * @since [unreleased]
 		 */
