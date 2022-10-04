@@ -14,6 +14,10 @@
 - The ReactJS Pinned Tasks panel and Dashboard Widget styles are now imported as SCSS modules for automatic compiling and composition ease.
 - Simplified the Dashboard Widget's HTML `id` from `ptc-PTCCompletionistTasksDashboardWidget` to simply `ptc-DashboardWidget`.
 
+#### Removed
+
+- Distribution build files, such as webpacked JavaScript and processed CSS, from version control.
+
 #### Fixed
 
 - Task due dates being one day off in the Dashboard Widget, depending on your local timezone.
