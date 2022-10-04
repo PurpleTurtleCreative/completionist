@@ -19,5 +19,5 @@ runs:
       shell: bash
 
     - name: Remove bundle excludes
-      run: for PATTERN in $(cat "${{ github.action_path }}/exclude.lst") ; do rm -rf "${{ github.action_path }}/../${PATTERN}" ; done
+      run: for PATTERN in $(cat "${{ github.action_path }}/exclude.lst") ; do rm -rf "${{ github.action_path }}/../"${PATTERN} ; done
       shell: bash
