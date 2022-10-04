@@ -17,6 +17,7 @@
 #### Fixed
 
 - Task due dates being one day off in the Dashboard Widget, depending on your local timezone.
+- Enabled `new_project_templates` Asana update to resolve deprecation logs.
 
 ### 3.2.0 - 2022-05-22
 
