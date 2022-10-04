@@ -1,7 +1,7 @@
 import { TaskContext } from './TaskContext.jsx';
 import { filterIncompleteTasks } from './util';
 
-import '/assets/styles/scss/components/task/TaskOverview.scss';
+import '/assets/styles/scss/components/task/_TaskOverview.scss';
 
 const { useContext, useMemo } = wp.element;
 

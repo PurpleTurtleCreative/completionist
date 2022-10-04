@@ -1,6 +1,6 @@
 import TaskList from './TaskList.jsx';
 
-import '/assets/styles/scss/components/task/TaskListPaginated.scss';
+import '/assets/styles/scss/components/task/_TaskListPaginated.scss';
 
 const { useState, useCallback, useMemo, useEffect } = wp.element;
 

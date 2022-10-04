@@ -15,5 +15,7 @@ Icon
 # Node/React
 /node_modules/
 
-# SCSS
-*.map
+# Built files
+/build/*
+/assets/styles/*.css
+/assets/styles/*.css.map

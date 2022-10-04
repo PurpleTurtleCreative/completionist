@@ -1,7 +1,7 @@
 import { TaskContext } from './TaskContext.jsx';
 import { getTaskUrl } from './util';
 
-import '/assets/styles/scss/components/task/TaskActions.scss';
+import '/assets/styles/scss/components/task/_TaskActions.scss';
 
 const { useCallback, useContext } = wp.element;
 

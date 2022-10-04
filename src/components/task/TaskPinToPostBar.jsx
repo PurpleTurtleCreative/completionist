@@ -3,7 +3,7 @@ import TaskCreationForm from './TaskCreationForm.jsx';
 
 import { TaskContext } from './TaskContext.jsx';
 
-import '/assets/styles/scss/components/task/TaskPinToPostBar.scss';
+import '/assets/styles/scss/components/task/_TaskPinToPostBar.scss';
 
 const { useState } = wp.element;
 
