@@ -1,6 +1,6 @@
 import { TaskContext } from './TaskContext.jsx';
 
-import '/assets/styles/scss/components/task/TaskPinToPostForm.scss';
+import '/assets/styles/scss/components/task/_TaskPinToPostForm.scss';
 
 const { useState, useContext } = wp.element;
 

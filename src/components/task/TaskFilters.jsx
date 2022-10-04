@@ -7,7 +7,7 @@ import {
 	filterCriticalTasks
 } from './util';
 
-import '/assets/styles/scss/components/task/TaskFilters.scss';
+import '/assets/styles/scss/components/task/_TaskFilters.scss';
 
 const { useState, useCallback, useMemo, useEffect } = wp.element;
 

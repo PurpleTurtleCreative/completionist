@@ -5,7 +5,7 @@ import TaskListPaginated from './task/TaskListPaginated.jsx';
 import { TaskContext } from './task/TaskContext.jsx';
 import { filterIncompleteTasks } from './task/util';
 
-import '/assets/styles/scss/components/DashboardWidget.scss';
+import '/assets/styles/scss/components/_DashboardWidget.scss';
 
 const { useContext, useCallback, useState, useEffect } = wp.element;
 
