@@ -26,7 +26,7 @@ export function NoticeContextProvider({children}) {
 		"notices": notices,
 
 		/**
-		 * Adds a new WordPress Notice component.
+		 * Adds props for a new WordPress Notice component.
 		 *
 		 * See the linked documentation to understand component parameters.
 		 *
