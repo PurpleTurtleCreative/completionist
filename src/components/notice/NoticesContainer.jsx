@@ -8,7 +8,7 @@ export default function NoticesContainer() {
 	const { addNotice, getRenderedNotices } = useContext(NoticeContext);
 
 	return (
-		<div className={"ptc-NoticesContainer"}>
+		<div className="ptc-NoticesContainer">
 			{getRenderedNotices()}
 		</div>
 	);
