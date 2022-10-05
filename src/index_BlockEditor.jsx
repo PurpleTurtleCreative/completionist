@@ -5,8 +5,8 @@ import BlockEditorPanelTasks from './components/BlockEditorPanelTasks.jsx';
 import NoteBox from './components/notice/NoteBox.jsx';
 import NoticesContainer from './components/notice/NoticesContainer.jsx';
 
-import { TaskContextProvider } from './components/task/TaskContext.jsx';
 import { NoticeContextProvider } from './components/notice/NoticeContext.jsx';
+import { TaskContextProvider } from './components/task/TaskContext.jsx';
 
 const registerCompletionistPlugin = () => {
 
