@@ -3,7 +3,7 @@ const { createContext, useState, useEffect } = wp.element;
 export const TaskContext = createContext(false);
 
 export function TaskContextProvider({children}) {
-	const [tasks, setTasks] = useState(window.PTCCompletionist.tasks);
+	const [tasks, setTasks] = useState(window.PTCCompletionist.tasks ?? []);
 
 	useEffect(() => {
 		/*
