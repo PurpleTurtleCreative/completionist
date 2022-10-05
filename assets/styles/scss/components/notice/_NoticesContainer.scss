@@ -1,0 +1,27 @@
+@import '../../abstracts/colors';
+
+//----------------------
+
+.ptc-NoticesContainer {
+
+	.components-notice {
+		padding: 8px 10px;
+		margin: 0;
+		border-top: 1px solid color(grey-light);
+
+		&.is-dismissible {
+			padding: 8px 10px;
+		}
+
+		&__dismiss {
+			&.has-icon {
+				padding: 0;
+				min-width: auto;
+			}
+		}
+
+		&__content {
+			margin: 0 10px 0 0;
+		}
+	}
+}

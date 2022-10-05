@@ -3,7 +3,7 @@ import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 
 import BlockEditorPanelTasks from './components/BlockEditorPanelTasks.jsx';
 import NoteBox from './components/notice/NoteBox.jsx';
-import NoticesDisplay from './components/notice/NoticesDisplay.jsx';
+import NoticesContainer from './components/notice/NoticesContainer.jsx';
 
 import { TaskContextProvider } from './components/task/TaskContext.jsx';
 import { NoticeContextProvider } from './components/notice/NoticeContext.jsx';
@@ -17,7 +17,7 @@ const registerCompletionistPlugin = () => {
 		tasksPanelContent = (
 			<NoticeContextProvider>
 				<TaskContextProvider>
-					<NoticesDisplay />
+					<NoticesContainer />
 					<BlockEditorPanelTasks />
 				</TaskContextProvider>
 			</NoticeContextProvider>
