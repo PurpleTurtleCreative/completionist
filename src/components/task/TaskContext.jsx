@@ -1,9 +1,12 @@
-const { createContext, useState, useEffect } = wp.element;
+import { NoticeContext } from '../notice/NoticeContext.jsx';
+
+const { createContext, useContext, useEffect, useState } = wp.element;
 
 export const TaskContext = createContext(false);
 
 export function TaskContextProvider({children}) {
-	const [tasks, setTasks] = useState(window.PTCCompletionist.tasks);
+	const { addNotice } = useContext(NoticeContext);
+	const [tasks, setTasks] = useState(window.PTCCompletionist.tasks ?? []);
 
 	useEffect(() => {
 		/*
@@ -54,25 +57,30 @@ export function TaskContextProvider({children}) {
 			return await window.fetch(window.ajaxurl, init)
 				.then( res => res.json() )
 				.then( res => {
-					console.log(res);
 
-					if(res.status == 'success' && res.data) {
+					if ( res.status == 'success' && res.data ) {
 						context.updateTask({
 							"gid": task.gid,
 							"completed": completed
 						});
 						return true;
-					} else if(res.status == 'error' && res.data) {
-						console.error(res.data);
+					} else if ( 'code' in res && 'message' in res ) {
+						addNotice(
+							<><strong>{`Error ${res.code}.`}</strong> {res.message}</>,
+							'error'
+						);
 					} else {
-						alert('[Completionist] Error '+res.code+': '+res.message);
+						throw 'error';
 					}
 
 					return false;
 				})
 				.catch( err => {
-					console.error('Promise catch:', err);
-					alert('[Completionist] Failed to complete task.');
+					window.console.error('Promise catch:', err);
+					addNotice(
+						`Failed to mark task as ${(completed) ? 'completed' : 'incomplete'}.`,
+						'error'
+					);
 					return false;
 				});
 		},
@@ -100,22 +108,27 @@ export function TaskContextProvider({children}) {
 			return await window.fetch(window.ajaxurl, init)
 				.then( res => res.json() )
 				.then( res => {
-					console.log(res);
 
 					if(res.status == 'success' && res.data) {
 						context.removeTask(res.data);
 						return true;
-					} else if(res.status == 'error' && res.data) {
-						console.error(res.data);
+					} else if ( 'code' in res && 'message' in res ) {
+						addNotice(
+							<><strong>{`Error ${res.code}.`}</strong> {res.message}</>,
+							'error'
+						);
 					} else {
-						alert('[Completionist] Error '+res.code+': '+res.message);
+						throw 'error';
 					}
 
 					return false;
 				})
 				.catch( err => {
-					console.error('Promise catch:', err);
-					alert('[Completionist] Failed to delete task.');
+					window.console.error('Promise catch:', err);
+					addNotice(
+						'Failed to delete task.',
+						'error'
+					);
 					return false;
 				});
 		},
@@ -142,22 +155,27 @@ export function TaskContextProvider({children}) {
 			return await window.fetch(window.ajaxurl, init)
 				.then( res => res.json() )
 				.then( res => {
-					console.log(res);
 
 					if(res.status == 'success' && res.data) {
 						context.removeTask(res.data);
 						return true;
-					} else if(res.status == 'error' && res.data) {
-						console.error(res.data);
+					} else if ( 'code' in res && 'message' in res ) {
+						addNotice(
+							<><strong>{`Error ${res.code}.`}</strong> {res.message}</>,
+							'error'
+						);
 					} else {
-						alert('[Completionist] Error '+res.code+': '+res.message);
+						throw 'error';
 					}
 
 					return false;
 				})
 				.catch( err => {
-					console.error('Promise catch:', err);
-					alert('[Completionist] Failed to unpin task.');
+					window.console.error('Promise catch:', err);
+					addNotice(
+						'Failed to unpin task.',
+						'error'
+					);
 					return false;
 				});
 		},
@@ -184,22 +202,27 @@ export function TaskContextProvider({children}) {
 			return await window.fetch(window.ajaxurl, init)
 				.then( res => res.json() )
 				.then( res => {
-					console.log(res);
 
 					if(res.status == 'success' && res.data) {
 						context.addTask(res.data);
 						return true;
-					} else if(res.status == 'error' && res.data) {
-						console.error(res.data);
+					} else if ( 'code' in res && 'message' in res ) {
+						addNotice(
+							<><strong>{`Error ${res.code}.`}</strong> {res.message}</>,
+							'error'
+						);
 					} else {
-						alert('[Completionist] Error '+res.code+': '+res.message);
+						throw 'error';
 					}
 
 					return false;
 				})
 				.catch( err => {
-					console.error('Promise catch:', err);
-					alert('[Completionist] Failed to pin task.');
+					window.console.error('Promise catch:', err);
+					addNotice(
+						'Failed to pin task.',
+						'error'
+					);
 					return false;
 				});
 		},
@@ -230,22 +253,27 @@ export function TaskContextProvider({children}) {
 			return await window.fetch(window.ajaxurl, init)
 				.then( res => res.json() )
 				.then( res => {
-					console.log(res);
 
 					if(res.status == 'success' && res.data) {
 						context.addTask(res.data);
 						return true;
-					} else if(res.status == 'error' && res.data) {
-						console.error(res.data);
+					} else if ( 'code' in res && 'message' in res ) {
+						addNotice(
+							<><strong>{`Error ${res.code}.`}</strong> {res.message}</>,
+							'error'
+						);
 					} else {
-						alert('[Completionist] Error '+res.code+': '+res.message);
+						throw 'error';
 					}
 
 					return false;
 				})
 				.catch( err => {
-					console.error('Promise catch:', err);
-					alert('[Completionist] Failed to pin task.');
+					window.console.error('Promise catch:', err);
+					addNotice(
+						'Failed to create task.',
+						'error'
+					);
 					return false;
 				});
 		},

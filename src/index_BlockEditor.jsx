@@ -3,7 +3,9 @@ import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 
 import BlockEditorPanelTasks from './components/BlockEditorPanelTasks.jsx';
 import NoteBox from './components/notice/NoteBox.jsx';
+import NoticesContainer from './components/notice/NoticesContainer.jsx';
 
+import { NoticeContextProvider } from './components/notice/NoticeContext.jsx';
 import { TaskContextProvider } from './components/task/TaskContext.jsx';
 
 const registerCompletionistPlugin = () => {
@@ -13,17 +15,20 @@ const registerCompletionistPlugin = () => {
 		tasksPanelContent = <NoteBox type="error" message={window.PTCCompletionist.error.message} code={window.PTCCompletionist.error.code} />;
 	} else {
 		tasksPanelContent = (
-			<TaskContextProvider>
-				<BlockEditorPanelTasks />
-			</TaskContextProvider>
+			<NoticeContextProvider>
+				<TaskContextProvider>
+					<NoticesContainer />
+					<BlockEditorPanelTasks />
+				</TaskContextProvider>
+			</NoticeContextProvider>
 		);
 	}
 
 	return (
 		<PluginDocumentSettingPanel
-				name="ptc-completionist-tasks"
-				title="Completionist"
-				className="ptc-completionist-tasks"
+			name="ptc-completionist-tasks"
+			title="Completionist"
+			className="ptc-completionist-tasks"
 		>
 			{ tasksPanelContent }
 		</PluginDocumentSettingPanel>

@@ -1,0 +1,62 @@
+@import '../../abstracts/colors';
+
+//----------------------
+
+.ptc-NoticesContainer {
+
+	.components-notice {
+		display: flex;
+		align-items: center;
+		font-size: 13px;
+		padding: 8px 10px;
+		margin: 0;
+		background-color: color(white);
+		border-left: 4px solid color(info);
+		border-top: 1px solid color(grey-light);
+
+		&.is-info {
+			color: color(info-dark);
+			border-left-color: color(info);
+			background-color: color(white);
+		}
+		&.is-error {
+			color: color(danger);
+			border-left-color: color(danger);
+			background-color: color(danger-lightest);
+		}
+
+		&.is-dismissible {
+			padding: 8px 10px;
+		}
+
+		&__dismiss {
+			cursor: pointer;
+			flex-shrink: 0;
+			align-self: flex-start;
+
+			&.has-icon {
+				color: color(grey-dark);
+				padding: 0;
+				min-width: auto;
+				background: none;
+				border: none;
+
+				&:hover,
+				&:active,
+				&:focus {
+					color: color(black);
+				}
+
+				svg {
+					fill: currentColor;
+					outline: none;
+				}
+			}
+		}
+
+		&__content {
+			flex-grow: 1;
+			margin: 0 10px 0 0;
+		}
+	}
+}

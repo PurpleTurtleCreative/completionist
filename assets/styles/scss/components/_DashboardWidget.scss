@@ -53,4 +53,15 @@
 			margin: 0.4em;
 		}
 	}
+
+	.ptc-NoticesContainer {
+		.components-notice {
+			&:first-child {
+				border-top: none;
+			}
+			&:last-child {
+				border-bottom: 1px solid color(grey-light);
+			}
+		}
+	}
 }//end #ptc-completionist_site-tasks .inside
