@@ -9,6 +9,17 @@
 		margin: 0;
 		border-top: 1px solid color(grey-light);
 
+		&.is-info {
+			color: color(info-dark);
+			border-left-color: color(info);
+			background-color: color(white);
+		}
+		&.is-error {
+			color: color(danger);
+			border-left-color: color(danger);
+			background-color: color(danger-lightest);
+		}
+
 		&.is-dismissible {
 			padding: 8px 10px;
 		}
