@@ -4,6 +4,7 @@
 
 - Pinned Tasks post editor metabox has been converted to ReactJS, offering a better experience, and is now directly integrated into the Block Editor as a plugin panel.
 - Several new ReactJS components to compose the new Pinned Tasks plugin panel in the Block Editor.
+- Task request errors are now elegantly displayed on the frontend for the Dashboard Widget and Pinned Tasks panel ReactJS components. Before, errors were only logged to the browser console or rarely displayed in a browser window alert.
 
 #### Changed
 
