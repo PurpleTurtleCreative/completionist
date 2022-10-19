@@ -1,3 +1,9 @@
+### [unreleased]
+
+#### Fixed
+
+- Duplicate display of a user listed in the plugin settings screen when their connected Asana account email does not match their WordPress user account email.
+
 ### 3.3.0 - 2022-10-15
 
 #### Added
