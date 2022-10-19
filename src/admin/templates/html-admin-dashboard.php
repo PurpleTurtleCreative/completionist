@@ -128,8 +128,13 @@ try {
 						<p class="nothing-to-see">No collaborators were found by email.</p>
 						<?php
 					} else {
+						$displayed_user_ids = [];
 						foreach ( $workspace_users as $user ) {
-							display_collaborator_row( $user );
+							// Ensure users are only displayed once.
+							if ( ! in_array( $user->ID, $displayed_user_ids, true ) ) {
+								$displayed_user_ids[] = $user->ID;
+								display_collaborator_row( $user );
+							}
 						}
 					}//end if empty collaborators
 				}//end list recognized collaborators
