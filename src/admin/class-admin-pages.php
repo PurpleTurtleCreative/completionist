@@ -295,7 +295,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 		/**
 		 * Registers assets for the Block Editor screen.
 		 *
-		 * @since [unreleased]
+		 * @since 3.3.0
 		 */
 		public static function register_block_editor_assets() {
 			$asset_file = require_once( PLUGIN_PATH . 'build/index_BlockEditor.jsx.asset.php' );
