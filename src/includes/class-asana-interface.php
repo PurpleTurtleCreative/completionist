@@ -337,7 +337,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				foreach ( $wp_users as $gid => $wp_user ) {
 					$wp_users[ $gid ] = "{$wp_user->display_name} ({$wp_user->user_email})";
 				}
-				$wp_users = array_merge( $wp_users, self::get_connected_workspace_user_options( $workspace_gid ) );
+				$wp_users += self::get_connected_workspace_user_options( $workspace_gid );
 			} catch ( \Exception $e ) {
 				error_log( HTML_Builder::format_error_string( $e, 'Failed to get_workspace_user_options().' ) );
 				$wp_users = [ 'error' => 'ERROR ' . HTML_Builder::get_error_code( $e ) ];
