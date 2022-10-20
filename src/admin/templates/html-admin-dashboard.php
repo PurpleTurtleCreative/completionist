@@ -193,7 +193,7 @@ try {
 			</div>
 		</div>
 	</section>
-<?php endif; ?>
+	<?php endif; ?>
 
 	<section id="ptc-disconnect-asana">
 		<form method="POST">
