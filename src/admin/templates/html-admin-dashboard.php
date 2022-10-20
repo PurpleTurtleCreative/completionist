@@ -185,11 +185,11 @@ try {
 		<div class="help-notes">
 			<div class="note-box note-box-info">
 				<i class="fas fa-question"></i>
-				<p>This WordPress user's Asana connection will be used to authenticate public requests to Asana on your website's frontend. This is necessary to render shortcode contents!</p>
+				<p>This WordPress user's Asana connection will be used to render shortcodes on your website.</p>
 			</div>
 			<div class="note-box note-box-warning">
 				<i class="fas fa-lightbulb"></i>
-				<p>The user should have access to all Asana tasks and projects that you wish to display on your website's frontend, so it's best to set this to someone such as your Asana workspace owner or a high-level manager.</p>
+				<p>The user should have access to all tasks and projects in Asana that you wish to display on your website, so it's best to set this to someone such as your project manager.</p>
 			</div>
 		</div>
 	</section>
