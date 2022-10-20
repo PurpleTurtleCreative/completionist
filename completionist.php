@@ -123,7 +123,14 @@ add_action(
 	}
 );
 
-/* Register Admin Functionality */
+// Register public functionality.
+foreach ( glob( PLUGIN_PATH . 'src/public/class-*.php' ) as $file ) {
+	require_once $file;
+}
+
+Shortcodes::register();
+
+// Register admin functionality.
 if ( is_admin() ) {
 
 	foreach ( glob( PLUGIN_PATH . 'src/admin/class-*.php' ) as $file ) {

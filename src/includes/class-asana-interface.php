@@ -551,6 +551,151 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		}
 
 		/**
+		 * Parses project view information from an Asana project link.
+		 *
+		 * @since [unreleased]
+		 */
+		public static function parse_project_link( string $project_link ) {
+
+			$parsed_project_data = [
+				'gid' => '',
+				'layout' => '',
+			];
+
+			$project_link = esc_url_raw( $project_link );
+
+			if ( preg_match( '/\/([0-9]+)\/([a-z]+)$/', $project_link, $matches ) ) {
+				// Copied project URL from web browser address bar.
+				// ex. https://app.asana.com/0/1234567890/list
+				if ( ! empty( $matches[1] ) ) {
+					$parsed_project_data['gid'] = Options::sanitize( 'gid', $matches[1] );
+				}
+				if ( ! empty( $matches[2] ) && 'overview' !== $matches[2] ) {
+					$parsed_project_data['layout'] = $matches[2];
+				}
+			} elseif ( preg_match( '/\/([0-9]+)$/', $project_link, $matches ) ) {
+				// Copied project URL from project details dropdown in Asana.
+				// ex. https://app.asana.com/0/1234567890/1234567890
+				if ( ! empty( $matches[1] ) ) {
+					$parsed_project_data['gid'] = Options::sanitize( 'gid', $matches[1] );
+				}
+			}
+
+			return $parsed_project_data;
+		}
+
+		/**
+		 * Gets tasks for a given project, organized by project sections.
+		 *
+		 * @since [unreleased]
+		 */
+		public static function get_project_data( string $project_gid ) {
+
+			$asana = self::get_client();
+
+			$project_gid = Options::sanitize( 'gid', $project_gid );
+			if ( '' == $project_gid ) {
+				return [];
+			}
+
+			// Get section order.
+			$sections = $asana->sections->findByProject( $project_gid, [], [ 'fields' => 'gid,name' ] );
+			$sections = iterator_to_array( $sections );
+			$sections_map = [];
+			foreach ( $sections as $i => &$s ) {
+				$sections_map[ $s->gid ] = $i;
+				$s->tasks = [];
+			}
+
+			// Get task data.
+			$task_fields = 'gid,name,html_notes,assignee,this.assignee.name,this.assignee.photo.image_60x60,due_on,completed';
+			$task_options = [ 'fields' => "memberships,this.memberships.section,{$task_fields}" ];
+			$tasks = $asana->tasks->findByProject( $project_gid, [], $task_options );
+			$tasks = iterator_to_array( $tasks );
+			self::load_subtasks( $tasks, $task_fields );
+
+			// Map tasks to sections and clean data.
+			foreach ( $tasks as &$task ) {
+				foreach ( $task->memberships as &$membership ) {
+					if (
+						isset( $membership->section )
+						&& isset( $membership->section->gid )
+						&& isset( $sections_map[ $membership->section->gid ] )
+					) {
+						$task->html_notes = preg_replace( '/(<\/?)body(>)/i', '', $task->html_notes );
+						foreach ( $task->subtasks as &$subtask ) {
+							$subtask->html_notes = preg_replace( '/(<\/?)body(>)/i', '', $subtask->html_notes );
+						}
+						$task_clone = clone $task;
+						unset( $task_clone->memberships );
+						$sections[ $sections_map[ $membership->section->gid ] ]->tasks[] = $task_clone;
+					}
+				}
+			}
+
+			return $sections;
+		}
+
+		/**
+		 * Loads subtask records for each parent task.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param \stdClass[] $parent_tasks The tasks for which to get subtasks.
+		 *
+		 * @param string $opt_fields Optional. A csv of task fields to retrieve.
+		 *
+		 * @throws \Exception Authentication may fail when first loading the client
+		 * or requests could fail due to request limits or server issues.
+		 */
+		static function load_subtasks( array &$parent_tasks, string $opt_fields = '' ) {
+
+			$asana = static::get_client();
+
+			$opt_fields = explode( ',', $opt_fields );
+
+			$actions = [];
+			$last = count( $parent_tasks ) - 1;
+			foreach ( $parent_tasks as $i => &$task ) {
+
+				if ( ! isset( $task->gid ) ) { continue; }
+
+				$task_gid = Options::sanitize( 'gid', $task->gid );
+				if ( '' == $task_gid ) { continue; }
+
+				$actions[] = [
+					'method' => 'GET',
+					'relative_path' => sprintf( '/tasks/%s/subtasks', $task_gid ),
+					'options' => [
+						'fields' => $opt_fields,
+					],
+				];
+
+				$actions_count = count( $actions );
+				if ( ( $actions_count % 9 === 0 || $i == $last ) && $actions_count > 0 ) {
+
+					$res = $asana->post( '/batch', [ 'actions' => $actions ] );
+					$actions = [];
+
+					$last_res_i = count( $res ) - 1;
+					for (
+						$parent_i = $i + 1 - $actions_count, $res_i = 0;
+						$parent_i <= $i, $res_i <= $last_res_i;
+						++$parent_i, ++$res_i
+					) {
+
+						$parent_tasks[ $parent_i ]->subtasks = [];
+
+						$current_res = $res[ $res_i ];
+						if ( 200 == $current_res->status_code && count( $current_res->body->data ) > 0 ) {
+							$parent_tasks[ $parent_i ]->subtasks = $current_res->body->data;
+						}
+					}//end foreach batch result
+				}//end if batch ready to send
+			}//end foreach parent task
+		}//end get_subtasks()
+
+		/**
 		 * Attempts to retrieve task data. Providing the post id of the provided
 		 * pinned task gid will also attempt data self-healing.
 		 *
