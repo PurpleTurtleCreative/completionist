@@ -1,10 +1,8 @@
 {
   "name": "completionist",
-  "version": "3.1.1",
-  "author": "Michelle Blanchette",
+  "author": "Purple Turtle Creative",
   "description": "Asana task management integration for WordPress.",
   "homepage": "https://purpleturtlecreative.com/completionist/",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PurpleTurtleCreative/completionist.git"

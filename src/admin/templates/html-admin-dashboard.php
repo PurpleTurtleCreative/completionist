@@ -159,6 +159,42 @@ try {
 		?>
 	</section><!--close section#ptc-asana-workspace-->
 
+	<?php if ( current_user_can( 'manage_options' ) ) : ?>
+	<section id="ptc-frontend-auth-user">
+		<label for="asana-frontend-user">Frontend Authentication User</label>
+		<form method="POST">
+			<div class="field-group">
+				<select id="asana-frontend-user" name="wp_user_id">
+					<option value="">Choose a user...</option>
+					<?php
+					$frontend_auth_user_id = Options::get( Options::FRONTEND_AUTH_USER_ID );
+					foreach ( $connected_workspace_users as $gid => $wp_user ) {
+						printf(
+							'<option value="%1$s"%3$s>%2$s</option>',
+							esc_attr( $wp_user->ID ),
+							esc_html( $wp_user->display_name . ' (' . $wp_user->user_email . ')' ),
+							( $frontend_auth_user_id === $wp_user->ID ) ? ' selected' : ''
+						);
+					}
+					?>
+				</select>
+				<input type="hidden" name="asana_frontend_user_save_nonce" value="<?php echo esc_attr( wp_create_nonce( 'asana_frontend_user_save' ) ); ?>">
+				<input type="submit" name="asana_frontend_user_save" value="Save">
+			</div>
+		</form>
+		<div class="help-notes">
+			<div class="note-box note-box-info">
+				<i class="fas fa-question"></i>
+				<p>This WordPress user's Asana connection will be used to authenticate public requests to Asana on your website's frontend. This is necessary to render shortcode contents!</p>
+			</div>
+			<div class="note-box note-box-warning">
+				<i class="fas fa-lightbulb"></i>
+				<p>The user should have access to all Asana tasks and projects that you wish to display on your website's frontend, so it's best to set this to someone such as your Asana workspace owner or a high-level manager.</p>
+			</div>
+		</div>
+	</section>
+<?php endif; ?>
+
 	<section id="ptc-disconnect-asana">
 		<form method="POST">
 			<div class="field-group">

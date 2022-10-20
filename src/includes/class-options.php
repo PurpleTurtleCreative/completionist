@@ -72,6 +72,16 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		public const PINNED_TASK_GID = '_ptc_asana_task_gid';
 
 		/**
+		 * The option key name for the WordPress user's ID who will be used
+		 * to authenticate Asana requests on the frontend.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @var int FRONTEND_AUTH_USER_ID
+		 */
+		public const FRONTEND_AUTH_USER_ID = '_ptc_asana_frontend_auth_user_id';
+
+		/**
 		 * Gets a sanitized value for an option of this class returned in the key's
 		 * format as documented on this class's constants.
 		 *
@@ -145,6 +155,20 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 					}
 					return $pinned_task_gids;
 
+				case self::FRONTEND_AUTH_USER_ID:
+					$frontend_auth_user_id = get_option( $key, false );
+					if ( false === $frontend_auth_user_id ) {
+						return -1;
+					} else {
+						$frontend_auth_user_id = self::sanitize( $key, $frontend_auth_user_id );
+						$wp_user = new \WP_User( $frontend_auth_user_id );
+						if ( ! $wp_user->exists() ) {
+							error_log( "WordPress user (ID: {$frontend_auth_user_id}) to authenticate frontend Asana requests does not exist! Please save a new frontend authentication user in Completionist's settings." );
+							self::delete( $key );
+							return -1;
+						}
+					}
+					return (int) $frontend_auth_user_id;
 			}
 
 			error_log( 'Invalid key to get value: ' . $key );
@@ -205,6 +229,13 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 					}
 					return self::maybe_add_postmeta( $key, $sanitized_post_meta, $object_id );
 
+				case self::FRONTEND_AUTH_USER_ID:
+					$user_id = $value;
+					$sanitized_user_id = self::sanitize( $key, $user_id );
+					if ( ! $force && $user_id != $sanitized_user_id ) {
+						throw new \Exception( 'ERROR: Refused to save different value for option: ' . $key );
+					}
+					return self::maybe_update_option( $key, $sanitized_user_id, true );
 			}
 
 			error_log( 'Invalid key to save value: ' . $key );
@@ -375,6 +406,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 					}
 				case self::ASANA_WORKSPACE_GID:
 				case self::ASANA_TAG_GID:
+				case self::FRONTEND_AUTH_USER_ID:
 					return delete_option( $key );
 			}
 
@@ -426,6 +458,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 				case self::ASANA_WORKSPACE_GID:
 				case self::ASANA_TAG_GID:
 				case self::PINNED_TASK_GID:
+				case self::FRONTEND_AUTH_USER_ID:
 					$filtered_integer_string = filter_var(
 						$value,
 						FILTER_SANITIZE_NUMBER_INT

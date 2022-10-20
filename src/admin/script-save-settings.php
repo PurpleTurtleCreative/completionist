@@ -78,6 +78,25 @@ if (
 	}
 }//end if asana_disconnect
 
+if (
+	isset( $_POST['asana_frontend_user_save'] )
+	&& ! empty( $_POST['wp_user_id'] )
+	&& isset( $_POST['asana_frontend_user_save_nonce'] )
+	&& wp_verify_nonce( $_POST['asana_frontend_user_save_nonce'], 'asana_frontend_user_save' ) !== false
+	&& current_user_can( 'manage_options' )
+) {
+
+	$submitted_wp_user_id = Options::sanitize( Options::FRONTEND_AUTH_USER_ID, $_POST['wp_user_id'] );
+	Options::save( Options::FRONTEND_AUTH_USER_ID, $submitted_wp_user_id, true );
+	$retrieved_wp_user_id = Options::get( Options::FRONTEND_AUTH_USER_ID );
+
+	if ( $retrieved_wp_user_id == $submitted_wp_user_id ) {
+		echo '<p class="notice notice-success">The frontend authentication user was successfully saved!</p>';
+	} else {
+		echo '<p class="notice notice-error">Failed to save the frontend authentication user.</p>';
+	}
+}//end if asana_frontend_user_save
+
 try {
 	if (
 		isset( $_POST['asana_workspace_save'] )
