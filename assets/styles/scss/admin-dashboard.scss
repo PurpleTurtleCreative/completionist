@@ -57,7 +57,7 @@ section#ptc-asana-workspace {
 	}
 
 	form {
-		padding: 0 21px;
+		padding: 0 14px;
 
 		> div {
 			display: flex;
@@ -68,6 +68,7 @@ section#ptc-asana-workspace {
 
 		label {
 			display: inline;
+			margin-left: 7px;
 
 			i {
 				margin-right: 0.3em;
@@ -75,7 +76,7 @@ section#ptc-asana-workspace {
 		}
 
 		select {
-			width: 33%;
+			flex: 1;
 			margin: 0 0.3em;
 		}
 
@@ -83,7 +84,7 @@ section#ptc-asana-workspace {
 			padding: 0.3em 1.3em 0.4em;
 			width: auto;
 			box-sizing: border-box;
-			margin: 0;
+			margin: 7px;
 		}
 
 		.warning-note {
@@ -175,6 +176,50 @@ section#ptc-asana-workspace {
 		}//end .connection-status
 	}//end .ptc-asana-collaborator-row
 }//end section#ptc-asana-workspace
+
+/* FRONTEND AUTH USER */
+section#ptc-frontend-auth-user {
+	padding: 0;
+	background: color(grey-lightest);
+
+	label {
+		margin: 0;
+		padding: 7px 21px;
+	}
+
+	form {
+		padding: 14px;
+		background: color(white);
+		border-top: 1px solid color(grey-lighter);
+
+		.field-group {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			select,
+			input {
+				margin: 7px;
+			}
+
+			select {
+				flex-grow: 1;
+				max-width: 100%;
+			}
+
+			input[type=submit] {
+				padding: 0.3em 1.3em 0.4em;
+				width: auto;
+				box-sizing: border-box;
+			}
+		}
+	}
+
+	.help-notes {
+		background: color(white);
+		padding: 1px 21px 21px;
+	}
+}
 
 /* DEAUTHORIZE ACCOUNT */
 section#ptc-disconnect-asana {

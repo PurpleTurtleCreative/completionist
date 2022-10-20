@@ -258,6 +258,19 @@ div.note-box {
 		}
 	}
 
+	&.note-box-warning {
+
+		i {
+			background: #f3af16;
+		}
+
+		p {
+			background: #fffaef;
+			color: #9a6b00;
+			border-color: #f3af16;
+		}
+	}
+
 	&.note-box-error {
 
 		i {
