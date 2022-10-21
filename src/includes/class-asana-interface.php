@@ -598,46 +598,56 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				return [];
 			}
 
-			// Get section order.
-			$sections = $asana->sections->findByProject( $project_gid, [], [ 'fields' => 'gid,name' ] );
-			$sections = iterator_to_array( $sections );
+			// Get project information.
+			$project = $asana->projects->getProject(
+				$project_gid,
+				[],
+				[
+					'fields' => 'gid,name,html_notes,due_on,modified_at,completed,completed_at,current_status,this.current_status.created_at,this.current_status.html_text,this.current_status.title,this.current_status.color,sections,this.sections.name',
+				]
+			);
+			// Clean project data.
+			$project->html_notes = wp_kses_post( $project->html_notes );
+
+			// Map section GIDs to section indices.
 			$sections_map = [];
-			foreach ( $sections as $i => &$s ) {
-				$sections_map[ $s->gid ] = $i;
-				$s->tasks = [];
+			foreach ( $project->sections as $i => &$section ) {
+				$sections_map[ $section->gid ] = $i;
 			}
 
 			// Get task data.
-			$task_fields = 'gid,name,html_notes,assignee,this.assignee.name,this.assignee.photo.image_60x60,due_on,completed';
-			$task_options = [ 'fields' => "memberships,this.memberships.section,{$task_fields}" ];
-			$tasks = $asana->tasks->findByProject( $project_gid, [], $task_options );
+			$task_fields = 'gid,name,html_notes,assignee,this.assignee.name,this.assignee.photo.image_27x27,due_on,completed';
+			$tasks = $asana->tasks->getTasksForProject(
+				$project_gid,
+				[],
+				[
+					'fields' => "{$task_fields},memberships,this.memberships.section",
+					'limit' => 100,
+				]
+			);
 			$tasks = iterator_to_array( $tasks );
 			self::load_subtasks( $tasks, $task_fields );
 
 			// Map tasks to sections and clean data.
 			foreach ( $tasks as &$task ) {
 				foreach ( $task->memberships as &$membership ) {
-					if (
-						isset( $membership->section )
-						&& isset( $membership->section->gid )
-						&& isset( $sections_map[ $membership->section->gid ] )
-					) {
-						$task->html_notes = preg_replace( '/(<\/?)body(>)/i', '', $task->html_notes );
+					if ( isset( $sections_map[ $membership->section->gid ] ) ) {
+						$task->html_notes = wp_kses_post( $task->html_notes );
 						foreach ( $task->subtasks as &$subtask ) {
-							$subtask->html_notes = preg_replace( '/(<\/?)body(>)/i', '', $subtask->html_notes );
+							$subtask->html_notes = wp_kses_post( $subtask->html_notes );
 						}
 						$task_clone = clone $task;
 						unset( $task_clone->memberships );
-						$sections[ $sections_map[ $membership->section->gid ] ]->tasks[] = $task_clone;
+						$project->sections[ $sections_map[ $membership->section->gid ] ]->tasks[] = $task_clone;
 					}
 				}
 			}
 
-			return $sections;
+			return $project;
 		}
 
 		/**
-		 * Loads subtask records for each parent task.
+		 * Loads subtask records onto each parent task.
 		 *
 		 * @since [unreleased]
 		 *
