@@ -12,7 +12,7 @@ namespace PTC_Completionist;
 defined( 'ABSPATH' ) || die();
 
 require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
-require_once PLUGIN_PATH . 'src/includes/class-request-tokens.php';
+require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
 
 if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 	/**

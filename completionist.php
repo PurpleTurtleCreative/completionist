@@ -137,6 +137,7 @@ foreach ( glob( PLUGIN_PATH . 'src/public/class-*.php' ) as $file ) {
 	require_once $file;
 }
 
+Request_Tokens::register();
 REST_Server::register();
 Shortcodes::register();
 
