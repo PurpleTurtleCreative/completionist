@@ -63,16 +63,25 @@ if (
 	&& wp_verify_nonce( $_POST['asana_disconnect_nonce'], 'disconnect_asana' ) !== false
 ) {
 
-	$did_delete_pat = Options::delete( Options::ASANA_PAT );
-	$did_delete_gid = Options::delete( Options::ASANA_USER_GID );
+	$user_id = (int) get_current_user_id();
 
-	if (
-		$did_delete_pat === true
-		&& $did_delete_gid === true
-	) {
+	$did_delete_pat = Options::delete( Options::ASANA_PAT, $user_id );
+	$did_delete_gid = Options::delete( Options::ASANA_USER_GID, $user_id );
+
+	if ( $did_delete_pat || $did_delete_gid ) {
+
 		echo '<p class="notice notice-success">Your Asana account was successfully forgotten!</p>';
-	} elseif ( $did_delete_pat === true ) {
-		echo '<p class="notice notice-success">Your Asana account was successfully disconnected.</p>';
+
+		$frontend_auth_user_id = (int) Options::get( Options::FRONTEND_AUTH_USER_ID );
+		if ( $user_id === $frontend_auth_user_id ) {
+			/*
+			 * If the frontend auth user is deauthorizing Asana API acces,
+			 * then all cache data should be purged to ensure privacy.
+			 */
+			Options::delete( Options::FRONTEND_AUTH_USER_ID );
+			Request_Tokens::purge_all();
+			echo '<p class="notice notice-warning">You were the default frontend authentication user, so all cached Asana data has been purged. Completionist shortcodes will not work until a new frontend authentication user is saved!</p>';
+		}
 	} else {
 		echo '<p class="notice notice-error">Your Asana account could not be disconnected.</p>';
 	}
