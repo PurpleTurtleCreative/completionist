@@ -26,6 +26,10 @@ class Request_Tokens {
 
 	private $post_id;
 
+	// **************************** //
+	// **    Static Functions    ** //
+	// **************************** //
+
 	/**
 	 * Hooks functionality into the WordPress execution flow.
 	 *
@@ -39,6 +43,14 @@ class Request_Tokens {
 		$request_tokens = new static( $post_id );
 		$request_tokens->purge();
 	}
+
+	public static function purge_all() {
+		Options::delete( Options::REQUEST_TOKENS, -1 );
+	}
+
+	// ************************** //
+	// **    Public Methods    ** //
+	// ************************** //
 
 	public function __construct( int $post_id ) {
 		$this->post_id = $post_id;
@@ -136,6 +148,10 @@ class Request_Tokens {
 	public function exists( string $request_token ) {
 		return isset( $this->get()[ $request_token ] );
 	}
+
+	// *************************** //
+	// **    Private Methods    ** //
+	// *************************** //
 
 	private function get() {
 		return Options::get( Options::REQUEST_TOKENS, $this->post_id );

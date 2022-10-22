@@ -86,11 +86,26 @@ if (
 	&& current_user_can( 'manage_options' )
 ) {
 
-	$submitted_wp_user_id = Options::sanitize( Options::FRONTEND_AUTH_USER_ID, $_POST['wp_user_id'] );
-	Options::save( Options::FRONTEND_AUTH_USER_ID, $submitted_wp_user_id, true );
-	$retrieved_wp_user_id = Options::get( Options::FRONTEND_AUTH_USER_ID );
+	$submitted_wp_user_id = (int) Options::sanitize( Options::FRONTEND_AUTH_USER_ID, $_POST['wp_user_id'] );
 
-	if ( $retrieved_wp_user_id == $submitted_wp_user_id ) {
+	// Save the frontend authentication user ID.
+	Options::save(
+		Options::FRONTEND_AUTH_USER_ID,
+		(string) $submitted_wp_user_id,
+		true
+	);
+
+	// Get the saved and validated user ID.
+	$retrieved_wp_user_id = (int) Options::get( Options::FRONTEND_AUTH_USER_ID );
+
+	/*
+	 * Purge request caches since data visibility
+	 * could've changed within Asana for different user.
+	 */
+	Request_Tokens::purge_all();
+
+	// Confirm that it was saved successfully.
+	if ( $retrieved_wp_user_id === $submitted_wp_user_id ) {
 		echo '<p class="notice notice-success">The frontend authentication user was successfully saved!</p>';
 	} else {
 		echo '<p class="notice notice-error">Failed to save the frontend authentication user.</p>';

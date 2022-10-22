@@ -164,7 +164,7 @@ try {
 		<label for="asana-frontend-user">Frontend Authentication User</label>
 		<form method="POST">
 			<div class="field-group">
-				<select id="asana-frontend-user" name="wp_user_id">
+				<select id="asana-frontend-user" name="wp_user_id" required>
 					<option value="">Choose a user...</option>
 					<?php
 					$frontend_auth_user_id = Options::get( Options::FRONTEND_AUTH_USER_ID );
