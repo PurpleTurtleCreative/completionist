@@ -72,14 +72,25 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		public const PINNED_TASK_GID = '_ptc_asana_task_gid';
 
 		/**
-		 * The option key name for the WordPress user's ID who will be used
+		 * The option key name for the WordPress user's ID that will be used
 		 * to authenticate Asana requests on the frontend.
 		 *
 		 * @since [unreleased]
 		 *
-		 * @var int FRONTEND_AUTH_USER_ID
+		 * @var string FRONTEND_AUTH_USER_ID
 		 */
 		public const FRONTEND_AUTH_USER_ID = '_ptc_asana_frontend_auth_user_id';
+
+		/**
+		 * The postmeta key name for request tokens data.
+		 *
+		 * @see Request_Tokens
+		 *
+		 * @since [unreleased]
+		 *
+		 * @var string REQUEST_TOKENS
+		 */
+		public const REQUEST_TOKENS = '_ptc_asana_request_tokens';
 
 		/**
 		 * Gets a sanitized value for an option of this class returned in the key's
@@ -169,6 +180,20 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 						}
 					}
 					return (int) $frontend_auth_user_id;
+
+				case self::REQUEST_TOKENS:
+					if ( 0 === $object_id ) {
+						$object_id = get_the_ID();
+						if ( 0 === $object_id || false === $object_id ) {
+							error_log( 'Could not identify post to get value for: ' . $key );
+							return [];
+						}
+					}
+					$request_tokens = get_post_meta( $object_id, $key, true );
+					if ( ! is_array( $request_tokens ) || empty( $request_tokens ) ) {
+						return [];
+					}
+					return $request_tokens;
 			}
 
 			error_log( 'Invalid key to get value: ' . $key );
@@ -181,7 +206,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		 * @since 1.0.0
 		 *
 		 * @param string $key The key name. Use this class's constant members.
-		 * @param string $value The value to attempt to save.
+		 * @param mixed $value The value to attempt to save.
 		 * @param bool $force Optional. If to force saving when sanitization occurs.
 		 * Default false to throw \Exceptions.
 		 * @param int $object_id Optional. The relevant user or post id for which to
@@ -192,7 +217,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		 * save is different than passed value. If $force is true, only throws when
 		 * an invalid value would be saved.
 		 */
-		public static function save( string $key, string $value, bool $force = false, int $object_id = 0 ) : bool {
+		public static function save( string $key, $value, bool $force = false, int $object_id = 0 ) : bool {
 
 			switch ( $key ) {
 
@@ -236,6 +261,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 						throw new \Exception( 'ERROR: Refused to save different value for option: ' . $key );
 					}
 					return self::maybe_update_option( $key, $sanitized_user_id, true );
+
+				case self::REQUEST_TOKENS:
+					return update_post_meta( $object_id, $key, $value ) ? true : false;
 			}
 
 			error_log( 'Invalid key to save value: ' . $key );
@@ -397,6 +425,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 						return delete_user_meta( $object_id, $key );
 					}
 				case self::PINNED_TASK_GID:
+				case self::REQUEST_TOKENS:
 					if ( -1 === $object_id ) {
 						return delete_metadata( 'post', 0, $key, '', true );
 					} elseif ( 0 === $object_id && get_the_ID() !== false ) {
@@ -568,7 +597,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 				return $decrypted;
 			}
 
-			error_log( "Invalid crypt mode '$mode'. Accepted values are 'e' and 'd'." );
+			error_log( "Invalid crypt mode '{$mode}'. Accepted values are 'e' and 'd'." );
 			return '';
 		}
 

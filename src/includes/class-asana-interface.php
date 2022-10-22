@@ -557,10 +557,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 */
 		public static function parse_project_link( string $project_link ) {
 
-			$parsed_project_data = [
-				'gid' => '',
-				'layout' => '',
-			];
+			$parsed_project_data = array();
 
 			$project_link = esc_url_raw( $project_link );
 
@@ -589,56 +586,149 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 *
 		 * @since [unreleased]
 		 */
-		public static function get_project_data( string $project_gid ) {
+		public static function get_project_data(
+			string $project_gid,
+			array $args = array()
+		) {
 
-			$asana = self::get_client();
+			$args = wp_parse_args(
+				array_map( 'rest_sanitize_boolean', $args ),
+				array(
+					'show_gids'              => true,
+					'show_name'              => true,
+					'show_description'       => true,
+					'show_status'            => true,
+					'show_modified'          => true,
+					'show_due'               => true,
+					'show_tasks_description' => true,
+					'show_tasks_assignee'    => true,
+					'show_tasks_subtasks'    => true,
+					'show_tasks_completed'   => true,
+					'show_tasks_due'         => true,
+				)
+			);
+
+			if ( ! isset( self::$asana ) ) {
+				self::get_client();
+			}
 
 			$project_gid = Options::sanitize( 'gid', $project_gid );
 			if ( '' == $project_gid ) {
-				return [];
+				return array();
 			}
 
-			// Get project information.
-			$project = $asana->projects->getProject(
+			// Get project data.
+
+			$project_fields = 'sections,this.sections.name';
+
+			if ( $args['show_name'] ) {
+				$project_fields .= ',name';
+			}
+			if ( $args['show_description'] ) {
+				$project_fields .= ',html_notes';
+			}
+			if ( $args['show_status'] ) {
+				$project_fields .= ',completed,completed_at,current_status,this.current_status.created_at,this.current_status.html_text,this.current_status.title,this.current_status.color';
+			}
+			if ( $args['show_modified'] ) {
+				$project_fields .= ',modified_at';
+			}
+			if ( $args['show_due'] ) {
+				$project_fields .= ',due_on';
+			}
+
+			$project = self::$asana->projects->getProject(
 				$project_gid,
-				[],
-				[
-					'fields' => 'gid,name,html_notes,due_on,modified_at,completed,completed_at,current_status,this.current_status.created_at,this.current_status.html_text,this.current_status.title,this.current_status.color,sections,this.sections.name',
-				]
+				array(),
+				array(
+					'fields' => $project_fields,
+				)
 			);
+
 			// Clean project data.
 			$project->html_notes = wp_kses_post( $project->html_notes );
 
 			// Map section GIDs to section indices.
-			$sections_map = [];
+			$sections_map = array();
 			foreach ( $project->sections as $i => &$section ) {
 				$sections_map[ $section->gid ] = $i;
 			}
 
-			// Get task data.
-			$task_fields = 'gid,name,html_notes,assignee,this.assignee.name,this.assignee.photo.image_27x27,due_on,completed';
-			$tasks = $asana->tasks->getTasksForProject(
+			// Get project tasks data.
+
+			$task_fields = 'name';
+
+			if ( $args['show_tasks_description'] ) {
+				$task_fields .= ',html_notes';
+			}
+			if ( $args['show_tasks_assignee'] ) {
+				$task_fields .= ',assignee,this.assignee.name,this.assignee.photo.image_27x27';
+			}
+			if ( $args['show_tasks_completed'] ) {
+				$task_fields .= ',completed';
+			}
+			if ( $args['show_tasks_due'] ) {
+				$task_fields .= ',due_on';
+			}
+
+			$tasks = self::$asana->tasks->getTasksForProject(
 				$project_gid,
-				[],
-				[
+				array(),
+				array(
 					'fields' => "{$task_fields},memberships,this.memberships.section",
 					'limit' => 100,
-				]
+				)
 			);
+
 			$tasks = iterator_to_array( $tasks );
-			self::load_subtasks( $tasks, $task_fields );
+
+			if ( $args['show_tasks_subtasks'] ) {
+				self::load_subtasks( $tasks, $task_fields );
+			}
 
 			// Map tasks to sections and clean data.
 			foreach ( $tasks as &$task ) {
 				foreach ( $task->memberships as &$membership ) {
 					if ( isset( $sections_map[ $membership->section->gid ] ) ) {
-						$task->html_notes = wp_kses_post( $task->html_notes );
-						foreach ( $task->subtasks as &$subtask ) {
-							$subtask->html_notes = wp_kses_post( $subtask->html_notes );
+
+						if ( isset( $task->html_notes ) ) {
+							$task->html_notes = wp_kses_post( $task->html_notes );
 						}
+
+						if ( isset( $task->subtasks ) ) {
+							foreach ( $task->subtasks as &$subtask ) {
+								if ( isset( $subtask->html_notes ) ) {
+									$subtask->html_notes = wp_kses_post( $subtask->html_notes );
+								}
+							}
+						}
+
 						$task_clone = clone $task;
 						unset( $task_clone->memberships );
+
 						$project->sections[ $sections_map[ $membership->section->gid ] ]->tasks[] = $task_clone;
+					}
+				}
+			}
+
+			// Remove all GIDs if desired.
+			if ( ! $args['show_gids'] ) {
+				unset( $project->gid );
+				foreach ( $project->sections as &$section ) {
+					unset( $section->gid );
+					foreach ( $section->tasks as &$task ) {
+						unset( $task->gid );
+						if ( isset( $task->assignee ) ) {
+							unset( $task->assignee->gid );
+						}
+						if ( isset( $task->subtasks ) ) {
+							foreach ( $task->subtasks as &$subtask ) {
+								unset( $subtask->gid );
+								if ( isset( $subtask->assignee ) ) {
+									unset( $subtask->assignee->gid );
+								}
+							}
+						}
 					}
 				}
 			}
@@ -660,7 +750,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 */
 		static function load_subtasks( array &$parent_tasks, string $opt_fields = '' ) {
 
-			$asana = static::get_client();
+			if ( ! isset( self::$asana ) ) {
+				self::get_client();
+			}
 
 			$opt_fields = explode( ',', $opt_fields );
 
@@ -684,7 +776,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$actions_count = count( $actions );
 				if ( ( $actions_count % 9 === 0 || $i == $last ) && $actions_count > 0 ) {
 
-					$res = $asana->post( '/batch', [ 'actions' => $actions ] );
+					$res = self::$asana->post( '/batch', [ 'actions' => $actions ] );
 					$actions = [];
 
 					$last_res_i = count( $res ) - 1;

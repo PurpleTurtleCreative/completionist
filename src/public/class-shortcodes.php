@@ -12,7 +12,7 @@ namespace PTC_Completionist;
 defined( 'ABSPATH' ) || die();
 
 require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
-require_once PLUGIN_PATH . 'src/includes/class-options.php';
+require_once PLUGIN_PATH . 'src/includes/class-request-tokens.php';
 
 if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 	/**
@@ -98,20 +98,20 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 
 			$atts = shortcode_atts(
 				array(
-					'src' => '',
-					'auth_user' => Options::get( Options::FRONTEND_AUTH_USER_ID ),
-					// 'layout' => 'list',
-					// 'show_title' => 'true',
-					// 'show_description' => 'true',
-					// 'show_status' => 'true',
-					// 'show_modified' => 'true',
-					// 'show_due' => 'true',
-					// 'show_tasks_assignee' => 'true',
-					// 'show_tasks_subtasks' => 'true',
-					// 'show_tasks_completed' => 'true',
-					// 'show_tasks_due' => 'true',
-					// 'include_tag' => '',
-					// 'exclude_tag' => '',
+					'src'                    => '', // Required.
+					'auth_user'              => '',
+					'show_name'              => 'true',
+					'show_description'       => 'true',
+					'show_status'            => 'true',
+					'show_modified'          => 'true',
+					'show_due'               => 'true',
+					'show_tasks_description' => 'true',
+					'show_tasks_assignee'    => 'true',
+					'show_tasks_subtasks'    => 'true',
+					'show_tasks_completed'   => 'true',
+					'show_tasks_due'         => 'true',
+					// 'include_tag'          => '',
+					// 'exclude_tag'          => '',
 				),
 				$atts,
 				$shortcode_tag
@@ -119,30 +119,37 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 
 			// Sanitize shortcode attributes.
 
-			$atts['auth_user'] = (int) $atts['auth_user'];
 			$atts['src'] = (string) esc_url_raw( $atts['src'] );
+			$atts['auth_user'] = (int) $atts['auth_user'];
 
-			try {
+			// Prepare shortcode.
 
-				// Load authentication user.
-				$asana = Asana_Interface::get_client( $atts['auth_user'] );
-
-				// Get Asana project data.
-				$parsed_asana_project = Asana_Interface::parse_project_link( $atts['src'] );
-				if ( ! empty( $parsed_asana_project['gid'] ) ) {
-					$asana_project = Asana_Interface::get_project_data( $parsed_asana_project['gid'] );
-
-					// Load HTML template and assets.
-
-					// wp_enqueue_script( 'ptc-asana-project-script' );
-					// wp_enqueue_style( 'ptc-asana-project-style' );
-
-					return '<pre style="max-width:100%;white-space:pre-wrap;">' . print_r( $asana_project, true ) . '</pre>';
-				}
-			} catch ( \Exception $e ) {
-				require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
-				return HTML_Builder::format_error_box( $e, 'Failed to embed Asana project. ', false );
+			$parsed_asana_project = Asana_Interface::parse_project_link( $atts['src'] );
+			if ( empty( $parsed_asana_project['gid'] ) ) {
+				return '
+					<div class="ptc-shortcode ptc-asana-project ptc-error">
+						<p>Failed to load Asana project. Could not determine project GID from source URL.</p>
+					</div>
+				';
 			}
+
+			$atts['project_gid'] = $parsed_asana_project['gid'];
+			$atts['show_gids'] = 'false'; // Always remove Asana object GIDs.
+
+			// Generate request token.
+			$post_id = get_the_ID();
+			$request_tokens = new Request_Tokens( $post_id );
+			$token = $request_tokens->save( $atts );
+
+			// Render frontend data.
+			$request_url = esc_url_raw(
+				rest_url( REST_API_NAMESPACE_V1 . "/projects?token={$token}&post_id={$post_id}" )
+			);
+			return sprintf(
+				'<div class="ptc-shortcode ptc-asana-project" data-src="%1$s" data-layout="%2$s"></div>',
+				esc_attr( $request_url ),
+				esc_attr( $parsed_asana_project['layout'] ?? 'list' )
+			);
 		}
 	}
 }
