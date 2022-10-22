@@ -90,6 +90,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				throw new \Exception( 'Failed to get Asana client for invalid user identifier. Must be string for Asana PAT or integer for WordPress User ID.', 400 );
 			}
 
+			if ( 0 === $user_id ) {
+				$user_id = get_current_user_id();
+			}
+
 			if (
 				! isset( self::$asana )
 				|| ! isset( self::$wp_user_id )
@@ -143,6 +147,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 * or requests could fail due to request limits or server issues.
 		 */
 		private static function maybe_load_client( int $user_id = 0 ) : \Asana\Client {
+
+			error_log( "Maybe loading client for user ID: {$user_id}" );
+			error_log( 'Currently loaded client is for user ID: ' . self::$wp_user_id );
 
 			if ( 0 === $user_id ) {
 				$user_id = get_current_user_id();
@@ -607,10 +614,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 					'show_tasks_due'         => true,
 				)
 			);
-
-			if ( ! isset( self::$asana ) ) {
-				self::get_client();
-			}
 
 			$project_gid = Options::sanitize( 'gid', $project_gid );
 			if ( '' == $project_gid ) {
