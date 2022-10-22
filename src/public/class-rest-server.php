@@ -78,7 +78,11 @@ class REST_Server {
 
 		// Abort if token is invalid.
 		if ( ! $request_tokens->exists( $request['token'] ) ) {
-			return new \WP_Error( 400, 'Failed to get Asana project. Invalid request.' );
+			return new \WP_Error(
+				'bad_token',
+				'Failed to get Asana project. Invalid request.',
+				array( 'status' => 400 )
+			);
 		}
 
 		// Check the cached response.
@@ -96,18 +100,48 @@ class REST_Server {
 
 			$auth_user_id = $args['auth_user'] ?: Options::get( Options::FRONTEND_AUTH_USER_ID );
 
+			if ( -1 === $auth_user_id ) {
+				// There is no user for Asana authentication.
+				return new \WP_Error(
+					'no_auth',
+					'Failed to get Asana project. Authentication user was not specified.',
+					array( 'status' => 401 )
+				);
+			}
+
+			// Perform request.
+
 			Asana_Interface::get_client( (int) $auth_user_id );
-			$project_data = Asana_Interface::get_project_data( $args['project_gid'], $args );
+			$project_data = Asana_Interface::get_project_data(
+				$args['project_gid'],
+				$args
+			);
+
+			if ( empty( $project_data ) ) {
+				// An empty response is unexpected. Do not cache this.
+				return new \WP_Error(
+					'empty_content',
+					'Failed to get Asana project. There is no project data.',
+					array( 'status' => 409 )
+				);
+			}
 
 			// Cache response and return.
-
 			$request_tokens->save_response( $request['token'], $project_data );
 			return new \WP_REST_Response( $project_data, 200 );
 		} catch ( \Exception $e ) {
-			return new \WP_Error( $e->getCode(), 'Failed to get Asana project. ' . $e->getMessage() );
+			return new \WP_Error(
+				'asana_error',
+				'Failed to get Asana project. ' . $e->getMessage(),
+				array( 'status' => $e->getCode() )
+			);
 		}
 
 		// This shouldn't be reachable.
-		return new \WP_Error( 500, 'Failed to get Asana project. Unknown error.' );
+		return new \WP_Error(
+			'unknown_error',
+			'Failed to get Asana project. Unknown error.',
+			array( 'status' => 500 )
+		);
 	}
 }

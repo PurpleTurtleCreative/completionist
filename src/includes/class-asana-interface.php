@@ -82,6 +82,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 */
 		public static function get_client( $user_id_or_gid = 0 ) : \Asana\Client {
 
+			/*
+			 * @TODO - This needs to NEVER interpret the user's ID.
+			 * Allowing a default value here can confuse frontend requests
+			 * where the user ID (anonymous user) is ACTUALLY 0.
+			 *
+			 * Authentication should NEVER be left to interpretation.
+			 * always be explicit when loading the current Asana client.
+			 */
+
 			if ( is_string( $user_id_or_gid ) ) {
 				$user_id = self::get_user_id_by_gid( $user_id_or_gid );
 			} elseif ( is_int( $user_id_or_gid ) ) {
@@ -620,6 +629,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				return array();
 			}
 
+			if ( ! isset( self::$asana ) ) {
+				$asana = self::get_client();
+			} else {
+				$asana = self::$asana;
+			}
+
 			// Get project data.
 
 			$project_fields = 'sections,this.sections.name';
@@ -640,7 +655,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$project_fields .= ',due_on';
 			}
 
-			$project = self::$asana->projects->getProject(
+			$project = $asana->projects->getProject(
 				$project_gid,
 				array(),
 				array(
@@ -649,7 +664,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			);
 
 			// Clean project data.
-			$project->html_notes = wp_kses_post( $project->html_notes );
+			if ( isset( $project->html_notes ) ) {
+				$project->html_notes = wp_kses_post( $project->html_notes );
+			}
 
 			// Map section GIDs to section indices.
 			$sections_map = array();
@@ -674,7 +691,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$task_fields .= ',due_on';
 			}
 
-			$tasks = self::$asana->tasks->getTasksForProject(
+			$tasks = $asana->tasks->getTasksForProject(
 				$project_gid,
 				array(),
 				array(
@@ -754,7 +771,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		static function load_subtasks( array &$parent_tasks, string $opt_fields = '' ) {
 
 			if ( ! isset( self::$asana ) ) {
-				self::get_client();
+				$asana = self::get_client();
+			} else {
+				$asana = self::$asana;
 			}
 
 			$opt_fields = explode( ',', $opt_fields );
@@ -779,7 +798,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$actions_count = count( $actions );
 				if ( ( $actions_count % 9 === 0 || $i == $last ) && $actions_count > 0 ) {
 
-					$res = self::$asana->post( '/batch', [ 'actions' => $actions ] );
+					$res = $asana->post( '/batch', [ 'actions' => $actions ] );
 					$actions = [];
 
 					$last_res_i = count( $res ) - 1;

@@ -158,7 +158,8 @@ class Request_Tokens {
 	}
 
 	private function generate_token( array $request_args ) : string {
-		return md5( wp_salt( 'nonce' ) . serialize( asort( $request_args ) ) );
+		asort( $request_args );
+		return md5( wp_salt( 'nonce' ) . serialize( $request_args ) );
 	}
 
 	private function get_cache_ttl() {
