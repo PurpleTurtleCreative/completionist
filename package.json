@@ -15,8 +15,8 @@
     "sass": "^1.54.7"
   },
   "scripts": {
-    "build": "wp-scripts build src/index_DashboardWidget.jsx src/index_Automations.jsx src/index_BlockEditor.jsx --output-path=build && npm run styles",
-    "start": "wp-scripts start src/index_DashboardWidget.jsx src/index_Automations.jsx src/index_BlockEditor.jsx --output-path=build && npm run watch:styles",
+    "build": "wp-scripts build src/index_DashboardWidget.jsx src/index_Automations.jsx src/index_BlockEditor.jsx src/index_ShortcodeAsanaProject.jsx --output-path=build && npm run styles",
+    "start": "wp-scripts start src/index_DashboardWidget.jsx src/index_Automations.jsx src/index_BlockEditor.jsx src/index_ShortcodeAsanaProject.jsx --output-path=build",
     "bundle": "npm run build && bash bundle.sh",
     "styles": "sass --stop-on-error --style=compressed assets/styles/scss:assets/styles",
     "watch:styles": "sass --stop-on-error --style=expanded --watch assets/styles/scss:assets/styles"

@@ -81,6 +81,15 @@ define( __NAMESPACE__ . '\PLUGIN_SLUG', dirname( PLUGIN_BASENAME ) );
  */
 define( __NAMESPACE__ . '\PLUGIN_URL', plugins_url( '', __FILE__ ) );
 
+/**
+ * The namespace for all v1 REST API routes registered by this plugin.
+ *
+ * @since 1.0.0
+ *
+ * @var string REST_API_NAMESPACE_V1
+ */
+define( __NAMESPACE__ . '\REST_API_NAMESPACE_V1', PLUGIN_SLUG . '/v1' );
+
 /* REGISTER PLUGIN FUNCTIONS ---------------------- */
 
 /* Activation Hook */
@@ -128,6 +137,7 @@ foreach ( glob( PLUGIN_PATH . 'src/public/class-*.php' ) as $file ) {
 	require_once $file;
 }
 
+REST_Server::register();
 Shortcodes::register();
 
 // Register admin functionality.
