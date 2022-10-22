@@ -31,7 +31,14 @@ class Request_Tokens {
 	 *
 	 * @since [unreleased]
 	 */
-	public static function register() {}
+	public static function register() {
+		add_action( 'edit_post', array( __CLASS__, 'purge_for_post' ), 10, 1 );
+	}
+
+	public static function purge_for_post( int $post_id ) {
+		$request_tokens = new static( $post_id );
+		$request_tokens->purge();
+	}
 
 	public function __construct( int $post_id ) {
 		$this->post_id = $post_id;
@@ -45,7 +52,7 @@ class Request_Tokens {
 		// Calculate request token.
 		$token = $this->generate_token( $request_args );
 
-		// Check if request token already exists.
+		// Abort if request token already exists.
 		if ( isset( $request_tokens[ $token ] ) ) {
 			return $token;
 		}
@@ -126,12 +133,16 @@ class Request_Tokens {
 		Options::delete( Options::REQUEST_TOKENS, $this->post_id );
 	}
 
+	public function exists( string $request_token ) {
+		return isset( $this->get()[ $request_token ] );
+	}
+
 	private function get() {
 		return Options::get( Options::REQUEST_TOKENS, $this->post_id );
 	}
 
 	private function generate_token( array $request_args ) : string {
-		return wp_hash_password( serialize( $request_args ) );
+		return md5( wp_salt( 'nonce' ) . serialize( asort( $request_args ) ) );
 	}
 
 	private function get_cache_ttl() {

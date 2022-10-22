@@ -10,6 +10,7 @@ namespace PTC_Completionist;
 defined( 'ABSPATH' ) || die();
 
 require_once PLUGIN_PATH . 'src/includes/class-options.php';
+require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
 
 /**
  * Class to register and handle custom REST API endpoints.
@@ -74,10 +75,16 @@ class REST_Server {
 	) {
 
 		$request_tokens = new Request_Tokens( $request['post_id'] );
-		$cached_response = $request_tokens->get_cached_response( $request['token'], false );
 
+		// Abort if token is invalid.
+		if ( ! $request_tokens->exists( $request['token'] ) ) {
+			return new \WP_Error( 400, 'Failed to get Asana project. Invalid request.' );
+		}
+
+		// Check the cached response.
+		$cached_response = $request_tokens->get_cached_response( $request['token'], false );
 		if ( false !== $cached_response ) {
-			// Return cached data if available and valid.
+			// Return cached data if available.
 			return new \WP_REST_Response( $cached_response, 200 );
 		}
 
