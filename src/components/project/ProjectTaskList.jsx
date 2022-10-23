@@ -25,16 +25,12 @@ export default function ProjectTaskList({ src }) {
 					setStatus('success');
 				})
 				.catch( err => {
-					window.console.error('Promise catch:', err);
-					// addNotice(
-					// 	'Failed to load project.',
-					// 	'error'
-					// );
+					window.console.error('Failed to load project:', err);
 					setStatus('error');
 					setProject(null);
 				});
 		}
-	}, [status, project]);
+	}, []);
 
 	// Render.
 
