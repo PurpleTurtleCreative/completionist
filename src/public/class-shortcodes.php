@@ -29,7 +29,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		 */
 		public static function register() {
 			add_action( 'init', array( __CLASS__, 'add_shortcodes' ) );
-			// add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_assets' ) );
+			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_assets' ) );
 		}
 
 		/**
@@ -53,20 +53,13 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 
 			// Asana project assets.
 
+			$asset_file = require_once( PLUGIN_PATH . 'build/index_ShortcodeAsanaProject.jsx.asset.php' );
 			wp_register_script(
-				'ptc-asana-project-script',
-				plugins_url( '/assets/scripts/shortcode-asana-project.js', PLUGIN_FILE ),
-				array(),
+				'ptc-completionist-shortcode-asana-project',
+				PLUGIN_URL . '/build/index_ShortcodeAsanaProject.jsx.js',
+				$asset_file['dependencies'],
 				PLUGIN_VERSION,
 				true
-			);
-
-			wp_register_style(
-				'ptc-asana-project-style',
-				plugins_url( '/assets/styles/shortcode-asana-project.css', PLUGIN_FILE ),
-				array(),
-				PLUGIN_VERSION,
-				'all'
 			);
 		}
 
@@ -142,9 +135,13 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			$token = $request_tokens->save( $atts );
 
 			// Render frontend data.
+
+			wp_enqueue_script( 'ptc-completionist-shortcode-asana-project' );
+
 			$request_url = esc_url_raw(
 				rest_url( REST_API_NAMESPACE_V1 . "/projects?token={$token}&post_id={$post_id}" )
 			);
+
 			return sprintf(
 				'<div class="ptc-shortcode ptc-asana-project" data-src="%1$s" data-layout="%2$s"></div>',
 				esc_attr( $request_url ),

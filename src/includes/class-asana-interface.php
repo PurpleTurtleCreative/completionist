@@ -88,7 +88,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			 * where the user ID (anonymous user) is ACTUALLY 0.
 			 *
 			 * Authentication should NEVER be left to interpretation.
-			 * always be explicit when loading the current Asana client.
+			 * Always be explicit when loading the current Asana client.
 			 */
 
 			if ( is_string( $user_id_or_gid ) ) {
