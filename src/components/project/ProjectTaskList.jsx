@@ -1,4 +1,5 @@
 import ProjectDetails from './ProjectDetails.jsx';
+import ProjectSection from './ProjectSection.jsx';
 
 // import '/assets/styles/scss/components/task/_TaskList.scss';
 
@@ -35,18 +36,17 @@ export default function ProjectTaskList({ src }) {
 		}
 	}, [status, project]);
 
+	// Render.
+
+	const { sections = null, ...details } = project ?? {};
+
 	let innerContent = null;
 	switch ( status ) {
 
 		case 'success':
-			innerContent = project.sections.map(section => (
-				<div className="project-section">
-					<h3>{section.name}</h3>
-					<ul>
-						{section.tasks.map(task => <li>{task.name}</li>)}
-					</ul>
-				</div>
-			));
+			if ( sections ) {
+				innerContent = sections.map(section => <ProjectSection section={section} />);
+			}
 			break;
 
 		case 'loading':
@@ -60,7 +60,7 @@ export default function ProjectTaskList({ src }) {
 
 	return (
 		<div className="ptc-ProjectTaskList">
-			{ project && <ProjectDetails project={project} /> }
+			{ details && <ProjectDetails details={details} /> }
 			{innerContent}
 		</div>
 	);
