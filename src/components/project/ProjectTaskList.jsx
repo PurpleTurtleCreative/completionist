@@ -1,4 +1,4 @@
-// import TaskRow from './TaskRow.jsx';
+import ProjectDetails from './ProjectDetails.jsx';
 
 // import '/assets/styles/scss/components/task/_TaskList.scss';
 
@@ -41,7 +41,7 @@ export default function ProjectTaskList({ src }) {
 		case 'success':
 			innerContent = project.sections.map(section => (
 				<div className="project-section">
-					<h2>{section.name}</h2>
+					<h3>{section.name}</h3>
 					<ul>
 						{section.tasks.map(task => <li>{task.name}</li>)}
 					</ul>
@@ -60,6 +60,7 @@ export default function ProjectTaskList({ src }) {
 
 	return (
 		<div className="ptc-ProjectTaskList">
+			{ project && <ProjectDetails project={project} /> }
 			{innerContent}
 		</div>
 	);
