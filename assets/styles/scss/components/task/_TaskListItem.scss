@@ -1,0 +1,84 @@
+@import '../../abstracts/colors';
+
+//----------------------
+
+.ptc-TaskListItem {
+	display: flex;
+	align-items: center;
+	margin: 0;
+	padding: 1rem 0;
+	border-top: 1px solid color(grey-lighter);
+
+	&.--is-complete {
+		opacity: 0.6;
+	}
+
+	> * {
+		margin-right: 2rem;
+	}
+
+	&:last-of-type {
+		border-bottom: 1px solid color(grey-lighter);
+	}
+
+	p {
+		margin-top: 0;
+		margin-bottom: 0;
+		padding: 0;
+	}
+
+	.completed {
+		margin-right: 1rem;
+		font-size: 0.6em;
+		padding: 0.3em;
+		border-radius: 999px;
+		border: 1px solid color(grey);
+		background: color(grey-lightest);
+
+		svg {
+			width: 1em;
+			height: 1em;
+		}
+
+		&[data-completed="true"] {
+			background: color(success-light);
+			border-color: color(success-dark);
+			color: color(success-dark);
+		}
+	}
+
+	.name {
+		flex: 1;
+		display: flex;
+		align-items: flex-start;
+		line-height: 1.3;
+
+		.subtask-count {
+			display: flex;
+			align-items: center;
+			margin: 0 2rem;
+			font-size: 1em;
+			color: color(grey-dark);
+
+			svg {
+				width: 0.7em;
+				height: 0.7em;
+				margin: 0 0.2em;
+
+				path {
+					fill: currentColor;
+				}
+			}
+		}
+	}
+
+	.assignee {
+		display: flex;
+		align-items: center;
+
+		img {
+			border-radius: 999px;
+			margin-right: 0.7rem;
+		}
+	}
+}//.ptc-TaskListItem

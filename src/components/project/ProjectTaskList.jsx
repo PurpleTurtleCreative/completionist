@@ -1,7 +1,7 @@
 import ProjectDetails from './ProjectDetails.jsx';
 import ProjectSection from './ProjectSection.jsx';
 
-// import '/assets/styles/scss/components/task/_TaskList.scss';
+import '/assets/styles/scss/components/project/_ProjectTaskList.scss';
 
 const { useEffect, useState } = wp.element;
 
@@ -41,7 +41,11 @@ export default function ProjectTaskList({ src }) {
 
 		case 'success':
 			if ( sections ) {
-				innerContent = sections.map(section => <ProjectSection section={section} />);
+				innerContent = (
+					<div className="sections-of-tasks">
+						{ sections.map(section => <ProjectSection section={section} />) }
+					</div>
+				);
 			}
 			break;
 

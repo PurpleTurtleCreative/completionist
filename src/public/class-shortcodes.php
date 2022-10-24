@@ -61,6 +61,13 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 				PLUGIN_VERSION,
 				true
 			);
+
+			wp_register_style(
+				'ptc-completionist-shortcode-asana-project',
+				PLUGIN_URL . '/build/index_ShortcodeAsanaProject.jsx.css',
+				[],
+				PLUGIN_VERSION
+			);
 		}
 
 		/**
@@ -105,6 +112,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 					'show_tasks_due'         => 'true',
 					// 'include_tag'          => '',
 					// 'exclude_tag'          => '',
+					// 'sort'                 => '',
 				),
 				$atts,
 				$shortcode_tag
@@ -137,6 +145,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			// Render frontend data.
 
 			wp_enqueue_script( 'ptc-completionist-shortcode-asana-project' );
+			wp_enqueue_style( 'ptc-completionist-shortcode-asana-project' );
 
 			$request_url = esc_url_raw(
 				rest_url( REST_API_NAMESPACE_V1 . "/projects?token={$token}&post_id={$post_id}" )

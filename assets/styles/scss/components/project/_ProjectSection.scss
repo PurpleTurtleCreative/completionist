@@ -1,0 +1,28 @@
+@import '../../abstracts/colors';
+
+//----------------------
+
+.ptc-ProjectSection {
+
+	.section-name {
+		margin: 2rem;
+	}
+
+	ol.tasks {
+		list-style-type: none;
+		margin: 0 0 2rem;
+		padding: 0;
+		counter-reset: item-number;
+
+		li {
+
+			&::before {
+				counter-increment: item-number;
+				content: counter(item-number);
+				display: block;
+				margin: 0 2rem;
+				color: color(grey-dark);
+			}
+		}
+	}
+}//.ptc-ProjectSection
