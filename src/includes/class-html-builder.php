@@ -275,7 +275,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		}
 
 		/**
-		 * Gest the HTTP error code from an Exception.
+		 * Gets the HTTP error code from an Exception.
 		 *
 		 * @since 1.0.0
 		 *

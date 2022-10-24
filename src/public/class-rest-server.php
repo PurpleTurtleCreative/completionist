@@ -10,6 +10,7 @@ namespace PTC_Completionist;
 defined( 'ABSPATH' ) || die();
 
 require_once PLUGIN_PATH . 'src/includes/class-options.php';
+require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
 require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
 
 /**
@@ -132,8 +133,8 @@ class REST_Server {
 		} catch ( \Exception $e ) {
 			return new \WP_Error(
 				'asana_error',
-				'Failed to get Asana project. ' . $e->getMessage(),
-				array( 'status' => $e->getCode() )
+				'Failed to get Asana project. ' . HTML_Builder::get_error_message( $e ),
+				array( 'status' => HTML_Builder::get_error_code( $e ) )
 			);
 		}
 

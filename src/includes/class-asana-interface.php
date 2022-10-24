@@ -682,7 +682,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$task_fields .= ',html_notes';
 			}
 			if ( $args['show_tasks_assignee'] ) {
-				$task_fields .= ',assignee,this.assignee.name,this.assignee.photo.image_27x27';
+				$task_fields .= ',assignee,this.assignee.name,this.assignee.photo.image_36x36';
 			}
 			if ( $args['show_tasks_completed'] ) {
 				$task_fields .= ',completed';
