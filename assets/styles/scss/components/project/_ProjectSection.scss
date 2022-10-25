@@ -5,12 +5,12 @@
 .ptc-ProjectSection {
 
 	.section-name {
-		margin: 2rem;
+		margin: 2%;
 	}
 
 	ol.tasks {
 		list-style-type: none;
-		margin: 0 0 2rem;
+		margin: 0;
 		padding: 0;
 		counter-reset: item-number;
 
@@ -20,8 +20,9 @@
 				counter-increment: item-number;
 				content: counter(item-number);
 				display: block;
-				margin: 0 2rem;
-				color: color(grey-dark);
+				min-width: 2em;
+				margin: 0 2%;
+				opacity: 0.5;
 			}
 		}
 	}
