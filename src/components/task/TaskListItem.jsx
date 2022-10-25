@@ -7,7 +7,7 @@ import '/assets/styles/scss/components/task/_TaskListItem.scss';
 
 const { useState } = wp.element;
 
-export default function TaskListItem({ task }) {
+export default function TaskListItem({ task, rowNumber = null }) {
 
 	let extraClassNames = '';
 
@@ -104,13 +104,14 @@ export default function TaskListItem({ task }) {
 
 	return (
 		<li className={"ptc-TaskListItem"+extraClassNames}>
-			<div className="main">
-				{maybeCompleted}
+			{ rowNumber && <div className="row-number">{rowNumber}</div> }
+			{maybeCompleted}
+			<div className="body">
 				{maybeName}
 				{maybeSubtaskCount}
+				{maybeAssignee}
+				{maybeDueDate}
 			</div>
-			{maybeAssignee}
-			{maybeDueDate}
 		</li>
 	);
 }

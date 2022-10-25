@@ -671,11 +671,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			// Map section GIDs to section indices.
 			$sections_map = array();
 			foreach ( $project->sections as $i => &$section ) {
+				if ( '(no section)' === $section->name ) {
+					// Remove Asana default title for a nameless section.
+					$section->name = null;
+				}
 				$sections_map[ $section->gid ] = $i;
 			}
 
 			// Get project tasks data.
-
 
 			/*
 			 * Note that "completed" is initially needed to determine
