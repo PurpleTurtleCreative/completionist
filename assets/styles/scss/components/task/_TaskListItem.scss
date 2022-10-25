@@ -18,7 +18,7 @@
 	}
 
 	&.--is-complete {
-		opacity: 0.6;
+		background: color(grey-lightest);
 	}
 
 	&:last-of-type {
