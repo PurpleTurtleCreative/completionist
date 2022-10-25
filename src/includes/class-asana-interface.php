@@ -676,16 +676,19 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
 			// Get project tasks data.
 
-			$task_fields = 'name';
+
+			/*
+			 * Note that "completed" is initially needed to determine
+			 * which tasks should be removed from the return, even if
+			 * $args['show_tasks_completed'] is false.
+			 */
+			$task_fields = 'name,completed';
 
 			if ( $args['show_tasks_description'] ) {
 				$task_fields .= ',html_notes';
 			}
 			if ( $args['show_tasks_assignee'] ) {
 				$task_fields .= ',assignee,this.assignee.name,this.assignee.photo.image_36x36';
-			}
-			if ( $args['show_tasks_completed'] ) {
-				$task_fields .= ',completed';
 			}
 			if ( $args['show_tasks_due'] ) {
 				$task_fields .= ',due_on';
@@ -706,26 +709,57 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				self::load_subtasks( $tasks, $task_fields );
 			}
 
-			// Map tasks to sections and clean data.
+			// Clean data and map tasks to project sections.
 			foreach ( $tasks as &$task ) {
 				foreach ( $task->memberships as &$membership ) {
 					if ( isset( $sections_map[ $membership->section->gid ] ) ) {
 
+						if ( isset( $task->completed ) ) {
+							if ( ! $args['show_tasks_completed'] ) {
+								if ( $task->completed ) {
+									// Don't show completed tasks.
+									continue;
+								}
+								// Don't show completed status.
+								unset( $task->completed );
+							}
+						}
+
+						// Sanitize task description.
 						if ( isset( $task->html_notes ) ) {
 							$task->html_notes = wp_kses_post( $task->html_notes );
 						}
 
+						// Process subtasks.
 						if ( isset( $task->subtasks ) ) {
-							foreach ( $task->subtasks as &$subtask ) {
+							foreach ( $task->subtasks as $subtasks_i => &$subtask ) {
+								if ( isset( $subtask->completed ) ) {
+									if ( ! $args['show_tasks_completed'] ) {
+										if ( $subtask->completed ) {
+											// Don't show completed tasks.
+											unset( $task->subtasks[ $subtasks_i ] );
+											continue;
+										}
+										// Don't show completed status.
+										unset( $subtask->completed );
+									}
+								}
+								// Sanitize task description.
 								if ( isset( $subtask->html_notes ) ) {
 									$subtask->html_notes = wp_kses_post( $subtask->html_notes );
 								}
 							}
+							// Fix index gaps from possible removals.
+							if ( ! $args['show_tasks_completed'] ) {
+								$task->subtasks = array_values( $task->subtasks );
+							}
 						}
 
+						// Clone in case the task appears in another membership.
 						$task_clone = clone $task;
+						// Remove redundant data.
 						unset( $task_clone->memberships );
-
+						// Organize task into project section.
 						$project->sections[ $sections_map[ $membership->section->gid ] ]->tasks[] = $task_clone;
 					}
 				}
