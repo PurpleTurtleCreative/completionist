@@ -1,3 +1,5 @@
+import { countIncompleteTasks } from './util';
+
 import { ReactComponent as CheckmarkIcon } from '/assets/icons/fa-check-solid.svg';
 import { ReactComponent as SubtasksIcon } from '/assets/icons/fa-code-branch-solid.svg';
 
@@ -18,65 +20,95 @@ export default function TaskListItem({ task }) {
 		}
 		maybeCompleted = (
 			<div className="completed" data-completed={task.completed}>
-				<CheckmarkIcon title={label} />
+				<CheckmarkIcon title={label} preserveAspectRatio="xMidYMid meet" />
 			</div>
 		);
 	}
 
 	let maybeSubtaskCount = null;
-	if (
-		'subtasks' in task &&
-		task.subtasks &&
-		Array.isArray( task.subtasks ) &&
-		task.subtasks.length > 0
-	) {
-		maybeSubtaskCount = (
-			<p className="subtask-count">
-				{task.subtasks.length}
-				<SubtasksIcon title="Subtasks" style={{ "transform": 'rotate(90deg)' }} width="16" height="16" />
-			</p>
-		);
+	if ( 'subtasks' in task ) {
+
+		let maybeSubtaskContent = null;
+		if (
+			task.subtasks &&
+			Array.isArray( task.subtasks )
+		) {
+			const incompleteSubtasksCount = countIncompleteTasks(task.subtasks);
+			if ( incompleteSubtasksCount > 0 ){
+				maybeSubtaskContent = (
+					<>
+						{incompleteSubtasksCount}
+						<SubtasksIcon title="Subtasks" style={{ "transform": 'rotate(90deg)' }} preserveAspectRatio="xMidYMid meet" />
+					</>
+				);
+			}
+		}
+
+		maybeSubtaskCount = <p className="subtask-count">{maybeSubtaskContent}</p>;
 	}
 
 	let maybeName = null;
 	if ( 'name' in task && task.name ) {
-		maybeName = <p className="name">{task.name}{maybeSubtaskCount}</p>;
+		maybeName = <p className="task-name">{task.name}</p>;
 	}
 
 	let maybeAssignee = null;
-	if (
-		'assignee' in task &&
-		task.assignee &&
-		'name' in task.assignee &&
-		task.assignee.name
-	) {
+	if ( 'assignee' in task ) {
+
+		let maybeAssigneeName = null;
 		let maybeAssigneeImg = null;
+
 		if (
-			'photo' in task.assignee &&
-			task.assignee.photo &&
-			'image_36x36' in task.assignee.photo &&
-			task.assignee.photo.image_36x36
+			task.assignee &&
+			'name' in task.assignee &&
+			task.assignee.name
 		) {
-			maybeAssigneeImg = <img src={task.assignee.photo.image_36x36} width="36" height="36" />;
+
+			maybeAssigneeName = task.assignee.name;
+
+			if (
+				'photo' in task.assignee &&
+				task.assignee.photo &&
+				'image_36x36' in task.assignee.photo &&
+				task.assignee.photo.image_36x36
+			) {
+				maybeAssigneeImg = <img src={task.assignee.photo.image_36x36} width="36" height="36" />;
+			}
 		}
+
 		maybeAssignee = (
 			<p className="assignee">
-				{maybeAssigneeImg}
-				<span className="assignee-name">{task.assignee.name}</span>
+				{ maybeAssigneeImg }
+				{ maybeAssigneeName && <span className="assignee-name">{maybeAssigneeName}</span> }
 			</p>
 		);
 	}
 
 	let maybeDueDate = null;
-	if ( 'due_on' in task && task.due_on ) {
-		const dueOnDateString = new Date(task.due_on).toLocaleDateString(undefined, {month: 'short', day: 'numeric', timeZone: 'UTC'});
-		maybeDueDate = <p className="due">{dueOnDateString}</p>;
+	if ( 'due_on' in task ) {
+
+		let maybeDueDateString = null;
+		if ( 'due_on' in task && task.due_on ) {
+			maybeDueDateString = new Date(task.due_on).toLocaleDateString(
+				undefined,
+				{
+					month: 'short',
+					day: 'numeric',
+					timeZone: 'UTC'
+				}
+			);
+		}
+
+		maybeDueDate = <p className="due">{maybeDueDateString}</p>;
 	}
 
 	return (
 		<li className={"ptc-TaskListItem"+extraClassNames}>
-			{maybeCompleted}
-			{maybeName}
+			<div className="main">
+				{maybeCompleted}
+				{maybeName}
+				{maybeSubtaskCount}
+			</div>
 			{maybeAssignee}
 			{maybeDueDate}
 		</li>
