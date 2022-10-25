@@ -1,0 +1,55 @@
+$breakpoints: (
+	xsmall: 320px,
+	small: 425px,
+	medium: 768px,
+	large: 1024px,
+	xlarge: 1440px,
+);
+
+// mobile-first breakpoint, content for breakpoint and up
+@mixin breakpoint($breakpoint) {
+
+	@if map-has-key($breakpoints, $breakpoint) {
+
+		@media (min-width: map-get($breakpoints, $breakpoint)) {
+			@content;
+		}
+
+	} @else {
+
+		@warn "Unfortunately, no value could be retrieved from `#{$breakpoint}`. "
+			+ "Please make sure it is defined in `$breakpoints` map.";
+	}
+}
+
+// desktop-first breakpoint, content for below breakpoint
+// TIP: This is useful for style overrides!
+@mixin breakpoint-down($breakpoint) {
+
+	@if map-has-key($breakpoints, $breakpoint) {
+
+		@media (max-width: ( map-get($breakpoints, $breakpoint) - 1px )) {
+			@content;
+		}
+
+	} @else {
+
+		@warn "Unfortunately, no value could be retrieved from `#{$breakpoint}`. "
+			+ "Please make sure it is defined in `$breakpoints` map.";
+	}
+}
+
+@mixin breakpoint-between($breakpoint-upper, $brekpoint-lower) {
+
+	@if map-has-key($breakpoints, $breakpoint-upper) and map-has-key($breakpoints, $brekpoint-lower) {
+
+		@media (max-width: ( map-get($breakpoints, $breakpoint-upper) - 1px )) and (min-width: map-get($breakpoints, $brekpoint-lower)) {
+			@content;
+		}
+
+	} @else {
+
+		@warn "Unfortunately, no value could be retrieved from `#{$breakpoint}`. "
+			+ "Please make sure it is defined in `$breakpoints` map.";
+	}
+}

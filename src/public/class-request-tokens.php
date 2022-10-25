@@ -168,8 +168,8 @@ class Request_Tokens {
 		 *
 		 * @since [unreleased]
 		 *
-		 * @param int $ttl Duration in seconds. Default 300, or 5 minutes.
+		 * @param int $ttl Duration in seconds. Default 15 minutes.
 		 */
-		return apply_filters( 'ptc_completionist_asana_cache_ttl', 5 * MINUTE_IN_SECONDS );
+		return apply_filters( 'ptc_completionist_asana_cache_ttl', 15 * MINUTE_IN_SECONDS );
 	}
 }
