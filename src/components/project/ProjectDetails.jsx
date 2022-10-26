@@ -1,4 +1,4 @@
-// import TaskRow from './TaskRow.jsx';
+import ProjectStatus from './ProjectStatus.jsx';
 
 // import '/assets/styles/scss/components/task/_TaskList.scss';
 
@@ -14,7 +14,7 @@ export default function ProjectDetails({ details }) {
 	let maybeDescription = null;
 	if ( 'html_notes' in details && details.html_notes ) {
 		maybeDescription = (
-			<p
+			<div
 				className="description"
 				dangerouslySetInnerHTML={ { __html: details.html_notes } }
 			/>
@@ -27,11 +27,17 @@ export default function ProjectDetails({ details }) {
 		maybeModifiedAt = <p className="modified">{'Last modified: '+dateTime.toLocaleString()}</p>;
 	}
 
+	let maybeCurrentStatus = null;
+	if ( 'current_status' in details && details.current_status ) {
+		maybeCurrentStatus = <ProjectStatus {...details.current_status} />
+	}
+
 	return (
 		<div className="ptc-ProjectDetails">
 			{maybeName}
 			{maybeModifiedAt}
 			{maybeDescription}
+			{maybeCurrentStatus}
 		</div>
 	);
 }
