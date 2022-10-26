@@ -663,9 +663,32 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				)
 			);
 
-			// Clean project data.
+			// Prepare project data.
+
 			if ( isset( $project->html_notes ) ) {
-				$project->html_notes = wp_kses_post( $project->html_notes );
+				$project->html_notes = wpautop( wp_kses_post( $project->html_notes ) );
+			}
+
+			if ( isset( $project->current_status->html_text ) ) {
+				$project->current_status->html_text = wpautop( wp_kses_post( $project->current_status->html_text ) );
+			}
+
+			if ( isset( $project->current_status->color ) ) {
+				// Add status color labels, as seen in Asana's UI.
+				switch ( $project->current_status->color ) {
+					case 'green':
+						$project->current_status->color_label = 'On track';
+						break;
+					case 'yellow':
+						$project->current_status->color_label = 'At risk';
+						break;
+					case 'red':
+						$project->current_status->color_label = 'Off track';
+						break;
+					case 'blue':
+						$project->current_status->color_label = 'On hold';
+						break;
+				}
 			}
 
 			// Map section GIDs to section indices.
@@ -730,7 +753,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
 						// Sanitize task description.
 						if ( isset( $task->html_notes ) ) {
-							$task->html_notes = wp_kses_post( $task->html_notes );
+							$task->html_notes = wpautop( wp_kses_post( $task->html_notes ) );
 						}
 
 						// Process subtasks.
@@ -749,7 +772,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 								}
 								// Sanitize task description.
 								if ( isset( $subtask->html_notes ) ) {
-									$subtask->html_notes = wp_kses_post( $subtask->html_notes );
+									$subtask->html_notes = wpautop( wp_kses_post( $subtask->html_notes ) );
 								}
 							}
 							// Fix index gaps from possible removals.
@@ -769,8 +792,13 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			}
 
 			// Remove all GIDs if desired.
+
+			// @TODO - Just define a recursive function to do this dynamically.
 			if ( ! $args['show_gids'] ) {
 				unset( $project->gid );
+				if ( isset( $project->current_status ) ) {
+					unset( $project->current_status->gid );
+				}
 				foreach ( $project->sections as &$section ) {
 					unset( $section->gid );
 					foreach ( $section->tasks as &$task ) {
