@@ -25,6 +25,8 @@
 		}
 
 		&:hover {
+			color: inherit;
+
 			.task-name {
 				text-decoration: none;
 			}

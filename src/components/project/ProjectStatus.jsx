@@ -28,8 +28,15 @@ export default function ProjectStatus({
 
 	let maybeCreatedAt = null;
 	if ( created_at ) {
-		const dateTime = new Date( created_at );
-		maybeCreatedAt = <p className="created">{'Created at: '+dateTime.toLocaleString()}</p>;
+		const dateTimeString = new Date( created_at ).toLocaleString(
+			undefined,
+			{
+				dateStyle: 'medium',
+				timeStyle: 'short',
+				timeZone: 'UTC'
+			}
+		);
+		maybeCreatedAt = <p className="created">{'Updated: '+dateTimeString}</p>;
 	}
 
 	let maybeDescription = null;
@@ -44,9 +51,15 @@ export default function ProjectStatus({
 
 	return (
 		<div className="ptc-ProjectStatus">
-			{maybeColorBadge}
+			{
+				( maybeColorBadge || maybeCreatedAt ) && (
+					<div className="header-meta">
+						{maybeColorBadge}
+						{maybeCreatedAt}
+					</div>
+				)
+			}
 			{maybeTitle}
-			{maybeCreatedAt}
 			{maybeDescription}
 		</div>
 	);

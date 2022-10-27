@@ -4,6 +4,15 @@
 
 .ptc-ProjectTaskList {
 
+	.project-name {
+		margin-bottom: 0;
+	}
+
+	.modified {
+		color: color(grey-dark);
+		font-style: italic;
+	}
+
 	.sections-of-tasks {
 		margin: 2rem auto 3rem;
 		overflow: hidden;
