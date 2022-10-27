@@ -8,7 +8,7 @@ export default function ProjectDetails({ details }) {
 
 	let maybeName = null;
 	if ( 'name' in details && details.name ) {
-		maybeName = <h2 className="name">{details.name}</h2>;
+		maybeName = <h2 className="project-name">{details.name}</h2>;
 	}
 
 	let maybeDescription = null;
@@ -23,8 +23,15 @@ export default function ProjectDetails({ details }) {
 
 	let maybeModifiedAt = null;
 	if ( 'modified_at' in details && details.modified_at ) {
-		const dateTime = new Date( details.modified_at );
-		maybeModifiedAt = <p className="modified">{'Last modified: '+dateTime.toLocaleString()}</p>;
+		const dateTimeString = new Date( details.modified_at ).toLocaleString(
+			undefined,
+			{
+				dateStyle: 'medium',
+				timeStyle: 'short',
+				timeZone: 'UTC'
+			}
+		);
+		maybeModifiedAt = <p className="modified">{'Last modified: '+dateTimeString}</p>;
 	}
 
 	let maybeCurrentStatus = null;
