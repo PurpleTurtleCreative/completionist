@@ -5,27 +5,7 @@
 .ptc-ProjectTaskList {
 
 	.sections-of-tasks {
-		background: color(white);
-		border: 2px solid color(grey-lighter);
-		border-radius: 1rem;
 		margin: 2rem auto 3rem;
 		overflow: hidden;
-
-		:last-child {
-
-			ol,
-			ul {
-
-				&:last-child {
-
-					li {
-
-						&:last-child {
-							border-bottom: none;
-						}
-					}
-				}
-			}
-		}
 	}
 }//.ptc-ProjectTaskList

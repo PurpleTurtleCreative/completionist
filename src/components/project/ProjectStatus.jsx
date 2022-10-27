@@ -1,6 +1,6 @@
 // import TaskRow from './TaskRow.jsx';
 
-// import '/assets/styles/scss/components/task/_TaskList.scss';
+import '/assets/styles/scss/components/project/_ProjectStatus.scss';
 
 // const { useState } = wp.element;
 
@@ -18,7 +18,7 @@ export default function ProjectStatus({
 		if ( color ) {
 			extraBadgeClassNames += ` --is-${color}`;
 		}
-		maybeColorBadge = <div className={"badge"+extraBadgeClassNames}>{color_label}</div>;
+		maybeColorBadge = <div className={"status-badge"+extraBadgeClassNames}>{color_label}</div>;
 	}
 
 	let maybeTitle = null;

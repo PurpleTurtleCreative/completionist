@@ -18,11 +18,31 @@
 	}
 
 	&.--is-complete {
-		background: color(grey-lightest);
+		color: color(grey-darker);
+
+		.task-name {
+			text-decoration: line-through;
+		}
+
+		&:hover {
+			.task-name {
+				text-decoration: none;
+			}
+		}
 	}
 
 	&:last-of-type {
 		border-bottom: 1px solid color(grey-lighter);
+	}
+
+	&:hover {
+		background: color(grey-lightest);
+		border-top-color: color(grey-light);
+		border-bottom-color: color(grey-light);
+
+		+ .ptc-TaskListItem {
+			border-top-color: color(grey-light);
+		}
 	}
 
 	p {
@@ -52,7 +72,7 @@
 		height: 1.15em;
 		border-radius: 999px;
 		border: 1px solid color(grey);
-		background: color(grey-lightest);
+		background: color(white);
 		color: color(grey-dark);
 
 		svg {
@@ -66,9 +86,9 @@
 		}
 
 		&[data-completed="true"] {
-			background: color(success-light);
-			border-color: color(success-dark);
-			color: color(success-dark);
+			background: color(asana-status-green);
+			border-color: color(asana-status-green);
+			color: color(white);
 		}
 	}
 
