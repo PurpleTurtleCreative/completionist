@@ -4,27 +4,10 @@
 
 .ptc-ProjectSection {
 
-	/*
-	 * If the first project section
-	 * does not first include a project name
-	 * then hide the top border of the
-	 * first task item in the list.
-	 */
-	&:first-child {
-		ol.tasks:first-child {
-			.ptc-TaskListItem:first-of-type {
-				border-top: none;
-			}
-		}
-	}
-
-	.section-name {
-		margin: 10px;
-	}
-
 	ol.tasks {
 		list-style-type: none;
-		margin: 0;
+		margin-left: auto;
+		margin-right: auto;
 		padding: 0;
 	}
 }//.ptc-ProjectSection

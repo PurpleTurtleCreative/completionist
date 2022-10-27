@@ -1,6 +1,6 @@
 $colors: (
 
-	// Neutrals
+	// Neutrals.
 
 	white: #ffffff,
 
@@ -14,7 +14,7 @@ $colors: (
 
 	black: #1f2933,
 
-	// Colors
+	// Colors.
 
 	brand-primary-light: #2dcca7,
 	brand-primary: #17b897,
@@ -36,6 +36,13 @@ $colors: (
 	success-dark: #1e5303,
 	warning-dark: #b44d12,
 	danger-dark: #610316,
+
+	// Asana Colors.
+
+	asana-status-green: #58a182,
+	asana-status-yellow: #f1bd6c,
+	asana-status-red: #de5f73,
+	asana-status-blue: #3f6ac4,
 );
 
 // Getter function
