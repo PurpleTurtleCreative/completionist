@@ -14,7 +14,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 	let extraClassNames = '';
 
 	let renderToggle = false;
-	let showToggle = false;
+	let allowToggle = false;
 
 	let maybeCompleted = null;
 	if ( 'completed' in task ) {
@@ -39,19 +39,23 @@ export default function TaskListItem({ task, rowNumber = null }) {
 		let maybeSubtaskContent = null;
 		if (
 			task.subtasks &&
-			Array.isArray( task.subtasks )
+			Array.isArray( task.subtasks ) &&
+			task.subtasks.length > 0
 		) {
 			const incompleteSubtasksCount = countIncompleteTasks(task.subtasks);
 			if ( incompleteSubtasksCount > 0 ) {
-				showToggle = true;
+				allowToggle = true;
 				maybeSubtaskContent = (
 					<>
 						{incompleteSubtasksCount}
 						<SubtasksIcon aria-label="Subtasks" style={{ "transform": 'rotate(90deg)' }} preserveAspectRatio="xMidYMid meet" />
 					</>
 				);
-				maybeSubtaskList = (
-					<ul className="subtasks">
+			}
+			maybeSubtaskList = (
+				<div className="subtasks">
+					<p className="small-label">Subtasks</p>
+					<ol className="tasks">
 						{
 							task.subtasks.map((subtask, index) => {
 								// Remove "subtasks" to prevent infinite recursion.
@@ -59,9 +63,9 @@ export default function TaskListItem({ task, rowNumber = null }) {
 								return <TaskListItem task={task} rowNumber={index+1} />;
 							})
 						}
-					</ul>
-				);
-			}
+					</ol>
+				</div>
+			);
 		}
 
 		maybeSubtaskCount = <p className="subtask-count">{maybeSubtaskContent}</p>;
@@ -126,47 +130,66 @@ export default function TaskListItem({ task, rowNumber = null }) {
 	if ( 'html_notes' in task ) {
 		renderToggle = true;
 		if ( task.html_notes ) {
-			showToggle = true;
+			allowToggle = true;
 			maybeDescription = (
-			<div
-				className="description"
-				dangerouslySetInnerHTML={ { __html: task.html_notes } }
-			/>
-		);
+				<div className="task-notes">
+					<p className="small-label">Description</p>
+					<div
+						className="description"
+						dangerouslySetInnerHTML={ { __html: task.html_notes } }
+					/>
+				</div>
+			);
 		}
 	}
 
 	let maybeToggle = null;
 	if ( renderToggle ) {
 		let maybeToggleIcon = null;
-		if ( showToggle ) {
-			maybeToggleIcon = <ToggleIcon preserveAspectRatio="xMidYMid meet" onClick={() => setIsExpanded(!isExpanded)} />
+		if ( allowToggle ) {
+			extraClassNames += ' --can-expand';
+			maybeToggleIcon = <ToggleIcon preserveAspectRatio="xMidYMid meet" />
 		}
 		maybeToggle = <div className="toggle">{maybeToggleIcon}</div>;
 	}
 
 	let maybeExpandedDetails = null;
 	if ( isExpanded ) {
+		extraClassNames += ' --is-expanded';
 		maybeExpandedDetails = (
 			<div className="expanded-details">
-				{maybeDescription}
-				{maybeSubtaskList}
+				{ rowNumber && <div className="spacer row-number"></div> }
+				{ maybeToggle && <div className="spacer toggle"></div>}
+				{ maybeCompleted && <div className="spacer completed"></div>}
+				<div className="details">
+					{maybeDescription}
+					{maybeSubtaskList}
+				</div>
 			</div>
 		);
 	}
 
 	return (
 		<li className={"ptc-TaskListItem"+extraClassNames}>
-			{ rowNumber && <div className="row-number">{rowNumber}</div> }
-			{maybeToggle}
-			{maybeCompleted}
-			<div className="body">
-				{maybeName}
-				{maybeSubtaskCount}
-				{maybeAssignee}
-				{maybeDueDate}
-				{maybeExpandedDetails}
+			<div
+				className="main"
+				onClick={
+					allowToggle ?
+					() => setIsExpanded(!isExpanded) :
+					undefined
+				}
+			>
+				{ rowNumber && <div className="row-number">{rowNumber}</div> }
+				{maybeToggle}
+				{maybeCompleted}
+				<div className="body">
+					{maybeName}
+					{maybeSubtaskCount}
+					{maybeAssignee}
+					{maybeDueDate}
+				</div>
 			</div>
+			{maybeExpandedDetails}
 		</li>
 	);
 }
