@@ -17,7 +17,7 @@
 		min-height: 36px;
 	}
 
-	&.--is-complete {
+	&.--is-completed {
 		color: color(grey-darker);
 
 		.task-name {
@@ -61,6 +61,26 @@
 
 		@include breakpoint-down(small) {
 			display: none;
+		}
+	}
+
+	.toggle {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 1.15em;
+		width: 1.15em;
+		height: 1.15em;
+		margin: 0 10px 0 0;
+		color: color(grey-dark);
+
+		svg {
+			width: 50%;
+			height: auto;
+
+			path {
+				fill: currentColor;
+			}
 		}
 	}
 
