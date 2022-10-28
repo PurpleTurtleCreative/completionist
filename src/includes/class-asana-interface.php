@@ -793,29 +793,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
 			// Remove all GIDs if desired.
 
-			// @TODO - Just define a recursive function to do this dynamically.
 			if ( ! $args['show_gids'] ) {
-				unset( $project->gid );
-				if ( isset( $project->current_status ) ) {
-					unset( $project->current_status->gid );
-				}
-				foreach ( $project->sections as &$section ) {
-					unset( $section->gid );
-					foreach ( $section->tasks as &$task ) {
-						unset( $task->gid );
-						if ( isset( $task->assignee ) ) {
-							unset( $task->assignee->gid );
-						}
-						if ( isset( $task->subtasks ) ) {
-							foreach ( $task->subtasks as &$subtask ) {
-								unset( $subtask->gid );
-								if ( isset( $subtask->assignee ) ) {
-									unset( $subtask->assignee->gid );
-								}
-							}
-						}
-					}
-				}
+				require_once PLUGIN_PATH . 'src/includes/class-util.php';
+				Util::deep_unset_prop( $project, 'gid' );
 			}
 
 			return $project;
