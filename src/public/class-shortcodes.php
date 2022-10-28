@@ -112,7 +112,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 					'show_tasks_due'         => 'true',
 					// 'include_tag'          => '',
 					// 'exclude_tag'          => '',
-					// 'sort'                 => '',
+					// 'sort_tasks'           => '',
 				),
 				$atts,
 				$shortcode_tag
