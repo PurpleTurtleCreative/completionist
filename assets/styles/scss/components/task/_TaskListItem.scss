@@ -8,6 +8,7 @@
 	padding: 0;
 	border-top: 1px solid color(grey-lighter);
 	line-height: 1.3;
+	word-break: break-word;
 
 	&.--can-expand {
 
@@ -19,14 +20,14 @@
 	&.--is-completed {
 		color: color(grey-darker);
 
-		.task-name {
+		> .main > .body > .task-name {
 			text-decoration: line-through;
 		}
 
 		&:hover {
 			color: inherit;
 
-			.task-name {
+			> .main > .body > .task-name {
 				text-decoration: none;
 			}
 		}
@@ -85,12 +86,29 @@
 
 	.expanded-details {
 		display: flex;
+		padding: 0 10px 10px;
+
+		@include breakpoint(medium) {
+			padding: 0 20px 20px 10px;
+		}
+
+		.spacer {
+			display: none;
+
+			@include breakpoint(medium) {
+				display: block;
+			}
+		}
 
 		.details {
 			flex: 1;
 
 			> div {
-				margin: 0 0 2em;
+				margin: 0 0 1.5em;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
 			}
 		}
 
