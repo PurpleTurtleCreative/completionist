@@ -50,11 +50,11 @@ export default function ProjectTaskList({ src }) {
 			break;
 
 		case 'loading':
-			innerContent = <p>Loading tasks...</p>;
+			innerContent = <p className="ptc-loader">Loading project...</p>;
 			break;
 
 		case 'error':
-			innerContent = <p>Failed to load project.</p>;
+			innerContent = <p className="ptc-error">Failed to load project.</p>;
 			break;
 	}
 
