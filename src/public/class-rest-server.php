@@ -131,10 +131,15 @@ class REST_Server {
 			$request_tokens->save_response( $request['token'], $project_data );
 			return new \WP_REST_Response( $project_data, 200 );
 		} catch ( \Exception $e ) {
+			$error_code = HTML_Builder::get_error_code( $e );
+			if ( $error_code < 400 ) {
+				// Prevent code 0 for odd errors like "could not resolve host name".
+				$error_code = 400;
+			}
 			return new \WP_Error(
 				'asana_error',
 				'Failed to get Asana project. ' . HTML_Builder::get_error_message( $e ),
-				array( 'status' => HTML_Builder::get_error_code( $e ) )
+				array( 'status' => $error_code )
 			);
 		}
 
