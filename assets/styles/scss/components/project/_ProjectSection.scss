@@ -4,6 +4,15 @@
 
 .ptc-ProjectSection {
 
+	.ptc-no-results {
+		padding: 1em 2em;
+		text-align: center;
+		border-radius: 10px;
+		border: 2px solid color(grey-lighter);
+		font-style: italic;
+		color: color(grey-dark);
+	}
+
 	ol.tasks {
 		list-style-type: none;
 		margin-left: auto;
