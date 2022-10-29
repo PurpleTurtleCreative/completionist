@@ -19,14 +19,19 @@ export default function ProjectTaskList({ src }) {
 			// Request data.
 			window
 				.fetch(src)
-				.then( res => res.json() )
 				.then( res => {
-					setProject(res);
+					if ( 200 !== res.status ) {
+						return Promise.reject( `Error ${res.status}. Failed to load project.` );
+					}
+					return res.json();
+				})
+				.then( data => {
+					setProject(data);
 					setStatus('success');
+					return Promise.resolve();
 				})
 				.catch( err => {
-					window.console.error('Failed to load project:', err);
-					setStatus('error');
+					setStatus(err);
 					setProject(null);
 				});
 		}
@@ -55,6 +60,10 @@ export default function ProjectTaskList({ src }) {
 
 		case 'error':
 			innerContent = <p className="ptc-error">Failed to load project.</p>;
+			break;
+
+		default:
+			innerContent = <p className="ptc-error">{status}</p>;
 			break;
 	}
 
