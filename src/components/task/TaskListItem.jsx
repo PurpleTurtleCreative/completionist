@@ -1,5 +1,7 @@
 import { countIncompleteTasks } from './util';
 
+import { getLocaleString } from '../generic/util.jsx';
+
 import { ReactComponent as CheckmarkIcon } from '/assets/icons/fa-check-solid.svg';
 import { ReactComponent as SubtasksIcon } from '/assets/icons/fa-code-branch-solid.svg';
 import { ReactComponent as ToggleIcon } from '/assets/icons/fa-caret-right-solid.svg';
@@ -58,7 +60,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 					<ol className="tasks">
 						{
 							task.subtasks.map((subtask, index) => {
-								// Remove "subtasks" to prevent infinite recursion.
+								// Remove "subtasks" to prevent deeper recursion.
 								const { subtasks, ...task } = subtask;
 								return <TaskListItem task={task} rowNumber={index+1} />;
 							})
@@ -113,14 +115,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 
 		let maybeDueDateString = null;
 		if ( task.due_on ) {
-			maybeDueDateString = new Date(task.due_on).toLocaleDateString(
-				undefined,
-				{
-					month: 'short',
-					day: 'numeric',
-					timeZone: 'UTC'
-				}
-			);
+			maybeDueDateString = getLocaleString(task.due_on);
 		}
 
 		maybeDueDate = <p className="due">{maybeDueDateString}</p>;

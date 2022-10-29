@@ -1,8 +1,6 @@
 import ProjectStatus from './ProjectStatus.jsx';
 
-// import '/assets/styles/scss/components/task/_TaskList.scss';
-
-// const { useState } = wp.element;
+import { getLocaleString } from '../generic/util.jsx';
 
 export default function ProjectDetails({ details }) {
 
@@ -23,14 +21,7 @@ export default function ProjectDetails({ details }) {
 
 	let maybeModifiedAt = null;
 	if ( 'modified_at' in details && details.modified_at ) {
-		const dateTimeString = new Date( details.modified_at ).toLocaleString(
-			undefined,
-			{
-				dateStyle: 'medium',
-				timeStyle: 'short',
-				timeZone: 'UTC'
-			}
-		);
+		const dateTimeString = getLocaleString( details.modified_at );
 		maybeModifiedAt = <p className="modified">{'Last modified: '+dateTimeString}</p>;
 	}
 

@@ -1,8 +1,6 @@
-// import TaskRow from './TaskRow.jsx';
+import { getLocaleString } from '../generic/util.jsx';
 
 import '/assets/styles/scss/components/project/_ProjectStatus.scss';
-
-// const { useState } = wp.element;
 
 export default function ProjectStatus({
 	color = null,
@@ -28,14 +26,7 @@ export default function ProjectStatus({
 
 	let maybeCreatedAt = null;
 	if ( created_at ) {
-		const dateTimeString = new Date( created_at ).toLocaleString(
-			undefined,
-			{
-				dateStyle: 'medium',
-				timeStyle: 'short',
-				timeZone: 'UTC'
-			}
-		);
+		const dateTimeString = getLocaleString( created_at );
 		maybeCreatedAt = <p className="created">{'Updated: '+dateTimeString}</p>;
 	}
 

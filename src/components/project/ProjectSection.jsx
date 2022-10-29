@@ -2,8 +2,6 @@ import TaskListItem from '../task/TaskListItem.jsx';
 
 import '/assets/styles/scss/components/project/_ProjectSection.scss';
 
-// const { useState } = wp.element;
-
 export default function ProjectSection({ section }) {
 
 	let maybeName = null;
