@@ -26,7 +26,7 @@ export default function ProjectDetails({ details }) {
 		const dateTimeString = new Date( details.due_on ).toLocaleDateString(
 			undefined,
 			{
-				dateStyle: 'long',
+				dateStyle: 'full',
 				timeZone: 'UTC',
 			}
 		);
@@ -49,6 +49,17 @@ export default function ProjectDetails({ details }) {
 		);
 	}
 
+	let maybeCompletedAt = null;
+	if ( 'completed_at' in details && details.completed_at ) {
+		const dateTimeString = getLocaleString( details.completed_at );
+		maybeCompletedAt = (
+			<p className="completed">
+				<span>Completed</span>
+				{dateTimeString}
+			</p>
+		);
+	}
+
 	let maybeCurrentStatus = null;
 	if ( 'current_status' in details && details.current_status ) {
 		maybeCurrentStatus = <ProjectStatus {...details.current_status} />;
@@ -59,6 +70,7 @@ export default function ProjectDetails({ details }) {
 			{maybeName}
 			<div className="row">
 				{maybeDueOn}
+				{maybeCompletedAt}
 				{maybeModifiedAt}
 			</div>
 			{maybeDescription}

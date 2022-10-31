@@ -1,5 +1,7 @@
 import { getLocaleString } from '../generic/util.jsx';
 
+import { ReactComponent as CheckmarkIcon } from '/assets/icons/fa-check-solid.svg';
+
 import '/assets/styles/scss/components/project/_ProjectStatus.scss';
 
 export default function ProjectStatus({
@@ -16,7 +18,12 @@ export default function ProjectStatus({
 		if ( color ) {
 			extraBadgeClassNames += ` --is-${color}`;
 		}
-		maybeColorBadge = <div className={"status-badge"+extraBadgeClassNames}>{color_label}</div>;
+		maybeColorBadge = (
+			<div className={"status-badge"+extraBadgeClassNames}>
+				{ ( 'complete' === color ) && <CheckmarkIcon preserveAspectRatio="xMidYMid meet" /> }
+				{color_label}
+			</div>
+		);
 	}
 
 	let maybeTitle = null;
@@ -27,7 +34,12 @@ export default function ProjectStatus({
 	let maybeCreatedAt = null;
 	if ( created_at ) {
 		const dateTimeString = getLocaleString( created_at );
-		maybeCreatedAt = <p className="created">{'Updated: '+dateTimeString}</p>;
+		maybeCreatedAt = (
+			<p className="created">
+				<span>Updated</span>
+				{dateTimeString}
+			</p>
+		);
 	}
 
 	let maybeDescription = null;
