@@ -2,6 +2,8 @@ import ProjectStatus from './ProjectStatus.jsx';
 
 import { getLocaleString } from '../generic/util.jsx';
 
+import '/assets/styles/scss/components/project/_ProjectDetails.scss';
+
 export default function ProjectDetails({ details }) {
 
 	let maybeName = null;
@@ -19,21 +21,46 @@ export default function ProjectDetails({ details }) {
 		);
 	}
 
+	let maybeDueOn = null;
+	if ( 'due_on' in details && details.due_on ) {
+		const dateTimeString = new Date( details.due_on ).toLocaleDateString(
+			undefined,
+			{
+				dateStyle: 'long',
+				timeZone: 'UTC',
+			}
+		);
+		maybeDueOn = (
+			<p className="due">
+				<span>Due</span>
+				{dateTimeString}
+			</p>
+		);
+	}
+
 	let maybeModifiedAt = null;
 	if ( 'modified_at' in details && details.modified_at ) {
 		const dateTimeString = getLocaleString( details.modified_at );
-		maybeModifiedAt = <p className="modified">{'Last modified: '+dateTimeString}</p>;
+		maybeModifiedAt = (
+			<p className="modified">
+				<span>Modified</span>
+				{dateTimeString}
+			</p>
+		);
 	}
 
 	let maybeCurrentStatus = null;
 	if ( 'current_status' in details && details.current_status ) {
-		maybeCurrentStatus = <ProjectStatus {...details.current_status} />
+		maybeCurrentStatus = <ProjectStatus {...details.current_status} />;
 	}
 
 	return (
 		<div className="ptc-ProjectDetails">
 			{maybeName}
-			{maybeModifiedAt}
+			<div className="row">
+				{maybeDueOn}
+				{maybeModifiedAt}
+			</div>
 			{maybeDescription}
 			{maybeCurrentStatus}
 		</div>

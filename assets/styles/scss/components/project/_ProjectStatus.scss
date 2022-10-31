@@ -40,6 +40,15 @@
 			background: color(grey);
 		}
 
+		&.--is-complete {
+			background: color(asana-status-green);
+			border-color: color(asana-status-green);
+			color: color(white);
+
+			&::before {
+				display: none;
+			}
+		}
 		&.--is-green {
 			border-color: color(asana-status-green);
 
