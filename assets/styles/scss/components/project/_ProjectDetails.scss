@@ -1,4 +1,5 @@
 @import '../../abstracts/colors';
+@import '../../abstracts/badges';
 
 //----------------------
 
@@ -17,23 +18,17 @@
 		margin: 1rem 0 2rem;
 
 		> * {
-			margin: 0;
-			border: 2px solid color(grey-lighter);
-			border-radius: 7px;
-			padding: 0.3em 1em;
-		}
-	}
+			@extend %metadata-badge;
 
-	.due,
-	.modified {
-		color: color(grey-darker);
+			&.completed {
+				border-color: color(asana-status-green);
+				background: color(asana-status-green);
+				color: color(white);
 
-		span {
-			text-transform: uppercase;
-			font-size: 0.8em;
-			letter-spacing: 0.05em;
-			color: color(grey-dark);
-			margin-right: 1em;
+				span {
+					color: color(grey-lightest);
+				}
+			}
 		}
 	}
 }//.ptc-ProjectTaskList
