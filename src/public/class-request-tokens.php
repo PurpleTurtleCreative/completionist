@@ -17,13 +17,20 @@ require_once PLUGIN_PATH . 'src/includes/class-options.php';
  * Request tokens ensure private data cannot be accessed. The server
  * creates a request token to obscure request parameters on the frontend.
  * This ensures generic requests cannot be made from the frontend to
- * access data or perform actions that have not been explicitly used.
+ * access data or perform actions that have not been explicitly published.
  * Request tokens also maintain a cache of the respective response data.
  *
  * @since [unreleased]
  */
 class Request_Tokens {
 
+	/**
+	 * The post ID of which the request token applies.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @var int $post_id
+	 */
 	private $post_id;
 
 	// **************************** //
@@ -39,11 +46,23 @@ class Request_Tokens {
 		add_action( 'edit_post', array( __CLASS__, 'purge_for_post' ), 10, 1 );
 	}
 
+	/**
+	 * Deletes all request token data for a given post.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param int $post_id The post to purge all request tokens.
+	 */
 	public static function purge_for_post( int $post_id ) {
 		$request_tokens = new static( $post_id );
 		$request_tokens->purge();
 	}
 
+	/**
+	 * Deletes all request token data.
+	 *
+	 * @since [unreleased]
+	 */
 	public static function purge_all() {
 		Options::delete( Options::REQUEST_TOKENS, -1 );
 	}
@@ -52,10 +71,27 @@ class Request_Tokens {
 	// **    Public Methods    ** //
 	// ************************** //
 
+	/**
+	 * Instantiates a request token management context for the given post.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param int $post_id The post for request token management.
+	 */
 	public function __construct( int $post_id ) {
 		$this->post_id = $post_id;
 	}
 
+	/**
+	 * Saves a new request token for the given arguments if it does
+	 * not already exist.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param array $request_args The arguments that the request
+	 * token represents.
+	 * @return string The request token.
+	 */
 	public function save( array $request_args ) : string {
 
 		// Get existing request tokens.
@@ -90,10 +126,29 @@ class Request_Tokens {
 		return $token;
 	}
 
+	/**
+	 * Gets the request arguments for the given request token.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param string $request_token The request token to retrieve.
+	 * @return array The request arguments. Default empty if invalid.
+	 */
 	public function get_request_args( string $request_token ) : array {
 		return $this->get()[ $request_token ]['request_args'] ?? array();
 	}
 
+	/**
+	 * Gets the cached response, if available.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param string $request_token The request token to retrieve.
+	 * @param mixed  $default The default value to return if the cache entry
+	 * is expired.
+	 * @return mixed The cached response if valid, or the specified $default
+	 * value.
+	 */
 	public function get_cached_response(
 		string $request_token,
 		$default
@@ -113,6 +168,16 @@ class Request_Tokens {
 		return $cached_response['data'];
 	}
 
+	/**
+	 * Updates the response data cache entry for the given request token.
+	 *
+	 * Note that the request token must already exist.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param string $request_token The request token.
+	 * @param mixed  $response The response data to cache.
+	 */
 	public function save_response(
 		string $request_token,
 		$response
@@ -141,11 +206,23 @@ class Request_Tokens {
 		);
 	}
 
+	/**
+	 * Deletes all request tokens for the current post context.
+	 *
+	 * @since [unreleased]
+	 */
 	public function purge() {
 		Options::delete( Options::REQUEST_TOKENS, $this->post_id );
 	}
 
-	public function exists( string $request_token ) {
+	/**
+	 * Checks if the request token exists for the current post context.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @return bool True if the request token exists.
+	 */
+	public function exists( string $request_token ) : bool {
 		return isset( $this->get()[ $request_token ] );
 	}
 
@@ -153,16 +230,41 @@ class Request_Tokens {
 	// **    Private Methods    ** //
 	// *************************** //
 
-	private function get() {
+	/**
+	 * Gets all request token data for the current post context.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @return array The request token data. Empty if none.
+	 */
+	private function get() : array {
 		return Options::get( Options::REQUEST_TOKENS, $this->post_id );
 	}
 
+	/**
+	 * Generates the request token for the provided arguments.
+	 *
+	 * Note this should always return the same token string for the
+	 * same arguments (irrespective of sort order). It is a pure function.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param array $request_args The request arguments to represent.
+	 * @return string A token representing the provided arguments.
+	 */
 	private function generate_token( array $request_args ) : string {
 		asort( $request_args );
 		return md5( wp_salt( 'nonce' ) . serialize( $request_args ) );
 	}
 
-	private function get_cache_ttl() {
+	/**
+	 * Gets the cache entry TTL in seconds.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @return int The cache TTL in seconds.
+	 */
+	private function get_cache_ttl() : int {
 		/**
 		 * Filters the duration of Asana response cache entries.
 		 *

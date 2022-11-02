@@ -1,8 +1,16 @@
 ### [unreleased]
 
+#### Added
+
+- By popular demand, the first frontend feature is now implemented! The shortcode, `[ptc_asana_project]`, displays an Asana project in list layout.
+- First custom REST API  endpoint, `/v1/projects`, with the new Request Keys architecture to securely perform requests from the website's public frontend.
+- Settings option to define which WordPress user's Asana connection should be used to authenticate frontend requests by default.
+- Many new ReactJS components and styles to render the `[ptc_asana_project]` shortcode.
+
 #### Fixed
 
 - Duplicate display of a user listed in the plugin settings screen when their connected Asana account email does not match their WordPress user account email.
+- Repeated authentication to the Asana API when using the currently logged-in user's identity. This fix improves performance and reduces API calls for connected Asana users in wp-admin.
 
 ### 3.3.0 - 2022-10-15
 
