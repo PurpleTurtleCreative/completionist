@@ -17,6 +17,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Util' ) ) {
 	 */
 	class Util {
 
+		/**
+		 * Unsets object properties and array keys with the given name.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param mixed  $data An interable object or array to modify.
+		 * @param string $prop The name of the property to remove.
+		 */
 		public static function deep_unset_prop( &$data, string $prop ) {
 			foreach ( $data as $key => $value ) {
 				if ( is_object( $value ) || is_array( $value ) ) {

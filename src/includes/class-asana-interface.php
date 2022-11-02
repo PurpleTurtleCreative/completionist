@@ -570,16 +570,21 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 * Parses project view information from an Asana project link.
 		 *
 		 * @since [unreleased]
+		 *
+		 * @param string $project_link An Asana project URL.
+		 * @return array The parsed project GID and layout, if possible.
 		 */
-		public static function parse_project_link( string $project_link ) {
+		public static function parse_project_link( string $project_link ) : array {
 
 			$parsed_project_data = array();
 
 			$project_link = esc_url_raw( $project_link );
 
 			if ( preg_match( '/\/([0-9]+)\/([a-z]+)$/', $project_link, $matches ) ) {
-				// Copied project URL from web browser address bar.
-				// ex. https://app.asana.com/0/1234567890/list
+				/*
+				 * Copied project URL from web browser address bar.
+				 * ex. https://app.asana.com/0/1234567890/list
+				 */
 				if ( ! empty( $matches[1] ) ) {
 					$parsed_project_data['gid'] = Options::sanitize( 'gid', $matches[1] );
 				}
@@ -587,8 +592,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 					$parsed_project_data['layout'] = $matches[2];
 				}
 			} elseif ( preg_match( '/\/([0-9]+)$/', $project_link, $matches ) ) {
-				// Copied project URL from project details dropdown in Asana.
-				// ex. https://app.asana.com/0/1234567890/1234567890
+				/*
+				 * Copied project URL from project details dropdown in Asana.
+				 * ex. https://app.asana.com/0/1234567890/1234567890
+				 */
 				if ( ! empty( $matches[1] ) ) {
 					$parsed_project_data['gid'] = Options::sanitize( 'gid', $matches[1] );
 				}
@@ -601,11 +608,16 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 * Gets tasks for a given project, organized by project sections.
 		 *
 		 * @since [unreleased]
+		 *
+		 * @param string $project_gid The Asana project GID.
+		 * @param array  $args Optional. Arguments to modify the request and
+		 * resulting response data. Default empty to return all data.
+		 * @return \stdClass The Asana project data.
 		 */
 		public static function get_project_data(
 			string $project_gid,
 			array $args = array()
-		) {
+		) : \stdClass {
 
 			$args = wp_parse_args(
 				array_map( 'rest_sanitize_boolean', $args ),
