@@ -605,7 +605,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		}
 
 		/**
-		 * Gets tasks for a given project, organized by project sections.
+		 * Gets status, sections, tasks, and metadata for a given project.
 		 *
 		 * @since [unreleased]
 		 *
@@ -638,7 +638,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
 			$project_gid = Options::sanitize( 'gid', $project_gid );
 			if ( '' == $project_gid ) {
-				return array();
+				return new \stdClass();
 			}
 
 			if ( ! isset( self::$asana ) ) {
@@ -822,13 +822,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 * @since [unreleased]
 		 *
 		 * @param \stdClass[] $parent_tasks The tasks for which to get subtasks.
-		 *
 		 * @param string $opt_fields Optional. A csv of task fields to retrieve.
 		 *
 		 * @throws \Exception Authentication may fail when first loading the client
 		 * or requests could fail due to request limits or server issues.
 		 */
-		static function load_subtasks( array &$parent_tasks, string $opt_fields = '' ) {
+		static function load_subtasks(
+			array &$parent_tasks,
+			string $opt_fields = ''
+		) {
 
 			if ( ! isset( self::$asana ) ) {
 				$asana = self::get_client();

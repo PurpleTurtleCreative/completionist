@@ -22,8 +22,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Util' ) ) {
 		 *
 		 * @since [unreleased]
 		 *
-		 * @param mixed  $data An interable object or array to modify.
-		 * @param string $prop The name of the property to remove.
+		 * @param object|array $data An iterable object or array to modify.
+		 * @param string       $prop The name of the property to remove.
 		 */
 		public static function deep_unset_prop( &$data, string $prop ) {
 			foreach ( $data as $key => $value ) {
