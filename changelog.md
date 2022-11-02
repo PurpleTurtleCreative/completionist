@@ -3,7 +3,7 @@
 #### Added
 
 - By popular demand, the first frontend feature is now implemented! The shortcode, `[ptc_asana_project]`, displays an Asana project in list layout.
-- First custom REST API  endpoint, `/v1/projects`, with the new Request Keys architecture to securely perform requests from the website's public frontend.
+- First custom REST API endpoint, `/v1/projects`, with the new Request Keys architecture to securely perform requests from the website's public frontend.
 - Settings option to define which WordPress user's Asana connection should be used to authenticate frontend requests by default.
 - Many new ReactJS components and styles to render the `[ptc_asana_project]` shortcode.
 
