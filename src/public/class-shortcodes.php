@@ -23,7 +23,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 	class Shortcodes {
 
 		/**
-		 * Registers code.
+		 * Hooks functionality into the WordPress execution flow.
 		 *
 		 * @since [unreleased]
 		 */
@@ -65,7 +65,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			wp_register_style(
 				'ptc-completionist-shortcode-asana-project',
 				PLUGIN_URL . '/build/index_ShortcodeAsanaProject.jsx.css',
-				[],
+				array(),
 				PLUGIN_VERSION
 			);
 		}
@@ -78,13 +78,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		 *
 		 * @see \add_shortcode()
 		 *
-		 * @param array       $atts          Optional. The shortcode attribute
-		 *                                   values. Default empty array.
-		 * @param string|null $content       Optional. The shortcode contents.
-		 *                                   Default null.
+		 * @param array       $atts Optional. The shortcode attribute values.
+		 * Default empty array.
+		 * @param string|null $content Optional. The shortcode contents.
+		 * Default null.
 		 * @param string      $shortcode_tag Optional. The shortcode tag for
-		 *                                   processing default attributes.
-		 *                                   Default empty string.
+		 * processing default attributes. Default empty string.
 		 *
 		 * @return string The resulting HTML.
 		 */
