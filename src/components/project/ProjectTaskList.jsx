@@ -48,7 +48,7 @@ export default function ProjectTaskList({ src }) {
 			if ( sections ) {
 				innerContent = (
 					<div className="sections-of-tasks">
-						{ sections.map(section => <ProjectSection section={section} />) }
+						{ sections.map(section => <ProjectSection {...section} />) }
 					</div>
 				);
 			}
@@ -69,7 +69,7 @@ export default function ProjectTaskList({ src }) {
 
 	return (
 		<div className="ptc-ProjectTaskList">
-			{ details && <ProjectDetails details={details} /> }
+			{ details && <ProjectDetails {...details} /> }
 			{innerContent}
 		</div>
 	);
