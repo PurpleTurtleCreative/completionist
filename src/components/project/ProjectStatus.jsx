@@ -5,11 +5,11 @@ import { ReactComponent as CheckmarkIcon } from '/assets/icons/fa-check-solid.sv
 import '/assets/styles/scss/components/project/_ProjectStatus.scss';
 
 export default function ProjectStatus({
-	color = null,
-	color_label = null,
-	created_at = null,
-	html_text = null,
-	title = null,
+	color,
+	color_label,
+	created_at,
+	html_text,
+	title,
 }) {
 
 	let maybeColorBadge = null;
