@@ -38,22 +38,19 @@ export default function TaskListItem({ task, rowNumber = null }) {
 
 		renderToggle = true;
 
-		let maybeSubtaskContent = null;
+		let maybeSubtaskCountContent = null;
 		if (
 			task.subtasks &&
 			Array.isArray( task.subtasks ) &&
 			task.subtasks.length > 0
 		) {
-			const incompleteSubtasksCount = countIncompleteTasks(task.subtasks);
-			if ( incompleteSubtasksCount > 0 ) {
-				allowToggle = true;
-				maybeSubtaskContent = (
-					<>
-						{incompleteSubtasksCount}
-						<SubtasksIcon aria-label="Subtasks" style={{ "transform": 'rotate(90deg)' }} preserveAspectRatio="xMidYMid meet" />
-					</>
-				);
-			}
+			allowToggle = true;
+			maybeSubtaskCountContent = (
+				<>
+					{task.subtasks.length}
+					<SubtasksIcon aria-label="Subtasks" style={{ "transform": 'rotate(90deg)' }} preserveAspectRatio="xMidYMid meet" />
+				</>
+			);
 			maybeSubtaskList = (
 				<div className="subtasks">
 					<p className="small-label">Subtasks</p>
@@ -70,7 +67,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 			);
 		}
 
-		maybeSubtaskCount = <p className="subtask-count">{maybeSubtaskContent}</p>;
+		maybeSubtaskCount = <p className="subtask-count">{maybeSubtaskCountContent}</p>;
 	}
 
 	let maybeName = null;
