@@ -4,7 +4,12 @@
 
 .ptc-ProjectSection {
 
+	> :last-child {
+		margin: 0 0 2em !important;
+	}
+
 	.ptc-no-results {
+		margin: 0;
 		padding: 1em 2em;
 		text-align: center;
 		border-radius: 10px;
@@ -15,8 +20,7 @@
 
 	ol.tasks {
 		list-style-type: none;
-		margin-left: auto;
-		margin-right: auto;
+		margin: 0;
 		padding: 0;
 		border-radius: 10px;
 		border: 2px solid color(grey-lighter);
