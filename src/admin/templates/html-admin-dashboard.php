@@ -200,7 +200,7 @@ try {
 		<div class="help-notes">
 			<div class="note-box note-box-info">
 				<i class="fas fa-question"></i>
-				<p>This WordPress user's Asana connection will be used to render shortcodes on your website.</p>
+				<p>This WordPress user's Asana connection will be used to render <a href="https://docs.purpleturtlecreative.com/completionist/shortcodes/" target="_blank">shortcodes</a> on your website.</p>
 			</div>
 			<div class="note-box note-box-warning">
 				<i class="fas fa-lightbulb"></i>

@@ -33,13 +33,17 @@ p.footnote {
 	margin-top: 2em;
 }
 
-a, a:visited {
+a,
+a:visited {
 	color: color(brand-primary);
+	text-decoration: solid underline;
+	text-underline-offset: 2px;
 }
 
-a:focus, a:hover, a:active {
-	color: color(brand-primary-light);
-	text-decoration: none;
+a:focus,
+a:hover,
+a:active {
+	color: color(brand-primary);
 }
 
 .notice {
