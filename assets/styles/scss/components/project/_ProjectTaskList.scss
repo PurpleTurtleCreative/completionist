@@ -8,6 +8,7 @@
 	.ptc-loader {
 		padding: 1em 2em;
 		border: 2px dashed color(grey-light);
+		background: color(white);
 		color: color(grey-dark);
 
 		@include loader;
