@@ -8,14 +8,18 @@
 - Many new ReactJS components and styles to render the `[ptc_asana_project]` shortcode.
 - Helpful links to the Settings screen to quickly access Asana, Completionist's documentation, Completionist's changelog, and where to send feedback.
 
-#### Fixed
+#### Changed
 
-- Duplicate display of a user listed in the plugin settings screen when their connected Asana account email does not match their WordPress user account email.
-- Repeated authentication to the Asana API when using the currently logged-in user's identity. This fix improves performance and reduces API calls for connected Asana users in wp-admin.
+- Minor style tweaks to the Settings admin screen.
 
 #### Removed
 
 - User task list links from the "site collaborators" list on the Settings screen. The Asana API returns a `Forbidden` error when trying to get the user task list link for other users, defeating the purpose of this feature and causing useless API requests.
+
+#### Fixed
+
+- Duplicate display of a user listed in the plugin settings screen when their connected Asana account email does not match their WordPress user account email.
+- Repeated authentication to the Asana API when using the currently logged-in user's identity. This fix improves performance and reduces API calls for connected Asana users in wp-admin.
 
 ### 3.3.0 - 2022-10-15
 
