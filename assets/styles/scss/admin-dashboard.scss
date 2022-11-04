@@ -8,7 +8,7 @@
 
 /* CURRENT USER */
 section#ptc-asana-user {
-	padding-bottom: 50px;
+	padding-bottom: 2em;
 
 	div.asana-connected-profile-photo {
 		background: color(grey-lightest);
@@ -35,6 +35,11 @@ section#ptc-asana-user {
 			bottom: -40px;
 			right: 41.5%;
 		}
+	}
+
+	h3 {
+		margin: 2.5em 0 1em;
+		font-size: 1.15em;
 	}
 }
 

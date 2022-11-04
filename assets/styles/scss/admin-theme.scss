@@ -187,6 +187,64 @@ form p.error-note {
 	}
 }
 
+.ptc-button-group {
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 1em;
+	font-size: 1.15em;
+}
+
+.ptc-asana-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 1em;
+	border-radius: 5px;
+	border: 1px solid color(grey-dark);
+
+	&:hover,
+	&:focus,
+	&:active {
+		border-color: #f75a78;
+		background: #f75a78;
+		color: color(white);
+
+		img {
+			filter: grayscale(100%) brightness(999%);
+		}
+	}
+
+	img {
+		height: 1.3em;
+		width: auto;
+	}
+}
+
+.ptc-icon-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5em;
+	padding: 0.5em 1em;
+	border-radius: 5px;
+	border: 1px solid color(info);
+	color: color(info);
+	text-decoration: none;
+
+	&:hover,
+	&:focus,
+	&:active {
+		background: color(info);
+		color: color(white);
+	}
+
+	i {
+		font-size: 1.15em;
+	}
+}
+
 a.ptc-button {
 	display: inline-block;
 	background: #627D98;
@@ -243,6 +301,10 @@ div.note-box {
 		color: #486581;
 		text-align: left;
 		flex: 1;
+	}
+
+	a {
+		color: inherit;
 	}
 
 	&.note-box-info {
