@@ -6,11 +6,16 @@
 - First custom REST API endpoint, `/v1/projects`, with the new Request Keys architecture to securely perform requests from the website's public frontend.
 - Settings option for which WordPress user's Asana connection should be used to authenticate frontend requests by default.
 - Many new ReactJS components and styles to render the `[ptc_asana_project]` shortcode.
+- Helpful links to the Settings screen to quickly access Asana, Completionist's documentation, Completionist's changelog, and where to send feedback.
 
 #### Fixed
 
 - Duplicate display of a user listed in the plugin settings screen when their connected Asana account email does not match their WordPress user account email.
 - Repeated authentication to the Asana API when using the currently logged-in user's identity. This fix improves performance and reduces API calls for connected Asana users in wp-admin.
+
+#### Removed
+
+- User task list links from the "site collaborators" list on the Settings screen. The Asana API returns a `Forbidden` error when trying to get the user task list link for other users, defeating the purpose of this feature and causing useless API requests.
 
 ### 3.3.0 - 2022-10-15
 
