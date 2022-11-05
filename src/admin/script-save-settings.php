@@ -63,20 +63,63 @@ if (
 	&& wp_verify_nonce( $_POST['asana_disconnect_nonce'], 'disconnect_asana' ) !== false
 ) {
 
-	$did_delete_pat = Options::delete( Options::ASANA_PAT );
-	$did_delete_gid = Options::delete( Options::ASANA_USER_GID );
+	$user_id = (int) get_current_user_id();
 
-	if (
-		$did_delete_pat === true
-		&& $did_delete_gid === true
-	) {
+	$did_delete_pat = Options::delete( Options::ASANA_PAT, $user_id );
+	$did_delete_gid = Options::delete( Options::ASANA_USER_GID, $user_id );
+
+	if ( $did_delete_pat || $did_delete_gid ) {
+
 		echo '<p class="notice notice-success">Your Asana account was successfully forgotten!</p>';
-	} elseif ( $did_delete_pat === true ) {
-		echo '<p class="notice notice-success">Your Asana account was successfully disconnected.</p>';
+
+		$frontend_auth_user_id = (int) Options::get( Options::FRONTEND_AUTH_USER_ID );
+		if ( $user_id === $frontend_auth_user_id ) {
+			/*
+			 * If the frontend auth user is deauthorizing Asana API acces,
+			 * then all cache data should be purged to ensure privacy.
+			 */
+			Options::delete( Options::FRONTEND_AUTH_USER_ID );
+			Request_Tokens::purge_all();
+			echo '<p class="notice notice-warning">You were the default frontend authentication user, so all cached Asana data has been purged. Completionist shortcodes will not work until a new frontend authentication user is saved!</p>';
+		}
 	} else {
 		echo '<p class="notice notice-error">Your Asana account could not be disconnected.</p>';
 	}
 }//end if asana_disconnect
+
+if (
+	isset( $_POST['asana_frontend_user_save'] )
+	&& ! empty( $_POST['wp_user_id'] )
+	&& isset( $_POST['asana_frontend_user_save_nonce'] )
+	&& wp_verify_nonce( $_POST['asana_frontend_user_save_nonce'], 'asana_frontend_user_save' ) !== false
+	&& current_user_can( 'manage_options' )
+) {
+
+	$submitted_wp_user_id = (int) Options::sanitize( Options::FRONTEND_AUTH_USER_ID, $_POST['wp_user_id'] );
+
+	// Save the frontend authentication user ID.
+	Options::save(
+		Options::FRONTEND_AUTH_USER_ID,
+		(string) $submitted_wp_user_id,
+		true
+	);
+
+	// Get the saved and validated user ID.
+	$retrieved_wp_user_id = (int) Options::get( Options::FRONTEND_AUTH_USER_ID );
+
+	/*
+	 * Purge request caches since data visibility
+	 * could've changed within Asana for different user.
+	 */
+	Request_Tokens::purge_all();
+
+	// Confirm that it was saved successfully.
+	if ( $retrieved_wp_user_id === $submitted_wp_user_id ) {
+		echo '<p class="notice notice-success">The frontend authentication user was successfully saved!</p>';
+	} else {
+		echo '<p class="notice notice-error">Failed to save the frontend authentication user.</p>';
+	}
+}//end if asana_frontend_user_save
 
 try {
 	if (

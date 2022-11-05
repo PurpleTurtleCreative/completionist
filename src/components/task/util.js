@@ -12,6 +12,10 @@ export function isCriticalTask(task) {
 	return ( ( Date.parse(task.due_on) - Date.now() ) < limit );
 }
 
+export function countIncompleteTasks(tasks) {
+	return filterIncompleteTasks(tasks).length;
+}
+
 export function filterIncompleteTasks(tasks) {
 	return tasks.filter(t => !t.completed);
 }

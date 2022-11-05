@@ -33,6 +33,21 @@ try {
 		</div>
 		<h2>You're connected, <?php echo esc_html( $me->name ); ?>!</h2>
 		<p>Your Asana account is successfully connected. Completionist is able to help you get stuff done on <?php echo esc_html( get_bloginfo( 'name', 'display' ) ); ?> as long as you are a member of this site's assigned workspace.</p>
+		<h3>Helpful Links</h3>
+		<div class="ptc-button-group">
+			<a class="ptc-asana-button" href="https://app.asana.com/" target="_asana">
+				<img src="<?php echo esc_url( PLUGIN_URL . '/assets/images/asana_logo-horizontal-color.png' ); ?>" alt="Asana" title="Open Asana">
+			</a>
+			<a class="ptc-icon-button" href="https://docs.purpleturtlecreative.com/completionist/" target="_blank">
+				<i class="fas fa-book"></i>
+				Documentation
+			</a>
+			<a class="ptc-icon-button" href="https://purpleturtlecreative.com/completionist/plugin-info/#changelog" target="_blank">
+				<i class="fas fa-file-code"></i>
+				Changelog
+			</a>
+		</div>
+		<p>Please send feedback to <a href="mailto:michelle@purpleturtlecreative.com" target="_blank">michelle@purpleturtlecreative.com</a></p>
 	</section><!--close section#ptc-asana-user-->
 
 	<section id="ptc-asana-workspace">
@@ -128,8 +143,13 @@ try {
 						<p class="nothing-to-see">No collaborators were found by email.</p>
 						<?php
 					} else {
+						$displayed_user_ids = [];
 						foreach ( $workspace_users as $user ) {
-							display_collaborator_row( $user );
+							// Ensure users are only displayed once.
+							if ( ! in_array( $user->ID, $displayed_user_ids, true ) ) {
+								$displayed_user_ids[] = $user->ID;
+								display_collaborator_row( $user );
+							}
 						}
 					}//end if empty collaborators
 				}//end list recognized collaborators
@@ -154,13 +174,54 @@ try {
 		?>
 	</section><!--close section#ptc-asana-workspace-->
 
+	<?php
+	if (
+		current_user_can( 'manage_options' ) &&
+		! empty( $connected_workspace_users )
+	) :
+	?>
+	<section id="ptc-frontend-auth-user">
+		<label for="asana-frontend-user">Frontend Authentication User</label>
+		<form method="POST">
+			<div class="field-group">
+				<select id="asana-frontend-user" name="wp_user_id" required>
+					<option value="">Choose a user...</option>
+					<?php
+					$frontend_auth_user_id = Options::get( Options::FRONTEND_AUTH_USER_ID );
+					foreach ( $connected_workspace_users as $gid => $wp_user ) {
+						printf(
+							'<option value="%1$s"%3$s>%2$s</option>',
+							esc_attr( $wp_user->ID ),
+							esc_html( $wp_user->display_name . ' (' . $wp_user->user_email . ')' ),
+							( $frontend_auth_user_id === $wp_user->ID ) ? ' selected' : ''
+						);
+					}
+					?>
+				</select>
+				<input type="hidden" name="asana_frontend_user_save_nonce" value="<?php echo esc_attr( wp_create_nonce( 'asana_frontend_user_save' ) ); ?>">
+				<input type="submit" name="asana_frontend_user_save" value="Save">
+			</div>
+		</form>
+		<div class="help-notes">
+			<div class="note-box note-box-info">
+				<i class="fas fa-question"></i>
+				<p>This WordPress user's Asana connection will be used to render <a href="https://docs.purpleturtlecreative.com/completionist/shortcodes/" target="_blank">shortcodes</a> on your website.</p>
+			</div>
+			<div class="note-box note-box-warning">
+				<i class="fas fa-lightbulb"></i>
+				<p>The user should have access to all tasks and projects in Asana that you wish to display on your website, so it's best to set this to someone such as your project manager. <a href="https://docs.purpleturtlecreative.com/completionist/getting-started/#set-a-frontend-authentication-user" target="_blank">Learn more.</a></p>
+			</div>
+		</div>
+	</section>
+	<?php endif; ?>
+
 	<section id="ptc-disconnect-asana">
 		<form method="POST">
 			<div class="field-group">
 				<input type="hidden" name="asana_disconnect_nonce" value="<?php echo esc_attr( wp_create_nonce( 'disconnect_asana' ) ); ?>">
 				<div class="note-box note-box-error">
 					<p class="disconnect-notice">
-						<input class="error" type="submit" name="asana_disconnect" value="Deauthorize">
+						<input class="error" type="submit" name="asana_disconnect" value="Disconnect">
 						This will remove your encrypted Personal Access Token and Asana user id from this site, thus deauthorizing access to your Asana account. Until connecting your Asana account again, you will not have access to use Completionist's features.
 					</p>
 				</div>
@@ -245,7 +306,6 @@ function display_collaborator_row( \WP_User $user ) {
 	$roles_csv = implode( ',', $user->roles );
 	$email = $user->user_email;
 	$has_connected_asana = Asana_Interface::has_connected_asana( $user->ID );
-	$asana_user_link = Asana_Interface::get_task_list_external_link( $user->ID );
 	?>
 	<div class="ptc-asana-collaborator-row" data-user-id="<?php echo esc_attr( $user->ID ); ?>">
 
@@ -268,10 +328,6 @@ function display_collaborator_row( \WP_User $user ) {
 					echo '<i class="fas fa-check-circle"></i>Connected Asana';
 				} else {
 					echo '<i class="fas fa-times-circle"></i>Not Connected';
-				}
-
-				if ( ! empty( $asana_user_link ) ) {
-					echo '<a class="ptc-button" href="' . esc_url( $asana_user_link ) . '" target="_asana">View in Asana<i class="fas fa-external-link-alt"></i></a>';
 				}
 				?>
 			</p>

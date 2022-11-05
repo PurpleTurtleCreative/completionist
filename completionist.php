@@ -10,10 +10,10 @@
  * Plugin Name:       Completionist - Asana for WordPress
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
  * Description:       Manage, pin, and automate Asana tasks in relevant areas of your WordPress admin.
- * Version:           3.3.0
+ * Version:           3.4.0
  * Requires PHP:      7.1
  * Requires at least: 5.0.0
- * Tested up to:      6.0.2
+ * Tested up to:      6.1.0
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
  * License:           GPL v3 or later
@@ -81,6 +81,15 @@ define( __NAMESPACE__ . '\PLUGIN_SLUG', dirname( PLUGIN_BASENAME ) );
  */
 define( __NAMESPACE__ . '\PLUGIN_URL', plugins_url( '', __FILE__ ) );
 
+/**
+ * The namespace for all v1 REST API routes registered by this plugin.
+ *
+ * @since 3.4.0
+ *
+ * @var string REST_API_NAMESPACE_V1
+ */
+define( __NAMESPACE__ . '\REST_API_NAMESPACE_V1', PLUGIN_SLUG . '/v1' );
+
 /* REGISTER PLUGIN FUNCTIONS ---------------------- */
 
 /* Activation Hook */
@@ -123,7 +132,16 @@ add_action(
 	}
 );
 
-/* Register Admin Functionality */
+// Register public functionality.
+foreach ( glob( PLUGIN_PATH . 'src/public/class-*.php' ) as $file ) {
+	require_once $file;
+}
+
+Request_Tokens::register();
+REST_Server::register();
+Shortcodes::register();
+
+// Register admin functionality.
 if ( is_admin() ) {
 
 	foreach ( glob( PLUGIN_PATH . 'src/admin/class-*.php' ) as $file ) {

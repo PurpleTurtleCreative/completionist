@@ -1,0 +1,96 @@
+@import '../../abstracts/colors';
+@import '../../abstracts/badges';
+
+//----------------------
+
+.ptc-ProjectStatus {
+	margin: 2rem auto;
+	padding: 20px;
+	border: 2px solid color(grey-lighter);
+	border-radius: 1rem;
+	overflow: hidden;
+
+	.header-meta {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		flex-wrap: wrap;
+		gap: 10px;
+
+		p {
+			margin: 0;
+		}
+	}
+
+	.status-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		@extend %metadata-badge;
+
+		&::before {
+			content: "";
+			display: block;
+			width: 0.7em;
+			min-width: 0.7em;
+			height: 0.7em;
+			margin: 0 0.5em 0 0;
+			border-radius: 50%;
+			background: color(grey);
+		}
+
+		svg {
+			width: 1em;
+			min-width: 1em;
+			height: 1em;
+			margin: 0 0.7em 0 -0.2em;
+			fill: currentColor;
+		}
+
+		&.--is-complete {
+			background: color(asana-status-green);
+			border-color: color(asana-status-green);
+			color: color(white);
+
+			&::before {
+				display: none;
+			}
+		}
+		&.--is-green {
+			border-color: color(asana-status-green);
+
+			&::before {
+				background: color(asana-status-green);
+			}
+		}
+		&.--is-yellow {
+			border-color: color(asana-status-yellow);
+
+			&::before {
+				background: color(asana-status-yellow);
+			}
+		}
+		&.--is-red {
+			border-color: color(asana-status-red);
+
+			&::before {
+				background: color(asana-status-red);
+			}
+		}
+		&.--is-blue {
+			border-color: color(asana-status-blue);
+
+			&::before {
+				background: color(asana-status-blue);
+			}
+		}
+	}
+
+	.title {
+		margin: 20px 0;
+	}
+
+	.created {
+		@extend %metadata-badge;
+	}
+}//.ptc-ProjectStatus

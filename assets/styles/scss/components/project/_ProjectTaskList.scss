@@ -1,0 +1,29 @@
+@import '../../abstracts/colors';
+@import '../../abstracts/animated';
+
+//----------------------
+
+.ptc-ProjectTaskList {
+
+	.ptc-loader {
+		padding: 1em 2em;
+		border: 2px dashed color(grey-light);
+		background: color(white);
+		color: color(grey-dark);
+
+		@include loader;
+	}
+
+	.ptc-error {
+		padding: 1em 2em;
+		text-align: center;
+		border: 2px solid color(danger-light);
+		background: color(danger-lightest);
+		color: #b20000;
+	}
+
+	.sections-of-tasks {
+		margin: 2rem auto 3rem;
+		overflow: hidden;
+	}
+}//.ptc-ProjectTaskList

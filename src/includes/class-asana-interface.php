@@ -82,12 +82,25 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 */
 		public static function get_client( $user_id_or_gid = 0 ) : \Asana\Client {
 
+			/*
+			 * @TODO - This needs to NEVER interpret the user's ID.
+			 * Allowing a default value here can confuse frontend requests
+			 * where the user ID (anonymous user) is ACTUALLY 0.
+			 *
+			 * Authentication should NEVER be left to interpretation.
+			 * Always be explicit when loading the current Asana client.
+			 */
+
 			if ( is_string( $user_id_or_gid ) ) {
 				$user_id = self::get_user_id_by_gid( $user_id_or_gid );
 			} elseif ( is_int( $user_id_or_gid ) ) {
 				$user_id = $user_id_or_gid;
 			} else {
 				throw new \Exception( 'Failed to get Asana client for invalid user identifier. Must be string for Asana PAT or integer for WordPress User ID.', 400 );
+			}
+
+			if ( 0 === $user_id ) {
+				$user_id = get_current_user_id();
 			}
 
 			if (
@@ -143,6 +156,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 * or requests could fail due to request limits or server issues.
 		 */
 		private static function maybe_load_client( int $user_id = 0 ) : \Asana\Client {
+
+			// error_log( "Maybe loading client for user ID: {$user_id}" );
+			// error_log( 'Currently loaded client is for user ID: ' . self::$wp_user_id );
 
 			if ( 0 === $user_id ) {
 				$user_id = get_current_user_id();
@@ -549,6 +565,346 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
 			return '';
 		}
+
+		/**
+		 * Parses project view information from an Asana project link.
+		 *
+		 * @since 3.4.0
+		 *
+		 * @param string $project_link An Asana project URL.
+		 * @return array The parsed project GID and layout, if possible.
+		 */
+		public static function parse_project_link( string $project_link ) : array {
+
+			$parsed_project_data = array();
+
+			$project_link = esc_url_raw( $project_link );
+
+			if ( preg_match( '/\/([0-9]+)\/([a-z]+)$/', $project_link, $matches ) ) {
+				/*
+				 * Copied project URL from web browser address bar.
+				 * ex. https://app.asana.com/0/1234567890/list
+				 */
+				if ( ! empty( $matches[1] ) ) {
+					$parsed_project_data['gid'] = Options::sanitize( 'gid', $matches[1] );
+				}
+				if ( ! empty( $matches[2] ) && 'overview' !== $matches[2] ) {
+					$parsed_project_data['layout'] = $matches[2];
+				}
+			} elseif ( preg_match( '/\/([0-9]+)$/', $project_link, $matches ) ) {
+				/*
+				 * Copied project URL from project details dropdown in Asana.
+				 * ex. https://app.asana.com/0/1234567890/1234567890
+				 */
+				if ( ! empty( $matches[1] ) ) {
+					$parsed_project_data['gid'] = Options::sanitize( 'gid', $matches[1] );
+				}
+			}
+
+			return $parsed_project_data;
+		}
+
+		/**
+		 * Gets status, sections, tasks, and metadata for a given project.
+		 *
+		 * @since 3.4.0
+		 *
+		 * @param string $project_gid The Asana project GID.
+		 * @param array  $args Optional. Arguments to modify the request and
+		 * resulting response data. Default empty to return all data.
+		 * @return \stdClass The Asana project data.
+		 */
+		public static function get_project_data(
+			string $project_gid,
+			array $args = array()
+		) : \stdClass {
+
+			$args = wp_parse_args(
+				array_map( 'rest_sanitize_boolean', $args ),
+				array(
+					'show_gids'              => true,
+					'show_name'              => true,
+					'show_description'       => true,
+					'show_status'            => true,
+					'show_modified'          => true,
+					'show_due'               => true,
+					'show_tasks_description' => true,
+					'show_tasks_assignee'    => true,
+					'show_tasks_subtasks'    => true,
+					'show_tasks_completed'   => true,
+					'show_tasks_due'         => true,
+				)
+			);
+
+			$project_gid = Options::sanitize( 'gid', $project_gid );
+			if ( '' == $project_gid ) {
+				return new \stdClass();
+			}
+
+			if ( ! isset( self::$asana ) ) {
+				$asana = self::get_client();
+			} else {
+				$asana = self::$asana;
+			}
+
+			// Get project data.
+
+			$project_fields = 'sections,this.sections.name';
+
+			if ( $args['show_name'] ) {
+				$project_fields .= ',name';
+			}
+			if ( $args['show_description'] ) {
+				$project_fields .= ',html_notes';
+			}
+			if ( $args['show_status'] ) {
+				$project_fields .= ',completed,completed_at,current_status,this.current_status.created_at,this.current_status.html_text,this.current_status.title,this.current_status.color';
+			}
+			if ( $args['show_modified'] ) {
+				$project_fields .= ',modified_at';
+			}
+			if ( $args['show_due'] ) {
+				$project_fields .= ',due_on';
+			}
+
+			$project = $asana->projects->getProject(
+				$project_gid,
+				array(),
+				array(
+					'fields' => $project_fields,
+				)
+			);
+
+			// Prepare project data.
+
+			if ( isset( $project->html_notes ) ) {
+				$project->html_notes = wpautop( wp_kses_post( $project->html_notes ) );
+			}
+
+			if ( isset( $project->current_status->html_text ) ) {
+				$project->current_status->html_text = wpautop( wp_kses_post( $project->current_status->html_text ) );
+			}
+
+			if ( isset( $project->current_status->color ) ) {
+				// Add status color labels, as seen in Asana's UI.
+				switch ( $project->current_status->color ) {
+					case 'green':
+						$project->current_status->color_label = 'On track';
+						break;
+					case 'yellow':
+						$project->current_status->color_label = 'At risk';
+						break;
+					case 'red':
+						$project->current_status->color_label = 'Off track';
+						break;
+					case 'blue':
+						$project->current_status->color_label = 'On hold';
+						break;
+					case 'complete':
+						$project->current_status->color_label = 'Complete';
+						break;
+				}
+			}
+
+			// Map section GIDs to section indices.
+
+			$sections_map = array();
+
+			/**
+			 * Filters the project section names to be erased when retrieving
+			 * Asana project data.
+			 *
+			 * Note that this only erases the section's name rather than
+			 * remove the entire project section's data.
+			 *
+			 * @since 3.4.0
+			 *
+			 * @param string[] $names Project section names to erase.
+			 * @param string   $project_gid The Asana project being processed.
+			 * @param array    $args The request arguments.
+			 */
+			$erase_section_names = apply_filters(
+				'ptc_completionist_project_section_names_to_erase',
+				array(
+					'(no section)',
+					'Untitled section',
+				),
+				$project_gid,
+				$args
+			);
+
+			foreach ( $project->sections as $i => &$section ) {
+				if ( in_array( $section->name, $erase_section_names ) ) {
+					// Remove Asana default title for a nameless section.
+					$section->name = null;
+				}
+				$sections_map[ $section->gid ] = $i;
+			}
+
+			// Get project tasks data.
+
+			/*
+			 * Note that "completed" is initially needed to determine
+			 * which tasks should be removed from the return, even if
+			 * $args['show_tasks_completed'] is false.
+			 */
+			$task_fields = 'name,completed';
+
+			if ( $args['show_tasks_description'] ) {
+				$task_fields .= ',html_notes';
+			}
+			if ( $args['show_tasks_assignee'] ) {
+				$task_fields .= ',assignee,this.assignee.name,this.assignee.photo.image_36x36';
+			}
+			if ( $args['show_tasks_due'] ) {
+				$task_fields .= ',due_on';
+			}
+
+			$tasks = $asana->tasks->getTasksForProject(
+				$project_gid,
+				array(),
+				array(
+					'fields' => "{$task_fields},memberships,this.memberships.section",
+					'limit' => 100,
+				)
+			);
+
+			$tasks = iterator_to_array( $tasks );
+
+			if ( $args['show_tasks_subtasks'] ) {
+				self::load_subtasks( $tasks, $task_fields );
+			}
+
+			// Clean data and map tasks to project sections.
+			foreach ( $tasks as &$task ) {
+				foreach ( $task->memberships as &$membership ) {
+					if ( isset( $sections_map[ $membership->section->gid ] ) ) {
+
+						if ( isset( $task->completed ) ) {
+							if ( ! $args['show_tasks_completed'] ) {
+								if ( $task->completed ) {
+									// Don't show completed tasks.
+									continue;
+								}
+								// Don't show completed status.
+								unset( $task->completed );
+							}
+						}
+
+						// Sanitize task description.
+						if ( isset( $task->html_notes ) ) {
+							$task->html_notes = wpautop( wp_kses_post( $task->html_notes ) );
+						}
+
+						// Process subtasks.
+						if ( isset( $task->subtasks ) ) {
+							foreach ( $task->subtasks as $subtasks_i => &$subtask ) {
+								if ( isset( $subtask->completed ) ) {
+									if ( ! $args['show_tasks_completed'] ) {
+										if ( $subtask->completed ) {
+											// Don't show completed tasks.
+											unset( $task->subtasks[ $subtasks_i ] );
+											continue;
+										}
+										// Don't show completed status.
+										unset( $subtask->completed );
+									}
+								}
+								// Sanitize task description.
+								if ( isset( $subtask->html_notes ) ) {
+									$subtask->html_notes = wpautop( wp_kses_post( $subtask->html_notes ) );
+								}
+							}
+							// Fix index gaps from possible removals.
+							if ( ! $args['show_tasks_completed'] ) {
+								$task->subtasks = array_values( $task->subtasks );
+							}
+						}
+
+						// Clone in case the task appears in another membership.
+						$task_clone = clone $task;
+						// Remove redundant data.
+						unset( $task_clone->memberships );
+						// Organize task into project section.
+						$project->sections[ $sections_map[ $membership->section->gid ] ]->tasks[] = $task_clone;
+					}
+				}
+			}
+
+			// Remove all GIDs if desired.
+
+			if ( ! $args['show_gids'] ) {
+				require_once PLUGIN_PATH . 'src/includes/class-util.php';
+				Util::deep_unset_prop( $project, 'gid' );
+			}
+
+			return $project;
+		}
+
+		/**
+		 * Loads subtask records onto each parent task.
+		 *
+		 * @since 3.4.0
+		 *
+		 * @param \stdClass[] $parent_tasks The tasks for which to get subtasks.
+		 * @param string $opt_fields Optional. A csv of task fields to retrieve.
+		 *
+		 * @throws \Exception Authentication may fail when first loading the client
+		 * or requests could fail due to request limits or server issues.
+		 */
+		static function load_subtasks(
+			array &$parent_tasks,
+			string $opt_fields = ''
+		) {
+
+			if ( ! isset( self::$asana ) ) {
+				$asana = self::get_client();
+			} else {
+				$asana = self::$asana;
+			}
+
+			$opt_fields = explode( ',', $opt_fields );
+
+			$actions = [];
+			$last = count( $parent_tasks ) - 1;
+			foreach ( $parent_tasks as $i => &$task ) {
+
+				if ( ! isset( $task->gid ) ) { continue; }
+
+				$task_gid = Options::sanitize( 'gid', $task->gid );
+				if ( '' == $task_gid ) { continue; }
+
+				$actions[] = [
+					'method' => 'GET',
+					'relative_path' => sprintf( '/tasks/%s/subtasks', $task_gid ),
+					'options' => [
+						'fields' => $opt_fields,
+					],
+				];
+
+				$actions_count = count( $actions );
+				if ( ( $actions_count % 9 === 0 || $i == $last ) && $actions_count > 0 ) {
+
+					$res = $asana->post( '/batch', [ 'actions' => $actions ] );
+					$actions = [];
+
+					$last_res_i = count( $res ) - 1;
+					for (
+						$parent_i = $i + 1 - $actions_count, $res_i = 0;
+						$parent_i <= $i, $res_i <= $last_res_i;
+						++$parent_i, ++$res_i
+					) {
+
+						$parent_tasks[ $parent_i ]->subtasks = [];
+
+						$current_res = $res[ $res_i ];
+						if ( 200 == $current_res->status_code && count( $current_res->body->data ) > 0 ) {
+							$parent_tasks[ $parent_i ]->subtasks = $current_res->body->data;
+						}
+					}//end foreach batch result
+				}//end if batch ready to send
+			}//end foreach parent task
+		}//end get_subtasks()
 
 		/**
 		 * Attempts to retrieve task data. Providing the post id of the provided

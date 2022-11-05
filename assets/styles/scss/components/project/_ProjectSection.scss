@@ -1,0 +1,42 @@
+@import '../../abstracts/colors';
+
+//----------------------
+
+.ptc-ProjectSection {
+
+	> :last-child {
+		margin: 0 0 2em !important;
+	}
+
+	.ptc-no-results {
+		margin: 0;
+		padding: 1em 2em;
+		text-align: center;
+		border-radius: 10px;
+		border: 2px solid color(grey-lighter);
+		background: color(white);
+		font-style: italic;
+		color: color(grey-dark);
+	}
+
+	ol.tasks {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+		border-radius: 10px;
+		border: 2px solid color(grey-lighter);
+		background: color(white);
+		overflow: hidden;
+
+		> li {
+
+			&:first-child {
+				border-top: none;
+			}
+
+			&:last-child {
+				border-bottom: none;
+			}
+		}
+	}
+}//.ptc-ProjectSection
