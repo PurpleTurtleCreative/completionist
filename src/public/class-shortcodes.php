@@ -146,13 +146,17 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			wp_enqueue_script( 'ptc-completionist-shortcode-asana-project' );
 			wp_enqueue_style( 'ptc-completionist-shortcode-asana-project' );
 
-			$request_url = esc_url_raw(
-				rest_url( REST_API_NAMESPACE_V1 . "/projects?token={$token}&post_id={$post_id}" )
+			$request_url = add_query_arg(
+				array(
+					'token' => $token,
+					'post_id' => $post_id,
+				),
+				rest_url( REST_API_NAMESPACE_V1 . '/projects' )
 			);
 
 			return sprintf(
 				'<div class="ptc-shortcode ptc-asana-project" data-src="%1$s" data-layout="%2$s"></div>',
-				esc_attr( $request_url ),
+				esc_url_raw( $request_url ),
 				esc_attr( $parsed_asana_project['layout'] ?? 'list' )
 			);
 		}
