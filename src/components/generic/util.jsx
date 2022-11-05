@@ -1,13 +1,13 @@
 /**
  * Generic utility functions unrelated to application state or global data.
  *
- * @since [unreleased]
+ * @since 3.4.0
  */
 
 /**
  * Gets the current user's locale representation for a temporal string.
  *
- * @since [unreleased]
+ * @since 3.4.0
  *
  * @param string dateTimeString A temporal data string in a format that is
  * compatible with JavaScript's built-in Date class's constructor.
