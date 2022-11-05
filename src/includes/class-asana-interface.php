@@ -707,9 +707,34 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			}
 
 			// Map section GIDs to section indices.
+
 			$sections_map = array();
+
+			/**
+			 * Filters the project section names to be erased when retrieving
+			 * Asana project data.
+			 *
+			 * Note that this only erases the section's name rather than
+			 * remove the entire project section's data.
+			 *
+			 * @since 3.4.0
+			 *
+			 * @param string[] $names Project section names to erase.
+			 * @param string   $project_gid The Asana project being processed.
+			 * @param array    $args The request arguments.
+			 */
+			$erase_section_names = apply_filters(
+				'ptc_completionist_project_section_names_to_erase',
+				array(
+					'(no section)',
+					'Untitled section',
+				),
+				$project_gid,
+				$args
+			);
+
 			foreach ( $project->sections as $i => &$section ) {
-				if ( '(no section)' === $section->name ) {
+				if ( in_array( $section->name, $erase_section_names ) ) {
 					// Remove Asana default title for a nameless section.
 					$section->name = null;
 				}
