@@ -1,3 +1,9 @@
+/**
+ * ProjectTaskList component
+ *
+ * @since 3.4.0
+ */
+
 import ProjectDetails from './ProjectDetails.jsx';
 import ProjectSection from './ProjectSection.jsx';
 

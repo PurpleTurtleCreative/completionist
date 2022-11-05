@@ -1,3 +1,9 @@
+/**
+ * TaskListItem component
+ *
+ * @since 3.4.0
+ */
+
 import { countIncompleteTasks } from './util';
 
 import { getLocaleString } from '../generic/util.jsx';

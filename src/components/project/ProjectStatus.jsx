@@ -1,3 +1,9 @@
+/**
+ * ProjectStatus component
+ *
+ * @since 3.4.0
+ */
+
 import { getLocaleString } from '../generic/util.jsx';
 
 import { ReactComponent as CheckmarkIcon } from '/assets/icons/fa-check-solid.svg';

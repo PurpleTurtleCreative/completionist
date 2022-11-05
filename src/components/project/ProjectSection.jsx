@@ -1,3 +1,9 @@
+/**
+ * ProjectSection component
+ *
+ * @since 3.4.0
+ */
+
 import TaskListItem from '../task/TaskListItem.jsx';
 
 import '/assets/styles/scss/components/project/_ProjectSection.scss';

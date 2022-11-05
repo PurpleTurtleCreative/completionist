@@ -1,3 +1,9 @@
+/**
+ * ProjectDetails component
+ *
+ * @since 3.4.0
+ */
+
 import ProjectStatus from './ProjectStatus.jsx';
 
 import { getLocaleString } from '../generic/util.jsx';
