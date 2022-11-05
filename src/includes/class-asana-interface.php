@@ -569,7 +569,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		/**
 		 * Parses project view information from an Asana project link.
 		 *
-		 * @since [unreleased]
+		 * @since 3.4.0
 		 *
 		 * @param string $project_link An Asana project URL.
 		 * @return array The parsed project GID and layout, if possible.
@@ -607,7 +607,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		/**
 		 * Gets status, sections, tasks, and metadata for a given project.
 		 *
-		 * @since [unreleased]
+		 * @since 3.4.0
 		 *
 		 * @param string $project_gid The Asana project GID.
 		 * @param array  $args Optional. Arguments to modify the request and
@@ -819,7 +819,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		/**
 		 * Loads subtask records onto each parent task.
 		 *
-		 * @since [unreleased]
+		 * @since 3.4.0
 		 *
 		 * @param \stdClass[] $parent_tasks The tasks for which to get subtasks.
 		 * @param string $opt_fields Optional. A csv of task fields to retrieve.

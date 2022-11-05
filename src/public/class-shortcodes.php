@@ -2,7 +2,7 @@
 /**
  * Shortcodes class
  *
- * @since [unreleased]
+ * @since 3.4.0
  */
 
 declare(strict_types=1);
@@ -18,14 +18,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 	/**
 	 * Class to register shortcodes and associated assets.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 */
 	class Shortcodes {
 
 		/**
 		 * Hooks functionality into the WordPress execution flow.
 		 *
-		 * @since [unreleased]
+		 * @since 3.4.0
 		 */
 		public static function register() {
 			add_action( 'init', array( __CLASS__, 'add_shortcodes' ) );
@@ -35,7 +35,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		/**
 		 * Adds shortcode definitions.
 		 *
-		 * @since [unreleased]
+		 * @since 3.4.0
 		 */
 		public static function add_shortcodes() {
 			add_shortcode(
@@ -47,7 +47,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		/**
 		 * Registers frontend assets for enqueue.
 		 *
-		 * @since [unreleased]
+		 * @since 3.4.0
 		 */
 		public static function register_assets() {
 
@@ -74,7 +74,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		 * Gets the Asana project template and enqueues the related frontend
 		 * assets.
 		 *
-		 * @since [unreleased]
+		 * @since 3.4.0
 		 *
 		 * @see \add_shortcode()
 		 *

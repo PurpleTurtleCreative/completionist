@@ -2,7 +2,7 @@
 /**
  * Util class
  *
- * @since [unreleased]
+ * @since 3.4.0
  */
 
 declare(strict_types=1);
@@ -20,7 +20,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Util' ) ) {
 		/**
 		 * Unsets object properties and array keys with the given name.
 		 *
-		 * @since [unreleased]
+		 * @since 3.4.0
 		 *
 		 * @param object|array $data An iterable object or array to modify.
 		 * @param string       $prop The name of the property to remove.

@@ -2,7 +2,7 @@
 /**
  * Request_Tokens class
  *
- * @since [unreleased]
+ * @since 3.4.0
  */
 
 namespace PTC_Completionist;
@@ -20,14 +20,14 @@ require_once PLUGIN_PATH . 'src/includes/class-options.php';
  * access data or perform actions that have not been explicitly published.
  * Request tokens also maintain a cache of the respective response data.
  *
- * @since [unreleased]
+ * @since 3.4.0
  */
 class Request_Tokens {
 
 	/**
 	 * The post ID of which the request token applies.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 *
 	 * @var int $post_id
 	 */
@@ -40,7 +40,7 @@ class Request_Tokens {
 	/**
 	 * Hooks functionality into the WordPress execution flow.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 */
 	public static function register() {
 		add_action( 'edit_post', array( __CLASS__, 'purge_for_post' ), 10, 1 );
@@ -49,7 +49,7 @@ class Request_Tokens {
 	/**
 	 * Deletes all request token data for a given post.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 *
 	 * @param int $post_id The post to purge all request tokens.
 	 */
@@ -61,7 +61,7 @@ class Request_Tokens {
 	/**
 	 * Deletes all request token data.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 */
 	public static function purge_all() {
 		Options::delete( Options::REQUEST_TOKENS, -1 );
@@ -74,7 +74,7 @@ class Request_Tokens {
 	/**
 	 * Instantiates a request token management context for the given post.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 *
 	 * @param int $post_id The post for request token management.
 	 */
@@ -86,7 +86,7 @@ class Request_Tokens {
 	 * Saves a new request token for the given arguments if it does
 	 * not already exist.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 *
 	 * @param array $request_args The arguments that the request
 	 * token represents.
@@ -129,7 +129,7 @@ class Request_Tokens {
 	/**
 	 * Gets the request arguments for the given request token.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 *
 	 * @param string $request_token The request token to retrieve.
 	 * @return array The request arguments. Default empty if invalid.
@@ -141,7 +141,7 @@ class Request_Tokens {
 	/**
 	 * Gets the cached response, if available.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 *
 	 * @param string $request_token The request token to retrieve.
 	 * @param mixed  $default The default value to return if the cache entry
@@ -173,7 +173,7 @@ class Request_Tokens {
 	 *
 	 * Note that the request token must already exist.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 *
 	 * @param string $request_token The request token.
 	 * @param mixed  $response The response data to cache.
@@ -209,7 +209,7 @@ class Request_Tokens {
 	/**
 	 * Deletes all request tokens for the current post context.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 */
 	public function purge() {
 		Options::delete( Options::REQUEST_TOKENS, $this->post_id );
@@ -218,7 +218,7 @@ class Request_Tokens {
 	/**
 	 * Checks if the request token exists for the current post context.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 *
 	 * @return bool True if the request token exists.
 	 */
@@ -233,7 +233,7 @@ class Request_Tokens {
 	/**
 	 * Gets all request token data for the current post context.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 *
 	 * @return array The request token data. Empty if none.
 	 */
@@ -247,7 +247,7 @@ class Request_Tokens {
 	 * Note this should always return the same token string for the
 	 * same arguments (irrespective of sort order). It is a pure function.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 *
 	 * @param array $request_args The request arguments to represent.
 	 * @return string A token representing the provided arguments.
@@ -260,7 +260,7 @@ class Request_Tokens {
 	/**
 	 * Gets the cache entry TTL in seconds.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 *
 	 * @return int The cache TTL in seconds.
 	 */
@@ -268,7 +268,7 @@ class Request_Tokens {
 		/**
 		 * Filters the duration of Asana response cache entries.
 		 *
-		 * @since [unreleased]
+		 * @since 3.4.0
 		 *
 		 * @param int $ttl Duration in seconds. Default 900 (15 minutes).
 		 */

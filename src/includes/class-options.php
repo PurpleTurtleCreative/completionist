@@ -75,7 +75,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		 * The option key name for the WordPress user's ID that will be used
 		 * to authenticate Asana requests on the frontend.
 		 *
-		 * @since [unreleased]
+		 * @since 3.4.0
 		 *
 		 * @var string FRONTEND_AUTH_USER_ID
 		 */
@@ -86,7 +86,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		 *
 		 * @see Request_Tokens
 		 *
-		 * @since [unreleased]
+		 * @since 3.4.0
 		 *
 		 * @var string REQUEST_TOKENS
 		 */

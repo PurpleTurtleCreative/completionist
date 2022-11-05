@@ -2,7 +2,7 @@
 /**
  * REST API: Projects class
  *
- * @since [unreleased]
+ * @since 3.4.0
  */
 
 namespace PTC_Completionist\REST_API;
@@ -25,14 +25,14 @@ require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
 /**
  * Class to register and handle custom REST API endpoints for Asana projects.
  *
- * @since [unreleased]
+ * @since 3.4.0
  */
 class Projects {
 
 	/**
 	 * Registers the custom REST API endpoints.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 */
 	public static function register_routes() {
 		register_rest_route(
@@ -65,7 +65,7 @@ class Projects {
 	/**
 	 * Handles a GET request to retrieve Asana project data.
 	 *
-	 * @since [unreleased]
+	 * @since 3.4.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *

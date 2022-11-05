@@ -84,7 +84,7 @@ define( __NAMESPACE__ . '\PLUGIN_URL', plugins_url( '', __FILE__ ) );
 /**
  * The namespace for all v1 REST API routes registered by this plugin.
  *
- * @since [unreleased]
+ * @since 3.4.0
  *
  * @var string REST_API_NAMESPACE_V1
  */
