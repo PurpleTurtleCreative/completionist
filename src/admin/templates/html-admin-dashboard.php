@@ -174,7 +174,12 @@ try {
 		?>
 	</section><!--close section#ptc-asana-workspace-->
 
-	<?php if ( current_user_can( 'manage_options' ) ) : ?>
+	<?php
+	if (
+		current_user_can( 'manage_options' ) &&
+		! empty( $connected_workspace_users )
+	) :
+	?>
 	<section id="ptc-frontend-auth-user">
 		<label for="asana-frontend-user">Frontend Authentication User</label>
 		<form method="POST">
