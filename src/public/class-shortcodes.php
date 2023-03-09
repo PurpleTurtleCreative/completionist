@@ -54,11 +54,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			// Asana project assets.
 
 			$asset_file = require_once( PLUGIN_PATH . 'build/index_ShortcodeAsanaProject.jsx.asset.php' );
+			$dependencies = apply_filters(
+				'ptc_completionist_shortcode_asana_project_script_deps',
+				$asset_file['dependencies']
+			);
 			wp_register_script(
 				'ptc-completionist-shortcode-asana-project',
 				PLUGIN_URL . '/build/index_ShortcodeAsanaProject.jsx.js',
-				$asset_file['dependencies'],
-				PLUGIN_VERSION,
+				$dependencies,
+				$asset_file['version'],
 				true
 			);
 
