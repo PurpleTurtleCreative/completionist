@@ -3,7 +3,7 @@ import TaskList from './task/TaskList.jsx';
 
 import { TaskContext } from './task/TaskContext.jsx';
 
-import '/assets/styles/scss/components/_BlockEditorPanelTasks.scss';
+import '../../assets/styles/scss/components/_BlockEditorPanelTasks.scss';
 
 const { useContext } = wp.element;
 

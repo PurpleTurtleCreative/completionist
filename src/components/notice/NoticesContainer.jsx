@@ -1,6 +1,6 @@
 import { NoticeContext } from './NoticeContext.jsx';
 
-import '/assets/styles/scss/components/notice/_NoticesContainer.scss';
+import '../../../assets/styles/scss/components/notice/_NoticesContainer.scss';
 
 const { useContext } = wp.element;
 

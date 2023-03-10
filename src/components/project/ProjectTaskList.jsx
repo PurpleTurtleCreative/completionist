@@ -7,7 +7,7 @@
 import ProjectDetails from './ProjectDetails.jsx';
 import ProjectSection from './ProjectSection.jsx';
 
-import '/assets/styles/scss/components/project/_ProjectTaskList.scss';
+import '../../../assets/styles/scss/components/project/_ProjectTaskList.scss';
 
 const { useEffect, useState } = wp.element;
 

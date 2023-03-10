@@ -8,11 +8,11 @@ import { countIncompleteTasks } from './util';
 
 import { getLocaleString } from '../generic/util.jsx';
 
-import { ReactComponent as CheckmarkIcon } from '/assets/icons/fa-check-solid.svg';
-import { ReactComponent as SubtasksIcon } from '/assets/icons/fa-code-branch-solid.svg';
-import { ReactComponent as ToggleIcon } from '/assets/icons/fa-caret-right-solid.svg';
+import { ReactComponent as CheckmarkIcon } from '../../../assets/icons/fa-check-solid.svg';
+import { ReactComponent as SubtasksIcon } from '../../../assets/icons/fa-code-branch-solid.svg';
+import { ReactComponent as ToggleIcon } from '../../../assets/icons/fa-caret-right-solid.svg';
 
-import '/assets/styles/scss/components/task/_TaskListItem.scss';
+import '../../../assets/styles/scss/components/task/_TaskListItem.scss';
 
 const { useState } = wp.element;
 
