@@ -6,9 +6,9 @@
 
 import { getLocaleString } from '../generic/util.jsx';
 
-import { ReactComponent as CheckmarkIcon } from '/assets/icons/fa-check-solid.svg';
+import { ReactComponent as CheckmarkIcon } from '../../../assets/icons/fa-check-solid.svg';
 
-import '/assets/styles/scss/components/project/_ProjectStatus.scss';
+import '../../../assets/styles/scss/components/project/_ProjectStatus.scss';
 
 export default function ProjectStatus({
 	color,

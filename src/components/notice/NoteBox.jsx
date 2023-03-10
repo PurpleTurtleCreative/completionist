@@ -1,4 +1,4 @@
-import '/assets/styles/scss/components/notice/_NoteBox.scss';
+import '../../../assets/styles/scss/components/notice/_NoteBox.scss';
 
 export default function NoteBox({type, message, code}) {
 

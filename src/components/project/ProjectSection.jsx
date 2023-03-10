@@ -6,7 +6,7 @@
 
 import TaskListItem from '../task/TaskListItem.jsx';
 
-import '/assets/styles/scss/components/project/_ProjectSection.scss';
+import '../../../assets/styles/scss/components/project/_ProjectSection.scss';
 
 export default function ProjectSection({ name, tasks }) {
 

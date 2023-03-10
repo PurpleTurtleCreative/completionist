@@ -3,7 +3,7 @@ import TaskActions from './TaskActions.jsx';
 import { TaskContext } from './TaskContext.jsx';
 import { isCriticalTask, getAssigneeDisplayName } from './util';
 
-import '/assets/styles/scss/components/task/_TaskRow.scss';
+import '../../../assets/styles/scss/components/task/_TaskRow.scss';
 
 const { useState, useCallback, useContext } = wp.element;
 
