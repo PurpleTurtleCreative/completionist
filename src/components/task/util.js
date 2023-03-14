@@ -89,7 +89,7 @@ export function getTaskCompleted(task) {
 	let completed = null;
 	let label = null;
 
-	if ( 'completed' in task ) {
+	if ( task && 'completed' in task ) {
 
 		label = 'Incomplete';
 
@@ -106,7 +106,7 @@ export function getTaskCompleted(task) {
 export function getTaskName(task) {
 
 	let name = null;
-	if ( 'name' in task && task.name ) {
+	if ( task && 'name' in task && task.name ) {
 		name = task.name;
 	}
 
@@ -118,7 +118,7 @@ export function getTaskAssignee(task) {
 	let assigneeName = null;
 	let assigneeImage = null;
 
-	if ( 'assignee' in task && task.assignee ) {
+	if ( task && 'assignee' in task && task.assignee ) {
 
 		if (
 			'name' in task.assignee &&
@@ -143,7 +143,7 @@ export function getTaskAssignee(task) {
 export function getTaskDueOn(task) {
 
 	let dueOn = null;
-	if ( 'due_on' in task && task.due_on ) {
+	if ( task && 'due_on' in task && task.due_on ) {
 		dueOn = task.due_on;
 	}
 
@@ -153,7 +153,7 @@ export function getTaskDueOn(task) {
 export function getTaskHtmlNotes(task) {
 
 	let description = null;
-	if ( 'html_notes' in task && task.html_notes ) {
+	if ( task && 'html_notes' in task && task.html_notes ) {
 		description = task.html_notes;
 	}
 
@@ -165,6 +165,7 @@ export function getTaskSubtasks(task) {
 	let subtasks = [];
 
 	if (
+		task &&
 		'subtasks' in task &&
 		task.subtasks &&
 		Array.isArray( task.subtasks ) &&
