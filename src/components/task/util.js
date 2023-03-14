@@ -79,3 +79,99 @@ export function getWorkspaceUserSelectOptions() {
 	}
 	return userOptions;
 }
+
+//
+// Data getters.
+//
+
+export function getTaskCompleted(task) {
+
+	let completed = null;
+	let label = null;
+
+	if ( 'completed' in task ) {
+
+		label = 'Incomplete';
+
+		if ( true === task.completed ) {
+			label = 'Completed';
+		}
+
+		completed = task.completed;
+	}
+
+	return [ completed, label ];
+}
+
+export function getTaskName(task) {
+
+	let name = null;
+	if ( 'name' in task && task.name ) {
+		name = task.name;
+	}
+
+	return name;
+}
+
+export function getTaskAssignee(task) {
+
+	let assigneeName = null;
+	let assigneeImage = null;
+
+	if ( 'assignee' in task && task.assignee ) {
+
+		if (
+			'name' in task.assignee &&
+			task.assignee.name
+		) {
+			assigneeName = task.assignee.name;
+		}
+
+		if (
+			'photo' in task.assignee &&
+			task.assignee.photo &&
+			'image_36x36' in task.assignee.photo &&
+			task.assignee.photo.image_36x36
+		) {
+			assigneeImage = task.assignee.photo.image_36x36;
+		}
+	}
+
+	return [ assigneeName, assigneeImage ];
+}
+
+export function getTaskDueOn(task) {
+
+	let dueOn = null;
+	if ( 'due_on' in task && task.due_on ) {
+		dueOn = task.due_on;
+	}
+
+	return dueOn;
+}
+
+export function getTaskHtmlNotes(task) {
+
+	let description = null;
+	if ( 'html_notes' in task && task.html_notes ) {
+		description = task.html_notes;
+	}
+
+	return description;
+}
+
+export function getTaskSubtasks(task) {
+
+	let subtasks = [];
+
+	if (
+		'subtasks' in task &&
+		task.subtasks &&
+		Array.isArray( task.subtasks ) &&
+		task.subtasks.length > 0
+	) {
+		subtasks = task.subtasks;
+	}
+
+	return subtasks;
+}
