@@ -19,7 +19,7 @@ import { ReactComponent as SubtasksIcon } from '../../../assets/icons/fa-code-br
 
 import '../../../assets/styles/scss/components/task/_TaskListItemSimple.scss';
 
-export default function TaskListItemSimple({ task }) {
+export default function TaskListItemSimple({ task, onClick }) {
 
 	let extraClassNames = '';
 
@@ -89,7 +89,7 @@ export default function TaskListItemSimple({ task }) {
 	}
 
 	return (
-		<li className={"ptc-TaskListItemSimple"+extraClassNames}>
+		<li className={"ptc-TaskListItemSimple"+extraClassNames} onClick={onClick}>
 			{maybeCompleted}
 			{maybeName}
 			{maybeSubtaskCount}
