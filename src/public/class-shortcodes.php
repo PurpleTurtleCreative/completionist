@@ -113,6 +113,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 					'show_tasks_subtasks'    => 'true',
 					'show_tasks_completed'   => 'true',
 					'show_tasks_due'         => 'true',
+					'show_tasks_attachments' => 'true',
 					// 'include_tag'          => '',
 					// 'exclude_tag'          => '',
 					// 'sort_tasks'           => '',
