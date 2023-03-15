@@ -139,7 +139,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			}
 
 			$atts['project_gid'] = $parsed_asana_project['gid'];
-			$atts['show_gids'] = 'false'; // Always remove Asana object GIDs.
 
 			// Generate request token.
 			$post_id = get_the_ID();

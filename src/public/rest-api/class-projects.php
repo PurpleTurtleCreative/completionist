@@ -16,11 +16,13 @@ use \PTC_Completionist\Asana_Interface;
 use \PTC_Completionist\Options;
 use \PTC_Completionist\HTML_Builder;
 use \PTC_Completionist\Request_Tokens;
+use \PTC_Completionist\Util;
 
 require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
 require_once PLUGIN_PATH . 'src/includes/class-options.php';
 require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
 require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
+require_once PLUGIN_PATH . 'src/includes/class-util.php';
 
 /**
  * Class to register and handle custom REST API endpoints for Asana projects.
@@ -126,6 +128,28 @@ class Projects {
 					array( 'status' => 409 )
 				);
 			}
+
+			// Add request tokens for retrieving attachments.
+			Util::deep_modify_prop(
+				$project_data,
+				'attachments',
+				function( &$attachments ) use ( $request_tokens ) {
+					foreach ( $attachments as &$attachment ) {
+						$attachment->_ptc_refresh_url = add_query_arg(
+							array(
+								'token' => $request_tokens->save(
+									array( 'gid' => $attachment->gid )
+								),
+								'post_id' => $request_tokens->get_post_id(),
+							),
+							rest_url( REST_API_NAMESPACE_V1 . '/attachments' )
+						);
+					}
+				}
+			);
+
+			// Ensure GIDs are stripped.
+			Util::deep_unset_prop( $project_data, 'gid' );
 
 			// Cache response and return.
 			$request_tokens->save_response( $request['token'], $project_data );

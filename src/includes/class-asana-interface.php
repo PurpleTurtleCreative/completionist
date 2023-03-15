@@ -2,8 +2,8 @@
 /**
  * Asana Interface class
  *
- * Loads the Asana API client and translates common interactions between Asana
- * and WordPress.
+ * Loads the Asana API client and translates common interactions
+ * between Asana and WordPress.
  *
  * @since 1.0.0
  */
