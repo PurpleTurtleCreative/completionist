@@ -4,20 +4,34 @@
  * @since [unreleased]
  */
 
-import { isImage } from './util.jsx';
+import { isImage, fetchRefreshedAttachment } from './util.jsx';
 
 // import '../../../assets/styles/scss/components/task/_TaskActions.scss';
 
-// const { useCallback, useContext } = wp.element;
+const { useState } = wp.element;
 
-export default function AttachmentThumbnail({ attachment }) {
+export default function AttachmentThumbnail({ attachment: initAttachment, onDisplayError }) {
+	const [ attachment, setAttachment ] = useState(initAttachment);
 
 	function handleError(event) {
 		const attachmentEl = event.target;
 		if ( 'IMG' === attachmentEl.tagName ) {
 			// Fetch a fresh source URL since the AWS security
 			// token has likely expired, hence this error.
-			attachmentEl.src = 'https://images.pexels.com/photos/129574/pexels-photo-129574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
+			fetchRefreshedAttachment(attachment)
+				.then( res => {
+					if ( 200 !== res.status ) {
+						return Promise.reject( `Error ${res.status}. Failed to load project.` );
+					}
+					return res.json();
+				})
+				.then( data => {
+					setAttachment(data);
+					return Promise.resolve();
+				})
+				.catch( err => {
+					onDisplayError(err);
+				});
 		}
 	}
 
@@ -29,13 +43,13 @@ export default function AttachmentThumbnail({ attachment }) {
 			attachment.name
 		)
 	) {
-		window.console.error('Could not display AttachmentThumbnail for attachment with missing data.', attachment);
+		onDisplayError('Could not display AttachmentThumbnail for attachment with missing data.', attachment);
 		return null;
 	}
 
 	if ( ! isImage(attachment) ) {
 		// @TODO - Only supporting <img> attachments for now.
-		window.console.error('Could not display AttachmentThumbnail for attachment of unsupported type.', attachment);
+		onDisplayError('Could not display AttachmentThumbnail for attachment of unsupported type.', attachment);
 		return null;
 	}
 

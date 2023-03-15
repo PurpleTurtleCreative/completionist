@@ -1,8 +1,8 @@
 <?php
 /**
- * REST API: Projects class
+ * REST API: Attachments class
  *
- * @since 3.4.0
+ * @since [unreleased]
  */
 
 namespace PTC_Completionist\REST_API;
@@ -25,25 +25,25 @@ require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
 require_once PLUGIN_PATH . 'src/includes/class-util.php';
 
 /**
- * Class to register and handle custom REST API endpoints for Asana projects.
+ * Class to register and handle custom REST API endpoints for Asana attachments.
  *
- * @since 3.4.0
+ * @since [unreleased]
  */
-class Projects {
+class Attachments {
 
 	/**
 	 * Registers the custom REST API endpoints.
 	 *
-	 * @since 3.4.0
+	 * @since [unreleased]
 	 */
 	public static function register_routes() {
 		register_rest_route(
 			REST_API_NAMESPACE_V1,
-			'/projects',
+			'/attachments',
 			array(
 				array(
 					'methods'             => 'GET',
-					'callback'            => array( __CLASS__, 'handle_get_project' ),
+					'callback'            => array( __CLASS__, 'handle_get_attachment' ),
 					'permission_callback' => '__return_true',
 					'args'                => array(
 						'token'   => array(
@@ -65,15 +65,15 @@ class Projects {
 	}
 
 	/**
-	 * Handles a GET request to retrieve Asana project data.
+	 * Handles a GET request to retrieve Asana attachment data.
 	 *
-	 * @since 3.4.0
+	 * @since [unreleased]
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *
 	 * @return \WP_REST_Response|\WP_Error The API response.
 	 */
-	public static function handle_get_project(
+	public static function handle_get_attachment(
 		\WP_REST_Request $request
 	) {
 
@@ -83,17 +83,13 @@ class Projects {
 		if ( ! $request_tokens->exists( $request['token'] ) ) {
 			return new \WP_Error(
 				'bad_token',
-				'Failed to get Asana project. Invalid request.',
+				'Failed to get Asana attachment. Invalid request.',
 				array( 'status' => 400 )
 			);
 		}
 
-		// Check the cached response.
-		$cached_response = $request_tokens->get_cached_response( $request['token'], false );
-		if ( false !== $cached_response ) {
-			// Return cached data if available.
-			return new \WP_REST_Response( $cached_response, 200 );
-		}
+		// !! NOTE !! This request token does not use caching
+		// since it is intended for making fresh requests.
 
 		try {
 
@@ -107,56 +103,45 @@ class Projects {
 				// There is no user for Asana authentication.
 				return new \WP_Error(
 					'no_auth',
-					'Failed to get Asana project. Authentication user was not specified.',
+					'Failed to get Asana attachment. Authentication user was not specified.',
 					array( 'status' => 401 )
 				);
 			}
 
 			// Perform request.
-
 			Asana_Interface::get_client( (int) $auth_user_id );
-			$project_data = Asana_Interface::get_project_data(
-				$args['project_gid'],
-				$args
+			$attachment = Asana_Interface::get_attachment_data(
+				$args['attachment_gid']
 			);
 
-			if ( empty( $project_data ) ) {
-				// An empty response is unexpected. Do not cache this.
+			if ( empty( $attachment ) ) {
+				// An empty response is unexpected.
 				return new \WP_Error(
 					'empty_content',
-					'Failed to get Asana project. There is no project data.',
+					'Failed to get Asana attachment. There is no attachment data.',
 					array( 'status' => 409 )
 				);
 			}
 
-			// Add request tokens for retrieving attachments.
-			Util::deep_modify_prop(
-				$project_data,
-				'attachments',
-				function( &$attachments ) use ( $request_tokens, $args ) {
-					foreach ( $attachments as &$attachment ) {
-						$attachment->_ptc_refresh_url = add_query_arg(
-							array(
-								'token' => $request_tokens->save(
-									array(
-										'attachment_gid' => $attachment->gid,
-										'auth_user' => $args['auth_user'],
-									)
-								),
-								'post_id' => $request_tokens->get_post_id(),
-							),
-							rest_url( REST_API_NAMESPACE_V1 . '/attachments' )
-						);
-					}
-				}
+			// Add request token for retrieving the attachment again.
+			$attachment->_ptc_refresh_url = add_query_arg(
+				array(
+					'token' => $request_tokens->save(
+						array(
+							'attachment_gid' => $attachment->gid,
+							'auth_user' => $args['auth_user'],
+						)
+					),
+					'post_id' => $request_tokens->get_post_id(),
+				),
+				rest_url( REST_API_NAMESPACE_V1 . '/attachments' )
 			);
 
-			// Ensure GIDs are stripped.
-			Util::deep_unset_prop( $project_data, 'gid' );
+			// Ensure GID is stripped.
+			unset( $attachment->gid );
 
-			// Cache response and return.
-			$request_tokens->save_response( $request['token'], $project_data );
-			return new \WP_REST_Response( $project_data, 200 );
+			// Return response.
+			return new \WP_REST_Response( $attachment, 200 );
 		} catch ( \Exception $e ) {
 			$error_code = HTML_Builder::get_error_code( $e );
 			if ( $error_code < 400 ) {
@@ -165,7 +150,7 @@ class Projects {
 			}
 			return new \WP_Error(
 				'asana_error',
-				'Failed to get Asana project. ' . HTML_Builder::get_error_message( $e ),
+				'Failed to get Asana attachment. ' . HTML_Builder::get_error_message( $e ),
 				array( 'status' => $error_code )
 			);
 		}
@@ -173,7 +158,7 @@ class Projects {
 		// This shouldn't be reachable.
 		return new \WP_Error(
 			'unknown_error',
-			'Failed to get Asana project. Unknown error.',
+			'Failed to get Asana attachment. Unknown error.',
 			array( 'status' => 500 )
 		);
 	}
