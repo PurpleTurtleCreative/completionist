@@ -176,3 +176,31 @@ export function getTaskSubtasks(task) {
 
 	return subtasks;
 }
+
+export function getTaskAttachments(task) {
+
+	let attachments = [];
+
+	if (
+		task &&
+		'attachments' in task &&
+		task.attachments &&
+		Array.isArray( task.attachments ) &&
+		task.attachments.length > 0
+	) {
+		for ( let attachment of task.attachments ) {
+			if (
+				attachment.name.endsWith('.jpg') ||
+				attachment.name.endsWith('.jpeg') ||
+				attachment.name.endsWith('.png') ||
+				attachment.name.endsWith('.bmp') ||
+				attachment.name.endsWith('.gif')
+			) {
+				// @TODO - Only supporting <img> attachments for now.
+				attachments.push(attachment);
+			}
+		}
+	}
+
+	return attachments;
+}
