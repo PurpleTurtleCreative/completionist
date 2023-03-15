@@ -846,6 +846,33 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		}
 
 		/**
+		 * Gets data for a given attachment.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string $attachment_gid The Asana attachment GID.
+		 * resulting response data. Default empty to return all data.
+		 * @return \stdClass The Asana attachment data.
+		 */
+		public static function get_attachment_data( $attachment_gid ) {
+
+			if ( ! isset( self::$asana ) ) {
+				$asana = self::get_client();
+			} else {
+				$asana = self::$asana;
+			}
+
+			return $asana->attachments->findById(
+				$attachment_gid,
+				array(),
+				array(
+					'fields' => "name,host,download_url,view_url",
+					'limit' => 100,
+				)
+			);
+		}
+
+		/**
 		 * Loads subtask records onto each parent task.
 		 *
 		 * @since 3.4.0
