@@ -633,6 +633,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 					'show_tasks_subtasks'    => true,
 					'show_tasks_completed'   => true,
 					'show_tasks_due'         => true,
+					'show_tasks_attachments' => true,
 				)
 			);
 
@@ -758,6 +759,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			}
 			if ( $args['show_tasks_due'] ) {
 				$task_fields .= ',due_on';
+			}
+			if ( $args['show_tasks_attachments'] ) {
+				$task_fields .= ',attachments.name,attachments.host,attachments.download_url,attachments.view_url';
 			}
 
 			$tasks = $asana->tasks->getTasksForProject(
