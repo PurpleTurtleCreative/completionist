@@ -39,3 +39,43 @@ export function fetchRefreshedAttachment(attachment) {
 		reject('Invalid attachment.');
 	});
 }
+
+export function findAndMonitorInlineAttachments(rootNode, attachments) {
+
+	if ( rootNode && attachments.length > 0 ) {
+
+		const inlineImgAttachments = rootNode.querySelectorAll('img[data-asana-type="attachment"]');
+
+		for ( let img of inlineImgAttachments ) {
+
+			const attachment = attachments.find(item => item.view_url === img.src);
+
+			img.addEventListener(
+				'error',
+				event => {
+
+					const attachmentEl = event.target;
+
+					// Fetch a fresh source URL since the AWS security
+					// token has likely expired, hence this error.
+					fetchRefreshedAttachment(attachment)
+						.then( res => {
+							if ( 200 !== res.status ) {
+								return Promise.reject( `Error ${res.status}. Failed to refresh inline attachment.` );
+							}
+							return res.json();
+						})
+						.then( data => {
+							if ( data && 'view_url' in data && data.view_url ) {
+								attachmentEl.src = data.view_url;
+							}
+							return Promise.resolve();
+						})
+						.catch( err => {
+							window.console.error(err);
+						});
+				}
+			);
+		}
+	}
+}

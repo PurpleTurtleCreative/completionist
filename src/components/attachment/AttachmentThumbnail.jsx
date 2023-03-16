@@ -21,7 +21,7 @@ export default function AttachmentThumbnail({ attachment: initAttachment, onDisp
 			fetchRefreshedAttachment(attachment)
 				.then( res => {
 					if ( 200 !== res.status ) {
-						return Promise.reject( `Error ${res.status}. Failed to load project.` );
+						return Promise.reject( `Error ${res.status}. Failed to refresh attachment.` );
 					}
 					return res.json();
 				})
@@ -32,6 +32,8 @@ export default function AttachmentThumbnail({ attachment: initAttachment, onDisp
 				.catch( err => {
 					onDisplayError(err);
 				});
+		} else {
+			window.console.error(`Unsupported attachment type ${attachmentEl.tagName} for element:`, attachmentEl);
 		}
 	}
 
