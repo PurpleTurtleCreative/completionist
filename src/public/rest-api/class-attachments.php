@@ -123,18 +123,16 @@ class Attachments {
 				);
 			}
 
+			// @TODO - Handle if $args['data_field'] which should
+			// instead respond with the same response as requesting
+			// the desired field, such as 'view_url'.
+			// This response should be cached by the browser..?
+
 			// Add request token for retrieving the attachment again.
-			$attachment->_ptc_refresh_url = add_query_arg(
-				array(
-					'token' => $request_tokens->save(
-						array(
-							'attachment_gid' => $attachment->gid,
-							'auth_user' => $args['auth_user'],
-						)
-					),
-					'post_id' => $request_tokens->get_post_id(),
-				),
-				rest_url( REST_API_NAMESPACE_V1 . '/attachments' )
+			$attachment->_ptc_refresh_url = HTML_Builder::get_local_attachment_url(
+				$attachment->gid,
+				$request_tokens->get_post_id(),
+				$args['auth_user']
 			);
 
 			// Ensure GID is stripped.

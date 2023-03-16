@@ -135,19 +135,25 @@ class Projects {
 				'attachments',
 				function( &$attachments ) use ( $request_tokens, $args ) {
 					foreach ( $attachments as &$attachment ) {
-						$attachment->_ptc_refresh_url = add_query_arg(
-							array(
-								'token' => $request_tokens->save(
-									array(
-										'attachment_gid' => $attachment->gid,
-										'auth_user' => $args['auth_user'],
-									)
-								),
-								'post_id' => $request_tokens->get_post_id(),
-							),
-							rest_url( REST_API_NAMESPACE_V1 . '/attachments' )
+						$attachment->_ptc_refresh_url = HTML_Builder::get_local_attachment_url(
+							$attachment->gid,
+							$request_tokens->get_post_id(),
+							$args['auth_user']
 						);
 					}
+				}
+			);
+
+			// Localize inline attachments.
+			Util::deep_modify_prop(
+				$project_data,
+				'html_notes',
+				function( &$html_notes ) use ( $request_tokens, $args ) {
+					$html_notes = HTML_Builder::localize_attachment_urls(
+						$html_notes,
+						$request_tokens->get_post_id(),
+						$args['auth_user']
+					);
 				}
 			);
 

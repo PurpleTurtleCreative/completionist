@@ -551,5 +551,88 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 			error_log( 'Failed to sort tasks by due date.' );
 			return [];
 		}
+
+		/**
+		 * Replaces inline Asana attachment URLs with local API
+		 * endpoints for retrieval.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string $html The HTML content to search and replace.
+		 * @param int    $post_id The post ID to associate the API
+		 * request token.
+		 * @param int    $auth_user Optional. The WordPress user to
+		 * authenticate the attachment endpoint request.
+		 * @return string The modified HTML content.
+		 */
+		public static function localize_attachment_urls(
+			string $html,
+			int $post_id,
+			int $auth_user = 0
+		) : string {
+			// Find and replace all inline Asana attachment images.
+			return preg_replace_callback(
+				'/<img .*?data-asana-type="attachment".*?>/m',
+				function ( $img_attachment_matches ) use ( $post_id, $auth_user ) {
+					error_log( print_r( $img_attachment_matches, true ) );
+
+					// Find the Asana attachment's GID.
+					preg_match(
+						'/ data-asana-gid="([0-9]+)"[\s\/>]/',
+						$img_attachment_matches[0],
+						$asana_gid_matches
+					);
+					error_log( print_r( $asana_gid_matches, true ) );
+
+					// Replace the image, using a local src URL.
+					if ( ! empty( $asana_gid_matches[1] ) ) {
+						$local_attachment_url = self::get_local_attachment_url(
+							$asana_gid_matches[1],
+							$post_id,
+							$auth_user
+						);
+						return '<img src="' . esc_url( $local_attachment_url ) . '" />';
+					}
+
+					return $img_attachment_matches[0];
+				},
+				$html
+			);
+		}
+
+		/**
+		 * Gets the local API endpoint for retrieving an attachment.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string $attachment_gid The Asana attachment's GID.
+		 * @param int    $post_id The post ID to associate the API
+		 * request token.
+		 * @param int    $auth_user Optional. The WordPress user to
+		 * authenticate the attachment endpoint request.
+		 * @return string The local API endpoint URL.
+		 */
+		public static function get_local_attachment_url(
+			string $attachment_gid,
+			int $post_id,
+			int $auth_user = 0
+		) : string {
+
+			$request_tokens = new Request_Tokens( $post_id );
+
+			return add_query_arg(
+				array(
+					'token' => $request_tokens->save(
+						array(
+							'attachment_gid' => $attachment_gid,
+							'auth_user' => $auth_user,
+							'data_field' => 'view_url',
+						)
+					),
+					'post_id' => $request_tokens->get_post_id(),
+				),
+				rest_url( REST_API_NAMESPACE_V1 . '/attachments' )
+			);
+		}
 	}//end class
 }//end if class exists
