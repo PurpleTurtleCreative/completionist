@@ -10,7 +10,7 @@ import { isImage, fetchRefreshedAttachment } from './util.jsx';
 
 const { useState } = wp.element;
 
-export default function AttachmentThumbnail({ attachment: initAttachment, onDisplayError }) {
+export default function AttachmentThumbnail({ attachment: initAttachment }) {
 	const [ attachment, setAttachment ] = useState(initAttachment);
 
 	function handleError(event) {
@@ -30,7 +30,7 @@ export default function AttachmentThumbnail({ attachment: initAttachment, onDisp
 					return Promise.resolve();
 				})
 				.catch( err => {
-					onDisplayError(err);
+					window.console.log(err);
 				});
 		} else {
 			window.console.error(`Unsupported attachment type ${attachmentEl.tagName} for element:`, attachmentEl);
@@ -45,13 +45,13 @@ export default function AttachmentThumbnail({ attachment: initAttachment, onDisp
 			attachment.name
 		)
 	) {
-		onDisplayError('Could not display AttachmentThumbnail for attachment with missing data.', attachment);
+		window.console.log('Could not display AttachmentThumbnail for attachment with missing data.', attachment);
 		return null;
 	}
 
 	if ( ! isImage(attachment) ) {
 		// @TODO - Only supporting <img> attachments for now.
-		onDisplayError('Could not display AttachmentThumbnail for attachment of unsupported type.', attachment);
+		window.console.log('Could not display AttachmentThumbnail for attachment of unsupported type.', attachment);
 		return null;
 	}
 

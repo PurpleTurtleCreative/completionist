@@ -626,7 +626,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 						array(
 							'attachment_gid' => $attachment_gid,
 							'auth_user' => $auth_user,
-							'data_field' => 'view_url',
+							'proxy_field' => 'view_url',
 						)
 					),
 					'post_id' => $request_tokens->get_post_id(),
