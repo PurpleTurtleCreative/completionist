@@ -123,10 +123,65 @@ class Attachments {
 				);
 			}
 
-			// @TODO - Handle if $args['data_field'] which should
+			// @TODO - Handle if $args['proxy_field'] which should
 			// instead respond with the same response as requesting
 			// the desired field, such as 'view_url'.
 			// This response should be cached by the browser..?
+			if ( ! empty( $args['proxy_field'] ) ) {
+				if ( ! empty( $attachment->{$args['proxy_field']} ) ) {
+
+					$ch = curl_init();
+					$response_headers = array();
+					curl_setopt_array(
+						$ch,
+						array(
+							CURLOPT_HTTPGET => true,
+							CURLOPT_URL => $attachment->{$args['proxy_field']},
+							CURLOPT_FOLLOWLOCATION => true,
+							CURLOPT_RETURNTRANSFER => true,
+							CURLOPT_HEADERFUNCTION => function ( $curl, $header ) use ( &$response_headers ) {
+
+								$len = strlen( $header );
+
+								$header = trim( $header );
+
+								if (
+									 ! empty( $header ) &&
+									0 !== stripos( $header, 'x-' )
+								) {
+									// Ignore extra, custom headers.
+
+									// @TODO - SECURITY: Only collect trusted
+									// headers like Content-Type, Content-Length,
+									// etc. to avoid spoofing/hijacking.
+
+									$response_headers[] = $header;
+								}
+
+								// Return the header's original length.
+								return $len;
+							},
+						)
+					);
+
+					$response_body = curl_exec( $ch );
+					curl_close( $ch );
+
+					foreach ( $response_headers as $header ) {
+						header( $header );
+					}
+					header( 'Cache-Control: max-age=' . HOUR_IN_SECONDS );
+					print( $response_body );//phpcs:ignore
+
+					exit;
+				} else {
+					return new \WP_Error(
+						'bad_field',
+						"Failed to proxy Asana attachment field value. Unrecognized attachment field name: {$args['proxy_field']}",
+						array( 'status' => 400 )
+					);
+				}
+			}
 
 			// Add request token for retrieving the attachment again.
 			$attachment->_ptc_refresh_url = HTML_Builder::get_local_attachment_url(
