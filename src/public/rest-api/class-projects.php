@@ -135,7 +135,7 @@ class Projects {
 				'attachments',
 				function( &$attachments ) use ( $request_tokens, $args ) {
 					foreach ( $attachments as &$attachment ) {
-						$attachment->_ptc_refresh_url = HTML_Builder::get_local_attachment_url(
+						$attachment->_ptc_view_url = HTML_Builder::get_local_attachment_view_url(
 							$attachment->gid,
 							$request_tokens->get_post_id(),
 							$args['auth_user']
