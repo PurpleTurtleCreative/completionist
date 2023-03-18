@@ -60,6 +60,10 @@
 		}
 	}
 
+	img {
+		max-width: 100%;
+	}
+
 	.spacer {
 		border-color: transparent;
 		background: none;
@@ -301,6 +305,19 @@
 
 		@include breakpoint(large) {
 			flex: 1;
+		}
+	}
+
+	.task-attachments {
+
+		.attachments-list {
+			padding: 0;
+			margin: 0;
+			list-style: none;
+
+			li {
+				margin: 10px 0;
+			}
 		}
 	}
 }//.ptc-TaskListItem

@@ -4,13 +4,24 @@
  * @since 3.4.0
  */
 
-import { countIncompleteTasks } from './util';
+import {
+	countIncompleteTasks,
+	getTaskCompleted,
+	getTaskName,
+	getTaskAssignee,
+	getTaskDueOn,
+	getTaskHtmlNotes,
+	getTaskSubtasks,
+	getTaskAttachments
+} from './util.js';
 
 import { getLocaleString } from '../generic/util.jsx';
 
 import { ReactComponent as CheckmarkIcon } from '../../../assets/icons/fa-check-solid.svg';
 import { ReactComponent as SubtasksIcon } from '../../../assets/icons/fa-code-branch-solid.svg';
 import { ReactComponent as ToggleIcon } from '../../../assets/icons/fa-caret-right-solid.svg';
+
+import AttachmentThumbnail from '../attachment/AttachmentThumbnail.jsx';
 
 import '../../../assets/styles/scss/components/task/_TaskListItem.scss';
 
@@ -141,6 +152,29 @@ export default function TaskListItem({ task, rowNumber = null }) {
 		}
 	}
 
+	let maybeAttachments = null;
+	if ( 'attachments' in task ) {
+		renderToggle = true;
+		let taskAttachments = getTaskAttachments(task);
+		// List the additional attachments, if any.
+		window.console.log(task, taskAttachments);
+		if ( taskAttachments.length > 0 ) {
+			allowToggle = true;
+			maybeAttachments = (
+				<div className="task-attachments">
+					<p className="small-label">Attachments</p>
+					<ul className="attachments-list">
+						{
+							taskAttachments.map(attachment => (
+								<li key={JSON.stringify(attachment)}><AttachmentThumbnail attachment={attachment} /></li>
+							))
+						}
+					</ul>
+				</div>
+			);
+		}
+	}
+
 	let maybeToggle = null;
 	if ( renderToggle ) {
 		let maybeToggleIcon = null;
@@ -162,6 +196,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 				<div className="details">
 					{maybeDescription}
 					{maybeSubtaskList}
+					{maybeAttachments}
 				</div>
 			</div>
 		);
