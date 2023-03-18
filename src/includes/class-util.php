@@ -68,5 +68,45 @@ if ( ! class_exists( __NAMESPACE__ . '\Util' ) ) {
 				}
 			}
 		}
+
+		/**
+		 * Asserts whether a given string starts with any of the
+		 * provided prefixes.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string   $subject The string to check.
+		 * @param string[] $prefixes The prefix strings.
+		 * @param bool     $case_sensitive Optional. If to use
+		 * case-sensitive comparisons. Default true.
+		 * @return bool If the string starts with any of the prefixes.
+		 */
+		public static function str_starts_with_any(
+			string $subject,
+			array $prefixes,
+			bool $case_sensitive = true
+		) : bool {
+
+			if ( true === $case_sensitive ) {
+				// Case-sensitive comparison.
+				foreach ( $prefixes as &$prefix ) {
+					if ( substr( $subject, 0, strlen( $prefix ) ) === $prefix ) {
+						return true;
+					}
+				}
+			} else {
+				// Case-insensitive comparison.
+				$subject = strtolower( $subject );
+				foreach ( $prefixes as $prefix ) {
+					$prefix = strtolower( $prefix );
+					if ( substr( $subject, 0, strlen( $prefix ) ) === $prefix ) {
+						return true;
+					}
+				}
+			}
+
+			// No matches.
+			return false;
+		}
 	}//end class
 }//end if class exists

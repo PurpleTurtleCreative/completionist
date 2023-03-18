@@ -563,7 +563,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		 * request token.
 		 * @param int      $auth_user Optional. The WordPress user to
 		 * authenticate the attachment endpoint request.
-		 * @param string[] &$replacements Optional. A variable
+		 * @param string[] $replacements Optional. A variable
 		 * for capturing the replacement local attachment urls.
 		 * @return string The modified HTML content.
 		 */

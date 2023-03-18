@@ -150,12 +150,24 @@ class Attachments {
 									0 !== stripos( $header, 'x-' )
 								) {
 									// Ignore extra, custom headers.
-
-									// @TODO - SECURITY: Only collect trusted
-									// headers like Content-Type, Content-Length,
-									// etc. to avoid spoofing/hijacking.
-
-									$response_headers[] = $header;
+									if (
+										true === Util::str_starts_with_any(
+											$header,
+											array(
+												'Accept-Ranges:',
+												'Content-Disposition:',
+												'Content-Length:',
+												'Content-Type:',
+												'Date:',
+												'ETag:',
+												'Last-Modified:',
+											),
+											false
+										)
+									) {
+										// Collect trusted header.
+										$response_headers[] = $header;
+									}
 								}
 
 								// Return the header's original length.
@@ -167,12 +179,18 @@ class Attachments {
 					$response_body = curl_exec( $ch );
 					curl_close( $ch );
 
+					// Configure proxy response and exit.
 					foreach ( $response_headers as $header ) {
 						header( $header );
 					}
-					header( 'Cache-Control: max-age=' . HOUR_IN_SECONDS );
+					// Asana serves user profile photos from AWS S3
+					// with `max-age=1209600`, which is 14 days, so let's
+					// just use that duration here as well. New assets
+					// would be stored under a different attachment GID
+					// and a new location, anyways, so this asset is
+					// actually expected to never change.
+					header( 'Cache-Control: max-age=' . 14 * DAY_IN_SECONDS );
 					print( $response_body );//phpcs:ignore
-
 					exit;
 				} else {
 					return new \WP_Error(
