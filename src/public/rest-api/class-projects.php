@@ -129,31 +129,39 @@ class Projects {
 				);
 			}
 
+			// Localize inline attachments.
+			$inline_attachment_urls = [];
+			Util::deep_modify_prop(
+				$project_data,
+				'html_notes',
+				function( &$html_notes ) use ( &$request_tokens, &$args, &$inline_attachment_urls ) {
+					$html_notes = HTML_Builder::localize_attachment_urls(
+						$html_notes,
+						$request_tokens->get_post_id(),
+						$args['auth_user'],
+						$inline_attachment_urls
+					);
+				}
+			);
+
 			// Add request tokens for retrieving attachments.
+			// Remove inline attachments from attachments array.
 			Util::deep_modify_prop(
 				$project_data,
 				'attachments',
-				function( &$attachments ) use ( $request_tokens, $args ) {
-					foreach ( $attachments as &$attachment ) {
+				function( &$attachments ) use ( &$request_tokens, &$args, &$inline_attachment_urls ) {
+					$modified_attachments = [];
+					foreach ( $attachments as $attachment ) {
 						$attachment->_ptc_view_url = HTML_Builder::get_local_attachment_view_url(
 							$attachment->gid,
 							$request_tokens->get_post_id(),
 							$args['auth_user']
 						);
+						if ( false === in_array( $attachment->_ptc_view_url, $inline_attachment_urls, true ) ) {
+							$modified_attachments[] = $attachment;
+						}
 					}
-				}
-			);
-
-			// Localize inline attachments.
-			Util::deep_modify_prop(
-				$project_data,
-				'html_notes',
-				function( &$html_notes ) use ( $request_tokens, $args ) {
-					$html_notes = HTML_Builder::localize_attachment_urls(
-						$html_notes,
-						$request_tokens->get_post_id(),
-						$args['auth_user']
-					);
+					$attachments = $modified_attachments;
 				}
 			);
 
