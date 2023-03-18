@@ -123,10 +123,10 @@ class Attachments {
 				);
 			}
 
-			// @TODO - Handle if $args['proxy_field'] which should
+			// Handle if $args['proxy_field'] which should
 			// instead respond with the same response as requesting
 			// the desired field, such as 'view_url'.
-			// This response should be cached by the browser..?
+			// The browser should cache this response.
 			if ( ! empty( $args['proxy_field'] ) ) {
 				if ( ! empty( $attachment->{$args['proxy_field']} ) ) {
 

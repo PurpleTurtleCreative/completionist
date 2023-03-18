@@ -586,7 +586,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 
 					// Replace the image, using a local src URL.
 					if ( ! empty( $asana_gid_matches[1] ) ) {
-						$local_attachment_url = self::get_local_attachment_url(
+						$local_attachment_url = self::get_local_attachment_view_url(
 							$asana_gid_matches[1],
 							$post_id,
 							$auth_user
@@ -612,7 +612,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		 * authenticate the attachment endpoint request.
 		 * @return string The local API endpoint URL.
 		 */
-		public static function get_local_attachment_url(
+		public static function get_local_attachment_view_url(
 			string $attachment_gid,
 			int $post_id,
 			int $auth_user = 0
