@@ -851,10 +851,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 * @since [unreleased]
 		 *
 		 * @param string $attachment_gid The Asana attachment GID.
-		 * resulting response data. Default empty to return all data.
 		 * @return \stdClass The Asana attachment data.
 		 */
-		public static function get_attachment_data( $attachment_gid ) {
+		public static function get_attachment_data( string $attachment_gid ) : \stdClass {
 
 			if ( ! isset( self::$asana ) ) {
 				$asana = self::get_client();
@@ -866,7 +865,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$attachment_gid,
 				array(),
 				array(
-					'fields' => "name,host,download_url,view_url",
+					'fields' => 'name,host,download_url,view_url',
 					'limit' => 100,
 				)
 			);
