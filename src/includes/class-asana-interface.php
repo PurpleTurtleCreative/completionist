@@ -179,7 +179,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$asana_personal_access_token,
 				[
 					'headers' => [
-						'asana-enable' => 'new_user_task_lists,new_project_templates',
+						'asana-enable' => 'new_user_task_lists,new_project_templates,new_memberships',
 					],
 				]
 			);
