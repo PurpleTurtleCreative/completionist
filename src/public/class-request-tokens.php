@@ -283,6 +283,6 @@ class Request_Tokens {
 		 *
 		 * @param int $ttl Duration in seconds. Default 900 (15 minutes).
 		 */
-		return apply_filters( 'ptc_completionist_request_tokens_ttl', 0 * MINUTE_IN_SECONDS );
+		return apply_filters( 'ptc_completionist_request_tokens_ttl', 15 * MINUTE_IN_SECONDS );
 	}
 }

@@ -157,7 +157,6 @@ export default function TaskListItem({ task, rowNumber = null }) {
 		renderToggle = true;
 		let taskAttachments = getTaskAttachments(task);
 		// List the additional attachments, if any.
-		window.console.log(task, taskAttachments);
 		if ( taskAttachments.length > 0 ) {
 			allowToggle = true;
 			maybeAttachments = (
