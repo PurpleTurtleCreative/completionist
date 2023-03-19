@@ -5,9 +5,7 @@
  */
 
 import {
-	countIncompleteTasks,
 	getTaskCompleted,
-	getTaskName,
 	getTaskAssignee,
 	getTaskDueOn,
 	getTaskHtmlNotes,
@@ -37,13 +35,9 @@ export default function TaskListItem({ task, rowNumber = null }) {
 
 	let maybeCompleted = null;
 	if ( 'completed' in task ) {
-		let label = 'Incomplete';
-		if ( true === task.completed ) {
-			extraClassNames += ' --is-completed';
-			label = 'Completed';
-		}
+		const [ isCompleted, label ] = getTaskCompleted(task);
 		maybeCompleted = (
-			<div className="completed" data-completed={task.completed}>
+			<div className="completed" data-completed={isCompleted}>
 				<CheckmarkIcon aria-label={label} preserveAspectRatio="xMidYMid meet" />
 			</div>
 		);
@@ -56,15 +50,12 @@ export default function TaskListItem({ task, rowNumber = null }) {
 		renderToggle = true;
 
 		let maybeSubtaskCountContent = null;
-		if (
-			task.subtasks &&
-			Array.isArray( task.subtasks ) &&
-			task.subtasks.length > 0
-		) {
+		const taskSubtasks = getTaskSubtasks(task);
+		if ( taskSubtasks.length > 0 ) {
 			allowToggle = true;
 			maybeSubtaskCountContent = (
 				<>
-					{task.subtasks.length}
+					{taskSubtasks.length}
 					<SubtasksIcon aria-label="Subtasks" style={{ "transform": 'rotate(90deg)' }} preserveAspectRatio="xMidYMid meet" />
 				</>
 			);
@@ -73,10 +64,10 @@ export default function TaskListItem({ task, rowNumber = null }) {
 					<p className="small-label">Subtasks</p>
 					<ol className="tasks">
 						{
-							task.subtasks.map((subtask, index) => {
+							taskSubtasks.map((subtask, index) => {
 								// Remove "subtasks" to prevent deeper recursion.
 								const { subtasks, ...task } = subtask;
-								return <TaskListItem task={task} rowNumber={index+1} />;
+								return <TaskListItem key={JSON.stringify(task)} task={task} rowNumber={index+1} />;
 							})
 						}
 					</ol>
@@ -94,31 +85,10 @@ export default function TaskListItem({ task, rowNumber = null }) {
 
 	let maybeAssignee = null;
 	if ( 'assignee' in task ) {
-
-		let maybeAssigneeName = null;
-		let maybeAssigneeImg = null;
-
-		if (
-			task.assignee &&
-			'name' in task.assignee &&
-			task.assignee.name
-		) {
-
-			maybeAssigneeName = task.assignee.name;
-
-			if (
-				'photo' in task.assignee &&
-				task.assignee.photo &&
-				'image_36x36' in task.assignee.photo &&
-				task.assignee.photo.image_36x36
-			) {
-				maybeAssigneeImg = <img src={task.assignee.photo.image_36x36} width="36" height="36" />;
-			}
-		}
-
+		const [ maybeAssigneeName, maybeAssigneeImg ] = getTaskAssignee(task);
 		maybeAssignee = (
 			<p className="assignee">
-				{ maybeAssigneeImg }
+				{ maybeAssigneeImg && <img src={maybeAssigneeImg} width="36" height="36" /> }
 				{ maybeAssigneeName && <span className="assignee-name">{maybeAssigneeName}</span> }
 			</p>
 		);
@@ -126,26 +96,22 @@ export default function TaskListItem({ task, rowNumber = null }) {
 
 	let maybeDueDate = null;
 	if ( 'due_on' in task ) {
-
-		let maybeDueDateString = null;
-		if ( task.due_on ) {
-			maybeDueDateString = getLocaleString(task.due_on);
-		}
-
-		maybeDueDate = <p className="due">{maybeDueDateString}</p>;
+		const taskDueOn = getTaskDueOn(task);
+		maybeDueDate = <p className="due">{taskDueOn && getLocaleString(taskDueOn)}</p>;
 	}
 
 	let maybeDescription = null;
 	if ( 'html_notes' in task ) {
 		renderToggle = true;
-		if ( task.html_notes ) {
+		const taskHtmlNotes = getTaskHtmlNotes(task);
+		if ( taskHtmlNotes ) {
 			allowToggle = true;
 			maybeDescription = (
 				<div className="task-notes">
 					<p className="small-label">Description</p>
 					<div
 						className="description"
-						dangerouslySetInnerHTML={ { __html: task.html_notes } }
+						dangerouslySetInnerHTML={ { __html: taskHtmlNotes } }
 					/>
 				</div>
 			);

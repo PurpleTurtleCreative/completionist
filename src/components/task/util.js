@@ -168,8 +168,7 @@ export function getTaskSubtasks(task) {
 		task &&
 		'subtasks' in task &&
 		task.subtasks &&
-		Array.isArray( task.subtasks ) &&
-		task.subtasks.length > 0
+		Array.isArray( task.subtasks )
 	) {
 		subtasks = task.subtasks;
 	}
