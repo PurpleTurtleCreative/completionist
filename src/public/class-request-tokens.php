@@ -87,7 +87,7 @@ class Request_Tokens {
 	 *
 	 * @since [unreleased]
 	 *
-	 * @param int The request token's post ID.
+	 * @return int The request token's post ID.
 	 */
 	public function get_post_id() : int {
 		return $this->post_id;
