@@ -4,7 +4,7 @@ import {
 	getWorkspaceUserSelectOptions
 } from './util';
 
-import '/assets/styles/scss/components/task/_TaskCreationForm.scss';
+import '../../../assets/styles/scss/components/task/_TaskCreationForm.scss';
 
 const { useContext, useState, useMemo } = wp.element;
 

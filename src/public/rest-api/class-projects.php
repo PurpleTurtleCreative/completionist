@@ -16,11 +16,13 @@ use \PTC_Completionist\Asana_Interface;
 use \PTC_Completionist\Options;
 use \PTC_Completionist\HTML_Builder;
 use \PTC_Completionist\Request_Tokens;
+use \PTC_Completionist\Util;
 
 require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
 require_once PLUGIN_PATH . 'src/includes/class-options.php';
 require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
 require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
+require_once PLUGIN_PATH . 'src/includes/class-util.php';
 
 /**
  * Class to register and handle custom REST API endpoints for Asana projects.
@@ -126,6 +128,45 @@ class Projects {
 					array( 'status' => 409 )
 				);
 			}
+
+			// Localize inline attachments.
+			$inline_attachment_urls = [];
+			Util::deep_modify_prop(
+				$project_data,
+				'html_notes',
+				function( &$html_notes ) use ( &$request_tokens, &$args, &$inline_attachment_urls ) {
+					$html_notes = HTML_Builder::localize_attachment_urls(
+						$html_notes,
+						$request_tokens->get_post_id(),
+						$args['auth_user'],
+						$inline_attachment_urls
+					);
+				}
+			);
+
+			// Add request tokens for retrieving attachments.
+			// Remove inline attachments from attachments array.
+			Util::deep_modify_prop(
+				$project_data,
+				'attachments',
+				function( &$attachments ) use ( &$request_tokens, &$args, &$inline_attachment_urls ) {
+					$modified_attachments = [];
+					foreach ( $attachments as $attachment ) {
+						$attachment->_ptc_view_url = HTML_Builder::get_local_attachment_view_url(
+							$attachment->gid,
+							$request_tokens->get_post_id(),
+							$args['auth_user']
+						);
+						if ( false === in_array( $attachment->_ptc_view_url, $inline_attachment_urls, true ) ) {
+							$modified_attachments[] = $attachment;
+						}
+					}
+					$attachments = $modified_attachments;
+				}
+			);
+
+			// Ensure GIDs are stripped.
+			Util::deep_unset_prop( $project_data, 'gid' );
 
 			// Cache response and return.
 			$request_tokens->save_response( $request['token'], $project_data );

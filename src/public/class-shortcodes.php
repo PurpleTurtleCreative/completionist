@@ -54,11 +54,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			// Asana project assets.
 
 			$asset_file = require_once( PLUGIN_PATH . 'build/index_ShortcodeAsanaProject.jsx.asset.php' );
+			$dependencies = apply_filters(
+				'ptc_completionist_shortcode_asana_project_script_deps',
+				$asset_file['dependencies']
+			);
 			wp_register_script(
 				'ptc-completionist-shortcode-asana-project',
 				PLUGIN_URL . '/build/index_ShortcodeAsanaProject.jsx.js',
-				$asset_file['dependencies'],
-				PLUGIN_VERSION,
+				$dependencies,
+				$asset_file['version'],
 				true
 			);
 
@@ -109,6 +113,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 					'show_tasks_subtasks'    => 'true',
 					'show_tasks_completed'   => 'true',
 					'show_tasks_due'         => 'true',
+					'show_tasks_attachments' => 'true',
 					// 'include_tag'          => '',
 					// 'exclude_tag'          => '',
 					// 'sort_tasks'           => '',
@@ -134,7 +139,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			}
 
 			$atts['project_gid'] = $parsed_asana_project['gid'];
-			$atts['show_gids'] = 'false'; // Always remove Asana object GIDs.
 
 			// Generate request token.
 			$post_id = get_the_ID();

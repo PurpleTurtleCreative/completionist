@@ -83,6 +83,17 @@ class Request_Tokens {
 	}
 
 	/**
+	 * Returns the request token's post ID.
+	 *
+	 * @since 3.5.0
+	 *
+	 * @return int The request token's post ID.
+	 */
+	public function get_post_id() : int {
+		return $this->post_id;
+	}
+
+	/**
 	 * Saves a new request token for the given arguments if it does
 	 * not already exist.
 	 *

@@ -2,8 +2,8 @@
 /**
  * Asana Interface class
  *
- * Loads the Asana API client and translates common interactions between Asana
- * and WordPress.
+ * Loads the Asana API client and translates common interactions
+ * between Asana and WordPress.
  *
  * @since 1.0.0
  */
@@ -179,7 +179,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$asana_personal_access_token,
 				[
 					'headers' => [
-						'asana-enable' => 'new_user_task_lists,new_project_templates',
+						'asana-enable' => 'new_user_task_lists,new_project_templates,new_memberships',
 					],
 				]
 			);
@@ -633,6 +633,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 					'show_tasks_subtasks'    => true,
 					'show_tasks_completed'   => true,
 					'show_tasks_due'         => true,
+					'show_tasks_attachments' => true,
 				)
 			);
 
@@ -759,6 +760,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			if ( $args['show_tasks_due'] ) {
 				$task_fields .= ',due_on';
 			}
+			if ( $args['show_tasks_attachments'] ) {
+				$task_fields .= ',attachments.name,attachments.host,attachments.download_url,attachments.view_url';
+			}
 
 			$tasks = $asana->tasks->getTasksForProject(
 				$project_gid,
@@ -839,6 +843,32 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			}
 
 			return $project;
+		}
+
+		/**
+		 * Gets data for a given attachment.
+		 *
+		 * @since 3.5.0
+		 *
+		 * @param string $attachment_gid The Asana attachment GID.
+		 * @return \stdClass The Asana attachment data.
+		 */
+		public static function get_attachment_data( string $attachment_gid ) : \stdClass {
+
+			if ( ! isset( self::$asana ) ) {
+				$asana = self::get_client();
+			} else {
+				$asana = self::$asana;
+			}
+
+			return $asana->attachments->findById(
+				$attachment_gid,
+				array(),
+				array(
+					'fields' => 'name,host,download_url,view_url',
+					'limit' => 100,
+				)
+			);
 		}
 
 		/**

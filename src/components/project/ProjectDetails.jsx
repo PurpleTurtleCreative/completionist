@@ -8,7 +8,7 @@ import ProjectStatus from './ProjectStatus.jsx';
 
 import { getLocaleString } from '../generic/util.jsx';
 
-import '/assets/styles/scss/components/project/_ProjectDetails.scss';
+import '../../../assets/styles/scss/components/project/_ProjectDetails.scss';
 
 export default function ProjectDetails({
 	completed_at,

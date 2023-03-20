@@ -1,6 +1,6 @@
 import TaskRow from './TaskRow.jsx';
 
-import '/assets/styles/scss/components/task/_TaskList.scss';
+import '../../../assets/styles/scss/components/task/_TaskList.scss';
 
 export default function TaskList({tasks}) {
 
