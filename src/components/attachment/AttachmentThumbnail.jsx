@@ -1,7 +1,7 @@
 /**
  * AttachmentThumbnail component
  *
- * @since [unreleased]
+ * @since 3.5.0
  */
 
 import { isImage } from './util.jsx';

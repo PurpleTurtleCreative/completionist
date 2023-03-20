@@ -2,7 +2,7 @@
 /**
  * REST API: Attachments class
  *
- * @since [unreleased]
+ * @since 3.5.0
  */
 
 namespace PTC_Completionist\REST_API;
@@ -27,14 +27,14 @@ require_once PLUGIN_PATH . 'src/includes/class-util.php';
 /**
  * Class to register and handle custom REST API endpoints for Asana attachments.
  *
- * @since [unreleased]
+ * @since 3.5.0
  */
 class Attachments {
 
 	/**
 	 * Registers the custom REST API endpoints.
 	 *
-	 * @since [unreleased]
+	 * @since 3.5.0
 	 */
 	public static function register_routes() {
 		register_rest_route(
@@ -67,7 +67,7 @@ class Attachments {
 	/**
 	 * Handles a GET request to retrieve Asana attachment data.
 	 *
-	 * @since [unreleased]
+	 * @since 3.5.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *

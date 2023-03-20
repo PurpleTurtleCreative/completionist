@@ -43,7 +43,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Util' ) ) {
 		/**
 		 * Modifies object properties and array keys with the given name.
 		 *
-		 * @since [unreleased]
+		 * @since 3.5.0
 		 *
 		 * @param object|array $data An iterable object or array to modify.
 		 * @param string       $prop The name of the property to remove.
@@ -73,7 +73,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Util' ) ) {
 		 * Asserts whether a given string starts with any of the
 		 * provided prefixes.
 		 *
-		 * @since [unreleased]
+		 * @since 3.5.0
 		 *
 		 * @param string   $subject The string to check.
 		 * @param string[] $prefixes The prefix strings.

@@ -1,7 +1,7 @@
 /**
  * Attachment utility functions.
  *
- * @since [unreleased]
+ * @since 3.5.0
  */
 
 export function isImage(attachment) {
