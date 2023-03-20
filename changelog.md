@@ -1,3 +1,19 @@
+### 3.5.0 - 2023-03-19
+
+#### Added
+
+- Image attachments on tasks are now displayed in the  `[ptc_asana_project]` shortcode with new attribute `show_tasks_attachments="true"`. It is enabled by default.
+- New REST API endpoint `/v1/attachments` to proxy Asana attachment requests.
+
+#### Changed
+
+- The `'ptc-completionist-shortcode-asana-project'` script's version is now the script's build version rather than the Completionist plugin's version.
+
+#### Fixed
+
+- Image attachments in task descriptions would break due to Amazon S3 source URLs expiring access after 2 minutes. This is now fixed in the  `[ptc_asana_project]` shortcode.
+- Enabled `new_memberships` Asana update to resolve deprecation logs.
+
 ### 3.4.0 - 2022-11-04
 
 #### Added
