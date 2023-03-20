@@ -556,7 +556,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		 * Replaces inline Asana attachment URLs with local API
 		 * endpoints for retrieval.
 		 *
-		 * @since [unreleased]
+		 * @since 3.5.0
 		 *
 		 * @param string   $html The HTML content to search and replace.
 		 * @param int      $post_id The post ID to associate the API
@@ -605,7 +605,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		/**
 		 * Gets the local API endpoint for retrieving an attachment.
 		 *
-		 * @since [unreleased]
+		 * @since 3.5.0
 		 *
 		 * @param string $attachment_gid The Asana attachment's GID.
 		 * @param int    $post_id The post ID to associate the API

@@ -85,7 +85,7 @@ class Request_Tokens {
 	/**
 	 * Returns the request token's post ID.
 	 *
-	 * @since [unreleased]
+	 * @since 3.5.0
 	 *
 	 * @return int The request token's post ID.
 	 */

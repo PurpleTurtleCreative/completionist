@@ -848,7 +848,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		/**
 		 * Gets data for a given attachment.
 		 *
-		 * @since [unreleased]
+		 * @since 3.5.0
 		 *
 		 * @param string $attachment_gid The Asana attachment GID.
 		 * @return \stdClass The Asana attachment data.

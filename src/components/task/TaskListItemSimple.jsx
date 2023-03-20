@@ -1,7 +1,7 @@
 /**
  * TaskListItemSimple component
  *
- * @since [unreleased]
+ * @since 3.5.0
  */
 
 import {
