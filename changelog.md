@@ -1,3 +1,19 @@
+### [unreleased]
+
+#### Added
+
+- "Project Embeds" as a feature listed in the README.
+- Documentation links for each feature in the README.
+
+#### Changed
+
+- Remote plugin updates are now hooked by a named callback rather than an anonymous function.
+
+#### Fixed
+
+- Fatal error when block editor assets are enqueued in a context with no current post ID, such as when using the classic theme Customizer.
+- Enabled `new_goal_memberships` Asana update to resolve deprecation logs.
+
 ### 3.5.0 - 2023-03-19
 
 #### Added
