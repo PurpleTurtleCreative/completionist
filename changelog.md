@@ -1,4 +1,4 @@
-### [unreleased]
+### 3.5.1 - 2023-03-22
 
 #### Added
 
@@ -8,6 +8,7 @@
 #### Changed
 
 - Remote plugin updates are now hooked by a named callback rather than an anonymous function.
+- Plugin description and copyright year.
 
 #### Fixed
 
