@@ -3,14 +3,14 @@
  * Completionist
  *
  * @author            Michelle Blanchette
- * @copyright         2022 Purple Turtle Creative, LLC
+ * @copyright         2023 Purple Turtle Creative, LLC
  * @license           GPL-3.0-or-later
  *
  * @wordpress-plugin
  * Plugin Name:       Completionist - Asana for WordPress
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
- * Description:       Manage, pin, and automate Asana tasks in relevant areas of your WordPress admin.
- * Version:           3.5.0
+ * Description:       Manage, pin, automate, and display Asana tasks in relevant areas of your WordPress admin and website frontend.
+ * Version:           [unreleased]
  * Requires PHP:      7.1
  * Requires at least: 5.0.0
  * Tested up to:      6.1.1
@@ -113,24 +113,33 @@ add_action(
 		/* Enqueue Automation Actions */
 		require_once PLUGIN_PATH . 'src/includes/automations/class-events.php';
 		Automations\Events::add_actions();
-		/* YahnisElsts/plugin-update-checker */
-		require_once PLUGIN_PATH . 'vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php';
-		if ( class_exists( '\Puc_v4_Factory' ) ) {
-			$plugin_server_endpoint = add_query_arg(
-				[
-					'wp_version' => $GLOBALS['wp_version'],
-					'site_domain' => rawurlencode( get_site_url( null, '', 'https' ) ),
-				],
-				'https://purpleturtlecreative.com/wp-json/ptc-resources/v1/plugins/completionist/latest'
-			);
-			\Puc_v4_Factory::buildUpdateChecker(
-				$plugin_server_endpoint,
-				PLUGIN_FILE,
-				PLUGIN_SLUG
-			);
-		}
 	}
 );
+
+/**
+ * Registers remote plugin updates.
+ *
+ * @since [unreleased]
+ */
+function register_remote_plugin_updates() {
+	/* YahnisElsts/plugin-update-checker */
+	require_once PLUGIN_PATH . 'vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php';
+	if ( class_exists( '\Puc_v4_Factory' ) ) {
+		$plugin_server_endpoint = add_query_arg(
+			array(
+				'wp_version' => $GLOBALS['wp_version'],
+				'site_domain' => rawurlencode( get_site_url( null, '', 'https' ) ),
+			),
+			'https://purpleturtlecreative.com/wp-json/ptc-resources/v1/plugins/completionist/latest'
+		);
+		\Puc_v4_Factory::buildUpdateChecker(
+			$plugin_server_endpoint,
+			PLUGIN_FILE,
+			PLUGIN_SLUG
+		);
+	}
+}
+add_action( 'plugins_loaded', __NAMESPACE__ . '\register_remote_plugin_updates' );
 
 // Register public functionality.
 foreach ( glob( PLUGIN_PATH . 'src/public/class-*.php' ) as $file ) {
