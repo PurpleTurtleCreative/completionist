@@ -40,7 +40,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		/**
 		 * The $options array for \Asana\Client instantiation.
 		 *
-		 * @since [unreleased]
+		 * @since 3.5.2
 		 *
 		 * @var array ASANA_CLIENT_OPTIONS
 		 */
