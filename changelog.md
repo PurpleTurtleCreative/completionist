@@ -1,3 +1,9 @@
+### [unreleased]
+
+#### Fixed
+
+- Asana deprecations still being logged by some `\Asana\Client` instances that were loaded with different options than expected, particularly missing the `Asana-Enable` headers.
+
 ### 3.5.1 - 2023-03-22
 
 #### Added

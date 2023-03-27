@@ -38,6 +38,19 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		public const TASK_OPT_FIELDS = 'name,completed,notes,due_on,assignee,workspace,tags';
 
 		/**
+		 * The $options array for \Asana\Client instantiation.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @var array ASANA_CLIENT_OPTIONS
+		 */
+		public const ASANA_CLIENT_OPTIONS = array(
+			'headers' => array(
+				'asana-enable' => 'new_user_task_lists,new_project_templates,new_memberships,new_goal_memberships',
+			),
+		);
+
+		/**
 		 * The currently authenticated WordPress user's ID.
 		 *
 		 * @since 1.1.0
@@ -177,11 +190,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			require_once PLUGIN_PATH . '/vendor/autoload.php';
 			$asana = \Asana\Client::accessToken(
 				$asana_personal_access_token,
-				[
-					'headers' => [
-						'asana-enable' => 'new_user_task_lists,new_project_templates,new_memberships,new_goal_memberships',
-					],
-				]
+				self::ASANA_CLIENT_OPTIONS
 			);
 
 			try {
@@ -313,7 +322,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 					continue;
 				}
 
-				$asana = \Asana\Client::accessToken( $asana_personal_access_token );
+				$asana = \Asana\Client::accessToken(
+					$asana_personal_access_token,
+					self::ASANA_CLIENT_OPTIONS
+				);
 
 				try {
 					$me = $asana->users->me();
@@ -490,7 +502,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			}
 
 			require_once PLUGIN_PATH . '/vendor/autoload.php';
-			$asana = \Asana\Client::accessToken( $asana_personal_access_token );
+			$asana = \Asana\Client::accessToken(
+				$asana_personal_access_token,
+				self::ASANA_CLIENT_OPTIONS
+			);
 
 			try {
 				$asana->users->me();
