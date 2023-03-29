@@ -3,6 +3,7 @@
 #### Added
 
 - Project sections can now be excluded by name in the  `[ptc_asana_project]` shortcode using the new attribute like `exclude_sections="First Section,Another Section"`. No project sections are excluded by default.
+- Tags on tasks are now displayed in the  `[ptc_asana_project]` shortcode with new attribute `show_tasks_tags="true"`. It is enabled by default.
 
 ### 3.5.2 - 2023-03-27
 
