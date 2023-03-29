@@ -173,20 +173,13 @@ class Projects {
 					is_array( $exclude_section_names )
 				) {
 					$exclude_section_names = array_map( 'trim', $exclude_section_names );
-					Util::deep_modify_prop(
-						$project_data,
-						'sections',
-						function( &$sections ) use ( &$exclude_section_names ) {
-							$modified_sections = array();
-							foreach ( $sections as $i => &$section ) {
-								if ( ! in_array( trim( $section->name ), $exclude_section_names, true ) ) {
-									// Keep section if name is not in exclude list.
-									$modified_sections[] = $section;
-								}
-							}
-							$sections = $modified_sections;
+					foreach ( $project_data->sections as $i => &$section ) {
+						if ( ! in_array( trim( $section->name ), $exclude_section_names, true ) ) {
+							// Keep section if name is not in exclude list.
+							$keep_sections[] = $section;
 						}
-					);
+					}
+					$project_data->sections = $keep_sections;
 				}
 			}
 
