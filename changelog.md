@@ -1,3 +1,9 @@
+### [unreleased]
+
+#### Added
+
+- Project sections can now be excluded by name in the  `[ptc_asana_project]` shortcode using the new attribute like `exclude_sections="First Section,Another Section"`. No project sections are excluded by default.
+
 ### 3.5.2 - 2023-03-27
 
 #### Fixed

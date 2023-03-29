@@ -165,6 +165,31 @@ class Projects {
 				}
 			);
 
+			// Exclude specified project sections by name.
+			if ( ! empty( $args['exclude_sections'] ) ) {
+				$exclude_section_names = explode( ',', $args['exclude_sections'] );
+				if (
+					! empty( $exclude_section_names ) &&
+					is_array( $exclude_section_names )
+				) {
+					$exclude_section_names = array_map( 'trim', $exclude_section_names );
+					Util::deep_modify_prop(
+						$project_data,
+						'sections',
+						function( &$sections ) use ( &$exclude_section_names ) {
+							$modified_sections = array();
+							foreach ( $sections as $i => &$section ) {
+								if ( ! in_array( trim( $section->name ), $exclude_section_names, true ) ) {
+									// Keep section if name is not in exclude list.
+									$modified_sections[] = $section;
+								}
+							}
+							$sections = $modified_sections;
+						}
+					);
+				}
+			}
+
 			// Ensure GIDs are stripped.
 			Util::deep_unset_prop( $project_data, 'gid' );
 

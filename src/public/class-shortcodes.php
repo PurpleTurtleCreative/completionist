@@ -103,6 +103,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 				array(
 					'src'                    => '', // Required.
 					'auth_user'              => '',
+					'exclude_sections'       => '',
 					'show_name'              => 'true',
 					'show_description'       => 'true',
 					'show_status'            => 'true',
