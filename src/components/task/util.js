@@ -203,3 +203,23 @@ export function getTaskAttachments(task) {
 
 	return attachments;
 }
+
+export function getTaskTags(task) {
+
+	let tags = [];
+
+	if (
+		task &&
+		'tags' in task &&
+		task.tags &&
+		Array.isArray( task.tags )
+	) {
+		tags = task.tags;
+	}
+
+	if ( tags.length > 0 ) {
+		tags.sort((a, b) => a.name.localeCompare(b.name));
+	}
+
+	return tags;
+}

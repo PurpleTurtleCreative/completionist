@@ -309,12 +309,39 @@
 		}
 	}
 
+	.task-tags {
+
+		.tags-list {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			flex-wrap: wrap;
+			gap: 5px;
+			list-style: none;
+			padding: 0;
+			margin: 0;
+
+			li {
+				display: block;
+				border-radius: 999px;
+				padding: 0.5em 1em;
+				margin: 0;
+				background: color(grey-lighter);
+				color: color(black);
+				font-size: 1rem;
+				line-height: 1;
+
+				@include asana-palette-colors;
+			}
+		}
+	}
+
 	.task-attachments {
 
 		.attachments-list {
+			list-style: none;
 			padding: 0;
 			margin: 0;
-			list-style: none;
 
 			li {
 				margin: 10px 0;

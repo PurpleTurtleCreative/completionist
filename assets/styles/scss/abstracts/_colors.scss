@@ -1,3 +1,5 @@
+@use "sass:string";
+
 $colors: (
 
 	// Neutrals.
@@ -49,7 +51,32 @@ $colors: (
 	asana-success-border: #8dc2ac,
 );
 
-// Getter function
+$asana-palette: (
+
+	// Asana API color value -> UI color name.
+	none: rgb(199, 196, 196), // None.
+	dark-brown: rgb(248, 223, 114), // Yellow.
+	dark-green: rgb(93, 162, 131), // Green.
+	dark-orange: rgb(236, 141, 113), // Orange.
+	dark-pink: rgb(242, 111, 178), // HotPink.
+	dark-purple: rgb(141, 132, 232), // Indigo.
+	dark-red: rgb(240, 106, 106), // Red.
+	dark-teal: rgb(158, 231, 227), // Aqua.
+	light-blue: rgb(69, 115, 210), // Blue.
+	light-green: rgb(174, 207, 85), // YellowGreen.
+	light-orange: rgb(241, 189, 108), // YellowOrange.
+	light-pink: rgb(249, 170, 239), // Magenta.
+	light-purple: rgb(179, 107, 212), // Purple.
+	light-red: rgb(252, 151, 154), // Pink.
+	light-teal: rgb(78, 203, 196), // BlueGreen.
+	light-warm-gray: rgb(109, 110, 111), // CoolGray.
+
+	// "dark-blue",
+	// "dark-warm-gray",
+	// "light-brown",
+);
+
+// Functions.
 
 @function color($key) {
 
@@ -60,4 +87,47 @@ $colors: (
 
 	@warn "Unknown `#{$key}` in $colors.";
 	@return null;
+}
+
+@function asana-palette($key) {
+
+	@if map-has-key($asana-palette, $key) {
+
+		@return map-get($asana-palette, $key);
+	}
+
+	@warn "Unknown `#{$key}` in $asana-palette.";
+	@return null;
+}
+
+// Mixins.
+
+@mixin asana-palette-colors() {
+
+	@each $name, $color in $asana-palette {
+		&.--has-asana-palette-color-#{""+$name} {
+			background-color: $color;
+			@if "light-blue" == $name {
+				color: color(white);
+			} @else if "dark-pink" == $name {
+				color: color(black);
+			} @else if "dark-red" == $name {
+				color: color(black);
+			} @else if "dark-teal" == $name {
+				color: color(black);
+			} @else if "light-warm-gray" == $name {
+				color: color(white);
+			} @else if "dark-orange" == $name {
+				color: color(black);
+			} @else if "dark-brown" == $name {
+				color: color(black);
+			} @else if "light-purple" == $name {
+				color: color(white);
+			} @else if string.index(""+$name, "dark") {
+				color: color(white);
+			} @else {
+				color: color(black);
+			}
+		}
+	}
 }

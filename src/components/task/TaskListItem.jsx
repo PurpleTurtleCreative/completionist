@@ -10,7 +10,8 @@ import {
 	getTaskDueOn,
 	getTaskHtmlNotes,
 	getTaskSubtasks,
-	getTaskAttachments
+	getTaskAttachments,
+	getTaskTags,
 } from './util.js';
 
 import { getLocaleString } from '../generic/util.jsx';
@@ -140,6 +141,27 @@ export default function TaskListItem({ task, rowNumber = null }) {
 		}
 	}
 
+	let maybeTags = null;
+	if ( 'html_notes' in task ) {
+		renderToggle = true;
+		const taskTags = getTaskTags(task);
+		if ( taskTags.length > 0 ) {
+			allowToggle = true;
+			maybeTags = (
+				<div className="task-tags">
+					<p className="small-label">Tags</p>
+					<ol className="tags-list">
+						{
+							taskTags.map((tag, index) => {
+								return <li className={"--has-asana-palette-color-"+tag.color}>{tag.name}</li>;
+							})
+						}
+					</ol>
+				</div>
+			);
+		}
+	}
+
 	let maybeToggle = null;
 	if ( renderToggle ) {
 		let maybeToggleIcon = null;
@@ -159,6 +181,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 				{ maybeToggle && <div className="spacer toggle"></div>}
 				{ maybeCompleted && <div className="spacer completed"></div>}
 				<div className="details">
+					{maybeTags}
 					{maybeDescription}
 					{maybeSubtaskList}
 					{maybeAttachments}
