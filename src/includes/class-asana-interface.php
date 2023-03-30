@@ -787,7 +787,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$project_gid,
 				array(),
 				array(
-					'fields' => "{$task_fields},memberships,this.memberships.section",
+					'fields' => "{$task_fields},memberships,memberships.section",
 					'limit' => 100,
 				)
 			);
