@@ -603,6 +603,46 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		}
 
 		/**
+		 * Replaces inline video objects with oEmbed HTML.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string   $html The HTML content to search and replace.
+		 * @param string[] $replacements Optional. A variable
+		 * for capturing the replaced urls.
+		 * @return string The modified HTML content.
+		 */
+		public static function replace_urls_with_oembeds(
+			string $html,
+			array &$replacements = array()
+		) : string {
+			// Find and replace all inline objects.
+			return preg_replace_callback(
+				'/<object>.*(https?:\/\/[^<"]+).*<\/object>/m',
+				function ( $object_tag_matches ) use ( &$replacements ) {
+
+					// Replace the object with oEmbed HTML.
+					if ( ! empty( $object_tag_matches[1] ) ) {
+						$oembed_html = wp_oembed_get(
+							$object_tag_matches[1],
+							array(
+								'width' => 1280,
+								'height' => 720,
+							)
+						);
+						if ( $oembed_html && is_string( $oembed_html ) ) {
+							$replacements[] = $object_tag_matches[1];
+							return '<div class="ptc-responsive-embed">' . $oembed_html . '</div>';
+						}
+					}
+
+					return $object_tag_matches[0];
+				},
+				$html
+			);
+		}
+
+		/**
 		 * Gets the local API endpoint for retrieving an attachment.
 		 *
 		 * @since 3.5.0

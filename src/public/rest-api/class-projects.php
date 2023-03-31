@@ -129,17 +129,28 @@ class Projects {
 				);
 			}
 
-			// Localize inline attachments.
-			$inline_attachment_urls = [];
+			// Localize inline attachments and replace embeds.
+			$inline_attachment_urls = array();
+			$inline_oembed_urls = array();
 			Util::deep_modify_prop(
 				$project_data,
 				'html_notes',
-				function( &$html_notes ) use ( &$request_tokens, &$args, &$inline_attachment_urls ) {
+				function( &$html_notes )
+				use (
+					&$request_tokens,
+					&$args,
+					&$inline_attachment_urls,
+					&$inline_oembed_urls
+				) {
 					$html_notes = HTML_Builder::localize_attachment_urls(
 						$html_notes,
 						$request_tokens->get_post_id(),
 						$args['auth_user'],
 						$inline_attachment_urls
+					);
+					$html_notes = HTML_Builder::replace_urls_with_oembeds(
+						$html_notes,
+						$inline_oembed_urls
 					);
 				}
 			);
@@ -149,7 +160,13 @@ class Projects {
 			Util::deep_modify_prop(
 				$project_data,
 				'attachments',
-				function( &$attachments ) use ( &$request_tokens, &$args, &$inline_attachment_urls ) {
+				function( &$attachments )
+				use (
+					&$request_tokens,
+					&$args,
+					&$inline_attachment_urls,
+					&$inline_oembed_urls
+				) {
 					$modified_attachments = [];
 					foreach ( $attachments as $attachment ) {
 						$attachment->_ptc_view_url = HTML_Builder::get_local_attachment_view_url(
@@ -157,7 +174,10 @@ class Projects {
 							$request_tokens->get_post_id(),
 							$args['auth_user']
 						);
-						if ( false === in_array( $attachment->_ptc_view_url, $inline_attachment_urls, true ) ) {
+						if (
+							false === in_array( $attachment->_ptc_view_url, $inline_attachment_urls, true ) &&
+							false === in_array( $attachment->view_url, $inline_oembed_urls, true )
+						) {
 							$modified_attachments[] = $attachment;
 						}
 					}

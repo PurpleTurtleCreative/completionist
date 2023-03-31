@@ -1,5 +1,6 @@
 @import '../../abstracts/colors';
 @import '../../abstracts/responsive';
+@import '../../abstracts/media';
 
 //----------------------
 
@@ -333,6 +334,13 @@
 
 				@include asana-palette-colors;
 			}
+		}
+	}
+
+	.description {
+
+		.ptc-responsive-embed {
+			@include responsive-iframe-wrapper(16, 9);
 		}
 	}
 
