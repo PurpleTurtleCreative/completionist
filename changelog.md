@@ -4,6 +4,12 @@
 
 - Project sections can now be excluded by name in the  `[ptc_asana_project]` shortcode using the new attribute like `exclude_sections="First Section,Another Section"`. No project sections are excluded by default.
 - Tags on tasks are now displayed in the  `[ptc_asana_project]` shortcode with new attribute `show_tasks_tags="true"`. It is enabled by default.
+- Video attachments on tasks are now supported.
+- YouTube and Vimeo video embeds within task descriptions are now supported. They are displayed responsively at a 16:9 aspect ratio.
+
+#### Changed
+
+- All default HTTP headers are now removed from proxied attachment requests to ensure only the desired headers are returned. For example, an `Expires` header would be present with a time that came before the desired `Cache-Control: max-age=...` duration.
 
 ### 3.5.2 - 2023-03-27
 
