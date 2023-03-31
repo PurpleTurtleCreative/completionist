@@ -4,7 +4,7 @@
  * @since 3.5.0
  */
 
-import { isImage } from './util.jsx';
+import { isImage, isVideo } from './util.jsx';
 
 // import '../../../assets/styles/scss/components/task/_TaskActions.scss';
 
@@ -20,19 +20,21 @@ export default function AttachmentThumbnail({ attachment }) {
 			attachment.name
 		)
 	) {
-		window.console.log('Could not display AttachmentThumbnail for attachment with missing data.', attachment);
+		window.console.warn('Could not display AttachmentThumbnail for attachment with missing data.', attachment);
 		return null;
 	}
 
-	if ( ! isImage(attachment) ) {
-		// @TODO - Only supporting <img> attachments for now.
-		window.console.log('Could not display AttachmentThumbnail for attachment of unsupported type.', attachment);
+	let content = null;
+	if ( isImage(attachment) ) {
+		content = <img src={attachment._ptc_view_url} alt={attachment.name} />;
+	} else if ( isVideo(attachment) ) {
+		content = <video src={attachment._ptc_view_url} controls />;
+	} else {
+		window.console.warn('Could not display AttachmentThumbnail for unsupported attachment:', attachment);
 		return null;
 	}
 
 	return (
-		<div className="ptc-AttachmentThumbnail">
-			<img src={attachment._ptc_view_url} alt={attachment.name} />
-		</div>
+		<div className="ptc-AttachmentThumbnail">{content}</div>
 	);
 }

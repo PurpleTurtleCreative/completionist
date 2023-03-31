@@ -2,6 +2,8 @@
  * Utility functions unrelated to application state.
  */
 
+import { isImage, isVideo } from '../attachment/util.jsx';
+
 export function getTaskUrl(taskGID) {
 	return `https://app.asana.com/0/0/${taskGID}/f`;
 }
@@ -188,15 +190,10 @@ export function getTaskAttachments(task) {
 		task.attachments.length > 0
 	) {
 		for ( let attachment of task.attachments ) {
-			if (
-				attachment.name.endsWith('.jpg') ||
-				attachment.name.endsWith('.jpeg') ||
-				attachment.name.endsWith('.png') ||
-				attachment.name.endsWith('.bmp') ||
-				attachment.name.endsWith('.gif')
-			) {
-				// @TODO - Only supporting <img> attachments for now.
+			if ( isImage(attachment) || isVideo(attachment) ) {
 				attachments.push(attachment);
+			} else {
+				window.console.warn('Completionist currently doesn\'t support the following Asana attachment:', attachment);
 			}
 		}
 	}

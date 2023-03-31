@@ -23,6 +23,21 @@ export function isImage(attachment) {
 	return false;
 }
 
+export function isVideo(attachment) {
+
+	if (
+		attachment &&
+		'name' in attachment &&
+		attachment.name
+	) {
+		return (
+			attachment.name.endsWith('.mp4')
+		);
+	}
+
+	return false;
+}
+
 export function fetchRefreshedAttachment(attachment) {
 
 	if (
