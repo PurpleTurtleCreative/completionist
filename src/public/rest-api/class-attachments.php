@@ -144,7 +144,6 @@ class Attachments {
 								$len = strlen( $header );
 
 								$header = trim( $header );
-								error_log( print_r( $header, true ) );
 
 								if (
 									 ! empty( $header ) &&
