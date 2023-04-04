@@ -70,7 +70,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 				'ptc-completionist-shortcode-asana-project',
 				PLUGIN_URL . '/build/index_ShortcodeAsanaProject.jsx.css',
 				array(),
-				PLUGIN_VERSION
+				$asset_file['version']
 			);
 		}
 
