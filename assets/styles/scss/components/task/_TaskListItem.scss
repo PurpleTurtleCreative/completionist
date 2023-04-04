@@ -67,6 +67,10 @@
 		max-width: 100%;
 	}
 
+	.ptc-responsive-embed {
+		@include responsive-iframe-wrapper(16, 9);
+	}
+
 	.spacer {
 		border-color: transparent;
 		background: none;
@@ -335,13 +339,6 @@
 
 				@include asana-palette-colors;
 			}
-		}
-	}
-
-	.description {
-
-		.ptc-responsive-embed {
-			@include responsive-iframe-wrapper(16, 9);
 		}
 	}
 
