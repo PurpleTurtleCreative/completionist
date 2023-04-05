@@ -745,6 +745,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				array(
 					'(no section)',
 					'Untitled section',
+					'Untitled Section',
 				),
 				$project_gid,
 				$args
@@ -846,7 +847,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
 						// Clone in case the task appears in another membership.
 						$task_clone = clone $task;
-						// Remove redundant data.
+						// Remove other memberships (projects) data.
 						unset( $task_clone->memberships );
 						// Organize task into project section.
 						$project->sections[ $sections_map[ $membership->section->gid ] ]->tasks[] = $task_clone;
