@@ -802,98 +802,103 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				}
 			}
 
-			// Get project tasks data.
+			// Check if there are any project sections.
+			if ( empty( $project->sections ) || empty( $sections_map ) ) {
+				unset( $project->sections );
+			} else {
 
-			/*
-			 * Note that "completed" is initially needed to determine
-			 * which tasks should be removed from the return, even if
-			 * $args['show_tasks_completed'] is false.
-			 */
-			$task_fields = 'name,completed';
+				// Get tasks for each project section.
 
-			if ( $args['show_tasks_description'] ) {
-				$task_fields .= ',html_notes';
-			}
-			if ( $args['show_tasks_assignee'] ) {
-				$task_fields .= ',assignee,this.assignee.name,this.assignee.photo.image_36x36';
-			}
-			if ( $args['show_tasks_due'] ) {
-				$task_fields .= ',due_on';
-			}
-			if ( $args['show_tasks_attachments'] ) {
-				$task_fields .= ',attachments.name,attachments.host,attachments.download_url,attachments.view_url';
-			}
-			if ( $args['show_tasks_tags'] ) {
-				$task_fields .= ',tags,tags.name,tags.color';
-			}
+				$task_fields = 'name';
+				$task_request_params = array();
 
-			$tasks = $asana->tasks->getTasksForProject(
-				$project_gid,
-				array(),
-				array(
-					'fields' => "{$task_fields},memberships,memberships.section",
-					'limit' => 100,
-				)
-			);
+				/*
+				 * Note that completed tasks are not returned when
+				 * ?completed_since=now
+				 *
+				 * @see https://developers.asana.com/reference/gettasksforproject
+				 */
+				if ( $args['show_tasks_completed'] ) {
+					// Show whether a task is completed or not.
+					$task_fields .= ',completed';
+				} else {
+					// Exclude all completed tasks.
+					$task_request_params['completed_since'] = 'now';
+				}
 
-			$tasks = iterator_to_array( $tasks );
+				if ( $args['show_tasks_description'] ) {
+					$task_fields .= ',html_notes';
+				}
+				if ( $args['show_tasks_assignee'] ) {
+					$task_fields .= ',assignee,this.assignee.name,this.assignee.photo.image_36x36';
+				}
+				if ( $args['show_tasks_due'] ) {
+					$task_fields .= ',due_on';
+				}
+				if ( $args['show_tasks_attachments'] ) {
+					$task_fields .= ',attachments.name,attachments.host,attachments.download_url,attachments.view_url';
+				}
+				if ( $args['show_tasks_tags'] ) {
+					$task_fields .= ',tags,tags.name,tags.color';
+				}
 
-			if ( $args['show_tasks_subtasks'] ) {
-				self::load_subtasks( $tasks, $task_fields );
-			}
+				$tasks = $asana->tasks->getTasksForProject(
+					$project_gid,
+					$task_request_params,
+					array(
+						'fields' => "{$task_fields},memberships,memberships.section",
+						'limit' => 100,
+					)
+				);
 
-			// Clean data and map tasks to project sections.
-			foreach ( $tasks as &$task ) {
-				foreach ( $task->memberships as &$membership ) {
-					if ( isset( $sections_map[ $membership->section->gid ] ) ) {
+				$tasks = iterator_to_array( $tasks );
 
-						if ( isset( $task->completed ) ) {
-							if ( ! $args['show_tasks_completed'] ) {
-								if ( $task->completed ) {
-									// Don't show completed tasks.
-									continue;
-								}
-								// Don't show completed status.
-								unset( $task->completed );
+				if ( $args['show_tasks_subtasks'] ) {
+					self::load_subtasks( $tasks, $task_fields );
+				}
+
+				// Clean data and map tasks to project sections.
+				foreach ( $tasks as &$task ) {
+					foreach ( $task->memberships as &$membership ) {
+						if ( isset( $sections_map[ $membership->section->gid ] ) ) {
+
+							// Sanitize task description.
+							if ( isset( $task->html_notes ) ) {
+								$task->html_notes = wpautop( wp_kses_post( $task->html_notes ) );
 							}
-						}
 
-						// Sanitize task description.
-						if ( isset( $task->html_notes ) ) {
-							$task->html_notes = wpautop( wp_kses_post( $task->html_notes ) );
-						}
-
-						// Process subtasks.
-						if ( isset( $task->subtasks ) ) {
-							foreach ( $task->subtasks as $subtasks_i => &$subtask ) {
-								if ( isset( $subtask->completed ) ) {
-									if ( ! $args['show_tasks_completed'] ) {
-										if ( $subtask->completed ) {
-											// Don't show completed tasks.
-											unset( $task->subtasks[ $subtasks_i ] );
-											continue;
+							// Process subtasks.
+							if ( isset( $task->subtasks ) ) {
+								foreach ( $task->subtasks as $subtasks_i => &$subtask ) {
+									if ( isset( $subtask->completed ) ) {
+										if ( ! $args['show_tasks_completed'] ) {
+											if ( $subtask->completed ) {
+												// Don't show completed tasks.
+												unset( $task->subtasks[ $subtasks_i ] );
+												continue;
+											}
+											// Don't show completed status.
+											unset( $subtask->completed );
 										}
-										// Don't show completed status.
-										unset( $subtask->completed );
+									}
+									// Sanitize task description.
+									if ( isset( $subtask->html_notes ) ) {
+										$subtask->html_notes = wpautop( wp_kses_post( $subtask->html_notes ) );
 									}
 								}
-								// Sanitize task description.
-								if ( isset( $subtask->html_notes ) ) {
-									$subtask->html_notes = wpautop( wp_kses_post( $subtask->html_notes ) );
+								// Fix index gaps from possible removals.
+								if ( ! $args['show_tasks_completed'] ) {
+									$task->subtasks = array_values( $task->subtasks );
 								}
 							}
-							// Fix index gaps from possible removals.
-							if ( ! $args['show_tasks_completed'] ) {
-								$task->subtasks = array_values( $task->subtasks );
-							}
-						}
 
-						// Clone in case the task appears in another membership.
-						$task_clone = clone $task;
-						// Remove other memberships (projects) data.
-						unset( $task_clone->memberships );
-						// Organize task into project section.
-						$project->sections[ $sections_map[ $membership->section->gid ] ]->tasks[] = $task_clone;
+							// Clone in case the task appears in another membership.
+							$task_clone = clone $task;
+							// Remove other memberships (projects) data.
+							unset( $task_clone->memberships );
+							// Organize task into project section.
+							$project->sections[ $sections_map[ $membership->section->gid ] ]->tasks[] = $task_clone;
+						}
 					}
 				}
 			}
