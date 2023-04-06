@@ -634,35 +634,53 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			array $args = array()
 		) : \stdClass {
 
-			$args = wp_parse_args(
-				array_map( 'rest_sanitize_boolean', $args ),
-				array(
-					'show_gids'              => true,
-					'show_name'              => true,
-					'show_description'       => true,
-					'show_status'            => true,
-					'show_modified'          => true,
-					'show_due'               => true,
-					'show_tasks_description' => true,
-					'show_tasks_assignee'    => true,
-					'show_tasks_subtasks'    => true,
-					'show_tasks_completed'   => true,
-					'show_tasks_due'         => true,
-					'show_tasks_attachments' => true,
-					'show_tasks_tags'        => true,
-				)
-			);
-
+			// Check project GID.
 			$project_gid = Options::sanitize( 'gid', $project_gid );
 			if ( '' == $project_gid ) {
+				// Invalid project GID.
 				return new \stdClass();
 			}
 
+			// Load Asana client.
+			$asana = null;
 			if ( ! isset( self::$asana ) ) {
+				// Might throw exception.
 				$asana = self::get_client();
 			} else {
 				$asana = self::$asana;
 			}
+
+			// Define all args default values.
+			$default_args = array(
+				'exclude_sections'       => '',
+				'show_gids'              => true,
+				'show_name'              => true,
+				'show_description'       => true,
+				'show_status'            => true,
+				'show_modified'          => true,
+				'show_due'               => true,
+				'show_tasks_description' => true,
+				'show_tasks_assignee'    => true,
+				'show_tasks_subtasks'    => true,
+				'show_tasks_completed'   => true,
+				'show_tasks_due'         => true,
+				'show_tasks_attachments' => true,
+				'show_tasks_tags'        => true,
+			);
+
+			// Sanitize provided args.
+			foreach ( $args as $key => &$value ) {
+				if ( isset( $default_args[ $key ] ) ) {
+					if ( is_bool( $default_args[ $key ] ) ) {
+						$value = (bool) rest_sanitize_boolean( $value );
+					} else {
+						$value = (string) sanitize_text_field( $value );
+					}
+				}
+			}
+
+			// Merge default args.
+			$args = array_merge( $default_args, $args );
 
 			// Get project data.
 
@@ -744,6 +762,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				'ptc_completionist_project_section_names_to_erase',
 				array(
 					'(no section)',
+					'untitled section',
 					'Untitled section',
 					'Untitled Section',
 				),
@@ -751,12 +770,36 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$args
 			);
 
-			foreach ( $project->sections as $i => &$section ) {
-				if ( in_array( $section->name, $erase_section_names ) ) {
-					// Remove Asana default title for a nameless section.
-					$section->name = null;
+			// Parse excluded project section names.
+			$exclude_section_names = array();
+			if ( ! empty( $args['exclude_sections'] ) ) {
+				$exclude_section_names = explode( ',', $args['exclude_sections'] );
+				if (
+					! empty( $exclude_section_names ) &&
+					is_array( $exclude_section_names )
+				) {
+					$exclude_section_names = array_map( 'trim', $exclude_section_names );
 				}
-				$sections_map[ $section->gid ] = $i;
+			}
+
+			// Map and filter project sections.
+			foreach ( $project->sections as $i => &$section ) {
+				if ( true === in_array( $section->name, $exclude_section_names, true ) ) {
+					// Remove excluded section.
+					//
+					// Tested in a LeetCode Playground that this seems stable
+					// and won't mess up iterating the rest of the array.
+					// Just note that there could now missing indices like:
+					// [ 0, 1, 2 ] => unset[1] => [ 0, 2 ] .
+					unset( $project->sections[ $i ] );
+					continue;
+				} else {
+					if ( true === in_array( $section->name, $erase_section_names, true ) ) {
+						// Remove Asana default title for a nameless section.
+						$section->name = null;
+					}
+					$sections_map[ $section->gid ] = $i;
+				}
 			}
 
 			// Get project tasks data.
