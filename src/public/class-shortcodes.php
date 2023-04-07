@@ -128,6 +128,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 
 			$atts['src'] = (string) esc_url_raw( $atts['src'] );
 			$atts['auth_user'] = (int) $atts['auth_user'];
+			$atts['exclude_sections'] = html_entity_decode( $atts['exclude_sections'], ENT_QUOTES | ENT_HTML5 );
 
 			// Prepare shortcode.
 
