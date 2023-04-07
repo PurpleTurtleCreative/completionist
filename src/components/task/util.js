@@ -2,6 +2,8 @@
  * Utility functions unrelated to application state.
  */
 
+import { isImage, isVideo } from '../attachment/util.jsx';
+
 export function getTaskUrl(taskGID) {
 	return `https://app.asana.com/0/0/${taskGID}/f`;
 }
@@ -188,18 +190,33 @@ export function getTaskAttachments(task) {
 		task.attachments.length > 0
 	) {
 		for ( let attachment of task.attachments ) {
-			if (
-				attachment.name.endsWith('.jpg') ||
-				attachment.name.endsWith('.jpeg') ||
-				attachment.name.endsWith('.png') ||
-				attachment.name.endsWith('.bmp') ||
-				attachment.name.endsWith('.gif')
-			) {
-				// @TODO - Only supporting <img> attachments for now.
+			if ( isImage(attachment) || isVideo(attachment) ) {
 				attachments.push(attachment);
+			} else {
+				window.console.warn('Completionist currently doesn\'t support the following Asana attachment:', attachment);
 			}
 		}
 	}
 
 	return attachments;
+}
+
+export function getTaskTags(task) {
+
+	let tags = [];
+
+	if (
+		task &&
+		'tags' in task &&
+		task.tags &&
+		Array.isArray( task.tags )
+	) {
+		tags = task.tags;
+	}
+
+	if ( tags.length > 0 ) {
+		tags.sort((a, b) => a.name.localeCompare(b.name));
+	}
+
+	return tags;
 }

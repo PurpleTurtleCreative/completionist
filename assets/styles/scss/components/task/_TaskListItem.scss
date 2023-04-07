@@ -1,5 +1,6 @@
 @import '../../abstracts/colors';
 @import '../../abstracts/responsive';
+@import '../../abstracts/media';
 
 //----------------------
 
@@ -60,9 +61,15 @@
 		}
 	}
 
-	img {
+	img,
+	video {
 		display: block;
 		max-width: 100%;
+		border: 1px solid color(grey-lighter);
+	}
+
+	.ptc-responsive-embed {
+		@include responsive-iframe-wrapper(16, 9);
 	}
 
 	.spacer {
@@ -309,12 +316,39 @@
 		}
 	}
 
+	.task-tags {
+
+		.tags-list {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			flex-wrap: wrap;
+			gap: 5px;
+			list-style: none;
+			padding: 0;
+			margin: 10px 0;
+
+			li {
+				display: block;
+				border-radius: 999px;
+				padding: 0.5em 1em;
+				margin: 0;
+				background: color(grey-lighter);
+				color: color(black);
+				font-size: 1rem;
+				line-height: 1;
+
+				@include asana-palette-colors;
+			}
+		}
+	}
+
 	.task-attachments {
 
 		.attachments-list {
+			list-style: none;
 			padding: 0;
 			margin: 0;
-			list-style: none;
 
 			li {
 				margin: 10px 0;

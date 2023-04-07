@@ -179,6 +179,9 @@ class Attachments {
 					$response_body = curl_exec( $ch );
 					curl_close( $ch );
 
+					// Remove previously set headers, like from WordPress.
+					header_remove();
+
 					// Configure proxy response and exit.
 					foreach ( $response_headers as $header ) {
 						header( $header );

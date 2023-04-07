@@ -70,7 +70,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 				'ptc-completionist-shortcode-asana-project',
 				PLUGIN_URL . '/build/index_ShortcodeAsanaProject.jsx.css',
 				array(),
-				PLUGIN_VERSION
+				$asset_file['version']
 			);
 		}
 
@@ -103,6 +103,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 				array(
 					'src'                    => '', // Required.
 					'auth_user'              => '',
+					'exclude_sections'       => '',
 					'show_name'              => 'true',
 					'show_description'       => 'true',
 					'show_status'            => 'true',
@@ -114,6 +115,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 					'show_tasks_completed'   => 'true',
 					'show_tasks_due'         => 'true',
 					'show_tasks_attachments' => 'true',
+					'show_tasks_tags'        => 'true',
 					// 'include_tag'          => '',
 					// 'exclude_tag'          => '',
 					// 'sort_tasks'           => '',
@@ -126,6 +128,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 
 			$atts['src'] = (string) esc_url_raw( $atts['src'] );
 			$atts['auth_user'] = (int) $atts['auth_user'];
+			$atts['exclude_sections'] = html_entity_decode( $atts['exclude_sections'], ENT_QUOTES | ENT_HTML5 );
 
 			// Prepare shortcode.
 

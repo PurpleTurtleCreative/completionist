@@ -11,7 +11,7 @@
     "url": "https://github.com/PurpleTurtleCreative/completionist/issues"
   },
   "devDependencies": {
-    "@wordpress/scripts": "^19.1.0",
+    "@wordpress/scripts": "26.1.0",
     "sass": "^1.54.7"
   },
   "scripts": {
