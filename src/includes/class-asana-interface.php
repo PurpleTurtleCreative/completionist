@@ -779,27 +779,24 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 					is_array( $exclude_section_names )
 				) {
 					$exclude_section_names = array_map( 'trim', $exclude_section_names );
+					$keep_sections = array();
+					foreach ( $project->sections as $i => &$section ) {
+						if ( ! in_array( trim( $section->name ), $exclude_section_names, true ) ) {
+							// Keep section if name is not in exclude list.
+							$keep_sections[] = $section;
+						}
+					}
+					$project->sections = $keep_sections;
 				}
 			}
 
-			// Map and filter project sections.
+			// Map project section GIDs to their index.
 			foreach ( $project->sections as $i => &$section ) {
-				if ( true === in_array( $section->name, $exclude_section_names, true ) ) {
-					// Remove excluded section.
-					//
-					// Tested in a LeetCode Playground that this seems stable
-					// and won't mess up iterating the rest of the array.
-					// Just note that there could now missing indices like:
-					// [ 0, 1, 2 ] => unset[1] => [ 0, 2 ] .
-					unset( $project->sections[ $i ] );
-					continue;
-				} else {
-					if ( true === in_array( $section->name, $erase_section_names, true ) ) {
-						// Remove Asana default title for a nameless section.
-						$section->name = null;
-					}
-					$sections_map[ $section->gid ] = $i;
+				if ( true === in_array( $section->name, $erase_section_names, true ) ) {
+					// Remove Asana default title for a nameless section.
+					$section->name = null;
 				}
+				$sections_map[ $section->gid ] = $i;
 			}
 
 			// Check if there are any project sections.
