@@ -605,7 +605,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		/**
 		 * Replaces inline video objects with oEmbed HTML.
 		 *
-		 * @since [unreleased]
+		 * @since 3.6.0
 		 *
 		 * @param string   $html The HTML content to search and replace.
 		 * @param string[] $replacements Optional. A variable
