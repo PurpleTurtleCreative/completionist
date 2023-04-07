@@ -23,15 +23,12 @@
 
 ### 3.5.1 - 2023-03-22
 
-#### Added
-
-- "Project Embeds" as a feature listed in the README.
-- Documentation links for each feature in the README.
-
 #### Changed
 
 - Remote plugin updates are now hooked by a named callback rather than an anonymous function.
 - Plugin description and copyright year.
+- Added "Project Embeds" as a feature listed in the README.
+- Added documentation links for each feature in the README.
 
 #### Fixed
 
