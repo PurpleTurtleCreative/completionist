@@ -854,7 +854,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$tasks = iterator_to_array( $tasks );
 
 				if ( $args['show_tasks_subtasks'] ) {
-					self::load_subtasks( $tasks, $task_fields );
+					$subtask_fields = $task_fields;
+					if ( ! $args['show_tasks_completed'] ) {
+						// Loading subtasks doesn't support requesting
+						// incomplete tasks only, so must request the
+						// 'completed' field for filtering later.
+						$subtask_fields .= ',completed';
+					}
+					self::load_subtasks( $tasks, $subtask_fields );
 				}
 
 				// Clean data and map tasks to project sections.
@@ -869,23 +876,29 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
 							// Process subtasks.
 							if ( isset( $task->subtasks ) ) {
+
 								foreach ( $task->subtasks as $subtasks_i => &$subtask ) {
+
 									if ( isset( $subtask->completed ) ) {
 										if ( ! $args['show_tasks_completed'] ) {
 											if ( $subtask->completed ) {
 												// Don't show completed tasks.
 												unset( $task->subtasks[ $subtasks_i ] );
 												continue;
+											} else {
+												// Don't show completed status
+												// for incomplete tasks.
+												unset( $subtask->completed );
 											}
-											// Don't show completed status.
-											unset( $subtask->completed );
 										}
 									}
+
 									// Sanitize task description.
 									if ( isset( $subtask->html_notes ) ) {
 										$subtask->html_notes = wpautop( wp_kses_post( $subtask->html_notes ) );
 									}
-								}
+								}//end foreach.
+
 								// Fix index gaps from possible removals.
 								if ( ! $args['show_tasks_completed'] ) {
 									$task->subtasks = array_values( $task->subtasks );
@@ -944,13 +957,16 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param \stdClass[] $parent_tasks The tasks for which to get subtasks.
-		 * @param string $opt_fields Optional. A csv of task fields to retrieve.
+		 * @param \stdClass[] $parent_tasks The tasks for which
+		 * to get subtasks.
+		 * @param string      $opt_fields Optional. A csv of task
+		 * fields to retrieve.
 		 *
-		 * @throws \Exception Authentication may fail when first loading the client
-		 * or requests could fail due to request limits or server issues.
+		 * @throws \Exception Authentication may fail when first
+		 * loading the client or requests could fail due to
+		 * request limits or server issues.
 		 */
-		static function load_subtasks(
+		public static function load_subtasks(
 			array &$parent_tasks,
 			string $opt_fields = ''
 		) {
@@ -963,28 +979,42 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
 			$opt_fields = explode( ',', $opt_fields );
 
-			$actions = [];
+			$actions = array();
 			$last = count( $parent_tasks ) - 1;
 			foreach ( $parent_tasks as $i => &$task ) {
 
-				if ( ! isset( $task->gid ) ) { continue; }
+				if ( ! isset( $task->gid ) ) {
+					continue;
+				}
 
 				$task_gid = Options::sanitize( 'gid', $task->gid );
-				if ( '' == $task_gid ) { continue; }
+				if ( '' == $task_gid ) {
+					continue;
+				}
 
-				$actions[] = [
+				$actions[] = array(
 					'method' => 'GET',
 					'relative_path' => sprintf( '/tasks/%s/subtasks', $task_gid ),
-					'options' => [
+					'options' => array(
 						'fields' => $opt_fields,
-					],
-				];
+					),
+				);
 
 				$actions_count = count( $actions );
-				if ( ( $actions_count % 9 === 0 || $i == $last ) && $actions_count > 0 ) {
-
-					$res = $asana->post( '/batch', [ 'actions' => $actions ] );
-					$actions = [];
+				if (
+					( 0 === $actions_count % 9 || $i === $last ) &&
+					$actions_count > 0
+				) {
+					/*
+					 * Using the Batch API to fetch subtasks for multiple
+					 * parent tasks per request instead of the SDK built-in
+					 * which requests all subtasks for a single parent task,
+					 * likely due to potential pagination of the response.
+					 *
+					 * @see $asana->tasks->getSubtasksForTask()
+					 */
+					$res = $asana->post( '/batch', array( 'actions' => $actions ) );
+					$actions = array();
 
 					$last_res_i = count( $res ) - 1;
 					for (
@@ -993,16 +1023,20 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 						++$parent_i, ++$res_i
 					) {
 
-						$parent_tasks[ $parent_i ]->subtasks = [];
+						$parent_tasks[ $parent_i ]->subtasks = array();
 
 						$current_res = $res[ $res_i ];
-						if ( 200 == $current_res->status_code && count( $current_res->body->data ) > 0 ) {
+						if (
+							200 == $current_res->status_code &&
+							is_array( $current_res->body->data ) &&
+							count( $current_res->body->data ) > 0
+						) {
 							$parent_tasks[ $parent_i ]->subtasks = $current_res->body->data;
 						}
 					}//end foreach batch result
 				}//end if batch ready to send
 			}//end foreach parent task
-		}//end get_subtasks()
+		}//end load_subtasks()
 
 		/**
 		 * Attempts to retrieve task data. Providing the post id of the provided
@@ -1013,9 +1047,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 *
 		 * @param string $task_gid The gid of the task to retrieve.
 		 * @param string $opt_fields_deprecated Deprecated.
-		 * @param int $post_id Optional. The post ID on which the task belongs to
-		 * attempt self-healing on certain error responses. Default 0 to take no
-		 * action on failure.
+		 * @param int    $post_id Optional. The post ID on which
+		 * the task belongs to attempt self-healing on certain error
+		 * responses. Default 0 to take no action on failure.
 		 * @return \stdClass The task data returned from Asana.
 		 *
 		 * @throws \Exception The Asana client may not be authenticated or the API
