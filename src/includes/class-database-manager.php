@@ -92,6 +92,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		public static $automation_actions_meta_table;
 
 		/**
+		 * The full name of the request tokens table.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @var string $request_tokens_table
+		 */
+		public static $request_tokens_table;
+
+		/**
 		 * Initializes table variables.
 		 *
 		 * @since 1.1.0
@@ -108,7 +117,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 			}
 
 			if ( function_exists( 'get_sites' ) && empty( get_sites( [ 'ID' => $site_id ] ) ) ) {
-				$err_msg = "[PTC Completionist] FATAL: Cannot initialize Database Manager for site id $site_id";
+				$err_msg = "[PTC Completionist] FATAL: Cannot initialize Database Manager for site id {$site_id}";
 				error_log( $err_msg );
 				die( esc_html( $err_msg ) );
 			}
@@ -120,8 +129,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 			self::$automation_conditions_table = $table_prefix . 'automation_conditions';
 			self::$automation_actions_table = $table_prefix . 'automation_actions';
 			self::$automation_actions_meta_table = $table_prefix . 'automation_actions_meta';
+			self::$request_tokens_table = $table_prefix . 'request_tokens';
 
-			self::$db_version = 1;
+			self::$db_version = 2;
 			self::$db_version_option = '_ptc_completionist_db_version';
 
 			self::$site_id = $site_id;
@@ -130,6 +140,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 
 		/**
 		 * Creates or updates all tables.
+		 *
+		 * @link https://dev.mysql.com/doc/refman/5.7/en/data-types.html
 		 *
 		 * @since 1.1.0
 		 *
@@ -151,77 +163,126 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 			}
 
 			if ( $installed_version === self::$db_version ) {
+				// Currently up-to-date! No installation needed.
 				$success = false;
 				return $success;
 			}
 
+			// Fix some dbDelta incompatibilities.
+			add_filter( 'query', __CLASS__ . '::filter_install_query', PHP_INT_MAX, 1 );
+
 			$automations_table = self::$automations_table;
-			$sql = "CREATE TABLE $automations_table (
-				ID bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+			$sql = "CREATE TABLE {$automations_table} (
+				ID bigint(20) unsigned NOT NULL AUTO_INCREMENT UNIQUE,
 				title tinytext NOT NULL,
 				description text NOT NULL,
 				hook_name tinytext NOT NULL,
-				last_modified datetime(0) DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+				last_modified datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
 				PRIMARY KEY  (ID)
-			) $charset_collate;";
+			) {$charset_collate};";
 
 			if ( ! self::create_table( $sql ) ) {
 				$success = false;
 			}
 
 			$automation_conditions_table = self::$automation_conditions_table;
-			$sql = "CREATE TABLE $automation_conditions_table (
-				ID bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
-				automation_id bigint(20) UNSIGNED NOT NULL,
+			$sql = "CREATE TABLE {$automation_conditions_table} (
+				ID bigint(20) unsigned NOT NULL AUTO_INCREMENT UNIQUE,
+				automation_id bigint(20) unsigned NOT NULL,
 				property tinytext NOT NULL,
 				comparison_method tinytext NOT NULL,
 				value tinytext NOT NULL,
 				PRIMARY KEY  (ID),
 				FOREIGN KEY (automation_id) REFERENCES $automations_table(ID) ON DELETE CASCADE
-			) $charset_collate;";
+			) {$charset_collate};";
 
 			if ( ! self::create_table( $sql ) ) {
 				$success = false;
 			}
 
 			$automation_actions_table = self::$automation_actions_table;
-			$sql = "CREATE TABLE $automation_actions_table (
-				ID bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
-				automation_id bigint(20) UNSIGNED NOT NULL,
+			$sql = "CREATE TABLE {$automation_actions_table} (
+				ID bigint(20) unsigned NOT NULL AUTO_INCREMENT UNIQUE,
+				automation_id bigint(20) unsigned NOT NULL,
 				action tinytext NOT NULL,
-				triggered_count int(11) UNSIGNED DEFAULT 0 NOT NULL,
-				last_triggered datetime(0) DEFAULT '0000-00-00 00:00:00' NOT NULL,
+				triggered_count int(11) unsigned DEFAULT 0 NOT NULL,
+				last_triggered datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 				PRIMARY KEY  (ID),
 				FOREIGN KEY (automation_id) REFERENCES $automations_table(ID) ON DELETE CASCADE
-			) $charset_collate;";
+			) {$charset_collate};";
 
 			if ( ! self::create_table( $sql ) ) {
 				$success = false;
 			}
 
 			$automation_actions_meta_table = self::$automation_actions_meta_table;
-			$sql = "CREATE TABLE $automation_actions_meta_table (
-				ID bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
-				action_id bigint(20) UNSIGNED NOT NULL,
+			$sql = "CREATE TABLE {$automation_actions_meta_table} (
+				ID bigint(20) unsigned NOT NULL AUTO_INCREMENT UNIQUE,
+				action_id bigint(20) unsigned NOT NULL,
 				meta_key varchar(255) NOT NULL,
 				meta_value longtext NOT NULL,
 				PRIMARY KEY  (ID),
 				FOREIGN KEY (action_id) REFERENCES $automation_actions_table(ID) ON DELETE CASCADE
-			) $charset_collate;";
+			) {$charset_collate};";
 
 			if ( ! self::create_table( $sql ) ) {
 				$success = false;
 			}
 
+			$request_tokens_table = self::$request_tokens_table;
+			$sql = "CREATE TABLE {$request_tokens_table} (
+				token varchar(255) NOT NULL UNIQUE,
+				args text NOT NULL,
+				cache_data longtext,
+				cached_at datetime,
+				last_accessed datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+				PRIMARY KEY  (token)
+			) {$charset_collate};";
+
+			if ( ! self::create_table( $sql ) ) {
+				$success = false;
+			}
+
+			// Done altering database queries.
+			remove_filter( 'query', __CLASS__ . '::filter_install_query', PHP_INT_MAX );
+
 			if ( $success ) {
+
 				if ( function_exists( 'update_blog_option' ) ) {
 					update_blog_option( self::$site_id, self::$db_version_option, self::$db_version );
 				} else {
 					update_option( self::$db_version_option, self::$db_version );
 				}
+
+				/*
+				 * Now that the custom request tokens database table
+				 * is successfully installed, all deprecated Request
+				 * Tokens (stored within postmeta) should be purged.
+				 */
+				require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
+				Request_Tokens::purge_all();
 			}
 
 			return $success;
+		}
+
+		/**
+		 * Filters the database table installation queries.
+		 *
+		 * @link https://developer.wordpress.org/reference/functions/dbdelta/#comment-4027
+		 * @link https://core.trac.wordpress.org/ticket/19207
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string $query The database query statement.
+		 * @return string The altered database query statement.
+		 */
+		public static function filter_install_query( $query ) {
+			if ( 1 === preg_match( '/ALTER TABLE .+ ADD COLUMN FOREIGN KEY/i', $query ) ) {
+				// dbDelta doesn't understand FOREIGN KEY declarations.
+				return '';
+			}
+			return $query;
 		}
 
 		/**
@@ -238,6 +299,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 			self::drop_table( self::$automation_actions_table );
 			self::drop_table( self::$automation_conditions_table );
 			self::drop_table( self::$automations_table );
+			self::drop_table( self::$request_tokens_table );
 
 			if ( function_exists( 'delete_blog_option' ) ) {
 				delete_blog_option( self::$site_id, self::$db_version_option );
@@ -273,23 +335,17 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 			preg_match( '/CREATE TABLE ([^ ]+)/', $creation_sql, $matches );
 
 			if ( ! isset( $matches[1] ) || empty( $matches[1] ) ) {
-				error_log( "Table name could not be matched for creation in query:\n$creation_sql" );
+				error_log( "Table name could not be matched for creation in query:\n{$creation_sql}" );
 				return false;
 			}
 
 			$table_name = $matches[1];
 
-			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 			dbDelta( $creation_sql );
 
 			global $wpdb;
-			$res = $wpdb->query( "SELECT * FROM $table_name" );//phpcs:ignore
-
-			if ( false === $res ) {
-				return false;
-			}
-
-			return true;
+			return ( $table_name === $wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'" ) );//phpcs:ignore
 		}
 
 		/**
@@ -304,7 +360,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		public static function drop_table( string $table_name ) : bool {
 
 			global $wpdb;
-			$res = $wpdb->query( "DROP TABLE IF EXISTS $table_name" );//phpcs:ignore
+			$res = $wpdb->query( "DROP TABLE IF EXISTS {$table_name}" );//phpcs:ignore
 
 			if ( false === $res ) {
 				return false;
