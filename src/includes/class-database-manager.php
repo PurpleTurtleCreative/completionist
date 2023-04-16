@@ -101,6 +101,16 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		public static $request_tokens_table;
 
 		/**
+		 * An array of all the database table names that this class
+		 * manages.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @var string[] $table_names
+		 */
+		public static $table_names;
+
+		/**
 		 * Initializes table variables.
 		 *
 		 * @since 1.1.0
@@ -110,17 +120,28 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		 */
 		public static function init( int $site_id = -1 ) {
 
-			global $wpdb;
-
 			if ( -1 === $site_id ) {
 				$site_id = get_current_blog_id();
 			}
 
-			if ( function_exists( 'get_sites' ) && empty( get_sites( [ 'ID' => $site_id ] ) ) ) {
-				$err_msg = "[PTC Completionist] FATAL: Cannot initialize Database Manager for site id {$site_id}";
-				error_log( $err_msg );
-				die( esc_html( $err_msg ) );
+			if (
+				true === self::$has_been_initialized &&
+				$site_id === self::$site_id
+			) {
+				// Already initialized for the specified site.
+				return;
 			}
+
+			if (
+				function_exists( 'get_sites' ) &&
+				empty( get_sites( array( 'ID' => $site_id ) ) )
+			) {
+				$err_msg = "Cannot initialize Database Manager for unrecognized site id {$site_id}.";
+				trigger_error( $err_msg, E_USER_ERROR );
+				wp_die( esc_html( $err_msg ) );
+			}
+
+			global $wpdb;
 
 			$wpdb_blog_prefix = $wpdb->get_blog_prefix( $site_id );
 			$table_prefix = $wpdb_blog_prefix . 'ptc_completionist_';
@@ -130,6 +151,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 			self::$automation_actions_table = $table_prefix . 'automation_actions';
 			self::$automation_actions_meta_table = $table_prefix . 'automation_actions_meta';
 			self::$request_tokens_table = $table_prefix . 'request_tokens';
+
+			self::$table_names = array(
+				self::$automations_table,
+				self::$automation_conditions_table,
+				self::$automation_actions_table,
+				self::$automation_actions_meta_table,
+				self::$request_tokens_table,
+			);
 
 			self::$db_version = 2;
 			self::$db_version_option = '_ptc_completionist_db_version';
@@ -168,7 +197,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 				return $success;
 			}
 
-			// Fix some dbDelta incompatibilities.
+			// Fix some dbDelta() incompatibilities.
 			add_filter( 'query', __CLASS__ . '::filter_install_query', PHP_INT_MAX, 1 );
 
 			$automations_table = self::$automations_table;
@@ -279,7 +308,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		 */
 		public static function filter_install_query( $query ) {
 			if ( 1 === preg_match( '/ALTER TABLE .+ ADD COLUMN FOREIGN KEY/i', $query ) ) {
-				// dbDelta doesn't understand FOREIGN KEY declarations.
+				// dbDelta() doesn't understand FOREIGN KEY declarations
+				// and instead thinks they are column definitions.
 				return '';
 			}
 			return $query;
@@ -294,7 +324,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 
 			self::require_initialiation();
 
-			/* Order matters due to foreign key constraints */
+			// Order matters due to foreign key constraints!
 			self::drop_table( self::$automation_actions_meta_table );
 			self::drop_table( self::$automation_actions_table );
 			self::drop_table( self::$automation_conditions_table );
@@ -331,7 +361,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		 */
 		public static function create_table( string $creation_sql ) : bool {
 
-			/* do not ignore case because dbDelta requires uppercase */
+			self::require_initialiation();
+
+			// Do not ignore case because dbDelta() requires uppercase.
 			preg_match( '/CREATE TABLE ([^ ]+)/', $creation_sql, $matches );
 
 			if ( ! isset( $matches[1] ) || empty( $matches[1] ) ) {
@@ -340,6 +372,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 			}
 
 			$table_name = $matches[1];
+
+			if ( ! self::is_permitted_table_name( $table_name ) ) {
+				return false;
+			}
 
 			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 			dbDelta( $creation_sql );
@@ -359,14 +395,93 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		 */
 		public static function drop_table( string $table_name ) : bool {
 
-			global $wpdb;
-			$res = $wpdb->query( "DROP TABLE IF EXISTS {$table_name}" );//phpcs:ignore
+			if ( ! self::is_permitted_table_name( $table_name ) ) {
+				return false;
+			}
 
-			if ( false === $res ) {
+			global $wpdb;
+			return ( false !== $wpdb->query( "DROP TABLE IF EXISTS {$table_name}" ) );//phpcs:ignore
+		}
+
+		/**
+		 * Truncates a table.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string $table_name The name of the table.
+		 *
+		 * @return bool If the table was successfully truncated.
+		 */
+		public static function truncate_table( string $table_name ) : bool {
+
+			if ( ! self::is_permitted_table_name( $table_name ) ) {
+				return false;
+			}
+
+			global $wpdb;
+			return ( false !== $wpdb->query( "TRUNCATE TABLE {$table_name}" ) );//phpcs:ignore
+		}
+
+		/**
+		 * Checks if the provided table name is permitted by this class.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string $table_name The table name to check.
+		 *
+		 * @return bool If the table name is permitted.
+		 */
+		public static function is_permitted_table_name( string $table_name ) : bool {
+
+			self::require_initialiation();
+
+			if ( ! in_array( $table_name, self::$table_names, true ) ) {
+				trigger_error(
+					"Table name '{$table_name}' is not in the allowlist:\n" . print_r( self::$table_names, true ),
+					E_USER_WARNING
+				);
 				return false;
 			}
 
 			return true;
+		}
+
+		/**
+		 * Gets the Unix timestamp in SQL DateTime format.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param int|null $unix_timestamp Optional. The number of
+		 * seconds since the Unix Epoch (January 1 1970 00:00:00 GMT).
+		 * Defaults to the current Unix timestamp.
+		 *
+		 * @return string The SQL DateTime timestamp string.
+		 */
+		public static function unix_as_sql_timestamp(
+			?int $unix_timestamp = null
+		) : string {
+			if ( null === $unix_timestamp ) {
+				$unix_timestamp = time();
+			}
+			return gmdate( 'Y-m-d H:i:s', $unix_timestamp );
+		}
+
+		/**
+		 * Gets the Unix timestamp in SQL DateTime format.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string $sql_timestamp The SQL DateTime timestamp
+		 * string.
+		 *
+		 * @return int The SQL DateTime timestamp string.
+		 */
+		public static function sql_timestamp_as_unix( string $sql_timestamp ) : int {
+			return \DateTimeImmutable::createFromFormat(
+				'Y-m-d H:i:s',
+				$sql_timestamp,
+				new \DateTimeZone( 'UTC' )
+			)->getTimestamp();
 		}
 
 		/**
@@ -378,8 +493,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		 */
 		private static function require_initialiation() {
 			if ( ! self::$has_been_initialized ) {
-				$err_msg = '[PTC Completionist] FATAL: The Database Manager was not properly initialized before usage.';
-				error_log( $err_msg );
+				$err_msg = 'The Database Manager must be initialized before usage.';
+				trigger_error( $err_msg, E_USER_ERROR );
 				wp_die( esc_html( $err_msg ) );
 			}
 		}
