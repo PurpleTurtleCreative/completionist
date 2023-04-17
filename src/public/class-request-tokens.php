@@ -3,6 +3,8 @@
  * Request_Tokens class
  *
  * @since 3.4.0
+ *
+ * @deprecated [unreleased]
  */
 
 namespace PTC_Completionist;
@@ -10,6 +12,12 @@ namespace PTC_Completionist;
 defined( 'ABSPATH' ) || die();
 
 require_once PLUGIN_PATH . 'src/includes/class-options.php';
+
+_deprecated_file(
+	__FILE__,
+	'[unreleased]',
+	PLUGIN_PATH . 'src/public/class-request-token.php'
+);
 
 /**
  * Class to manage frontend request tokens.
@@ -21,6 +29,13 @@ require_once PLUGIN_PATH . 'src/includes/class-options.php';
  * Request tokens also maintain a cache of the respective response data.
  *
  * @since 3.4.0
+ *
+ * @deprecated [unreleased] This class contains database race
+ * conditions which become apparent when multiple request
+ * tokens are used within a single page load or during times of
+ * high traffic. The result is unstable and inconsistent service.
+ * Use the new Request_Token class instead. It uses a custom
+ * database table with atomic records and better guidelines.
  */
 class Request_Tokens {
 
@@ -40,9 +55,18 @@ class Request_Tokens {
 	/**
 	 * Hooks functionality into the WordPress execution flow.
 	 *
+	 * @deprecated [unreleased]
+	 *
 	 * @since 3.4.0
 	 */
 	public static function register() {
+
+		_deprecated_function(
+			__CLASS__ . '::' . __FUNCTION__ . '()',
+			'[unreleased]',
+			__NAMESPACE__ . '\Request_Token::register()'
+		);
+
 		add_action( 'edit_post', array( __CLASS__, 'purge_for_post' ), 10, 1 );
 	}
 
@@ -61,9 +85,18 @@ class Request_Tokens {
 	/**
 	 * Deletes all request token data.
 	 *
+	 * @deprecated [unreleased]
+	 *
 	 * @since 3.4.0
 	 */
 	public static function purge_all() {
+
+		_deprecated_function(
+			__CLASS__ . '::' . __FUNCTION__ . '()',
+			'[unreleased]',
+			__NAMESPACE__ . '\Request_Token::delete_all()'
+		);
+
 		Options::delete( Options::REQUEST_TOKENS, -1 );
 	}
 
@@ -74,11 +107,20 @@ class Request_Tokens {
 	/**
 	 * Instantiates a request token management context for the given post.
 	 *
+	 * @deprecated [unreleased]
+	 *
 	 * @since 3.4.0
 	 *
 	 * @param int $post_id The post for request token management.
 	 */
 	public function __construct( int $post_id ) {
+
+		_deprecated_function(
+			__CLASS__ . '::' . __FUNCTION__ . '()',
+			'[unreleased]',
+			__NAMESPACE__ . '\Request_Token::__construct()'
+		);
+
 		$this->post_id = $post_id;
 	}
 
@@ -97,6 +139,8 @@ class Request_Tokens {
 	 * Saves a new request token for the given arguments if it does
 	 * not already exist.
 	 *
+	 * @deprecated [unreleased]
+	 *
 	 * @since 3.4.0
 	 *
 	 * @param array $request_args The arguments that the request
@@ -104,6 +148,12 @@ class Request_Tokens {
 	 * @return string The request token.
 	 */
 	public function save( array $request_args ) : string {
+
+		_deprecated_function(
+			__CLASS__ . '::' . __FUNCTION__ . '()',
+			'[unreleased]',
+			__NAMESPACE__ . '\Request_Token::save()'
+		);
 
 		// Get existing request tokens.
 		$request_tokens = $this->get();
@@ -140,17 +190,28 @@ class Request_Tokens {
 	/**
 	 * Gets the request arguments for the given request token.
 	 *
+	 * @deprecated [unreleased]
+	 *
 	 * @since 3.4.0
 	 *
 	 * @param string $request_token The request token to retrieve.
 	 * @return array The request arguments. Default empty if invalid.
 	 */
 	public function get_request_args( string $request_token ) : array {
+
+		_deprecated_function(
+			__CLASS__ . '::' . __FUNCTION__ . '()',
+			'[unreleased]',
+			__NAMESPACE__ . '\Request_Token::get_args()'
+		);
+
 		return $this->get()[ $request_token ]['request_args'] ?? array();
 	}
 
 	/**
 	 * Gets the cached response, if available.
+	 *
+	 * @deprecated [unreleased]
 	 *
 	 * @since 3.4.0
 	 *
@@ -164,6 +225,12 @@ class Request_Tokens {
 		string $request_token,
 		$default
 	) {
+
+		_deprecated_function(
+			__CLASS__ . '::' . __FUNCTION__ . '()',
+			'[unreleased]',
+			__NAMESPACE__ . '\Request_Token::get_cache_data()'
+		);
 
 		// Get cached response data.
 		$cached_response = $this->get()[ $request_token ]['cached_response'];
@@ -184,6 +251,8 @@ class Request_Tokens {
 	 *
 	 * Note that the request token must already exist.
 	 *
+	 * @deprecated [unreleased]
+	 *
 	 * @since 3.4.0
 	 *
 	 * @param string $request_token The request token.
@@ -193,6 +262,12 @@ class Request_Tokens {
 		string $request_token,
 		$response
 	) {
+
+		_deprecated_function(
+			__CLASS__ . '::' . __FUNCTION__ . '()',
+			'[unreleased]',
+			__NAMESPACE__ . '\Request_Token::update_cache_data()'
+		);
 
 		// Get existing request tokens.
 		$request_tokens = $this->get();
@@ -220,20 +295,38 @@ class Request_Tokens {
 	/**
 	 * Deletes all request tokens for the current post context.
 	 *
+	 * @deprecated [unreleased]
+	 *
 	 * @since 3.4.0
 	 */
 	public function purge() {
+
+		_deprecated_function(
+			__CLASS__ . '::' . __FUNCTION__ . '()',
+			'[unreleased]',
+			__NAMESPACE__ . '\Request_Token::delete_stale_tokens()'
+		);
+
 		Options::delete( Options::REQUEST_TOKENS, $this->post_id );
 	}
 
 	/**
 	 * Checks if the request token exists for the current post context.
 	 *
+	 * @deprecated [unreleased]
+	 *
 	 * @since 3.4.0
 	 *
 	 * @return bool True if the request token exists.
 	 */
 	public function exists( string $request_token ) : bool {
+
+		_deprecated_function(
+			__CLASS__ . '::' . __FUNCTION__ . '()',
+			'[unreleased]',
+			__NAMESPACE__ . '\Request_Token::exists()'
+		);
+
 		return isset( $this->get()[ $request_token ] );
 	}
 
@@ -244,11 +337,20 @@ class Request_Tokens {
 	/**
 	 * Gets all request token data for the current post context.
 	 *
+	 * @deprecated [unreleased]
+	 *
 	 * @since 3.4.0
 	 *
 	 * @return array The request token data. Empty if none.
 	 */
 	private function get() : array {
+
+		_deprecated_function(
+			__CLASS__ . '::' . __FUNCTION__ . '()',
+			'[unreleased]',
+			__NAMESPACE__ . '\Request_Token::load_from_database()'
+		);
+
 		return Options::get( Options::REQUEST_TOKENS, $this->post_id );
 	}
 
@@ -258,12 +360,21 @@ class Request_Tokens {
 	 * Note this should always return the same token string for the
 	 * same arguments (irrespective of sort order). It is a pure function.
 	 *
+	 * @deprecated [unreleased]
+	 *
 	 * @since 3.4.0
 	 *
 	 * @param array $request_args The request arguments to represent.
 	 * @return string A token representing the provided arguments.
 	 */
 	private function generate_token( array $request_args ) : string {
+
+		_deprecated_function(
+			__CLASS__ . '::' . __FUNCTION__ . '()',
+			'[unreleased]',
+			__NAMESPACE__ . '\Request_Token::generate_token()'
+		);
+
 		asort( $request_args );
 		return md5( wp_salt( 'nonce' ) . serialize( $request_args ) );
 	}
@@ -271,11 +382,20 @@ class Request_Tokens {
 	/**
 	 * Gets the cache entry TTL in seconds.
 	 *
+	 * @deprecated [unreleased]
+	 *
 	 * @since 3.4.0
 	 *
 	 * @return int The cache TTL in seconds.
 	 */
 	private function get_cache_ttl() : int {
+
+		_deprecated_function(
+			__CLASS__ . '::' . __FUNCTION__ . '()',
+			'[unreleased]',
+			__NAMESPACE__ . '\Request_Token::get_cache_ttl()'
+		);
+
 		/**
 		 * Filters the duration of Asana response cache entries.
 		 *
