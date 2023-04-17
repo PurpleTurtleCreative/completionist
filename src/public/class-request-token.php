@@ -402,6 +402,37 @@ class Request_Token {
 
 		// Successful retrieval; Data is ready to use.
 		$this->data = $res;
+		$this->touch();
+	}
+
+	/**
+	 * Updates the `last_accessed` timestamp in the database.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @return bool If successfully updated.
+	 */
+	public function touch() : bool {
+
+		global $wpdb;
+		Database_Manager::init();
+
+		$current_timestamp = Database_Manager::unix_as_sql_timestamp();
+
+		$rows_affected = $wpdb->update(
+			Database_Manager::$request_tokens_table,
+			array( 'last_accessed' => $current_timestamp ),
+			array( 'token' => $this->data['token'] ),
+			'%s',
+			'%s'
+		);
+
+		if ( 1 !== $rows_affected ) {
+			return false;
+		}
+
+		$this->data['last_accessed'] = $current_timestamp;
+		return true;
 	}
 
 	/**
@@ -439,7 +470,7 @@ class Request_Token {
 			),
 			array( 'token' => $this->data['token'] ),
 			'%s',
-			'%s',
+			'%s'
 		);
 
 		if ( 1 !== $rows_affected ) {
