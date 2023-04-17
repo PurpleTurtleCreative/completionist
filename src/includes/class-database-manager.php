@@ -447,7 +447,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		}
 
 		/**
-		 * Gets the Unix timestamp in SQL DateTime format.
+		 * Gets the SQL DateTime string of a Unix timestamp.
 		 *
 		 * @since [unreleased]
 		 *
@@ -467,7 +467,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		}
 
 		/**
-		 * Gets the Unix timestamp in SQL DateTime format.
+		 * Gets the Unix timestamp of a SQL DateTime string.
 		 *
 		 * @since [unreleased]
 		 *

@@ -58,8 +58,7 @@ class Request_Token {
 	}
 
 	/**
-	 * Deletes request tokens from the database that have not been
-	 * recently accessed.
+	 * Deletes request tokens that have not been recently accessed.
 	 *
 	 * @see Request_Token::get_staleness_duration()
 	 *
@@ -75,7 +74,7 @@ class Request_Token {
 		);
 
 		global $wpdb;
-		$res = $wpdb->query(
+		$rows_affected = $wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM {$table}
 					WHERE last_accessed <= %s",
@@ -83,7 +82,7 @@ class Request_Token {
 			)
 		);
 
-		return ( false !== $res );
+		return ( false !== $rows_affected );
 	}
 
 	/**
@@ -145,43 +144,59 @@ class Request_Token {
 	 * Saves a request token for the given arguments.
 	 *
 	 * If the request token already exists in the database, its
-	 * `last_accessed` datetime will be updated.
+	 * `last_accessed` datetime will still be updated.
 	 *
-	 * Saving a request token is the same as authorizing the
-	 * API request that it represents from the frontend. You should
-	 * perform this action carefully.
+	 * Saving a request token authorizes the frontend to make use
+	 * of the request token, so perform this action only in
+	 * permitted and secure contexts. For example, post content
+	 * requires certain user permissions to update, so it can be
+	 * trusted. In contrast, an anonymous submission of a public
+	 * form should generally not be trusted.
 	 *
 	 * @since [unreleased]
 	 *
 	 * @param array $request_args The arguments that the request
 	 * token represents.
 	 *
-	 * @return string The request token.
+	 * @return string The request token or an empty string if
+	 * the data could not be saved.
 	 */
 	public static function save( array $request_args ) : string {
 
 		// Generate the token.
 		$token = static::generate_token( $request_args );
 
-		// Instantiate management context.
-		$request_token = new static( $token );
+		// Prepare request arguments for insertion.
+		$args_as_json = wp_json_encode( $request_args );
+		if ( false === $args_as_json ) {
+			trigger_error(
+				'Failed to JSON encode request arguments: ' . print_r( $request_args, true ),
+				E_USER_WARNING
+			);
+			return '';
+		}
 
-		// Add new request token data.
-		// $request_tokens[ $token ] = array(
-		// 	'request_args' => $request_args,
-		// 	'cached_response' => array(
-		// 		'data' => '',
-		// 		'created_at' => 0,
-		// 	),
-		// );
+		// Add new (or update existing) request token data.
 
-		// // Save record.
-		// Options::save(
-		// 	Options::REQUEST_TOKENS,
-		// 	$request_tokens,
-		// 	true,
-		// 	$this->post_id
-		// );
+		Database_Manager::init();
+		$table = Database_Manager::$request_tokens_table;
+
+		global $wpdb;
+		$rows_affected = $wpdb->query(
+			$wpdb->prepare(
+				"INSERT INTO {$table} (token,args) VALUES (%s,%s)
+					ON DUPLICATE KEY UPDATE last_accessed=CURRENT_TIMESTAMP",
+				$token,
+				$args_as_json
+			)
+		);
+
+		if ( 1 !== $rows_affected ) {
+			// False means there was an error.
+			// 0 (zero) means no rows were affected.
+			// 1 row is always expected to be affected.
+			return '';
+		}
 
 		// Return saved request token.
 		return $token;
@@ -350,30 +365,42 @@ class Request_Token {
 		}
 
 		// Format data for usage.
+		foreach ( $res as $field => &$value ) {
+			switch ( $field ) {
 
-		if ( '' === $res['cache_data'] ) {
-			// There is no cache_data to decode, so use an empty array.
-			$res['cache_data'] = array();
-		} else {
-			// Decode cache_data for usage.
-			$cache_data = json_decode( $res['cache_data'], true );
-			if ( null === $cache_data || ! is_array( $cache_data ) ) {
-				trigger_error(
-					'Failed to JSON decode cache data: ' . print_r( $res['cache_data'], true ),
-					E_USER_WARNING
-				);
-				return;
-			} else {
-				// Successfully decoded cache_data to an array.
-				$res['cache_data'] = $cache_data;
+				// Decode JSON value into array.
+				case 'args':
+				case 'cache_data':
+					if ( '' === $value ) {
+						// There is no value to decode, so use an empty array.
+						$value = array();
+					} else {
+						// Decode JSON value for usage.
+						$decoded = json_decode( $value, true );
+						if ( null === $decoded || ! is_array( $decoded ) ) {
+							trigger_error(
+								"Failed to JSON decode '{$field}' data: " . print_r( $value, true ),
+								E_USER_WARNING
+							);
+							// Abort loading this dataset since it is invalid.
+							return;
+						} else {
+							// Successfully decoded JSON value to an array.
+							$value = $decoded;
+						}
+					}
+					break;
+
+				// @NOTE - You may want to eventually load 'last_accessed'
+				// as an actual PHP DateTime object. I'm just not doing
+				// that right now because it's unnecessary at this time.
+
+				default:
+					break;
 			}
 		}
 
-		// @NOTE - You may want to eventually load 'last_accessed'
-		// as an actual PHP DateTime object. I'm just not doing
-		// that right now because it's unnecessary at this time.
-
-		// Successful retrieval; Data may be safely loaded.
+		// Successful retrieval; Data is ready to use.
 		$this->data = $res;
 	}
 
