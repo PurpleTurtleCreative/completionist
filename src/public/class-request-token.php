@@ -106,16 +106,25 @@ class Request_Token {
 	 * @since [unreleased]
 	 *
 	 * @param array $request_args The request arguments to represent.
+	 * Note that they may change due to validation and correction.
+	 *
 	 * @return string A token representing the provided arguments.
 	 */
-	public static function generate_token( array $request_args ) : string {
+	public static function generate_token( array &$request_args ) : string {
 
 		if ( empty( $request_args['auth_user'] ) ) {
-			trigger_error(
-				'An "auth_user" argument is required to prevent data security and privacy mixups.',
-				E_USER_WARNING
-			);
-			return '';
+			// An 'auth_user' argument is required to prevent data
+			// security and privacy mixups. Default to current setting.
+			$request_args['auth_user'] = (int) Options::get( Options::FRONTEND_AUTH_USER_ID );
+			if ( empty( $request_args['auth_user'] ) ) {
+				// You shouldn't be generating tokens without
+				// a specified frontend authentication user!
+				trigger_error(
+					'Failed to use default frontend authentication user. Be sure to only use request tokens when this option has been set!',
+					E_USER_NOTICE
+				);
+				return '';
+			}
 		}
 
 		if ( empty( $request_args['_cache_key'] ) ) {
@@ -126,7 +135,7 @@ class Request_Token {
 			return '';
 		}
 
-		asort( $request_args );
+		ksort( $request_args );
 
 		$args_as_json = wp_json_encode( $request_args );
 		if ( false === $args_as_json ) {
@@ -139,6 +148,9 @@ class Request_Token {
 
 		return md5( wp_salt( 'nonce' ) . $args_as_json );
 	}
+
+	// @TODO - Create a bulk save/touch function to reduce
+	// database transactions!
 
 	/**
 	 * Saves a request token for the given arguments.
@@ -165,6 +177,13 @@ class Request_Token {
 
 		// Generate the token.
 		$token = static::generate_token( $request_args );
+		if ( empty( $token ) ) {
+			trigger_error(
+				'Failed to save invalid request token for request arguments: ' . print_r( $request_args, true ),
+				E_USER_WARNING
+			);
+			return '';
+		}
 
 		// Prepare request arguments for insertion.
 		$args_as_json = wp_json_encode( $request_args );
@@ -191,10 +210,11 @@ class Request_Token {
 			)
 		);
 
-		if ( 1 !== $rows_affected ) {
+		if ( ! $rows_affected ) {
 			// False means there was an error.
 			// 0 (zero) means no rows were affected.
-			// 1 row is always expected to be affected.
+			// 1 row is expected to be affected for insertion.
+			// 2 rows are expected to be affected for insertion/update.
 			return '';
 		}
 
@@ -438,14 +458,31 @@ class Request_Token {
 	/**
 	 * Updates the request token's cache_data value in the database.
 	 *
+	 * Note that an array, associative array, or object may be
+	 * cached; however, it will only be retrieved as an array or
+	 * associative array.
+	 *
+	 * @see Request_Token::get_cache_data()
+	 *
 	 * @since [unreleased]
 	 *
-	 * @param array $data The raw data. It should not be encoded,
-	 * serialized, or escaped.
+	 * @param array|object $data The raw data. It should not be
+	 * encoded, serialized, or escaped.
 	 *
 	 * @return bool If successfully updated.
 	 */
-	public function update_cache_data( array $data ) : bool {
+	public function update_cache_data( $data ) : bool {
+
+		if ( ! ( is_array( $data ) || is_object( $data ) ) ) {
+			// Union types aren't supported until PHP 8.0,
+			// so this is a backwards-compatible typecheck.
+			$data_type = gettype( $data );
+			trigger_error(
+				"Refused to cache non-array, non-object data of type '{$data_type}':" . print_r( $data, true ),
+				E_USER_WARNING
+			);
+			return '';
+		}
 
 		$data_as_json = wp_json_encode( $data );
 		if ( false === $data_as_json ) {
@@ -485,6 +522,11 @@ class Request_Token {
 	/**
 	 * Gets the request token's cached data.
 	 *
+	 * Note that an array, associative array, or object may be
+	 * cached; however, it will only be retrieved as an array or
+	 * associative array.
+	 *
+	 * @see Request_Token::update_cache_data()
 	 * @see Request_Token::get_cache_ttl()
 	 *
 	 * @since [unreleased]

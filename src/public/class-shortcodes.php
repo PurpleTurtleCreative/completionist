@@ -12,7 +12,7 @@ namespace PTC_Completionist;
 defined( 'ABSPATH' ) || die();
 
 require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
-require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
+require_once PLUGIN_PATH . 'src/public/class-request-token.php';
 
 if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 	/**
@@ -23,6 +23,47 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 	class Shortcodes {
 
 		/**
+		 * A map of shortcode tag keys to metadata map values.
+		 *
+		 * This map is used to register all shortcode tags and track
+		 * various metadata about them during execution. It helps
+		 * with performance optimization and debugging.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @var array $shortcodes_meta {
+		 *
+		 *   @type int $render_count The count of shortcode renders.
+		 *
+		 *   @type array[] $request_tokens A map of request token
+		 *                 keys to their request argument arrays.
+		 *
+		 *   @type string[] $script_handles The script handles
+		 *                  that should be enqueued for this tag.
+		 *
+		 *   @type string[] $style_handles The stylesheet handles
+		 *                  that should be enqueued for this tag.
+		 *
+		 * }
+		 */
+		private static $shortcodes_meta = array(
+			'ptc_asana_project' => array(
+				'render_count'   => 0,
+				'request_tokens' => array(),
+				'script_handles' => array(
+					'ptc-completionist-shortcode-asana-project',
+				),
+				'style_handles'  => array(
+					'ptc-completionist-shortcode-asana-project',
+				),
+			),
+		);
+
+		// *************************** //
+		// **   Code Registration   ** //
+		// *************************** //
+
+		/**
 		 * Hooks functionality into the WordPress execution flow.
 		 *
 		 * @since 3.4.0
@@ -30,6 +71,41 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		public static function register() {
 			add_action( 'init', array( __CLASS__, 'add_shortcodes' ) );
 			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_assets' ) );
+			add_action( 'wp_footer', __CLASS__ . '::process_collected_shortcodes' );
+		}
+
+		/**
+		 * Finalizes shortcode renders by processing the collected
+		 * metadata for each shortcode tag.
+		 *
+		 * @since [unreleased]
+		 */
+		public static function process_collected_shortcodes() {
+			foreach ( static::$shortcodes_meta as $shortcode_tag => &$metadata ) {
+
+				if ( $metadata['render_count'] > 0 ) {
+					// Enqueue assets for rendered shortcodes.
+					foreach ( $metadata['script_handles'] as &$script_handle ) {
+						wp_enqueue_script( $script_handle );
+					}
+					foreach ( $metadata['style_handles'] as &$style_handle ) {
+						wp_enqueue_style( $style_handle );
+					}
+				}
+
+				if ( count( $metadata['request_tokens'] ) > 0 ) {
+					// Process request tokens.
+					foreach ( $metadata['request_tokens'] as $shortcode_token => &$request_args ) {
+						$actual_token = Request_Token::save( $request_args );
+						if ( $shortcode_token !== $actual_token ) {
+							trigger_error(
+								"Shortcode [{$shortcode_tag}] is using a request token ({$shortcode_token}) that doesn't match the token generated from its request arguments ({$actual_token}). The shortcode will likely fail to properly function.",
+								E_USER_WARNING
+							);
+						}
+					}
+				}
+			}
 		}
 
 		/**
@@ -38,10 +114,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		 * @since 3.4.0
 		 */
 		public static function add_shortcodes() {
-			add_shortcode(
-				'ptc_asana_project',
-				array( __CLASS__, 'get_ptc_asana_project' )
-			);
+			foreach ( static::$shortcodes_meta as $shortcode_tag => &$metadata ) {
+				add_shortcode(
+					$shortcode_tag,
+					__CLASS__ . "::get_{$shortcode_tag}"
+				);
+			}
 		}
 
 		/**
@@ -74,9 +152,49 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			);
 		}
 
+		// **************************** //
+		// **   Shortcode Tracking   ** //
+		// **************************** //
+
 		/**
-		 * Gets the Asana project template and enqueues the related frontend
-		 * assets.
+		 * Increments the render count for the given shortcode tag.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string $shortcode_tag The shortcode tag.
+		 */
+		public static function count_render( string $shortcode_tag ) {
+			++static::$shortcodes_meta[ $shortcode_tag ]['render_count'];
+		}
+
+		/**
+		 * Adds request token information for the given shortcode tag.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string $shortcode_tag The shortcode tag.
+		 * @param array  $request_args The request arguments to
+		 * generate the request token.
+		 *
+		 * @return string The generated request token.
+		 */
+		public static function push_request_token(
+			string $shortcode_tag,
+			array &$request_args
+		) : string {
+			$token = Request_Token::generate_token( $request_args );
+			if ( empty( static::$shortcodes_meta[ $shortcode_tag ]['request_tokens'][ $token ] ) ) {
+				static::$shortcodes_meta[ $shortcode_tag ]['request_tokens'][ $token ] = $request_args;
+			}
+			return $token;
+		}
+
+		// *************************** //
+		// **   Shortcode Renders   ** //
+		// *************************** //
+
+		/**
+		 * Gets the [ptc_asana_project] shortcode content.
 		 *
 		 * @since 3.4.0
 		 *
@@ -116,9 +234,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 					'show_tasks_due'         => 'true',
 					'show_tasks_attachments' => 'true',
 					'show_tasks_tags'        => 'true',
-					// 'include_tag'          => '',
-					// 'exclude_tag'          => '',
-					// 'sort_tasks'           => '',
 				),
 				$atts,
 				$shortcode_tag
@@ -126,8 +241,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 
 			// Sanitize shortcode attributes.
 
-			$atts['src'] = (string) esc_url_raw( $atts['src'] );
-			$atts['auth_user'] = (int) $atts['auth_user'];
+			$atts['src']              = (string) esc_url_raw( $atts['src'] );
+			$atts['auth_user']        = (int) $atts['auth_user'];
 			$atts['exclude_sections'] = html_entity_decode( $atts['exclude_sections'], ENT_QUOTES | ENT_HTML5 );
 
 			// Prepare shortcode.
@@ -143,27 +258,24 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 
 			$atts['project_gid'] = $parsed_asana_project['gid'];
 
-			// Generate request token.
-			$post_id = get_the_ID();
-			$request_tokens = new Request_Tokens( $post_id );
-			$token = $request_tokens->save( $atts );
+			// Always remove Asana object GIDs.
+			$atts['show_gids'] = 'false';
+
+			// Generate request token for the frontend.
+			$atts['_cache_key'] = 'shortcode_ptc_asana_project';
+			$token = static::push_request_token( $shortcode_tag, $atts );
 
 			// Render frontend data.
 
-			wp_enqueue_script( 'ptc-completionist-shortcode-asana-project' );
-			wp_enqueue_style( 'ptc-completionist-shortcode-asana-project' );
-
 			$request_url = add_query_arg(
-				array(
-					'token' => $token,
-					'post_id' => $post_id,
-				),
+				array( 'token' => $token ),
 				rest_url( REST_API_NAMESPACE_V1 . '/projects' )
 			);
 
+			static::count_render( $shortcode_tag );
 			return sprintf(
 				'<div class="ptc-shortcode ptc-asana-project" data-src="%1$s" data-layout="%2$s"></div>',
-				esc_url_raw( $request_url ),
+				esc_url( $request_url ),
 				esc_attr( $parsed_asana_project['layout'] ?? 'list' )
 			);
 		}

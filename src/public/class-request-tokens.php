@@ -13,12 +13,6 @@ defined( 'ABSPATH' ) || die();
 
 require_once PLUGIN_PATH . 'src/includes/class-options.php';
 
-_deprecated_file(
-	__FILE__,
-	'[unreleased]',
-	PLUGIN_PATH . 'src/public/class-request-token.php'
-);
-
 /**
  * Class to manage frontend request tokens.
  *
@@ -90,13 +84,6 @@ class Request_Tokens {
 	 * @since 3.4.0
 	 */
 	public static function purge_all() {
-
-		_deprecated_function(
-			__CLASS__ . '::' . __FUNCTION__ . '()',
-			'[unreleased]',
-			__NAMESPACE__ . '\Request_Token::delete_all()'
-		);
-
 		Options::delete( Options::REQUEST_TOKENS, -1 );
 	}
 

@@ -262,8 +262,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 			$sql = "CREATE TABLE {$request_tokens_table} (
 				token varchar(255) NOT NULL UNIQUE,
 				args text NOT NULL,
-				cache_data longtext,
-				cached_at datetime,
+				cache_data longtext NOT NULL,
+				cached_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 				last_accessed datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
 				PRIMARY KEY  (token)
 			) {$charset_collate};";
