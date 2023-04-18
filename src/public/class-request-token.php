@@ -280,7 +280,10 @@ class Request_Token {
 		 *
 		 * For stronger security, a shorter staleness duration is
 		 * preferred so that request tokens are deauthorized as
-		 * soon as possible.
+		 * soon as possible. However, note that the interval for
+		 * deleting stale request tokens may be longer. Using a 0
+		 * (zero) staleness duration would cause all request tokens
+		 * to be deleted during each scan.
 		 *
 		 * If a request token is needed but has already been deleted
 		 * by staleness checks, it will simply be created again as
