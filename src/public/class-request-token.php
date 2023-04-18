@@ -290,11 +290,11 @@ class Request_Token {
 		 *
 		 * @since [unreleased]
 		 *
-		 * @param int $duration Duration in seconds. Default 604800 (1 week).
+		 * @param int $duration Duration in seconds. Default 86400 (1 day).
 		 */
 		return apply_filters(
 			'ptc_completionist_request_tokens_staleness_duration',
-			WEEK_IN_SECONDS
+			DAY_IN_SECONDS
 		);
 	}
 
