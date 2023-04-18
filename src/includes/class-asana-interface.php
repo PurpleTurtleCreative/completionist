@@ -867,61 +867,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 					foreach ( $task->memberships as &$membership ) {
 						if ( isset( $sections_map[ $membership->section->gid ] ) ) {
 
-							$inline_attachment_urls = array();
-							$inline_oembed_urls = array();
-
-							// Process task description.
-							if ( isset( $task->html_notes ) ) {
-								// Sanitize HTML and format paragraphs.
-								$task->html_notes = wpautop( wp_kses_post( $task->html_notes ) );
-								// Use local attachment URLs.
-								$task->html_notes = HTML_Builder::localize_attachment_urls(
-									$task->html_notes,
-									-1,
-									static::$wp_user_id,
-									$inline_attachment_urls
-								);
-								// Render embedded HTML objects.
-								$task->html_notes = HTML_Builder::replace_urls_with_oembeds(
-									$task->html_notes,
-									$inline_oembed_urls
-								);
-							}
-
-							// Process attachments.
-							if ( isset( $task->attachments ) ) {
-
-								foreach ( $task->attachments as $attachments_i => &$attachment ) {
-									$attachment->_ptc_view_url = HTML_Builder::get_local_attachment_view_url(
-										$attachment->gid,
-										-1,
-										static::$wp_user_id
-									);
-									if (
-										true === in_array( $attachment->_ptc_view_url, $inline_attachment_urls, true ) ||
-										true === in_array( $attachment->view_url, $inline_oembed_urls, true )
-									) {
-										// Remove extra attachments that are already
-										// found inline elsewhere.
-										//
-										// Attachment was found as a
-										// localized inline attachment.
-										// - OR -
-										// Attachment was found as an
-										// inline oEmbed object.
-										unset( $task->attachments[ $attachments_i ] );
-									}
-								}
-							}
+							static::localize_task( $task );
 
 							// Process subtasks.
 							if ( isset( $task->subtasks ) ) {
 
 								foreach ( $task->subtasks as $subtasks_i => &$subtask ) {
-
-									$inline_attachment_urls = array();
-									$inline_oembed_urls = array();
-
 									if ( isset( $subtask->completed ) ) {
 										if ( ! $args['show_tasks_completed'] ) {
 											if ( $subtask->completed ) {
@@ -932,50 +883,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 												// Don't show completed status
 												// for incomplete tasks.
 												unset( $subtask->completed );
-											}
-										}
-									}
-
-									// Process task description.
-									if ( isset( $subtask->html_notes ) ) {
-										// Sanitize HTML and format paragraphs.
-										$subtask->html_notes = wpautop( wp_kses_post( $subtask->html_notes ) );
-										// Use local attachment URLs.
-										$subtask->html_notes = HTML_Builder::localize_attachment_urls(
-											$subtask->html_notes,
-											-1,
-											static::$wp_user_id,
-											$inline_attachment_urls
-										);
-										// Render embedded HTML objects.
-										$subtask->html_notes = HTML_Builder::replace_urls_with_oembeds(
-											$subtask->html_notes,
-											$inline_oembed_urls
-										);
-									}
-
-									// Process attachments.
-									if ( isset( $subtask->attachments ) ) {
-
-										foreach ( $subtask->attachments as $subattachments_i => &$attachment ) {
-											$attachment->_ptc_view_url = HTML_Builder::get_local_attachment_view_url(
-												$attachment->gid,
-												-1,
-												static::$wp_user_id
-											);
-											if (
-												true === in_array( $attachment->_ptc_view_url, $inline_attachment_urls, true ) ||
-												true === in_array( $attachment->view_url, $inline_oembed_urls, true )
-											) {
-												// Remove extra attachments that are already
-												// found inline elsewhere.
-												//
-												// Attachment was found as a
-												// localized inline attachment.
-												// - OR -
-												// Attachment was found as an
-												// inline oEmbed object.
-												unset( $subtask->attachments[ $subattachments_i ] );
 											}
 										}
 									}
@@ -1006,6 +913,82 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			}
 
 			return $project;
+		}
+
+		/**
+		 * Sanitizes, localizes, and tidies a task object.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param \stdClass $task The task to edit.
+		 * @param bool      $recursive Optional. If to recursively edit
+		 * all subtasks of the given task. Default true.
+		 */
+		public static function localize_task(
+			\stdClass &$task,
+			bool $recursive = true
+		) {
+
+			$inline_attachment_urls = array();
+			$inline_oembed_urls = array();
+
+			// Process task description.
+			if ( isset( $task->html_notes ) ) {
+				// Sanitize HTML and format paragraphs.
+				$task->html_notes = wpautop( wp_kses_post( $task->html_notes ) );
+				// Use local attachment URLs.
+				$task->html_notes = HTML_Builder::localize_attachment_urls(
+					$task->html_notes,
+					-1,
+					static::$wp_user_id,
+					$inline_attachment_urls
+				);
+				// Render embedded HTML objects.
+				$task->html_notes = HTML_Builder::replace_urls_with_oembeds(
+					$task->html_notes,
+					$inline_oembed_urls
+				);
+			}
+
+			// Process attachments.
+			if ( isset( $task->attachments ) ) {
+
+				$keep_attachments = array();
+
+				foreach ( $task->attachments as $i => &$attachment ) {
+
+					$attachment->_ptc_view_url = HTML_Builder::get_local_attachment_view_url(
+						$attachment->gid,
+						-1,
+						static::$wp_user_id
+					);
+
+					if (
+						false === in_array( $attachment->_ptc_view_url, $inline_attachment_urls, true ) &&
+						false === in_array( $attachment->view_url, $inline_oembed_urls, true )
+					) {
+						// Only keep extra attachments which aren't already
+						// found inline elsewhere.
+						//
+						// Attachment was NOT found as a
+						// localized inline attachment.
+						// - AND -
+						// Attachment was NOT found as an
+						// inline oEmbed object.
+						$keep_attachments[] = $attachment;
+					}
+				}
+
+				// Fix index gaps from possible removals.
+				$task->attachments = $keep_attachments;
+			}
+
+			// Recursively localize subtasks.
+			if ( $recursive && isset( $task->subtasks ) ) {
+				foreach ( $task->subtasks as &$subtask ) {
+					static::localize_task( $subtask );
+				}
+			}
 		}
 
 		/**
@@ -1641,7 +1624,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			// Request the deletion in Asana.
 			$asana = self::get_client();
 			$asana->tasks->delete( $task_gid );
-			// @TODO - Update the cache.
 		}
 
 		/**

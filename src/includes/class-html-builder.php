@@ -13,8 +13,9 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once 'class-asana-interface.php';
-require_once 'class-options.php';
+require_once PLUGIN_PATH . 'src/public/class-request-token.php';
+require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
+require_once PLUGIN_PATH . 'src/includes/class-options.php';
 
 if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 	/**
@@ -556,11 +557,11 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		 * Replaces inline Asana attachment URLs with local API
 		 * endpoints for retrieval.
 		 *
+		 * @since [unreleased] Deprecated $post_id parameter.
 		 * @since 3.5.0
 		 *
 		 * @param string   $html The HTML content to search and replace.
-		 * @param int      $post_id The post ID to associate the API
-		 * request token.
+		 * @param int      $deprecated Deprecated.
 		 * @param int      $auth_user Optional. The WordPress user to
 		 * authenticate the attachment endpoint request.
 		 * @param string[] $replacements Optional. A variable
@@ -569,14 +570,23 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		 */
 		public static function localize_attachment_urls(
 			string $html,
-			int $post_id,
+			int $deprecated,
 			int $auth_user = 0,
 			array &$replacements = array()
 		) : string {
+
+			if ( -1 !== $deprecated ) {
+				_deprecated_argument(
+					__FUNCTION__,
+					'[unreleased]',
+					'The $post_id parameter is deprecated. Pass -1 to silence this notice.'
+				);
+			}
+
 			// Find and replace all inline Asana attachment images.
 			return preg_replace_callback(
 				'/<img .*?data-asana-type="attachment".*?>/m',
-				function ( $img_attachment_matches ) use ( &$post_id, &$auth_user, &$replacements ) {
+				function ( $img_attachment_matches ) use ( &$auth_user, &$replacements ) {
 
 					// Find the Asana attachment's GID.
 					preg_match(
@@ -589,7 +599,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 					if ( ! empty( $asana_gid_matches[1] ) ) {
 						$local_attachment_url = self::get_local_attachment_view_url(
 							$asana_gid_matches[1],
-							$post_id,
+							-1,
 							$auth_user
 						);
 						$replacements[] = $local_attachment_url;
@@ -645,34 +655,44 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		/**
 		 * Gets the local API endpoint for retrieving an attachment.
 		 *
+		 * @since [unreleased] Deprecated $post_id parameter.
 		 * @since 3.5.0
 		 *
 		 * @param string $attachment_gid The Asana attachment's GID.
-		 * @param int    $post_id The post ID to associate the API
-		 * request token.
+		 * @param int    $deprecated Deprecated.
 		 * @param int    $auth_user Optional. The WordPress user to
 		 * authenticate the attachment endpoint request.
 		 * @return string The local API endpoint URL.
 		 */
 		public static function get_local_attachment_view_url(
 			string $attachment_gid,
-			int $post_id,
+			int $deprecated = -1,
 			int $auth_user = 0
 		) : string {
 
-			$request_tokens = new Request_Tokens( $post_id );
+			if ( -1 !== $deprecated ) {
+				_deprecated_argument(
+					__FUNCTION__,
+					'[unreleased]',
+					'The $post_id parameter is deprecated. Pass -1 to silence this notice.'
+				);
+			}
+
+			$token = Request_Token::save(
+				array(
+					'_cache_key'     => 'get_local_attachment_view_url',
+					'attachment_gid' => $attachment_gid,
+					'auth_user'      => $auth_user,
+					'proxy_field'    => 'view_url',
+				)
+			);
+
+			if ( empty( $token ) ) {
+				trigger_error( 'Empty token: ' . gettype( $token ) );
+			}
 
 			return add_query_arg(
-				array(
-					'token' => $request_tokens->save(
-						array(
-							'attachment_gid' => $attachment_gid,
-							'auth_user' => $auth_user,
-							'proxy_field' => 'view_url',
-						)
-					),
-					'post_id' => $request_tokens->get_post_id(),
-				),
+				array( 'token' => $token ),
 				rest_url( REST_API_NAMESPACE_V1 . '/attachments' )
 			);
 		}

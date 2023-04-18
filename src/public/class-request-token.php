@@ -150,7 +150,7 @@ class Request_Token {
 	}
 
 	// @TODO - Create a bulk save/touch function to reduce
-	// database transactions!
+	// database write transactions!
 
 	/**
 	 * Saves a request token for the given arguments.
@@ -210,11 +210,11 @@ class Request_Token {
 			)
 		);
 
-		if ( ! $rows_affected ) {
-			// False means there was an error.
-			// 0 (zero) means no rows were affected.
-			// 1 row is expected to be affected for insertion.
-			// 2 rows are expected to be affected for insertion/update.
+		if ( false === $rows_affected ) {
+			trigger_error(
+				"Failed to save request token. SQL error encountered: {$wpdb->last_error}",
+				E_USER_WARNING
+			);
 			return '';
 		}
 
