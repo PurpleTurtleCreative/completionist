@@ -867,12 +867,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 					foreach ( $task->memberships as &$membership ) {
 						if ( isset( $sections_map[ $membership->section->gid ] ) ) {
 
-							static::localize_task( $task );
+							// Don't recursively localize tasks since some
+							// subtasks might end up being removed.
+							static::localize_task( $task, false );
 
 							// Process subtasks.
 							if ( isset( $task->subtasks ) ) {
 
 								foreach ( $task->subtasks as $subtasks_i => &$subtask ) {
+
 									if ( isset( $subtask->completed ) ) {
 										if ( ! $args['show_tasks_completed'] ) {
 											if ( $subtask->completed ) {
@@ -886,6 +889,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 											}
 										}
 									}
+
+									// Now recursively localize tasks since
+									// no further subtasks will be removed.
+									//
+									// Though note that recursion isn't actually
+									// needed here since only one level of subtasks
+									// was loaded, anyways.
+									static::localize_task( $subtask, true );
 								}//end foreach.
 
 								// Fix index gaps from possible removals.
