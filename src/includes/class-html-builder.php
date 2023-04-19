@@ -666,7 +666,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		 */
 		public static function get_local_attachment_view_url(
 			string $attachment_gid,
-			int $deprecated = -1,
+			int $deprecated,
 			int $auth_user = 0
 		) : string {
 
