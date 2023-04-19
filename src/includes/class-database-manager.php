@@ -381,7 +381,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 			dbDelta( $creation_sql );
 
 			global $wpdb;
-			return ( $table_name === $wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'" ) );//phpcs:ignore
+			$res = $wpdb->get_var(
+				$wpdb->prepare(
+					'SHOW TABLES LIKE %s',
+					$table_name
+				)
+			);
+
+			return ( $table_name === $res );
 		}
 
 		/**
