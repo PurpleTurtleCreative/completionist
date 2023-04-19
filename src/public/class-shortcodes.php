@@ -91,6 +91,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			}
 
 			// End request token buffering.
+			//
+			// Again... it's not desirable that the buffer was started
+			// within a different function.
+			//
+			// See Shortcodes::add_shortcodes().
 			Request_Token::buffer_end_flush();
 		}
 
@@ -102,6 +107,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		public static function add_shortcodes() {
 
 			// Start request token buffering.
+			//
+			// Preferably, the buffer would start and end within the
+			// same function call to prevent overreaching context
+			// with a tangled execution path.
 			Request_Token::buffer_start();
 
 			// Register all shortcodes.

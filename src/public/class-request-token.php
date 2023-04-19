@@ -49,9 +49,6 @@ class Request_Token {
 	/**
 	 * If buffering database transactions. Default false.
 	 *
-	 * @see Request_Token::buffer_enable()
-	 * @see Request_Token::buffer_disable()
-	 *
 	 * @since [unreleased]
 	 *
 	 * @var bool $buffer_enabled
@@ -249,19 +246,34 @@ class Request_Token {
 	 * Initializes and enables buffering.
 	 *
 	 * @since [unreleased]
+	 *
+	 * @param bool $force_init Optional. If the buffer should be
+	 * cleared even when buffering is already enabled. Default false.
 	 */
-	public static function buffer_start() {
-		static::buffer_init();
-		static::buffer_enable();
+	public static function buffer_start( bool $force_init = false ) {
+		if ( $force_init || ! static::$buffer_enabled ) {
+			static::buffer_init();
+			static::$buffer_enabled = true;
+		}
 	}
 
 	/**
 	 * Commits and cleans the buffer's contents and disables buffering.
 	 *
+	 * Note that the buffer is disabled before actually flushing
+	 * the buffer's contents. This is for thread safety since
+	 * disabling the buffer means any further transactions will be
+	 * immediately written to the database. Theoretically, the
+	 * buffer could be committed and cleaned (aka flushed), then
+	 * a write request happens which sees that the buffer is
+	 * currently enabled so it does nothing, and then the buffer
+	 * actually gets disabled. That buffered request would then
+	 * not be committed (aka written).
+	 *
 	 * @since [unreleased]
 	 */
 	public static function buffer_end_flush() {
-		static::buffer_disable();
+		static::$buffer_enabled = false;
 		static::buffer_flush();
 	}
 
@@ -274,24 +286,6 @@ class Request_Token {
 		static::$buffer = array(
 			'save' => array(),
 		);
-	}
-
-	/**
-	 * Enables buffering.
-	 *
-	 * @since [unreleased]
-	 */
-	public static function buffer_enable() {
-		static::$buffer_enabled = true;
-	}
-
-	/**
-	 * Disables buffering.
-	 *
-	 * @since [unreleased]
-	 */
-	public static function buffer_disable() {
-		static::$buffer_enabled = false;
 	}
 
 	/**
