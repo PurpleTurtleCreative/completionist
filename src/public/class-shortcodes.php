@@ -78,11 +78,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		 */
 		public static function process_collected_shortcodes() {
 
-			$do_request_token_commit = false;
-
 			foreach ( static::$shortcodes_meta as $shortcode_tag => &$metadata ) {
 				if ( $metadata['render_count'] > 0 ) {
-
 					// Enqueue assets for rendered shortcodes.
 					foreach ( $metadata['script_handles'] as &$script_handle ) {
 						wp_enqueue_script( $script_handle );
@@ -90,15 +87,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 					foreach ( $metadata['style_handles'] as &$style_handle ) {
 						wp_enqueue_style( $style_handle );
 					}
-
-					// Ensure request tokens are committed to the database.
-					$do_request_token_commit = true;
 				}
 			}
 
-			if ( $do_request_token_commit ) {
-				Request_Token::buffer_end_flush();
-			}
+			// End request token buffering.
+			Request_Token::buffer_end_flush();
 		}
 
 		/**
@@ -107,6 +100,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		 * @since 3.4.0
 		 */
 		public static function add_shortcodes() {
+
+			// Start request token buffering.
+			Request_Token::buffer_start();
+
+			// Register all shortcodes.
 			foreach ( static::$shortcodes_meta as $shortcode_tag => &$metadata ) {
 				add_shortcode(
 					$shortcode_tag,
@@ -236,7 +234,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			$atts['_cache_key'] = 'shortcode_ptc_asana_project';
 
 			// Generate request token for the frontend.
-			$token = Request_Token::buffer_save( $atts );
+			$token = Request_Token::save( $atts );
 
 			// Render frontend data.
 

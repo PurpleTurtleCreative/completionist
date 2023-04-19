@@ -199,11 +199,6 @@ class Request_Token {
 	 */
 	public static function save( array &$request_args ) : string {
 
-		if ( true === static::$buffer_enabled ) {
-			// Use buffering if enabled.
-			return static::buffer_save( $request_args );
-		}
-
 		// Generate the token.
 		$token = static::generate_token( $request_args, $args_as_json );
 		if ( empty( $token ) ) {
@@ -214,27 +209,36 @@ class Request_Token {
 			return '';
 		}
 
-		// Add new (or update existing) request token data.
+		// Add new or update existing request token data.
 
-		Database_Manager::init();
-		$table = Database_Manager::$request_tokens_table;
+		if ( true === static::$buffer_enabled ) {
+			// Add request token data to buffer, if necessary.
+			if ( empty( static::$buffer['save'][ $token ] ) ) {
+				static::$buffer['save'][ $token ] = $args_as_json;
+			}
+		} else {
+			// Immediately write to the database.
 
-		global $wpdb;
-		$rows_affected = $wpdb->query(
-			$wpdb->prepare(
-				"INSERT INTO {$table} (token,args) VALUES (%s,%s)
-					ON DUPLICATE KEY UPDATE last_accessed=CURRENT_TIMESTAMP",
-				$token,
-				$args_as_json
-			)
-		);
+			Database_Manager::init();
+			$table = Database_Manager::$request_tokens_table;
 
-		if ( false === $rows_affected ) {
-			trigger_error(
-				"Failed to save request token. SQL error encountered: {$wpdb->last_error}",
-				E_USER_WARNING
+			global $wpdb;
+			$rows_affected = $wpdb->query(
+				$wpdb->prepare(
+					"INSERT INTO {$table} (token,args) VALUES (%s,%s)
+						ON DUPLICATE KEY UPDATE last_accessed=CURRENT_TIMESTAMP",
+					$token,
+					$args_as_json
+				)
 			);
-			return '';
+
+			if ( false === $rows_affected ) {
+				trigger_error(
+					"Failed to save request token. SQL error encountered: {$wpdb->last_error}",
+					E_USER_WARNING
+				);
+				return '';
+			}
 		}
 
 		// Return saved request token.
@@ -301,45 +305,16 @@ class Request_Token {
 	}
 
 	/**
-	 * Adds a save request to the buffer.
-	 *
-	 * @see Request_Token::save()
-	 * @see Request_Token::buffer_commit()
-	 *
-	 * @since [unreleased]
-	 *
-	 * @param array $request_args The request arguments to represent.
-	 * Note that they may change due to validation and standardization.
-	 *
-	 * @return string The request token or an empty string if
-	 * the data could not be saved.
-	 */
-	public static function buffer_save( array &$request_args ) : string {
-
-		// Generate the token.
-		$token = static::generate_token( $request_args, $args_as_json );
-		if ( empty( $token ) ) {
-			trigger_error(
-				'Failed to buffer_save invalid request token for request arguments: ' . print_r( $request_args, true ),
-				E_USER_WARNING
-			);
-			return '';
-		}
-
-		// Add request token data to buffer, if necessary.
-		if ( empty( static::$buffer['save'][ $token ] ) ) {
-			static::$buffer['save'][ $token ] = $args_as_json;
-		}
-
-		// Return saved request token.
-		return $token;
-	}
-
-	/**
 	 * Commits the buffered database writes.
 	 *
-	 * @see Request_Token::buffer_save()
-	 * @see Request_Token::buffer_flush()
+	 * You REALLY shouldn't support buffering for instance methods.
+	 * Database queries may unpredictably fail which means
+	 * you can't know if updating the Request_Token instance's
+	 * $data in memory will actually reflect what's in the database.
+	 * You can't just assume the buffered queries will succeed.
+	 * For this reason, only support buffering on static functions.
+	 *
+	 * @see Request_Token::save()
 	 *
 	 * @since [unreleased]
 	 */
@@ -350,7 +325,7 @@ class Request_Token {
 		Database_Manager::init();
 		$table = Database_Manager::$request_tokens_table;
 
-		// Add new (or update existing) request token data.
+		// Add new or update existing request token data.
 		if ( ! empty( static::$buffer['save'] ) ) {
 
 			// Build database query statement.
@@ -468,8 +443,13 @@ class Request_Token {
 	// ************************** //
 
 	/**
-	 * Instantiates a request token management context. The request
-	 * token must already exist in the database.
+	 * Instantiates a request token management context.
+	 *
+	 * The request token should already exist in the database, but
+	 * execution won't break here if not. Be sure to confirm with
+	 * `$request_token->exists()` after instantiation.
+	 *
+	 * @see Request_Token::exists()
 	 *
 	 * @since [unreleased]
 	 *
