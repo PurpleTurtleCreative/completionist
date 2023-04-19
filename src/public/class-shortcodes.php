@@ -97,7 +97,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			}
 
 			if ( $do_request_token_commit ) {
-				Request_Token::buffer_flush();
+				Request_Token::buffer_end_flush();
 			}
 		}
 
