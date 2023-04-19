@@ -678,18 +678,18 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 				);
 			}
 
-			$token = Request_Token::save(
-				array(
-					'_cache_key'     => 'get_local_attachment_view_url',
-					'attachment_gid' => $attachment_gid,
-					'auth_user'      => $auth_user,
-					'proxy_field'    => 'view_url',
-				)
+			$args = array(
+				'_cache_key'     => 'get_local_attachment_view_url',
+				'attachment_gid' => $attachment_gid,
+				'auth_user'      => $auth_user,
+				'proxy_field'    => 'view_url',
 			);
 
-			if ( empty( $token ) ) {
-				trigger_error( 'Empty token: ' . gettype( $token ) );
-			}
+			$token = Request_Token::save( $args );
+
+			// Token could (but should NOT) be empty; however the
+			// error would already be logged, so just expose it to the
+			// frontend for debugging visibility.
 
 			return add_query_arg(
 				array( 'token' => $token ),

@@ -36,6 +36,29 @@ require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
 class Request_Token {
 
 	/**
+	 * The buffer for database transactions.
+	 *
+	 * @see Request_Token::buffer_init()
+	 *
+	 * @since [unreleased]
+	 *
+	 * @var array $buffer
+	 */
+	private static $buffer;
+
+	/**
+	 * If buffering database transactions. Default false.
+	 *
+	 * @see Request_Token::buffer_enable()
+	 * @see Request_Token::buffer_disable()
+	 *
+	 * @since [unreleased]
+	 *
+	 * @var bool $buffer_enabled
+	 */
+	private static $buffer_enabled = false;
+
+	/**
 	 * The request token's database record data.
 	 *
 	 * @since [unreleased]
@@ -106,11 +129,14 @@ class Request_Token {
 	 * @since [unreleased]
 	 *
 	 * @param array $request_args The request arguments to represent.
-	 * Note that they may change due to validation and correction.
+	 * Note that they may change due to validation and standardization.
 	 *
 	 * @return string A token representing the provided arguments.
 	 */
-	public static function generate_token( array &$request_args ) : string {
+	public static function generate_token(
+		array &$request_args,
+		?string &$args_as_json = ''
+	) : string {
 
 		if ( empty( $request_args['auth_user'] ) ) {
 			// An 'auth_user' argument is required to prevent data
@@ -143,14 +169,12 @@ class Request_Token {
 				'Failed to JSON encode arguments array to generate a request token.',
 				E_USER_WARNING
 			);
+			$args_as_json = '';
 			return '';
 		}
 
 		return md5( wp_salt( 'nonce' ) . $args_as_json );
 	}
-
-	// @TODO - Create a bulk save/touch function to reduce
-	// database write transactions!
 
 	/**
 	 * Saves a request token for the given arguments.
@@ -167,29 +191,24 @@ class Request_Token {
 	 *
 	 * @since [unreleased]
 	 *
-	 * @param array $request_args The arguments that the request
-	 * token represents.
+	 * @param array $request_args The request arguments to represent.
+	 * Note that they may change due to validation and standardization.
 	 *
 	 * @return string The request token or an empty string if
 	 * the data could not be saved.
 	 */
-	public static function save( array $request_args ) : string {
+	public static function save( array &$request_args ) : string {
+
+		if ( true === static::$buffer_enabled ) {
+			// Use buffering if enabled.
+			return static::buffer_save( $request_args );
+		}
 
 		// Generate the token.
-		$token = static::generate_token( $request_args );
+		$token = static::generate_token( $request_args, $args_as_json );
 		if ( empty( $token ) ) {
 			trigger_error(
 				'Failed to save invalid request token for request arguments: ' . print_r( $request_args, true ),
-				E_USER_WARNING
-			);
-			return '';
-		}
-
-		// Prepare request arguments for insertion.
-		$args_as_json = wp_json_encode( $request_args );
-		if ( false === $args_as_json ) {
-			trigger_error(
-				'Failed to JSON encode request arguments: ' . print_r( $request_args, true ),
 				E_USER_WARNING
 			);
 			return '';
@@ -218,8 +237,161 @@ class Request_Token {
 			return '';
 		}
 
+		// Verbose.
+		if ( WP_DEBUG ) {
+			trigger_error( "Immediately saved request token with ({$rows_affected}) rows affected." );
+		}
+
 		// Return saved request token.
 		return $token;
+	}
+
+	/**
+	 * Initializes and enables buffering.
+	 *
+	 * @since [unreleased]
+	 */
+	public static function buffer_start() {
+		static::buffer_init();
+		static::buffer_enable();
+	}
+
+	/**
+	 * Commits and cleans the buffer's contents and disables buffering.
+	 *
+	 * @since [unreleased]
+	 */
+	public static function buffer_end_flush() {
+		static::buffer_disable();
+		static::buffer_flush();
+	}
+
+	/**
+	 * Initializes (or resets) the buffer.
+	 *
+	 * @since [unreleased]
+	 */
+	public static function buffer_init() {
+		static::$buffer = array(
+			'save' => array(),
+		);
+	}
+
+	/**
+	 * Enables buffering.
+	 *
+	 * @since [unreleased]
+	 */
+	public static function buffer_enable() {
+		static::$buffer_enabled = true;
+	}
+
+	/**
+	 * Disables buffering.
+	 *
+	 * @since [unreleased]
+	 */
+	public static function buffer_disable() {
+		static::$buffer_enabled = false;
+	}
+
+	/**
+	 * Commits the buffer's content and resets the buffer.
+	 *
+	 * @since [unreleased]
+	 */
+	public static function buffer_flush() {
+		static::buffer_commit();
+		static::buffer_init();
+	}
+
+	/**
+	 * Adds a save request to the buffer.
+	 *
+	 * @see Request_Token::save()
+	 * @see Request_Token::buffer_commit()
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param array $request_args The request arguments to represent.
+	 * Note that they may change due to validation and standardization.
+	 *
+	 * @return string The request token or an empty string if
+	 * the data could not be saved.
+	 */
+	public static function buffer_save( array &$request_args ) : string {
+
+		// Generate the token.
+		$token = static::generate_token( $request_args, $args_as_json );
+		if ( empty( $token ) ) {
+			trigger_error(
+				'Failed to buffer_save invalid request token for request arguments: ' . print_r( $request_args, true ),
+				E_USER_WARNING
+			);
+			return '';
+		}
+
+		// Add request token data to buffer, if necessary.
+		if ( empty( static::$buffer['save'][ $token ] ) ) {
+			static::$buffer['save'][ $token ] = $args_as_json;
+		}
+
+		// Return saved request token.
+		return $token;
+	}
+
+	/**
+	 * Commits the buffered database writes.
+	 *
+	 * @see Request_Token::buffer_save()
+	 * @see Request_Token::buffer_flush()
+	 *
+	 * @since [unreleased]
+	 */
+	public static function buffer_commit() {
+
+		// Prepare database connection information.
+		global $wpdb;
+		Database_Manager::init();
+		$table = Database_Manager::$request_tokens_table;
+
+		// Add new (or update existing) request token data.
+		if ( ! empty( static::$buffer['save'] ) ) {
+
+			// Build database query statement.
+			$insertion_query = "INSERT INTO {$table} (token,args) VALUES ";
+
+			// Append each VALUES set.
+			foreach ( static::$buffer['save'] as $token => &$args_as_json ) {
+				$insertion_query .= $wpdb->prepare(
+					"(%s,%s), ",
+					$token,
+					$args_as_json
+				);
+			}
+
+			// Remove last ending ', ' (comma space).
+			$insertion_query = substr( $insertion_query, 0, -2 );
+
+			// Update the last_accessed datetime if record exists.
+			$insertion_query .= ' ON DUPLICATE KEY UPDATE last_accessed=CURRENT_TIMESTAMP';
+
+			// Execute statement.
+			$rows_affected = $wpdb->query( $insertion_query );//phpcs:ignore
+
+			// Check for errors.
+			if ( false === $rows_affected ) {
+				trigger_error(
+					"Failed to buffer_commit save request tokens. SQL error encountered: {$wpdb->last_error}",
+					E_USER_WARNING
+				);
+			}
+
+			// Verbose.
+			if ( WP_DEBUG ) {
+				trigger_error( "Committed buffered save with ({$rows_affected}) rows affected." );
+			}
+		}
 	}
 
 	/**
@@ -293,11 +465,11 @@ class Request_Token {
 		 *
 		 * @since [unreleased]
 		 *
-		 * @param int $duration Duration in seconds. Default 86400 (1 day).
+		 * @param int $duration Duration in seconds. Default 43200 (12 hours).
 		 */
 		return apply_filters(
 			'ptc_completionist_request_tokens_staleness_duration',
-			DAY_IN_SECONDS
+			12 * HOUR_IN_SECONDS
 		);
 	}
 

@@ -127,8 +127,8 @@ class Attachments {
 					curl_setopt_array(
 						$ch,
 						array(
-							CURLOPT_HTTPGET => true,
-							CURLOPT_URL => $attachment->{$args['proxy_field']},
+							CURLOPT_HTTPGET        => true,
+							CURLOPT_URL            => $attachment->{$args['proxy_field']},
 							CURLOPT_FOLLOWLOCATION => true,
 							CURLOPT_RETURNTRANSFER => true,
 							CURLOPT_HEADERFUNCTION => function ( $curl, $header ) use ( &$response_headers ) {
@@ -138,7 +138,7 @@ class Attachments {
 								$header = trim( $header );
 
 								if (
-									 ! empty( $header ) &&
+									! empty( $header ) &&
 									0 !== stripos( $header, 'x-' )
 								) {
 									// Ignore extra, custom headers.

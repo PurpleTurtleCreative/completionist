@@ -682,6 +682,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			// Merge default args.
 			$args = array_merge( $default_args, $args );
 
+			// Start request token buffering.
+			Request_Token::buffer_start();
+
 			// Get project data.
 
 			$project_fields = 'sections,this.sections.name';
@@ -916,8 +919,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				}
 			}
 
-			// Remove all GIDs if desired.
+			// Commit all buffered request tokens.
+			Request_Token::buffer_flush();
 
+			// Remove all GIDs if desired.
 			if ( ! $args['show_gids'] ) {
 				require_once PLUGIN_PATH . 'src/includes/class-util.php';
 				Util::deep_unset_prop( $project, 'gid' );

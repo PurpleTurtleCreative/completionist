@@ -35,9 +35,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		 *
 		 *   @type int $render_count The count of shortcode renders.
 		 *
-		 *   @type array[] $request_tokens A map of request token
-		 *                 keys to their request argument arrays.
-		 *
 		 *   @type string[] $script_handles The script handles
 		 *                  that should be enqueued for this tag.
 		 *
@@ -49,7 +46,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		private static $shortcodes_meta = array(
 			'ptc_asana_project' => array(
 				'render_count'   => 0,
-				'request_tokens' => array(),
 				'script_handles' => array(
 					'ptc-completionist-shortcode-asana-project',
 				),
@@ -81,9 +77,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		 * @since [unreleased]
 		 */
 		public static function process_collected_shortcodes() {
-			foreach ( static::$shortcodes_meta as $shortcode_tag => &$metadata ) {
 
+			$do_request_token_commit = false;
+
+			foreach ( static::$shortcodes_meta as $shortcode_tag => &$metadata ) {
 				if ( $metadata['render_count'] > 0 ) {
+
 					// Enqueue assets for rendered shortcodes.
 					foreach ( $metadata['script_handles'] as &$script_handle ) {
 						wp_enqueue_script( $script_handle );
@@ -91,20 +90,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 					foreach ( $metadata['style_handles'] as &$style_handle ) {
 						wp_enqueue_style( $style_handle );
 					}
-				}
 
-				if ( count( $metadata['request_tokens'] ) > 0 ) {
-					// Process request tokens.
-					foreach ( $metadata['request_tokens'] as $shortcode_token => &$request_args ) {
-						$actual_token = Request_Token::save( $request_args );
-						if ( $shortcode_token !== $actual_token ) {
-							trigger_error(
-								"Shortcode [{$shortcode_tag}] is using a request token ({$shortcode_token}) that doesn't match the token generated from its request arguments ({$actual_token}). The shortcode will likely fail to properly function.",
-								E_USER_WARNING
-							);
-						}
-					}
+					// Ensure request tokens are committed to the database.
+					$do_request_token_commit = true;
 				}
+			}
+
+			if ( $do_request_token_commit ) {
+				Request_Token::buffer_flush();
 			}
 		}
 
@@ -165,28 +158,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		 */
 		public static function count_render( string $shortcode_tag ) {
 			++static::$shortcodes_meta[ $shortcode_tag ]['render_count'];
-		}
-
-		/**
-		 * Adds request token information for the given shortcode tag.
-		 *
-		 * @since [unreleased]
-		 *
-		 * @param string $shortcode_tag The shortcode tag.
-		 * @param array  $request_args The request arguments to
-		 * generate the request token.
-		 *
-		 * @return string The generated request token.
-		 */
-		public static function push_request_token(
-			string $shortcode_tag,
-			array &$request_args
-		) : string {
-			$token = Request_Token::generate_token( $request_args );
-			if ( empty( static::$shortcodes_meta[ $shortcode_tag ]['request_tokens'][ $token ] ) ) {
-				static::$shortcodes_meta[ $shortcode_tag ]['request_tokens'][ $token ] = $request_args;
-			}
-			return $token;
 		}
 
 		// *************************** //
@@ -261,9 +232,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			// Always remove Asana object GIDs.
 			$atts['show_gids'] = 'false';
 
-			// Generate request token for the frontend.
+			// Specify request token key.
 			$atts['_cache_key'] = 'shortcode_ptc_asana_project';
-			$token = static::push_request_token( $shortcode_tag, $atts );
+
+			// Generate request token for the frontend.
+			$token = Request_Token::buffer_save( $atts );
 
 			// Render frontend data.
 
