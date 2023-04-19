@@ -237,11 +237,6 @@ class Request_Token {
 			return '';
 		}
 
-		// Verbose.
-		if ( WP_DEBUG ) {
-			trigger_error( "Immediately saved request token with ({$rows_affected}) rows affected." );
-		}
-
 		// Return saved request token.
 		return $token;
 	}
@@ -385,11 +380,6 @@ class Request_Token {
 					"Failed to buffer_commit save request tokens. SQL error encountered: {$wpdb->last_error}",
 					E_USER_WARNING
 				);
-			}
-
-			// Verbose.
-			if ( WP_DEBUG ) {
-				trigger_error( "Committed buffered save with ({$rows_affected}) rows affected." );
 			}
 		}
 	}
