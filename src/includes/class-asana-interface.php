@@ -1002,7 +1002,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			// Recursively localize subtasks.
 			if ( $recursive && isset( $task->subtasks ) ) {
 				foreach ( $task->subtasks as &$subtask ) {
-					static::localize_task( $subtask );
+					static::localize_task( $subtask, $recursive );
 				}
 			}
 		}
