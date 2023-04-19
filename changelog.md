@@ -1,3 +1,35 @@
+### [unreleased]
+
+#### Added
+
+- New custom database table for the new request tokens architecture. The rearchitecture drastically improves performance and reliability for all frontend requests by batching database writes into a single transaction and using an atomic storage strategy.
+
+#### Changed
+
+- Saving the "Frontend Authentication User" setting no longer forces the Asana request tokens cache entries to be deleted. Request tokens are now properly invalidated automatically.
+- Minor performance improvement when rendering multiple shortcodes on a single page load.
+- Minor performance improvement when `Database_Manager::init()` by preventing redundant initialization.
+
+#### Deprecated
+
+- The original `Request_Tokens` class and most of its methods. Methods related to data removal are still used for a clean migration to the new  `Request_Token` class.
+- The `Options::REQUEST_TOKENS` postmeta key used by the original `Request_Tokens` class.
+- The `$post_id` argument is deprecated and no longer used when localizing Asana attachment URLs. This is due to the request tokens rearchitecture.
+
+#### Fixed
+
+- The `[ptc_asana_project]` shortcode now works in contexts where a post ID is not available, such as in widgets or complex page builders.
+- The `[ptc_asana_project]` shortcode's associated data would be saved across unrelated post's if displayed in a global context, such as a site footer.
+- Race conditions with database reads and writes related to request tokens would cause interruptions in functionality, such as Asana attachments failing to load.
+- WordPress's `dbDelta()` compatibility with `FOREIGN KEY` declarations by ignoring its `ADD COLUMN` table alter queries.
+- WordPress's `dbDelta()` compatibility with uppercase `UNSIGNED` constraints by using lowercase instead.
+- WordPress's `dbDelta()` compatibility with a zero fractional second precision `datetime` datatype by simply removing it altogether. That is, using `datetime` instead of `datetime(0)`.
+
+#### Security
+
+- An Asana authentication user must now be provided when request tokens are created. This *guarantees* request tokens are properly invalidated if the authentication user ever changes, though there were no known vulnerabilities related to the existing functionality.
+- A unique "cache key" must now be provided when request tokens are created. This *guarantees* cache entries are specific to each request token's usage, though there were no known vulnerabilities related to the existing functionality.
+
 ### 3.6.0 - 2023-04-07
 
 #### Added
