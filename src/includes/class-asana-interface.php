@@ -920,7 +920,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			}
 
 			// Commit all buffered request tokens.
-			Request_Token::buffer_flush();
+			Request_Token::buffer_end_flush();
 
 			// Remove all GIDs if desired.
 			if ( ! $args['show_gids'] ) {
