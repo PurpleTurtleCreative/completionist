@@ -2,7 +2,7 @@
 
 #### Added
 
-- New custom database table for the new request tokens architecture. The rearchitecture drastically improves performance and reliability for all frontend requests by batching database writes into a single transaction and using an atomic storage strategy.
+- New custom database table for the new request tokens architecture. The rearchitecture drastically improves performance, storage, and reliability for all frontend requests by batching database writes into a single transaction and using an atomic storage strategy.
 
 #### Changed
 
@@ -19,9 +19,9 @@
 #### Fixed
 
 - The `[ptc_asana_project]` shortcode now works in contexts where a post ID is not available, such as in widgets or complex page builders.
-- The `[ptc_asana_project]` shortcode's associated data would be saved across unrelated post's if displayed in a global context, such as a site footer.
+- The `[ptc_asana_project]` shortcode's associated data would be saved across unrelated posts if displayed in a global context, such as a site footer.
 - Race conditions with database reads and writes related to request tokens would cause interruptions in functionality, such as Asana attachments failing to load.
-- WordPress's `dbDelta()` compatibility with `FOREIGN KEY` declarations by ignoring its `ADD COLUMN` table alter queries.
+- WordPress's `dbDelta()` compatibility with `FOREIGN KEY` declarations by ignoring its related `ADD COLUMN` table alter queries.
 - WordPress's `dbDelta()` compatibility with uppercase `UNSIGNED` constraints by using lowercase instead.
 - WordPress's `dbDelta()` compatibility with a zero fractional second precision `datetime` datatype by simply removing it altogether. That is, using `datetime` instead of `datetime(0)`.
 

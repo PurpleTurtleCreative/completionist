@@ -79,8 +79,6 @@ class Request_Tokens {
 	/**
 	 * Deletes all request token data.
 	 *
-	 * @deprecated [unreleased]
-	 *
 	 * @since 3.4.0
 	 */
 	public static function purge_all() {

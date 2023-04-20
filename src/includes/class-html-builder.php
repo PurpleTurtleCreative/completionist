@@ -678,18 +678,14 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 				);
 			}
 
-			$args = array(
+			$request_args = array(
 				'_cache_key'     => 'get_local_attachment_view_url',
 				'attachment_gid' => $attachment_gid,
 				'auth_user'      => $auth_user,
 				'proxy_field'    => 'view_url',
 			);
 
-			$token = Request_Token::save( $args );
-
-			// Token could (but should NOT) be empty; however the
-			// error would already be logged, so just expose it to the
-			// frontend for debugging visibility.
+			$token = Request_Token::save( $request_args );
 
 			return add_query_arg(
 				array( 'token' => $token ),

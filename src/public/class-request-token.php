@@ -102,11 +102,16 @@ class Request_Token {
 			)
 		);
 
-		return ( false !== $rows_affected );
+		if ( false === $rows_affected ) {
+			trigger_error(
+				"Failed to delete stale request tokens. SQL error encountered: {$wpdb->last_error}",
+				E_USER_NOTICE
+			);
+		}
 	}
 
 	/**
-	 * Deletes all request tokens.
+	 * Deletes all request tokens and their data.
 	 *
 	 * @since [unreleased]
 	 */
@@ -328,7 +333,7 @@ class Request_Token {
 			// Append each VALUES set.
 			foreach ( static::$buffer['save'] as $token => &$args_as_json ) {
 				$insertion_query .= $wpdb->prepare(
-					"(%s,%s), ",
+					'(%s,%s), ',
 					$token,
 					$args_as_json
 				);
