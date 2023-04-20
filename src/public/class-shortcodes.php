@@ -80,13 +80,30 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 
 			foreach ( static::$shortcodes_meta as $shortcode_tag => &$metadata ) {
 				if ( $metadata['render_count'] > 0 ) {
-					// Enqueue assets for rendered shortcodes.
+
+					// Enqueue included assets for rendered shortcodes.
 					foreach ( $metadata['script_handles'] as &$script_handle ) {
 						wp_enqueue_script( $script_handle );
 					}
 					foreach ( $metadata['style_handles'] as &$style_handle ) {
 						wp_enqueue_style( $style_handle );
 					}
+
+					/**
+					 * Enqueues custom scripts and styles for each shortcode tag.
+					 *
+					 * Note that this action only runs for shortcodes that
+					 * have been executed. This ensures assets are enqueued
+					 * only once per page load and only when they are needed.
+					 *
+					 * @since [unreleased]
+					 *
+					 * @param string $shortcode_tag The shortcode tag.
+					 */
+					do_action(
+						'ptc_completionist_shortcode_enqueue_assets',
+						$shortcode_tag
+					);
 				}
 			}
 
@@ -132,10 +149,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			// Asana project assets.
 
 			$asset_file = require_once( PLUGIN_PATH . 'build/index_ShortcodeAsanaProject.jsx.asset.php' );
-			$dependencies = apply_filters(
+
+			$dependencies = apply_filters_deprecated(
 				'ptc_completionist_shortcode_asana_project_script_deps',
-				$asset_file['dependencies']
+				array( $asset_file['dependencies'] ),
+				'[unreleased]',
+				'ptc_completionist_shortcode_enqueue_assets',
+				'Filtering the dependency array of each asset for each shortcode is not a scalable approach. Please instead use the new, generic action hook for enqueueing custom assets.'
 			);
+
 			wp_register_script(
 				'ptc-completionist-shortcode-asana-project',
 				PLUGIN_URL . '/build/index_ShortcodeAsanaProject.jsx.js',

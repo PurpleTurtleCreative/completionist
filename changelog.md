@@ -15,6 +15,7 @@
 - The original `Request_Tokens` class and most of its methods. Methods related to data removal are still used for a clean migration to the new  `Request_Token` class.
 - The `Options::REQUEST_TOKENS` postmeta key used by the original `Request_Tokens` class.
 - The `$post_id` argument is deprecated and no longer used when localizing Asana attachment URLs. This is due to the request tokens rearchitecture.
+- Filter hook `ptc_completionist_shortcode_asana_project_script_deps` is deprecated and replaced by the new action hook `ptc_completionist_shortcode_enqueue_assets`. Filtering the dependency array of each asset for each shortcode is not a scalable or performant approach. Please instead use the new, generic action hook for enqueueing custom assets. The new action hook also ensures custom assets are enqueued *after* included assets for proper sequencing of script and stylesheet overrides.
 
 #### Fixed
 
