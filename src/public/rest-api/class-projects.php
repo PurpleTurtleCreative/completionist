@@ -15,13 +15,13 @@ use const \PTC_Completionist\REST_API_NAMESPACE_V1;
 use \PTC_Completionist\Asana_Interface;
 use \PTC_Completionist\Options;
 use \PTC_Completionist\HTML_Builder;
-use \PTC_Completionist\Request_Tokens;
+use \PTC_Completionist\Request_Token;
 use \PTC_Completionist\Util;
 
 require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
 require_once PLUGIN_PATH . 'src/includes/class-options.php';
 require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
-require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
+require_once PLUGIN_PATH . 'src/public/class-request-token.php';
 require_once PLUGIN_PATH . 'src/includes/class-util.php';
 
 /**
@@ -46,17 +46,10 @@ class Projects {
 					'callback'            => array( __CLASS__, 'handle_get_project' ),
 					'permission_callback' => '__return_true',
 					'args'                => array(
-						'token'   => array(
+						'token' => array(
 							'type'              => 'string',
 							'required'          => true,
 							'sanitize_callback' => 'sanitize_text_field',
-						),
-						'post_id' => array(
-							'type'              => 'integer',
-							'required'          => true,
-							'validate_callback' => function( $value, $request, $param ) {
-								return is_numeric( $value );
-							},
 						),
 					),
 				),
@@ -77,10 +70,10 @@ class Projects {
 		\WP_REST_Request $request
 	) {
 
-		$request_tokens = new Request_Tokens( $request['post_id'] );
+		$request_token = new Request_Token( $request['token'] );
 
 		// Abort if token is invalid.
-		if ( ! $request_tokens->exists( $request['token'] ) ) {
+		if ( ! $request_token->exists() ) {
 			return new \WP_Error(
 				'bad_token',
 				'Failed to get Asana project. Invalid request.',
@@ -89,21 +82,18 @@ class Projects {
 		}
 
 		// Check the cached response.
-		$cached_response = $request_tokens->get_cached_response( $request['token'], false );
-		if ( false !== $cached_response ) {
+		$cached_response = $request_token->get_cache_data();
+		if ( ! empty( $cached_response ) ) {
 			// Return cached data if available.
 			return new \WP_REST_Response( $cached_response, 200 );
 		}
 
 		try {
 
-			// Perform request.
+			// Get Asana authentication.
 
-			$args = $request_tokens->get_request_args( $request['token'] );
-
-			$auth_user_id = $args['auth_user'] ?: Options::get( Options::FRONTEND_AUTH_USER_ID );
-
-			if ( -1 === $auth_user_id ) {
+			$args = $request_token->get_args();
+			if ( empty( $args['auth_user'] ) ) {
 				// There is no user for Asana authentication.
 				return new \WP_Error(
 					'no_auth',
@@ -114,7 +104,7 @@ class Projects {
 
 			// Perform request.
 
-			Asana_Interface::get_client( (int) $auth_user_id );
+			Asana_Interface::get_client( (int) $args['auth_user'] );
 			$project_data = Asana_Interface::get_project_data(
 				$args['project_gid'],
 				$args
@@ -129,67 +119,8 @@ class Projects {
 				);
 			}
 
-			// Localize inline attachments and replace embeds.
-			$inline_attachment_urls = array();
-			$inline_oembed_urls = array();
-			Util::deep_modify_prop(
-				$project_data,
-				'html_notes',
-				function( &$html_notes )
-				use (
-					&$request_tokens,
-					&$args,
-					&$inline_attachment_urls,
-					&$inline_oembed_urls
-				) {
-					$html_notes = HTML_Builder::localize_attachment_urls(
-						$html_notes,
-						$request_tokens->get_post_id(),
-						$args['auth_user'],
-						$inline_attachment_urls
-					);
-					$html_notes = HTML_Builder::replace_urls_with_oembeds(
-						$html_notes,
-						$inline_oembed_urls
-					);
-				}
-			);
-
-			// Add request tokens for retrieving attachments.
-			// Remove inline attachments from attachments array.
-			Util::deep_modify_prop(
-				$project_data,
-				'attachments',
-				function( &$attachments )
-				use (
-					&$request_tokens,
-					&$args,
-					&$inline_attachment_urls,
-					&$inline_oembed_urls
-				) {
-					$modified_attachments = [];
-					foreach ( $attachments as $attachment ) {
-						$attachment->_ptc_view_url = HTML_Builder::get_local_attachment_view_url(
-							$attachment->gid,
-							$request_tokens->get_post_id(),
-							$args['auth_user']
-						);
-						if (
-							false === in_array( $attachment->_ptc_view_url, $inline_attachment_urls, true ) &&
-							false === in_array( $attachment->view_url, $inline_oembed_urls, true )
-						) {
-							$modified_attachments[] = $attachment;
-						}
-					}
-					$attachments = $modified_attachments;
-				}
-			);
-
-			// Ensure GIDs are stripped.
-			Util::deep_unset_prop( $project_data, 'gid' );
-
 			// Cache response and return.
-			$request_tokens->save_response( $request['token'], $project_data );
+			$request_token->update_cache_data( $project_data );
 			return new \WP_REST_Response( $project_data, 200 );
 		} catch ( \Exception $e ) {
 			$error_code = HTML_Builder::get_error_code( $e );

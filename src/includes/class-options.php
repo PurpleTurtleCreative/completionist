@@ -88,6 +88,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		 *
 		 * @since 3.4.0
 		 *
+		 * @deprecated [unreleased] The Request_Tokens class which
+		 * uses postmeta has been deprecated in favor of the new
+		 * Request_Token class which instead uses custom tables.
+		 *
 		 * @var string REQUEST_TOKENS
 		 */
 		public const REQUEST_TOKENS = '_ptc_asana_request_tokens';
@@ -182,6 +186,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 					return (int) $frontend_auth_user_id;
 
 				case self::REQUEST_TOKENS:
+					trigger_error(
+						'Postmeta request tokens have been deprecated along with the \PTC_Completionist\Request_Tokens class. Please use the \PTC_Completionist\Request_Token class instead.',
+						E_USER_DEPRECATED
+					);
 					if ( 0 === $object_id ) {
 						$object_id = get_the_ID();
 						if ( 0 === $object_id || false === $object_id ) {
@@ -263,6 +271,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 					return self::maybe_update_option( $key, $sanitized_user_id, true );
 
 				case self::REQUEST_TOKENS:
+					trigger_error(
+						'Postmeta request tokens have been deprecated along with the \PTC_Completionist\Request_Tokens class. Please use the \PTC_Completionist\Request_Token class instead.',
+						E_USER_DEPRECATED
+					);
 					return update_post_meta( $object_id, $key, $value ) ? true : false;
 			}
 

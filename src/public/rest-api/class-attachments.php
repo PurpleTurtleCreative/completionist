@@ -15,13 +15,13 @@ use const \PTC_Completionist\REST_API_NAMESPACE_V1;
 use \PTC_Completionist\Asana_Interface;
 use \PTC_Completionist\Options;
 use \PTC_Completionist\HTML_Builder;
-use \PTC_Completionist\Request_Tokens;
+use \PTC_Completionist\Request_Token;
 use \PTC_Completionist\Util;
 
 require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
 require_once PLUGIN_PATH . 'src/includes/class-options.php';
 require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
-require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
+require_once PLUGIN_PATH . 'src/public/class-request-token.php';
 require_once PLUGIN_PATH . 'src/includes/class-util.php';
 
 /**
@@ -46,17 +46,10 @@ class Attachments {
 					'callback'            => array( __CLASS__, 'handle_get_attachment' ),
 					'permission_callback' => '__return_true',
 					'args'                => array(
-						'token'   => array(
+						'token' => array(
 							'type'              => 'string',
 							'required'          => true,
 							'sanitize_callback' => 'sanitize_text_field',
-						),
-						'post_id' => array(
-							'type'              => 'integer',
-							'required'          => true,
-							'validate_callback' => function( $value, $request, $param ) {
-								return is_numeric( $value );
-							},
 						),
 					),
 				),
@@ -77,10 +70,10 @@ class Attachments {
 		\WP_REST_Request $request
 	) {
 
-		$request_tokens = new Request_Tokens( $request['post_id'] );
+		$request_token = new Request_Token( $request['token'] );
 
 		// Abort if token is invalid.
-		if ( ! $request_tokens->exists( $request['token'] ) ) {
+		if ( ! $request_token->exists() ) {
 			return new \WP_Error(
 				'bad_token',
 				'Failed to get Asana attachment. Invalid request.',
@@ -90,16 +83,14 @@ class Attachments {
 
 		// !! NOTE !! This request token does not use caching
 		// since it is intended for making fresh requests.
+		// The web browser should be handling caching for assets.
 
 		try {
 
-			// Perform request.
+			// Get Asana authentication.
 
-			$args = $request_tokens->get_request_args( $request['token'] );
-
-			$auth_user_id = $args['auth_user'] ?: Options::get( Options::FRONTEND_AUTH_USER_ID );
-
-			if ( -1 === $auth_user_id ) {
+			$args = $request_token->get_args();
+			if ( empty( $args['auth_user'] ) ) {
 				// There is no user for Asana authentication.
 				return new \WP_Error(
 					'no_auth',
@@ -109,7 +100,8 @@ class Attachments {
 			}
 
 			// Perform request.
-			Asana_Interface::get_client( (int) $auth_user_id );
+
+			Asana_Interface::get_client( (int) $args['auth_user'] );
 			$attachment = Asana_Interface::get_attachment_data(
 				$args['attachment_gid']
 			);
@@ -135,8 +127,8 @@ class Attachments {
 					curl_setopt_array(
 						$ch,
 						array(
-							CURLOPT_HTTPGET => true,
-							CURLOPT_URL => $attachment->{$args['proxy_field']},
+							CURLOPT_HTTPGET        => true,
+							CURLOPT_URL            => $attachment->{$args['proxy_field']},
 							CURLOPT_FOLLOWLOCATION => true,
 							CURLOPT_RETURNTRANSFER => true,
 							CURLOPT_HEADERFUNCTION => function ( $curl, $header ) use ( &$response_headers ) {
@@ -146,7 +138,7 @@ class Attachments {
 								$header = trim( $header );
 
 								if (
-									 ! empty( $header ) &&
+									! empty( $header ) &&
 									0 !== stripos( $header, 'x-' )
 								) {
 									// Ignore extra, custom headers.
@@ -207,7 +199,7 @@ class Attachments {
 			// Add request token for retrieving the attachment again.
 			$attachment->_ptc_refresh_url = HTML_Builder::get_local_attachment_url(
 				$attachment->gid,
-				$request_tokens->get_post_id(),
+				-1,
 				$args['auth_user']
 			);
 

@@ -682,6 +682,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			// Merge default args.
 			$args = array_merge( $default_args, $args );
 
+			// Start request token buffering.
+			Request_Token::buffer_start();
+
 			// Get project data.
 
 			$project_fields = 'sections,this.sections.name';
@@ -862,14 +865,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				}
 
 				// Clean data and map tasks to project sections.
+
 				foreach ( $tasks as &$task ) {
 					foreach ( $task->memberships as &$membership ) {
 						if ( isset( $sections_map[ $membership->section->gid ] ) ) {
 
-							// Sanitize task description.
-							if ( isset( $task->html_notes ) ) {
-								$task->html_notes = wpautop( wp_kses_post( $task->html_notes ) );
-							}
+							// Don't recursively localize tasks since some
+							// subtasks might end up being removed.
+							static::localize_task( $task, false );
 
 							// Process subtasks.
 							if ( isset( $task->subtasks ) ) {
@@ -890,10 +893,13 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 										}
 									}
 
-									// Sanitize task description.
-									if ( isset( $subtask->html_notes ) ) {
-										$subtask->html_notes = wpautop( wp_kses_post( $subtask->html_notes ) );
-									}
+									// Now recursively localize tasks since
+									// no further subtasks will be removed.
+									//
+									// Though note that recursion isn't actually
+									// needed here since only one level of subtasks
+									// was loaded, anyways.
+									static::localize_task( $subtask, true );
 								}//end foreach.
 
 								// Fix index gaps from possible removals.
@@ -913,14 +919,92 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				}
 			}
 
-			// Remove all GIDs if desired.
+			// Commit all buffered request tokens.
+			Request_Token::buffer_end_flush();
 
+			// Remove all GIDs if desired.
 			if ( ! $args['show_gids'] ) {
 				require_once PLUGIN_PATH . 'src/includes/class-util.php';
 				Util::deep_unset_prop( $project, 'gid' );
 			}
 
 			return $project;
+		}
+
+		/**
+		 * Sanitizes, localizes, and tidies a task object.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param \stdClass $task The task to edit.
+		 * @param bool      $recursive Optional. If to recursively edit
+		 * all subtasks of the given task. Default true.
+		 */
+		public static function localize_task(
+			\stdClass &$task,
+			bool $recursive = true
+		) {
+
+			$inline_attachment_urls = array();
+			$inline_oembed_urls = array();
+
+			// Process task description.
+			if ( isset( $task->html_notes ) ) {
+				// Sanitize HTML and format paragraphs.
+				$task->html_notes = wpautop( wp_kses_post( $task->html_notes ) );
+				// Use local attachment URLs.
+				$task->html_notes = HTML_Builder::localize_attachment_urls(
+					$task->html_notes,
+					-1,
+					static::$wp_user_id,
+					$inline_attachment_urls
+				);
+				// Render embedded HTML objects.
+				$task->html_notes = HTML_Builder::replace_urls_with_oembeds(
+					$task->html_notes,
+					$inline_oembed_urls
+				);
+			}
+
+			// Process attachments.
+			if ( isset( $task->attachments ) ) {
+
+				$keep_attachments = array();
+
+				foreach ( $task->attachments as $i => &$attachment ) {
+
+					$attachment->_ptc_view_url = HTML_Builder::get_local_attachment_view_url(
+						$attachment->gid,
+						-1,
+						static::$wp_user_id
+					);
+
+					if (
+						false === in_array( $attachment->_ptc_view_url, $inline_attachment_urls, true ) &&
+						false === in_array( $attachment->view_url, $inline_oembed_urls, true )
+					) {
+						// Only keep extra attachments which aren't already
+						// found inline elsewhere.
+						//
+						// Attachment was NOT found as a
+						// localized inline attachment.
+						// - AND -
+						// Attachment was NOT found as an
+						// inline oEmbed object.
+						$keep_attachments[] = $attachment;
+					}
+				}
+
+				// Fix index gaps from possible removals.
+				$task->attachments = $keep_attachments;
+			}
+
+			// Recursively localize subtasks.
+			if ( $recursive && isset( $task->subtasks ) ) {
+				foreach ( $task->subtasks as &$subtask ) {
+					static::localize_task( $subtask, $recursive );
+				}
+			}
 		}
 
 		/**
@@ -1556,7 +1640,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			// Request the deletion in Asana.
 			$asana = self::get_client();
 			$asana->tasks->delete( $task_gid );
-			// @TODO - Update the cache.
 		}
 
 		/**
