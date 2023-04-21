@@ -17,6 +17,17 @@ document.addEventListener('DOMContentLoaded', () => {
 		.querySelectorAll('.ptc-shortcode.ptc-asana-project[data-src]')
 		.forEach( rootNode => {
 			if ( rootNode.dataset.src ) {
+				/**
+				 * Filters the element to be rendered for displaying the
+				 * [ptc_asana_project] shortcode.
+				 *
+				 * @since [unreleased]
+				 *
+				 * @param {object} element - The element to render.
+				 * Default <ProjectTaskList />.
+				 * @param {HTMLDivElement} rootNode - The root node where
+				 * React will render the element.
+				 */
 				const element = window.Completionist.hooks.applyFilters(
 					'shortcodes_ptc_asana_project_render',
 					<ProjectTaskList src={rootNode.dataset.src} />,
