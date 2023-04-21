@@ -2,7 +2,7 @@
 /**
  * Request_Token class
  *
- * @since [unreleased]
+ * @since 3.7.0
  */
 
 namespace PTC_Completionist;
@@ -31,7 +31,7 @@ require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
  * are stored as multiple records within the generic wp_options
  * database table, which can get to be quite large.
  *
- * @since [unreleased]
+ * @since 3.7.0
  */
 class Request_Token {
 
@@ -40,7 +40,7 @@ class Request_Token {
 	 *
 	 * @see Request_Token::buffer_init()
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 *
 	 * @var array $buffer
 	 */
@@ -49,7 +49,7 @@ class Request_Token {
 	/**
 	 * If buffering database transactions. Default false.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 *
 	 * @var bool $buffer_enabled
 	 */
@@ -58,7 +58,7 @@ class Request_Token {
 	/**
 	 * The request token's database record data.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 *
 	 * @var array $data
 	 */
@@ -71,7 +71,7 @@ class Request_Token {
 	/**
 	 * Hooks functionality into the WordPress execution flow.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 */
 	public static function register() {
 		add_action( 'delete_expired_transients', __CLASS__ . '::delete_stale_tokens', 10, 0 );
@@ -82,7 +82,7 @@ class Request_Token {
 	 *
 	 * @see Request_Token::get_staleness_duration()
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 */
 	public static function delete_stale_tokens() {
 
@@ -113,7 +113,7 @@ class Request_Token {
 	/**
 	 * Deletes all request tokens and their data.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 */
 	public static function delete_all() {
 		Database_Manager::init();
@@ -128,7 +128,7 @@ class Request_Token {
 	 * This should always return the same token string for the
 	 * same arguments (irrespective of sort order). It is a pure function.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 *
 	 * @param array $request_args The request arguments to represent.
 	 * Note that they may change due to validation and standardization.
@@ -191,7 +191,7 @@ class Request_Token {
 	 * trusted. In contrast, an anonymous submission of a public
 	 * form should generally not be trusted.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 *
 	 * @param array $request_args The request arguments to represent.
 	 * Note that they may change due to validation and standardization.
@@ -250,7 +250,7 @@ class Request_Token {
 	/**
 	 * Initializes and enables buffering.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 *
 	 * @param bool $force_init Optional. If the buffer should be
 	 * cleared even when buffering is already enabled. Default false.
@@ -275,7 +275,7 @@ class Request_Token {
 	 * actually gets disabled. That buffered request would then
 	 * not be committed (aka written).
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 */
 	public static function buffer_end_flush() {
 		static::$buffer_enabled = false;
@@ -285,7 +285,7 @@ class Request_Token {
 	/**
 	 * Initializes (or resets) the buffer.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 */
 	public static function buffer_init() {
 		static::$buffer = array(
@@ -296,7 +296,7 @@ class Request_Token {
 	/**
 	 * Commits the buffer's content and resets the buffer.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 */
 	public static function buffer_flush() {
 		static::buffer_commit();
@@ -315,7 +315,7 @@ class Request_Token {
 	 *
 	 * @see Request_Token::save()
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 */
 	public static function buffer_commit() {
 
@@ -361,7 +361,7 @@ class Request_Token {
 	/**
 	 * Gets the cache entry TTL in seconds.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 *
 	 * @return int The cache TTL in seconds.
 	 */
@@ -369,7 +369,7 @@ class Request_Token {
 		/**
 		 * Filters the duration of Asana response cache entries.
 		 *
-		 * @since [unreleased]
+		 * @since 3.7.0
 		 *
 		 * @param int $ttl Duration in seconds. Default 900 (15 minutes).
 		 */
@@ -401,7 +401,7 @@ class Request_Token {
 	 * than detecting each case where a request token is no
 	 * longer needed as WordPress systems can vary dramatically.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 *
 	 * @return int The staleness duration in seconds.
 	 */
@@ -427,7 +427,7 @@ class Request_Token {
 		 * caching is preventing the server-side from recording the
 		 * token before the frontend tries to use the token.
 		 *
-		 * @since [unreleased]
+		 * @since 3.7.0
 		 *
 		 * @param int $duration Duration in seconds. Default 43200 (12 hours).
 		 */
@@ -450,7 +450,7 @@ class Request_Token {
 	 *
 	 * @see Request_Token::exists()
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 *
 	 * @param string $token The request token.
 	 */
@@ -462,7 +462,7 @@ class Request_Token {
 	/**
 	 * Checks if the request token exists in the database.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 *
 	 * @param bool $force_read Optional. If the value should be
 	 * retrieved fresh from the database. Default false to use
@@ -491,7 +491,7 @@ class Request_Token {
 	/**
 	 * Loads the request token's data from the database.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 */
 	public function load_from_database() {
 
@@ -572,7 +572,7 @@ class Request_Token {
 	/**
 	 * Updates the `last_accessed` timestamp in the database.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 *
 	 * @return bool If successfully updated.
 	 */
@@ -608,7 +608,7 @@ class Request_Token {
 	 *
 	 * @see Request_Token::get_cache_data()
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 *
 	 * @param array|object $data The raw data. It should not be
 	 * encoded, serialized, or escaped.
@@ -673,7 +673,7 @@ class Request_Token {
 	 * @see Request_Token::update_cache_data()
 	 * @see Request_Token::get_cache_ttl()
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 *
 	 * @param bool $force_read Optional. If the value should be
 	 * retrieved fresh from the database. Default false to use
@@ -707,7 +707,7 @@ class Request_Token {
 	/**
 	 * Gets the arguments represented by the request token.
 	 *
-	 * @since [unreleased]
+	 * @since 3.7.0
 	 *
 	 * @param bool $force_read Optional. If the value should be
 	 * retrieved fresh from the database. Default false to use

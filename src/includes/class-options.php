@@ -88,7 +88,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		 *
 		 * @since 3.4.0
 		 *
-		 * @deprecated [unreleased] The Request_Tokens class which
+		 * @deprecated 3.7.0 The Request_Tokens class which
 		 * uses postmeta has been deprecated in favor of the new
 		 * Request_Token class which instead uses custom tables.
 		 *

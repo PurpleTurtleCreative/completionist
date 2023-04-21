@@ -4,7 +4,7 @@
  *
  * @since 3.4.0
  *
- * @deprecated [unreleased]
+ * @deprecated 3.7.0
  */
 
 namespace PTC_Completionist;
@@ -24,7 +24,7 @@ require_once PLUGIN_PATH . 'src/includes/class-options.php';
  *
  * @since 3.4.0
  *
- * @deprecated [unreleased] This class contains database race
+ * @deprecated 3.7.0 This class contains database race
  * conditions which become apparent when multiple request
  * tokens are used within a single page load or during times of
  * high traffic. The result is unstable and inconsistent service.
@@ -49,7 +49,7 @@ class Request_Tokens {
 	/**
 	 * Hooks functionality into the WordPress execution flow.
 	 *
-	 * @deprecated [unreleased]
+	 * @deprecated 3.7.0
 	 *
 	 * @since 3.4.0
 	 */
@@ -57,7 +57,7 @@ class Request_Tokens {
 
 		_deprecated_function(
 			__CLASS__ . '::' . __FUNCTION__ . '()',
-			'[unreleased]',
+			'3.7.0',
 			__NAMESPACE__ . '\Request_Token::register()'
 		);
 
@@ -92,7 +92,7 @@ class Request_Tokens {
 	/**
 	 * Instantiates a request token management context for the given post.
 	 *
-	 * @deprecated [unreleased]
+	 * @deprecated 3.7.0
 	 *
 	 * @since 3.4.0
 	 *
@@ -102,7 +102,7 @@ class Request_Tokens {
 
 		_deprecated_function(
 			__CLASS__ . '::' . __FUNCTION__ . '()',
-			'[unreleased]',
+			'3.7.0',
 			__NAMESPACE__ . '\Request_Token::__construct()'
 		);
 
@@ -124,7 +124,7 @@ class Request_Tokens {
 	 * Saves a new request token for the given arguments if it does
 	 * not already exist.
 	 *
-	 * @deprecated [unreleased]
+	 * @deprecated 3.7.0
 	 *
 	 * @since 3.4.0
 	 *
@@ -136,7 +136,7 @@ class Request_Tokens {
 
 		_deprecated_function(
 			__CLASS__ . '::' . __FUNCTION__ . '()',
-			'[unreleased]',
+			'3.7.0',
 			__NAMESPACE__ . '\Request_Token::save()'
 		);
 
@@ -175,7 +175,7 @@ class Request_Tokens {
 	/**
 	 * Gets the request arguments for the given request token.
 	 *
-	 * @deprecated [unreleased]
+	 * @deprecated 3.7.0
 	 *
 	 * @since 3.4.0
 	 *
@@ -186,7 +186,7 @@ class Request_Tokens {
 
 		_deprecated_function(
 			__CLASS__ . '::' . __FUNCTION__ . '()',
-			'[unreleased]',
+			'3.7.0',
 			__NAMESPACE__ . '\Request_Token::get_args()'
 		);
 
@@ -196,7 +196,7 @@ class Request_Tokens {
 	/**
 	 * Gets the cached response, if available.
 	 *
-	 * @deprecated [unreleased]
+	 * @deprecated 3.7.0
 	 *
 	 * @since 3.4.0
 	 *
@@ -213,7 +213,7 @@ class Request_Tokens {
 
 		_deprecated_function(
 			__CLASS__ . '::' . __FUNCTION__ . '()',
-			'[unreleased]',
+			'3.7.0',
 			__NAMESPACE__ . '\Request_Token::get_cache_data()'
 		);
 
@@ -236,7 +236,7 @@ class Request_Tokens {
 	 *
 	 * Note that the request token must already exist.
 	 *
-	 * @deprecated [unreleased]
+	 * @deprecated 3.7.0
 	 *
 	 * @since 3.4.0
 	 *
@@ -250,7 +250,7 @@ class Request_Tokens {
 
 		_deprecated_function(
 			__CLASS__ . '::' . __FUNCTION__ . '()',
-			'[unreleased]',
+			'3.7.0',
 			__NAMESPACE__ . '\Request_Token::update_cache_data()'
 		);
 
@@ -280,7 +280,7 @@ class Request_Tokens {
 	/**
 	 * Deletes all request tokens for the current post context.
 	 *
-	 * @deprecated [unreleased]
+	 * @deprecated 3.7.0
 	 *
 	 * @since 3.4.0
 	 */
@@ -288,7 +288,7 @@ class Request_Tokens {
 
 		_deprecated_function(
 			__CLASS__ . '::' . __FUNCTION__ . '()',
-			'[unreleased]',
+			'3.7.0',
 			__NAMESPACE__ . '\Request_Token::delete_stale_tokens()'
 		);
 
@@ -298,7 +298,7 @@ class Request_Tokens {
 	/**
 	 * Checks if the request token exists for the current post context.
 	 *
-	 * @deprecated [unreleased]
+	 * @deprecated 3.7.0
 	 *
 	 * @since 3.4.0
 	 *
@@ -308,7 +308,7 @@ class Request_Tokens {
 
 		_deprecated_function(
 			__CLASS__ . '::' . __FUNCTION__ . '()',
-			'[unreleased]',
+			'3.7.0',
 			__NAMESPACE__ . '\Request_Token::exists()'
 		);
 
@@ -322,7 +322,7 @@ class Request_Tokens {
 	/**
 	 * Gets all request token data for the current post context.
 	 *
-	 * @deprecated [unreleased]
+	 * @deprecated 3.7.0
 	 *
 	 * @since 3.4.0
 	 *
@@ -332,7 +332,7 @@ class Request_Tokens {
 
 		_deprecated_function(
 			__CLASS__ . '::' . __FUNCTION__ . '()',
-			'[unreleased]',
+			'3.7.0',
 			__NAMESPACE__ . '\Request_Token::load_from_database()'
 		);
 
@@ -345,7 +345,7 @@ class Request_Tokens {
 	 * Note this should always return the same token string for the
 	 * same arguments (irrespective of sort order). It is a pure function.
 	 *
-	 * @deprecated [unreleased]
+	 * @deprecated 3.7.0
 	 *
 	 * @since 3.4.0
 	 *
@@ -356,7 +356,7 @@ class Request_Tokens {
 
 		_deprecated_function(
 			__CLASS__ . '::' . __FUNCTION__ . '()',
-			'[unreleased]',
+			'3.7.0',
 			__NAMESPACE__ . '\Request_Token::generate_token()'
 		);
 
@@ -367,7 +367,7 @@ class Request_Tokens {
 	/**
 	 * Gets the cache entry TTL in seconds.
 	 *
-	 * @deprecated [unreleased]
+	 * @deprecated 3.7.0
 	 *
 	 * @since 3.4.0
 	 *
@@ -377,7 +377,7 @@ class Request_Tokens {
 
 		_deprecated_function(
 			__CLASS__ . '::' . __FUNCTION__ . '()',
-			'[unreleased]',
+			'3.7.0',
 			__NAMESPACE__ . '\Request_Token::get_cache_ttl()'
 		);
 

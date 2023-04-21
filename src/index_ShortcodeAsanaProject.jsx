@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				 * Filters the element to be rendered for displaying the
 				 * [ptc_asana_project] shortcode.
 				 *
-				 * @since [unreleased]
+				 * @since 3.7.0
 				 *
 				 * @param {object} element - The element to render.
 				 * Default <ProjectTaskList />.

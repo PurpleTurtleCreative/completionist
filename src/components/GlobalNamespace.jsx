@@ -1,7 +1,7 @@
 /**
  * Global namespace variable for this plugin's frontend scripts.
  *
- * @since [unreleased]
+ * @since 3.7.0
  */
 
 import { createHooks } from '@wordpress/hooks';
@@ -24,7 +24,7 @@ import { createHooks } from '@wordpress/hooks';
  * generated through PHP or another JavaScript script, so their
  * origin and modifications can be tricky to fully track down.
  *
- * @since [unreleased]
+ * @since 3.7.0
  */
 export default function initGlobalNamespace() {
 

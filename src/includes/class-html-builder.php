@@ -557,7 +557,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		 * Replaces inline Asana attachment URLs with local API
 		 * endpoints for retrieval.
 		 *
-		 * @since [unreleased] Deprecated $post_id parameter.
+		 * @since 3.7.0 Deprecated $post_id parameter.
 		 * @since 3.5.0
 		 *
 		 * @param string   $html The HTML content to search and replace.
@@ -578,7 +578,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 			if ( -1 !== $deprecated ) {
 				_deprecated_argument(
 					__FUNCTION__,
-					'[unreleased]',
+					'3.7.0',
 					'The $post_id parameter is deprecated. Pass -1 to silence this notice.'
 				);
 			}
@@ -655,7 +655,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		/**
 		 * Gets the local API endpoint for retrieving an attachment.
 		 *
-		 * @since [unreleased] Deprecated $post_id parameter.
+		 * @since 3.7.0 Deprecated $post_id parameter.
 		 * @since 3.5.0
 		 *
 		 * @param string $attachment_gid The Asana attachment's GID.
@@ -673,7 +673,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 			if ( -1 !== $deprecated ) {
 				_deprecated_argument(
 					__FUNCTION__,
-					'[unreleased]',
+					'3.7.0',
 					'The $post_id parameter is deprecated. Pass -1 to silence this notice.'
 				);
 			}

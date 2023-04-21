@@ -94,7 +94,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		/**
 		 * The full name of the request tokens table.
 		 *
-		 * @since [unreleased]
+		 * @since 3.7.0
 		 *
 		 * @var string $request_tokens_table
 		 */
@@ -104,7 +104,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		 * An array of all the database table names that this class
 		 * manages.
 		 *
-		 * @since [unreleased]
+		 * @since 3.7.0
 		 *
 		 * @var string[] $table_names
 		 */
@@ -301,7 +301,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		 * @link https://developer.wordpress.org/reference/functions/dbdelta/#comment-4027
 		 * @link https://core.trac.wordpress.org/ticket/19207
 		 *
-		 * @since [unreleased]
+		 * @since 3.7.0
 		 *
 		 * @param string $query The database query statement.
 		 * @return string The altered database query statement.
@@ -413,7 +413,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		/**
 		 * Truncates a table.
 		 *
-		 * @since [unreleased]
+		 * @since 3.7.0
 		 *
 		 * @param string $table_name The name of the table.
 		 *
@@ -432,7 +432,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		/**
 		 * Checks if the provided table name is permitted by this class.
 		 *
-		 * @since [unreleased]
+		 * @since 3.7.0
 		 *
 		 * @param string $table_name The table name to check.
 		 *
@@ -456,7 +456,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		/**
 		 * Gets the SQL DateTime string of a Unix timestamp.
 		 *
-		 * @since [unreleased]
+		 * @since 3.7.0
 		 *
 		 * @param int|null $unix_timestamp Optional. The number of
 		 * seconds since the Unix Epoch (January 1 1970 00:00:00 GMT).
@@ -476,7 +476,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		/**
 		 * Gets the Unix timestamp of a SQL DateTime string.
 		 *
-		 * @since [unreleased]
+		 * @since 3.7.0
 		 *
 		 * @param string $sql_timestamp The SQL DateTime timestamp
 		 * string.

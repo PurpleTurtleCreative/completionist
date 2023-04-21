@@ -29,7 +29,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		 * various metadata about them during execution. It helps
 		 * with performance optimization and debugging.
 		 *
-		 * @since [unreleased]
+		 * @since 3.7.0
 		 *
 		 * @var array $shortcodes_meta {
 		 *
@@ -74,7 +74,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		 * Finalizes shortcode renders by processing the collected
 		 * metadata for each shortcode tag.
 		 *
-		 * @since [unreleased]
+		 * @since 3.7.0
 		 */
 		public static function process_collected_shortcodes() {
 
@@ -96,7 +96,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 					 * have been executed. This ensures assets are enqueued
 					 * only once per page load and only when they are needed.
 					 *
-					 * @since [unreleased]
+					 * @since 3.7.0
 					 *
 					 * @param string $shortcode_tag The shortcode tag.
 					 */
@@ -153,7 +153,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			$dependencies = apply_filters_deprecated(
 				'ptc_completionist_shortcode_asana_project_script_deps',
 				array( $asset_file['dependencies'] ),
-				'[unreleased]',
+				'3.7.0',
 				'ptc_completionist_shortcode_enqueue_assets',
 				'Filtering the dependency array of each asset for each shortcode is not a scalable approach. Please instead use the new, generic action hook for enqueueing custom assets.'
 			);
@@ -181,7 +181,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		/**
 		 * Increments the render count for the given shortcode tag.
 		 *
-		 * @since [unreleased]
+		 * @since 3.7.0
 		 *
 		 * @param string $shortcode_tag The shortcode tag.
 		 */

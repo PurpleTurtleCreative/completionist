@@ -934,7 +934,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		/**
 		 * Sanitizes, localizes, and tidies a task object.
 		 *
-		 * @since [unreleased]
+		 * @since 3.7.0
 		 *
 		 * @param \stdClass $task The task to edit.
 		 * @param bool      $recursive Optional. If to recursively edit
