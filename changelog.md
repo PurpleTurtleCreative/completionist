@@ -4,6 +4,7 @@
 
 - New custom database table for the new request tokens architecture. The rearchitecture drastically improves performance, storage, and reliability for all frontend requests by batching database writes into a single transaction and using an atomic storage strategy.
 - New action hook `ptc_completionist_shortcode_enqueue_assets` for users to easily and efficiently enqueue custom scipts and stylesheets for each rendered shortcode.
+- JavaScript hooks are now available within the new frontend global `window.Completionist.hooks`. Only one filter hook is currently available to demonstrate this new architecture.
 
 #### Changed
 

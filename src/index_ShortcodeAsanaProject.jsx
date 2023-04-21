@@ -6,21 +6,34 @@
 
 import ProjectTaskList from './components/project/ProjectTaskList.jsx';
 
+import initGlobalNamespace from './components/GlobalNamespace.jsx';
+
 const { render } = wp.element;
+
+initGlobalNamespace();
 
 document.addEventListener('DOMContentLoaded', () => {
 	document
 		.querySelectorAll('.ptc-shortcode.ptc-asana-project[data-src]')
 		.forEach( rootNode => {
 			if ( rootNode.dataset.src ) {
-				try {
-					window.PTCCompletionistPro.actions.renderAsanaProject(rootNode);
-				} catch (err) {
-					render(
-						<ProjectTaskList src={rootNode.dataset.src} />,
-						rootNode
-					);
-				}
+				/**
+				 * Filters the element to be rendered for displaying the
+				 * [ptc_asana_project] shortcode.
+				 *
+				 * @since [unreleased]
+				 *
+				 * @param {object} element - The element to render.
+				 * Default <ProjectTaskList />.
+				 * @param {HTMLDivElement} rootNode - The root node where
+				 * React will render the element.
+				 */
+				const element = window.Completionist.hooks.applyFilters(
+					'shortcodes_ptc_asana_project_render',
+					<ProjectTaskList src={rootNode.dataset.src} />,
+					rootNode
+				);
+				render( element, rootNode );
 			}
 		});
 });
