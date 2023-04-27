@@ -1,3 +1,9 @@
+### [unreleased]
+
+#### Security
+
+- Request tokens could fail to become stale due to public access. Request tokens are now only refreshed when they are saved in a secure context.
+
 ### 3.7.0 - 2023-04-21
 
 #### Added
