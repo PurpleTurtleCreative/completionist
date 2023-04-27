@@ -7,7 +7,7 @@
 
 #### Security
 
-- Request tokens could fail to become stale due to public access. Request tokens are now only refreshed when they are saved in a secure context.
+- Request tokens could fail to become stale due to public access. Request tokens are now only refreshed when they are saved in a secure context. Note that HTML caching could now cause request tokens to become stale, depending on the interval and frequency that the HTML cache is refreshed.
 
 ### 3.7.0 - 2023-04-21
 
