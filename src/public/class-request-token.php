@@ -522,7 +522,7 @@ class Request_Token {
 
 		if ( $res['token'] !== $this->data['token'] ) {
 			trigger_error(
-				"Retrieved token '{$res['token']}' does not match requested token '$this->data['token']'. The request token's data in memory was not updated.",
+				"Retrieved token '{$res['token']}' does not match requested token '{$this->data['token']}'. The request token's data in memory was not updated.",
 				E_USER_WARNING
 			);
 			return;
@@ -566,7 +566,6 @@ class Request_Token {
 
 		// Successful retrieval; Data is ready to use.
 		$this->data = $res;
-		$this->touch();
 	}
 
 	/**
