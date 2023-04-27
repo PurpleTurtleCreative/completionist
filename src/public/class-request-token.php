@@ -107,6 +107,19 @@ class Request_Token {
 				"Failed to delete stale request tokens. SQL error encountered: {$wpdb->last_error}",
 				E_USER_NOTICE
 			);
+		} else {
+			/**
+			 * Fires after stale request tokens were successfully deleted.
+			 *
+			 * @since [unreleased]
+			 *
+			 * @param int $count The number of request tokens that were
+			 * deleted. Note this may be 0 if no stale tokens were found.
+			 */
+			do_action(
+				'ptc_completionist_deleted_stale_request_tokens',
+				$rows_affected
+			);
 		}
 	}
 
@@ -116,10 +129,20 @@ class Request_Token {
 	 * @since 3.7.0
 	 */
 	public static function delete_all() {
+
 		Database_Manager::init();
-		Database_Manager::truncate_table(
+		$success = Database_Manager::truncate_table(
 			Database_Manager::$request_tokens_table
 		);
+
+		if ( true === $success ) {
+			/**
+			 * Fires after all request tokens were successfully deleted.
+			 *
+			 * @since [unreleased]
+			 */
+			do_action( 'ptc_completionist_deleted_all_request_tokens' );
+		}
 	}
 
 	/**
