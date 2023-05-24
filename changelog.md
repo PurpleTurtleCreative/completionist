@@ -5,6 +5,11 @@
 - New action hook in PHP `'ptc_completionist_deleted_stale_request_tokens'` fires when stale request tokens are deleted from the database.
 - New action hook in PHP `'ptc_completionist_deleted_all_request_tokens'` fires when the request tokens database table is truncated (aka cleared).
 
+#### Changed
+
+- The main admin page's submenu item is now labeled "Settings".
+- Minor error check improvements when saving some plugin settings.
+
 #### Security
 
 - Request tokens could fail to become stale due to public access. Request tokens are now only refreshed when they are saved in a secure context. Note that HTML caching could now cause request tokens to become stale, depending on the interval and frequency that the HTML cache is refreshed.

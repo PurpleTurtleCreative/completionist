@@ -341,8 +341,37 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		 */
 		private static function maybe_add_postmeta( string $key, string $value, int $post_id = 0 ) : bool {
 
+			if ( $post_id < 0 ) {
+				trigger_error( 'Cannot add postmeta for negative post ID value.', \E_USER_WARNING );
+				return false;
+			}
+
 			if ( ! self::postmeta_exists( $key, $value, $post_id ) ) {
 				return add_post_meta( $post_id, $key, $value ) ? true : false;
+			}
+
+			return false;
+		}
+
+		/**
+		 * Inserts the usermeta value only if it does not already exist.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string $key The meta key name.
+		 * @param string $value The value to be saved.
+		 * @param int $post_id Optional. The user's id. Default 0 for current user.
+		 * @return bool Returns true if the user's meta value was inserted.
+		 */
+		public static function maybe_add_usermeta( string $key, string $value, int $user_id = 0 ) : bool {
+
+			if ( $user_id < 0 ) {
+				trigger_error( 'Cannot add usermeta for negative user ID value.', \E_USER_WARNING );
+				return false;
+			}
+
+			if ( ! self::usermeta_exists( $key, $value, $user_id ) ) {
+				return add_user_meta( $user_id, $key, $value ) ? true : false;
 			}
 
 			return false;
@@ -394,6 +423,66 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 							AND meta_value = %s
 						",
 						$post_id,
+						$key,
+						$value
+					)
+				);
+			}
+
+			if ( null === $res || empty( $res ) ) {
+				return false;
+			}
+
+			return true;
+		}
+
+		/**
+		 * Checks if a usermeta key-value pair exists.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string $key The meta key name.
+		 * @param string $value The value to search.
+		 * @param int $user_id Optional. The user's id. Set to 0 to use current
+		 * user. Default -1 for any user.
+		 * @return bool Returns true if the user meta key-value pair exists.
+		 */
+		public static function usermeta_exists( string $key, string $value, int $user_id = -1 ) : bool {
+
+			if ( 0 === $user_id ) {
+				$user_id = get_current_user_id();
+				if ( 0 === $user_id ) {
+					trigger_error( "Could not determine current user to check if user meta key {$key} exists with value {$value}.", \E_USER_WARNING );
+					return false;
+				}
+			}
+
+			global $wpdb;
+
+			if ( $user_id < 0 ) {
+				$res = $wpdb->get_row(
+					$wpdb->prepare(
+						"
+						SELECT umeta_id
+						FROM $wpdb->usermeta
+						WHERE meta_key = %s
+							AND meta_value = %s
+						",
+						$key,
+						$value
+					)
+				);
+			} else {
+				$res = $wpdb->get_row(
+					$wpdb->prepare(
+						"
+						SELECT umeta_id
+						FROM $wpdb->usermeta
+						WHERE user_id = %d
+							AND meta_key = %s
+							AND meta_value = %s
+						",
+						$user_id,
 						$key,
 						$value
 					)
