@@ -35,6 +35,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		 *
 		 *   @type int $render_count The count of shortcode renders.
 		 *
+		 *   @type string $render_callback The callback function to
+		 *                get the shortcode's rendered content.
+		 *
 		 *   @type string[] $script_handles The script handles
 		 *                  that should be enqueued for this tag.
 		 *
@@ -45,11 +48,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		 */
 		private static $shortcodes_meta = array(
 			'ptc_asana_project' => array(
-				'render_count'   => 0,
-				'script_handles' => array(
+				'render_count'    => 0,
+				'render_callback' => __CLASS__ . '::get_ptc_asana_project',
+				'script_handles'  => array(
 					'ptc-completionist-shortcode-asana-project',
 				),
-				'style_handles'  => array(
+				'style_handles'   => array(
 					'ptc-completionist-shortcode-asana-project',
 				),
 			),
@@ -130,12 +134,24 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			// with a tangled execution path.
 			Request_Token::buffer_start();
 
+			/**
+			 * Filters the shortcode metadata for registering and
+			 * tracking shortcodes managed by the Shortcodes class.
+			 *
+			 * @since [unreleased]
+			 *
+			 * @see Shortcodes::$shortcodes_meta
+			 *
+			 * @param array $shortcodes_meta The shortcode definitions.
+			 */
+			static::$shortcodes_meta = apply_filters(
+				'ptc_completionist_shortcodes_meta_init',
+				static::$shortcodes_meta
+			);
+
 			// Register all shortcodes.
 			foreach ( static::$shortcodes_meta as $shortcode_tag => &$metadata ) {
-				add_shortcode(
-					$shortcode_tag,
-					__CLASS__ . "::get_{$shortcode_tag}"
-				);
+				add_shortcode( $shortcode_tag, $metadata['render_callback'] );
 			}
 		}
 
