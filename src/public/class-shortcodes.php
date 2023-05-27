@@ -38,6 +38,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		 *   @type string $render_callback The callback function to
 		 *                get the shortcode's rendered content.
 		 *
+		 *   @type string[] $default_atts The shortcode's default
+		 *                  attributes.
+		 *
 		 *   @type string[] $script_handles The script handles
 		 *                  that should be enqueued for this tag.
 		 *
@@ -50,6 +53,23 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			'ptc_asana_project' => array(
 				'render_count'    => 0,
 				'render_callback' => __CLASS__ . '::get_ptc_asana_project',
+				'default_atts'    => array(
+					'src'                    => '', // Required.
+					'auth_user'              => '',
+					'exclude_sections'       => '',
+					'show_name'              => 'true',
+					'show_description'       => 'true',
+					'show_status'            => 'true',
+					'show_modified'          => 'true',
+					'show_due'               => 'true',
+					'show_tasks_description' => 'true',
+					'show_tasks_assignee'    => 'true',
+					'show_tasks_subtasks'    => 'true',
+					'show_tasks_completed'   => 'true',
+					'show_tasks_due'         => 'true',
+					'show_tasks_attachments' => 'true',
+					'show_tasks_tags'        => 'true',
+				),
 				'script_handles'  => array(
 					'ptc-completionist-shortcode-asana-project',
 				),
@@ -205,6 +225,19 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			++static::$shortcodes_meta[ $shortcode_tag ]['render_count'];
 		}
 
+		/**
+		 * Gets shortcode metadata.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @see $shortcodes_meta
+		 *
+		 * @return array The metadata of each managed shortcode.
+		 */
+		public static function get_shortcodes_meta() : array {
+			return static::$shortcodes_meta;
+		}
+
 		// *************************** //
 		// **   Shortcode Renders   ** //
 		// *************************** //
@@ -234,23 +267,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			// Collect shortcode attributes.
 
 			$atts = shortcode_atts(
-				array(
-					'src'                    => '', // Required.
-					'auth_user'              => '',
-					'exclude_sections'       => '',
-					'show_name'              => 'true',
-					'show_description'       => 'true',
-					'show_status'            => 'true',
-					'show_modified'          => 'true',
-					'show_due'               => 'true',
-					'show_tasks_description' => 'true',
-					'show_tasks_assignee'    => 'true',
-					'show_tasks_subtasks'    => 'true',
-					'show_tasks_completed'   => 'true',
-					'show_tasks_due'         => 'true',
-					'show_tasks_attachments' => 'true',
-					'show_tasks_tags'        => 'true',
-				),
+				static::$shortcodes_meta[ $shortcode_tag ]['default_atts'],
 				$atts,
 				$shortcode_tag
 			);
