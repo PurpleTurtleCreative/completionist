@@ -16,30 +16,42 @@ export default function ProjectTaskList({ src }) {
 	const [ project, setProject ] = useState(null);
 
 	useEffect(() => {
-		// Load project data from src URL on mount.
+		// Load project data from src on mount.
 		if ( 'idle' === status && null === project ) {
 
-			// Signal loading.
-			setStatus('loading');
+			if ( 'string' === typeof src ) {
 
-			// Request data.
-			window
-				.fetch(src)
-				.then( res => {
-					if ( 200 !== res.status ) {
-						return Promise.reject( `Error ${res.status}. Failed to load project.` );
-					}
-					return res.json();
-				})
-				.then( data => {
-					setProject(data);
-					setStatus('success');
-					return Promise.resolve();
-				})
-				.catch( err => {
-					setStatus(err);
-					setProject(null);
-				});
+				// Signal loading.
+				setStatus('loading');
+
+				// Request data from src URL string.
+				window
+					.fetch(src)
+					.then( res => {
+						if ( 200 !== res.status ) {
+							return Promise.reject( `Error ${res.status}. Failed to load project.` );
+						}
+						return res.json();
+					})
+					.then( data => {
+						setProject(data);
+						setStatus('success');
+						return Promise.resolve();
+					})
+					.catch( err => {
+						setStatus(err);
+						setProject(null);
+					});
+			} else if ( 'object' === typeof src ) {
+				// Use provided project src data.
+				setProject(src);
+				setStatus('success');
+			} else {
+				// Unsupported project src provided!
+				setStatus('Failed to load project due to an unexpected error.');
+				setProject(null);
+				window.console.warn('Unsupported ProjectTaskList[src] type:', src);
+			}
 		}
 	}, []);
 
