@@ -80,6 +80,10 @@ export default function ProjectTaskList({ src }) {
 			innerContent = <p className="ptc-error">Failed to load project.</p>;
 			break;
 
+		case 'idle':
+			innerContent = null;
+			break;
+
 		default:
 			innerContent = <p className="ptc-error">{status}</p>;
 			break;
