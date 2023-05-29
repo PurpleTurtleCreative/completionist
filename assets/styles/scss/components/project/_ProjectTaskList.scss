@@ -7,6 +7,7 @@
 
 	.ptc-loader {
 		padding: 1em 2em;
+		border-radius: 10px;
 		border: 2px dashed color(grey-light);
 		background: color(white);
 		color: color(grey-dark);
@@ -17,6 +18,7 @@
 	.ptc-error {
 		padding: 1em 2em;
 		text-align: center;
+		border-radius: 10px;
 		border: 2px solid color(danger-light);
 		background: color(danger-lightest);
 		color: #b20000;
