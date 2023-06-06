@@ -5,11 +5,17 @@
 - New action hook in PHP `'ptc_completionist_deleted_stale_request_tokens'` fires when stale request tokens are deleted from the database.
 - New action hook in PHP `'ptc_completionist_deleted_all_request_tokens'` fires when the request tokens database table is truncated (aka cleared).
 - New filter hook in PHP `'ptc_completionist_shortcodes_meta_init'` filters the metadata definitions array of shortcodes registered and managed by Completionist.
+- `'default_atts'` and `'render_callback'` keys in the metadata definitions array of shortcodes registered and managed by Completionist.
 
 #### Changed
 
 - The main admin page's submenu item is now labeled "Settings".
 - Minor error check improvements when saving some plugin settings.
+- Minor style updates for border-radius consistency.
+
+#### Fixed
+
+- Flash of an empty error message before the `[ptc_asana_project]` shortcode begins loading.
 
 #### Security
 
