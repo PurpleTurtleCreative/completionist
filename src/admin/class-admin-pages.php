@@ -88,7 +88,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 			);
 
 			// Rename the submenu title for the parent page.
-			$GLOBALS['submenu'][ static::PARENT_PAGE_SLUG ][0][0] = 'Settings';
+			// Note that the parent page is only added if the current
+			// user has the required capability.
+			if ( ! empty( $GLOBALS['submenu'][ static::PARENT_PAGE_SLUG ][0][0] ) ) {
+				$GLOBALS['submenu'][ static::PARENT_PAGE_SLUG ][0][0] = 'Settings';
+			}
 		}//end add_admin_pages()
 
 		/**
