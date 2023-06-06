@@ -262,7 +262,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			$atts = array(),
 			$content = null,
 			$shortcode_tag = ''
-		) {
+		) : string {
 
 			// Collect shortcode attributes.
 
