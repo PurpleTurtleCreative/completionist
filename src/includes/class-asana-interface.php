@@ -170,9 +170,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		 */
 		private static function maybe_load_client( int $user_id = 0 ) : \Asana\Client {
 
-			// error_log( "Maybe loading client for user ID: {$user_id}" );
-			// error_log( 'Currently loaded client is for user ID: ' . self::$wp_user_id );
-
 			if ( 0 === $user_id ) {
 				$user_id = get_current_user_id();
 			}

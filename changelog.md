@@ -20,6 +20,7 @@
 #### Security
 
 - Request tokens could fail to become stale due to public access. Request tokens are now only refreshed when they are saved in a secure context. Note that HTML caching could now cause request tokens to become stale, depending on the interval and frequency that the HTML cache is refreshed. See the newly added action hooks to know when request tokens are deleted.
+- Request tokens would use the Asana connection of WordPress user ID 1 (if available) to authenticate `[ptc_asana_project]` shortcodes when no `auth_user` or default frontend authentication user has been specified.
 
 ### 3.7.0 - 2023-04-21
 

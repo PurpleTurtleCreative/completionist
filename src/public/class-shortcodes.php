@@ -272,6 +272,19 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 				$shortcode_tag
 			);
 
+			// Validate shortcode attributes.
+
+			if (
+				empty( $atts['auth_user'] ) &&
+				Options::get( Options::FRONTEND_AUTH_USER_ID ) <= 0
+			) {
+				return '
+					<div class="ptc-shortcode ptc-asana-project ptc-error">
+						<p>Failed to load Asana project. Please specify <a href="https://docs.purpleturtlecreative.com/completionist/shortcodes/#ptc_asana_project" target="_blank">the auth_user ID</a> or <a href="https://docs.purpleturtlecreative.com/completionist/getting-started/#set-a-frontend-authentication-user" target="_blank">set a default authentication user</a>.</p>
+					</div>
+				';
+			}
+
 			// Sanitize shortcode attributes.
 
 			$atts['src']              = (string) esc_url_raw( $atts['src'] );

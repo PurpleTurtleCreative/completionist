@@ -153,8 +153,10 @@ class Request_Token {
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param array $request_args The request arguments to represent.
+	 * @param array  $request_args The request arguments to represent.
 	 * Note that they may change due to validation and standardization.
+	 * @param string $args_as_json Optional. Variable reference which
+	 * will be set to the JSON-encoded arguments on success. Default ''.
 	 *
 	 * @return string A token representing the provided arguments.
 	 */
@@ -167,11 +169,14 @@ class Request_Token {
 			// An 'auth_user' argument is required to prevent data
 			// security and privacy mixups. Default to current setting.
 			$request_args['auth_user'] = (int) Options::get( Options::FRONTEND_AUTH_USER_ID );
-			if ( empty( $request_args['auth_user'] ) ) {
+			if (
+				empty( $request_args['auth_user'] ) ||
+				$request_args['auth_user'] <= 0
+			) {
 				// You shouldn't be generating tokens without
 				// a specified frontend authentication user!
 				trigger_error(
-					'Failed to use default frontend authentication user. Be sure to only use request tokens when this option has been set!',
+					'Failed to generate a request token. The default frontend authentication user has not been set.',
 					E_USER_NOTICE
 				);
 				return '';

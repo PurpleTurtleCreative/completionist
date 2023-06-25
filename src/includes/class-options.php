@@ -114,7 +114,13 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 			switch ( $key ) {
 
 				case self::ASANA_PAT:
-					if ( 0 === $object_id ) {
+					if ( $object_id < 0 ) {
+						// If -1 was passed an error value, for example,
+						// then get_user_meta() will actually absint() and
+						// interpret that value as user with ID 1. Aye yi yi!
+						error_log( 'Cannot use negative user ID to get value for: ' . $key );
+						return '';
+					} elseif ( 0 === $object_id ) {
 						$object_id = get_current_user_id();
 						if ( 0 === $object_id ) {
 							error_log( 'Could not identify user to get value for: ' . $key );
