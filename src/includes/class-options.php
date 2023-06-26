@@ -362,7 +362,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		/**
 		 * Inserts the usermeta value only if it does not already exist.
 		 *
-		 * @since [unreleased]
+		 * @since 3.8.0
 		 *
 		 * @param string $key The meta key name.
 		 * @param string $value The value to be saved.
@@ -445,7 +445,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		/**
 		 * Checks if a usermeta key-value pair exists.
 		 *
-		 * @since [unreleased]
+		 * @since 3.8.0
 		 *
 		 * @param string $key The meta key name.
 		 * @param string $value The value to search.

@@ -158,7 +158,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 			 * Filters the shortcode metadata for registering and
 			 * tracking shortcodes managed by the Shortcodes class.
 			 *
-			 * @since [unreleased]
+			 * @since 3.8.0
 			 *
 			 * @see Shortcodes::$shortcodes_meta
 			 *
@@ -228,7 +228,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 		/**
 		 * Gets shortcode metadata.
 		 *
-		 * @since [unreleased]
+		 * @since 3.8.0
 		 *
 		 * @see $shortcodes_meta
 		 *

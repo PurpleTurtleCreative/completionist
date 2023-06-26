@@ -111,7 +111,7 @@ class Request_Token {
 			/**
 			 * Fires after stale request tokens were successfully deleted.
 			 *
-			 * @since [unreleased]
+			 * @since 3.8.0
 			 *
 			 * @param int $count The number of request tokens that were
 			 * deleted. Note this may be 0 if no stale tokens were found.
@@ -139,7 +139,7 @@ class Request_Token {
 			/**
 			 * Fires after all request tokens were successfully deleted.
 			 *
-			 * @since [unreleased]
+			 * @since 3.8.0
 			 */
 			do_action( 'ptc_completionist_deleted_all_request_tokens' );
 		}
