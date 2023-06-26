@@ -47,4 +47,7 @@ function uninstall_for_current_blog() {
 			Database_Manager::drop_all_tables();
 		}
 	}
+
+	// Remove PUC's data.
+	delete_site_option( 'external_updates-completionist' );
 }
