@@ -135,7 +135,9 @@ function register_remote_plugin_updates() {
 		\Puc_v4_Factory::buildUpdateChecker(
 			$plugin_server_endpoint,
 			PLUGIN_FILE,
-			PLUGIN_SLUG
+			'completionist',
+			12,
+			'external_updates-completionist'
 		);
 	}
 }
