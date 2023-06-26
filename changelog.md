@@ -16,6 +16,7 @@
 #### Fixed
 
 - Flash of an empty error message before the `[ptc_asana_project]` shortcode begins loading.
+- Cache data for remote plugin update checks is now removed during uninstallation.
 
 #### Security
 
