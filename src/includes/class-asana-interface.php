@@ -663,6 +663,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				'show_tasks_due'         => true,
 				'show_tasks_attachments' => true,
 				'show_tasks_tags'        => true,
+				'show_tasks_comments'    => false,
 			);
 
 			// Sanitize provided args.
@@ -861,6 +862,41 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 					self::load_subtasks( $tasks, $subtask_fields );
 				}
 
+				if ( $args['show_tasks_comments'] ) {
+					foreach ( $tasks as &$t ) {
+
+						$t->stories = iterator_to_array(
+							$asana->stories->findByTask(
+								$t->gid,
+								array(),
+								array(
+									'fields' => 'created_at,is_pinned,type,text,created_by.name,created_by.photo.image_36x36',
+									'limit'  => 100,
+								)
+							)
+						);
+
+						Util::deep_modify_prop(
+							$t,
+							'subtasks',
+							function ( &$subtasks ) use ( &$asana ) {
+								foreach ( $subtasks as &$st ) {
+									$st->stories = iterator_to_array(
+										$asana->stories->findByTask(
+											$st->gid,
+											array(),
+											array(
+												'fields' => 'created_at,is_pinned,type,text,created_by.name,created_by.photo.image_36x36',
+												'limit'  => 100,
+											)
+										)
+									);
+								}
+							}
+						);
+					}
+				}
+
 				// Clean data and map tasks to project sections.
 
 				foreach ( $tasks as &$task ) {
@@ -1025,7 +1061,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				array(),
 				array(
 					'fields' => 'name,host,download_url,view_url',
-					'limit' => 100,
+					'limit'  => 100,
 				)
 			);
 		}
