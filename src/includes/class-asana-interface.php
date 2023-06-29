@@ -870,7 +870,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 								$t->gid,
 								array(),
 								array(
-									'fields' => 'created_at,is_pinned,type,text,created_by.name,created_by.photo.image_36x36',
+									'fields' => 'created_at,is_pinned,type,resource_subtype,html_text,created_by.name,created_by.photo.image_36x36',
 									'limit'  => 100,
 								)
 							)
@@ -886,7 +886,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 											$st->gid,
 											array(),
 											array(
-												'fields' => 'created_at,is_pinned,type,text,created_by.name,created_by.photo.image_36x36',
+												'fields' => 'created_at,is_pinned,type,resource_subtype,html_text,created_by.name,created_by.photo.image_36x36',
 												'limit'  => 100,
 											)
 										)
