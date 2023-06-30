@@ -14,9 +14,10 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once 'class-options.php';
-require_once 'errors.php';
-require_once 'class-html-builder.php';
+require_once PLUGIN_PATH . 'src/includes/class-options.php';
+require_once PLUGIN_PATH . 'src/includes/errors.php';
+require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
+require_once PLUGIN_PATH . 'src/includes/class-asana-batch.php';
 
 if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 	/**
@@ -863,38 +864,59 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				}
 
 				if ( $args['show_tasks_comments'] ) {
+
+					// Prepare for batch processing.
+					$asana_comments_batcher = new Asana_Batch(
+						$asana,
+						function( &$res, &$task ) {
+							$task->stories = array();
+							if ( 200 === intval( $res->status_code ) ) {
+								if ( ! empty( $res->body->data ) ) {
+									$task->stories = $res->body->data;
+								}
+							} else {
+								trigger_error( 'Bad task comments batch action response: ' . print_r( $res, true ), \E_USER_WARNING );
+							}
+						},
+						function( $e ) {
+							trigger_error( $e->getMessage(), \E_USER_WARNING );
+						}
+					);
+
+					// Batch fetch tasks' stories records.
 					foreach ( $tasks as &$t ) {
 
-						$t->stories = iterator_to_array(
-							$asana->stories->findByTask(
-								$t->gid,
-								array(),
-								array(
-									'fields' => 'created_at,is_pinned,type,resource_subtype,html_text,created_by.name,created_by.photo.image_36x36',
-									'limit'  => 100,
-								)
-							)
+						$asana_comments_batcher->add_action(
+							'GET',
+							"/tasks/{$t->gid}/stories",
+							null,
+							array(
+								'limit'  => 100,
+								'fields' => explode( ',', 'created_at,is_pinned,type,resource_subtype,html_text,created_by.name,created_by.photo.image_36x36' ),
+							),
+							array( $t )
 						);
 
-						Util::deep_modify_prop(
-							$t,
-							'subtasks',
-							function ( &$subtasks ) use ( &$asana ) {
-								foreach ( $subtasks as &$st ) {
-									$st->stories = iterator_to_array(
-										$asana->stories->findByTask(
-											$st->gid,
-											array(),
-											array(
-												'fields' => 'created_at,is_pinned,type,resource_subtype,html_text,created_by.name,created_by.photo.image_36x36',
-												'limit'  => 100,
-											)
-										)
-									);
-								}
+						if ( ! empty( $t->subtasks ) ) {
+							// NOTICE this is only doing one level of subtasks
+							// rather than traversing all subtasks.
+							foreach ( $t->subtasks as &$st ) {
+								$asana_comments_batcher->add_action(
+									'GET',
+									"/tasks/{$st->gid}/stories",
+									null,
+									array(
+										'limit'  => 100,
+										'fields' => explode( ',', 'created_at,is_pinned,type,resource_subtype,html_text,created_by.name,created_by.photo.image_36x36' ),
+									),
+									array( $st )
+								);
 							}
-						);
+						}
 					}
+
+					// Process last batch if not empty.
+					$asana_comments_batcher->process();
 				}
 
 				// Clean data and map tasks to project sections.
