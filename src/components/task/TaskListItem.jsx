@@ -12,6 +12,7 @@ import {
 	getTaskSubtasks,
 	getTaskAttachments,
 	getTaskTags,
+	getTaskStories,
 } from './util.js';
 
 import { getLocaleString } from '../generic/util.jsx';
@@ -22,12 +23,15 @@ import { ReactComponent as ToggleIcon } from '../../../assets/icons/fa-caret-rig
 
 import AttachmentThumbnail from '../attachment/AttachmentThumbnail.jsx';
 
+import TaskStoriesModal from './TaskStoriesModal.jsx';
+
 import '../../../assets/styles/scss/components/task/_TaskListItem.scss';
 
 const { useState } = wp.element;
 
 export default function TaskListItem({ task, rowNumber = null }) {
 	const [ isExpanded, setIsExpanded ] = useState(false);
+	const [ showTaskStoriesModal, setShowTaskStoriesModal ] = useState(false);
 
 	let extraClassNames = '';
 
@@ -162,6 +166,21 @@ export default function TaskListItem({ task, rowNumber = null }) {
 		}
 	}
 
+	let maybeTaskStoriesModalButton = null;
+	const taskStories = getTaskStories(task);
+	if ( taskStories.length > 0 ) {
+		renderToggle = true;
+		allowToggle = true;
+		maybeTaskStoriesModalButton = (
+			<>
+				<button type="button" onClick={() => setShowTaskStoriesModal(true)}>
+					See Activity
+				</button>
+				{ showTaskStoriesModal && <TaskStoriesModal stories={taskStories} onCloseClick={() => setShowTaskStoriesModal(false)} /> }
+			</>
+		);
+	}
+
 	let maybeToggle = null;
 	if ( renderToggle ) {
 		let maybeToggleIcon = null;
@@ -185,6 +204,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 					{maybeDescription}
 					{maybeSubtaskList}
 					{maybeAttachments}
+					{maybeTaskStoriesModalButton}
 				</div>
 			</div>
 		);

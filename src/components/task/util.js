@@ -220,3 +220,22 @@ export function getTaskTags(task) {
 
 	return tags;
 }
+
+export function getTaskStories(task) {
+
+	let stories = [];
+
+	if (
+		task &&
+		'stories' in task &&
+		task.stories &&
+		Array.isArray( task.stories )
+	) {
+		stories = task.stories;
+	}
+
+	// Should already be sorted by story.create_at datetime
+	// from Asana API response.
+
+	return stories;
+}
