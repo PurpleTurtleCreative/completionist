@@ -112,11 +112,6 @@ class Asana_Batch {
 
 		try {
 
-			trigger_error(
-				'Preparing Asana Batch API request with ' . $actions_count . ' actions (max: ' . self::MAX_BATCH_SIZE . ')',
-				\E_USER_NOTICE
-			);
-
 			$responses = $this->asana->batchapi->createBatchRequest(
 				array( 'actions' => $this->actions )
 			);

@@ -83,6 +83,10 @@
 				margin: 0 0 0 auto;
 				padding: 0;
 
+				@include breakpoint(medium) {
+					margin-right: -1rem;
+				}
+
 				&:hover {
 					opacity: 1;
 				}

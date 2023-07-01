@@ -870,9 +870,18 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 						$asana,
 						function( &$res, &$task ) {
 							$task->stories = array();
-							if ( 200 === intval( $res->status_code ) ) {
-								if ( ! empty( $res->body->data ) ) {
-									$task->stories = $res->body->data;
+							if (
+								200 === intval( $res->status_code ) &&
+								! empty( $res->body->data ) &&
+								is_array( $res->body->data )
+							) {
+								foreach ( $res->body->data as &$story ) {
+									if (
+										'comment' === $story->type &&
+										'comment_added' === $story->resource_subtype
+									) {
+										$task->stories[] = $story;
+									}
 								}
 							} else {
 								trigger_error( 'Bad task comments batch action response: ' . print_r( $res, true ), \E_USER_WARNING );

@@ -22,8 +22,12 @@ export default function TaskStoriesModal({ stories, onCloseClick }) {
 					stories.map((story, index) => {
 						return (
 							<li>
-								<span className="text" dangerouslySetInnerHTML={ { __html: story.html_text } } />
-								<span className="created-at">{"["+getLocaleString(story.created_at)+"]"}</span>
+								<div className="created-by">
+									<img src={story.created_by.photo.image_36x36} />
+									<span>{story.created_by.name}</span>
+								</div>
+								<div className="created-at">{"["+getLocaleString(story.created_at)+"]"}</div>
+								<div className="text" dangerouslySetInnerHTML={ { __html: story.html_text } } />
 							</li>
 						);
 					})
