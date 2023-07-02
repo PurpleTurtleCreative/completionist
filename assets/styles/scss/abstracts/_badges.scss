@@ -18,3 +18,42 @@
 		margin-right: 1em;
 	}
 }
+
+%metadata-button {
+	cursor: pointer !important;
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: center;
+	gap: 0.5em;
+	margin: 1.5em 0 2em;
+	padding: 0.5em 1em;
+	border-radius: 7px;
+	border: 2px solid color(grey-lighter);
+	background: color(white);
+	color: color(grey-dark);
+	text-transform: uppercase;
+	font-size: 0.8em;
+	letter-spacing: 0.05em;
+
+	svg {
+		width: 1.15em;
+		height: 1.15em;
+		margin: 0;
+		overflow: visible;
+		color: color(grey);
+
+		path {
+			fill: currentColor;
+		}
+	}
+
+	&:hover {
+		border-color: color(grey-light);
+		background: color(grey-lightest);
+		color: color(grey-darker);
+
+		svg {
+			color: color(grey-dark);
+		}
+	}
+}

@@ -20,6 +20,7 @@ import { getLocaleString } from '../generic/util.jsx';
 import { ReactComponent as CheckmarkIcon } from '../../../assets/icons/fa-check-solid.svg';
 import { ReactComponent as SubtasksIcon } from '../../../assets/icons/fa-code-branch-solid.svg';
 import { ReactComponent as ToggleIcon } from '../../../assets/icons/fa-caret-right-solid.svg';
+import { ReactComponent as StoriesIcon } from '../../../assets/icons/fa-comment-regular.svg';
 
 import AttachmentThumbnail from '../attachment/AttachmentThumbnail.jsx';
 
@@ -173,8 +174,9 @@ export default function TaskListItem({ task, rowNumber = null }) {
 		allowToggle = true;
 		maybeTaskStoriesModalButton = (
 			<>
-				<button type="button" onClick={() => setShowTaskStoriesModal(true)}>
-					See Activity
+				<button className="task-stories-modal-button" type="button" onClick={() => setShowTaskStoriesModal(true)}>
+					<StoriesIcon preserveAspectRatio="xMidYMid meet" />
+					<span>{`See Comments (${taskStories.length})`}</span>
 				</button>
 				{ showTaskStoriesModal && <TaskStoriesModal stories={taskStories} onCloseClick={() => setShowTaskStoriesModal(false)} /> }
 			</>
@@ -202,9 +204,9 @@ export default function TaskListItem({ task, rowNumber = null }) {
 				<div className="details">
 					{maybeTags}
 					{maybeDescription}
+					{maybeTaskStoriesModalButton}
 					{maybeSubtaskList}
 					{maybeAttachments}
-					{maybeTaskStoriesModalButton}
 				</div>
 			</div>
 		);

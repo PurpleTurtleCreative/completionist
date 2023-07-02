@@ -4,37 +4,15 @@
  * @since [unreleased]
  */
 
-import { getLocaleString } from '../generic/util.jsx';
-
 import { ReactComponent as CloseIcon } from '../../../assets/icons/fa-xmark-solid.svg';
+
+import TaskStoriesList from './TaskStoriesList.jsx';
 
 import '../../../assets/styles/scss/components/task/_TaskStoriesModal.scss';
 
 const { useState } = wp.element;
 
 export default function TaskStoriesModal({ stories, onCloseClick }) {
-
-	let maybeStories = <p>No activity</p>;
-	if ( stories.length > 0 ) {
-		maybeStories = (
-			<ol className="task-stories-list">
-				{
-					stories.map((story, index) => {
-						return (
-							<li>
-								<div className="created-by">
-									<img src={story.created_by.photo.image_36x36} />
-									<span>{story.created_by.name}</span>
-								</div>
-								<div className="created-at">{"["+getLocaleString(story.created_at)+"]"}</div>
-								<div className="text" dangerouslySetInnerHTML={ { __html: story.html_text } } />
-							</li>
-						);
-					})
-				}
-			</ol>
-		);
-	}
 
 	return (
 		<div className="ptc-TaskStoriesModal">
@@ -46,7 +24,7 @@ export default function TaskStoriesModal({ stories, onCloseClick }) {
 					</button>
 				</div>
 				<div className="modal-body">
-					{maybeStories}
+					<TaskStoriesList stories={stories} />
 				</div>
 			</div>
 		</div>

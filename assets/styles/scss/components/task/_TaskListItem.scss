@@ -1,4 +1,5 @@
 @import '../../abstracts/colors';
+@import '../../abstracts/badges';
 @import '../../abstracts/responsive';
 @import '../../abstracts/media';
 
@@ -314,6 +315,10 @@
 		@include breakpoint(large) {
 			flex: 1;
 		}
+	}
+
+	.task-stories-modal-button {
+		@extend %metadata-button;
 	}
 
 	.task-tags {
