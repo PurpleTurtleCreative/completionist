@@ -18,14 +18,31 @@ export default function TaskStoriesList({ stories }) {
 			<ol className="task-stories-list">
 				{
 					stories.map((story, index) => {
+
+						let storyIcon = null;
+						if (
+							'created_by' in story &&
+							story.created_by &&
+							'photo' in story.created_by &&
+							story.created_by.photo &&
+							'image_36x36' in story.created_by.photo &&
+							story.created_by.photo.image_36x36
+						) {
+							storyIcon = <img src={story.created_by.photo.image_36x36} width="36" height="36" />;
+						}
+
 						return (
 							<li>
-								<div className="created-by">
-									<img src={story.created_by.photo.image_36x36} />
-									<span>{story.created_by.name}</span>
+								<div className="story-icon" data-has-icon={!!storyIcon}>
+									{storyIcon}
 								</div>
-								<div className="created-at">{"["+getLocaleString(story.created_at)+"]"}</div>
-								<div className="text" dangerouslySetInnerHTML={ { __html: story.html_text } } />
+								<div className="story-content">
+									<div className="story-header">
+										<span className="created-by-name">{story.created_by.name}</span>
+										<span className="created-at">{getLocaleString(story.created_at)}</span>
+									</div>
+									<div className="story-body" dangerouslySetInnerHTML={ { __html: story.html_text } } />
+								</div>
 							</li>
 						);
 					})
