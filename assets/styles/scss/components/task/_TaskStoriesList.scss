@@ -8,7 +8,7 @@
 	.task-stories-list {
 		display: flex;
 		flex-direction: column;
-		gap: 2em 0;
+		gap: 1em 0;
 		list-style: none;
 		margin: 0;
 		padding: 0;
@@ -48,7 +48,6 @@
 					display: flex;
 					flex-wrap: wrap;
 					gap: 0.5em;
-					margin: 0 0 0.5em;
 
 					.created-by-name {
 						font-weight: bold;
@@ -60,7 +59,21 @@
 				}
 
 				.story-body {
+					line-height: 1.4;
 
+					p {
+						margin: 0.5em 0 1em;
+					}
+
+					h1 {
+						font-size: 1.7em;
+						margin: 0.5em 0;
+					}
+
+					h2 {
+						font-size: 1.5em;
+						margin: 0.5em 0;
+					}
 				}
 			}
 		}

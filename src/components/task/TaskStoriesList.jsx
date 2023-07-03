@@ -33,7 +33,7 @@ export default function TaskStoriesList({ stories }) {
 
 						return (
 							<li>
-								<div className="story-icon" data-has-icon={!!storyIcon}>
+								<div className="story-icon">
 									{storyIcon}
 								</div>
 								<div className="story-content">

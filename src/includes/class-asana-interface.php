@@ -880,6 +880,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 										'comment' === $story->type &&
 										'comment_added' === $story->resource_subtype
 									) {
+										static::localize_task_story( $story );
 										$task->stories[] = $story;
 									}
 								}
@@ -1068,6 +1069,31 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				foreach ( $task->subtasks as &$subtask ) {
 					static::localize_task( $subtask, $recursive );
 				}
+			}
+		}
+
+		/**
+		 * Sanitizes, localizes, and tidies a task story object.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param \stdClass $story The task story to edit.
+		 */
+		public static function localize_task_story( \stdClass &$story ) {
+			// Process story text.
+			if ( isset( $story->html_text ) ) {
+				// Sanitize HTML and format paragraphs.
+				$story->html_text = wpautop( wp_kses_post( $story->html_text ) );
+				// Use local attachment URLs.
+				$story->html_text = HTML_Builder::localize_attachment_urls(
+					$story->html_text,
+					-1,
+					static::$wp_user_id
+				);
+				// Render embedded HTML objects.
+				$story->html_text = HTML_Builder::replace_urls_with_oembeds(
+					$story->html_text
+				);
 			}
 		}
 
