@@ -69,7 +69,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Shortcodes' ) ) {
 					'show_tasks_due'         => 'true',
 					'show_tasks_attachments' => 'true',
 					'show_tasks_tags'        => 'true',
-					'show_tasks_comments'    => 'false',
 				),
 				'script_handles'  => array(
 					'ptc-completionist-shortcode-asana-project',

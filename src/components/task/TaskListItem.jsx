@@ -12,7 +12,6 @@ import {
 	getTaskSubtasks,
 	getTaskAttachments,
 	getTaskTags,
-	getTaskStories,
 } from './util.js';
 
 import { getLocaleString } from '../generic/util.jsx';
@@ -20,11 +19,8 @@ import { getLocaleString } from '../generic/util.jsx';
 import { ReactComponent as CheckmarkIcon } from '../../../assets/icons/fa-check-solid.svg';
 import { ReactComponent as SubtasksIcon } from '../../../assets/icons/fa-code-branch-solid.svg';
 import { ReactComponent as ToggleIcon } from '../../../assets/icons/fa-caret-right-solid.svg';
-import { ReactComponent as StoriesIcon } from '../../../assets/icons/fa-comment-regular.svg';
 
 import AttachmentThumbnail from '../attachment/AttachmentThumbnail.jsx';
-
-import TaskStoriesModal from './TaskStoriesModal.jsx';
 
 import '../../../assets/styles/scss/components/task/_TaskListItem.scss';
 
@@ -32,7 +28,6 @@ const { useState } = wp.element;
 
 export default function TaskListItem({ task, rowNumber = null }) {
 	const [ isExpanded, setIsExpanded ] = useState(false);
-	const [ showTaskStoriesModal, setShowTaskStoriesModal ] = useState(false);
 
 	let extraClassNames = '';
 
@@ -167,21 +162,17 @@ export default function TaskListItem({ task, rowNumber = null }) {
 		}
 	}
 
-	let maybeTaskStoriesModalButton = null;
-	const taskStories = getTaskStories(task);
-	if ( taskStories.length > 0 ) {
-		renderToggle = true;
-		allowToggle = true;
-		maybeTaskStoriesModalButton = (
-			<>
-				<button className="task-stories-modal-button" type="button" onClick={() => setShowTaskStoriesModal(true)}>
-					<StoriesIcon preserveAspectRatio="xMidYMid meet" />
-					<span>{`See Comments (${taskStories.length})`}</span>
-				</button>
-				{ showTaskStoriesModal && <TaskStoriesModal stories={taskStories} onCloseClick={() => setShowTaskStoriesModal(false)} /> }
-			</>
-		);
-	}
+	renderToggle = window.Completionist.hooks.applyFilters(
+		'TaskListItem_if_render_toggle',
+		renderToggle,
+		task
+	);
+
+	allowToggle = window.Completionist.hooks.applyFilters(
+		'TaskListItem_if_allow_toggle',
+		allowToggle,
+		task
+	);
 
 	let maybeToggle = null;
 	if ( renderToggle ) {
@@ -204,7 +195,13 @@ export default function TaskListItem({ task, rowNumber = null }) {
 				<div className="details">
 					{maybeTags}
 					{maybeDescription}
-					{maybeTaskStoriesModalButton}
+					{
+						window.Completionist.hooks.applyFilters(
+							'TaskListItem_content_after_description',
+							[],
+							task
+						)
+					}
 					{maybeSubtaskList}
 					{maybeAttachments}
 				</div>

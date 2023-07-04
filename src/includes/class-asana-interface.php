@@ -648,23 +648,32 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$asana = self::$asana;
 			}
 
-			// Define all args default values.
-			$default_args = array(
-				'exclude_sections'       => '',
-				'show_gids'              => true,
-				'show_name'              => true,
-				'show_description'       => true,
-				'show_status'            => true,
-				'show_modified'          => true,
-				'show_due'               => true,
-				'show_tasks_description' => true,
-				'show_tasks_assignee'    => true,
-				'show_tasks_subtasks'    => true,
-				'show_tasks_completed'   => true,
-				'show_tasks_due'         => true,
-				'show_tasks_attachments' => true,
-				'show_tasks_tags'        => true,
-				'show_tasks_comments'    => false,
+			/**
+			 * Filters the default arguments for retrieving Asana
+			 * project data.
+			 *
+			 * @since [unreleased]
+			 *
+			 * @param array $default_args The default argument values.
+			 */
+			$default_args = apply_filters(
+				'ptc_completionist_project_default_args',
+				array(
+					'exclude_sections'       => '',
+					'show_gids'              => true,
+					'show_name'              => true,
+					'show_description'       => true,
+					'show_status'            => true,
+					'show_modified'          => true,
+					'show_due'               => true,
+					'show_tasks_description' => true,
+					'show_tasks_assignee'    => true,
+					'show_tasks_subtasks'    => true,
+					'show_tasks_completed'   => true,
+					'show_tasks_due'         => true,
+					'show_tasks_attachments' => true,
+					'show_tasks_tags'        => true,
+				)
 			);
 
 			// Sanitize provided args.
@@ -863,72 +872,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 					self::load_subtasks( $tasks, $subtask_fields );
 				}
 
-				if ( $args['show_tasks_comments'] ) {
-
-					// Prepare for batch processing.
-					$asana_comments_batcher = new Asana_Batch(
-						$asana,
-						function( &$res, &$task ) {
-							$task->stories = array();
-							if (
-								200 === intval( $res->status_code ) &&
-								! empty( $res->body->data ) &&
-								is_array( $res->body->data )
-							) {
-								foreach ( $res->body->data as &$story ) {
-									if (
-										'comment' === $story->type &&
-										'comment_added' === $story->resource_subtype
-									) {
-										static::localize_task_story( $story );
-										$task->stories[] = $story;
-									}
-								}
-							} else {
-								trigger_error( 'Bad task comments batch action response: ' . print_r( $res, true ), \E_USER_WARNING );
-							}
-						},
-						function( $e ) {
-							trigger_error( $e->getMessage(), \E_USER_WARNING );
-						}
-					);
-
-					// Batch fetch tasks' stories records.
-					foreach ( $tasks as &$t ) {
-
-						$asana_comments_batcher->add_action(
-							'GET',
-							"/tasks/{$t->gid}/stories",
-							null,
-							array(
-								'limit'  => 100,
-								'fields' => explode( ',', 'created_at,is_pinned,type,resource_subtype,html_text,created_by.name,created_by.photo.image_36x36' ),
-							),
-							array( $t )
-						);
-
-						if ( ! empty( $t->subtasks ) ) {
-							// NOTICE this is only doing one level of subtasks
-							// rather than traversing all subtasks.
-							foreach ( $t->subtasks as &$st ) {
-								$asana_comments_batcher->add_action(
-									'GET',
-									"/tasks/{$st->gid}/stories",
-									null,
-									array(
-										'limit'  => 100,
-										'fields' => explode( ',', 'created_at,is_pinned,type,resource_subtype,html_text,created_by.name,created_by.photo.image_36x36' ),
-									),
-									array( $st )
-								);
-							}
-						}
-					}
-
-					// Process last batch if not empty.
-					$asana_comments_batcher->process();
-				}
-
 				// Clean data and map tasks to project sections.
 
 				foreach ( $tasks as &$task ) {
@@ -986,6 +929,23 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
 			// Commit all buffered request tokens.
 			Request_Token::buffer_end_flush();
+
+			/**
+			 * Filters Asana project data.
+			 *
+			 * @since [unreleased]
+			 *
+			 * @param \stdClass     $project The Asana project data.
+			 * @param array         $args The request arguments.
+			 * @param \Asana\Client $asana The authenticated Asana
+			 * client instance.
+			 */
+			$project = apply_filters(
+				'ptc_completionist_project_data',
+				$project,
+				$args,
+				$asana
+			);
 
 			// Remove all GIDs if desired.
 			if ( ! $args['show_gids'] ) {
