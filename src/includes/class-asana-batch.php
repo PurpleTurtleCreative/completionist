@@ -29,8 +29,8 @@ class Asana_Batch {
 	private $asana;
 
 	/**
-	 * The callback handler for processing successfully retrieved
-	 * a batch API response.
+	 * The callback handler for processing each action response of
+	 * a successfully retrieved batch API response.
 	 *
 	 * It receives the batch API response object as the first
 	 * argument and any additional action response handler args
