@@ -19,18 +19,77 @@ defined( 'ABSPATH' ) || die();
  */
 class Asana_Batch {
 
+	/**
+	 * The authenticated Asana API client object.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @var \Asana\Client $asana
+	 */
 	private $asana;
 
+	/**
+	 * The callback handler for processing successfully retrieved
+	 * a batch API response.
+	 *
+	 * It receives the batch API response object as the first
+	 * argument and any additional action response handler args
+	 * from when the batch action was added.
+	 *
+	 * @see add_action() For registering additional callback args
+	 * for processing the batch action.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @var callable $handle_success
+	 */
 	private $handle_success;
 
+	/**
+	 * The callback handler for processing batch API request errors.
+	 *
+	 * This callback is called whenever the batch API request
+	 * itself fails. It receives the batch API request error
+	 * exception as its first and only argument since it is
+	 * unrelated to the processing of any individual action.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @var callable $handle_error
+	 */
 	private $handle_error;
 
+	/**
+	 * The actions to be included in the batch request.
+	 *
+	 * @link https://developers.asana.com/reference/createbatchrequest
+	 *
+	 * @since [unreleased]
+	 *
+	 * @var array[] $actions
+	 */
 	private $actions;
 
+	/**
+	 * The additional arguments passed to the success handler
+	 * for each action's response included in the batch response.
+	 *
+	 * Note that the index of this array corresponds to the same
+	 * index of the actions array, so they should be kept in sync.
+	 *
+	 * @see $handle_success For processing action responses.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @var array[] $actions
+	 */
 	private $action_response_handler_args;
 
 	/**
 	 * The maximum number of actions per batch request.
+	 *
+	 * The batch request will automatically be sent once the
+	 * current count of actions reaches this limit.
 	 *
 	 * Asana currently allows up to 10 actions per batch request.
 	 *
@@ -42,6 +101,10 @@ class Asana_Batch {
 	 * Instantiates an Asana_Batch object.
 	 *
 	 * @since [unreleased]
+	 *
+	 * @param \Asana\Client $asana The Asana client.
+	 * @param callable      $handle_success The success handler.
+	 * @param callable      $handle_error The error handler.
 	 */
 	public function __construct(
 		\Asana\Client $asana,
@@ -53,11 +116,31 @@ class Asana_Batch {
 		$this->handle_error   = $handle_error;
 	}
 
+	/**
+	 * Adds an action to be included in the batch request.
+	 *
+	 * If the added action results in the MAX_BATCH_SIZE, then the
+	 * batch request will also be sent and processed.
+	 *
+	 * @link https://developers.asana.com/reference/createbatchrequest
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param string $http_method The HTTP method.
+	 * @param string $relative_path The Asana API relative path.
+	 * @param array  $data Optional. The request arguments.
+	 * Default null to not include request data.
+	 * @param array  $options Optional. The request options such
+	 * as 'limit' or 'fields'. Default null to not include options.
+	 * @param array  $action_response_handler_args Optional. The
+	 * additional arguments for the success handler when processing
+	 * this action's response. Default empty array.
+	 */
 	public function add_action(
 		string $http_method,
 		string $relative_path,
-		$data = null,
-		$options = null,
+		?array $data = null,
+		?array $options = null,
 		array $action_response_handler_args = array()
 	) {
 
@@ -88,11 +171,21 @@ class Asana_Batch {
 		}
 	}
 
+	/**
+	 * Resets the batch data to empty.
+	 *
+	 * @since [unreleased]
+	 */
 	public function reset() {
 		$this->actions                      = array();
 		$this->action_response_handler_args = array();
 	}
 
+	/**
+	 * Processes the current batch of actions.
+	 *
+	 * @since [unreleased]
+	 */
 	public function process() {
 
 		$actions_count = count( $this->actions );
@@ -118,7 +211,7 @@ class Asana_Batch {
 
 			if ( ! empty( $responses ) && is_array( $responses ) ) {
 				foreach ( $responses as $i => &$res ) {
-					($this->handle_success)(
+					( $this->handle_success )(
 						$res,
 						...$this->action_response_handler_args[ $i ]
 					);
@@ -127,7 +220,7 @@ class Asana_Batch {
 				throw new \Exception( 'Unknown error. Missing or invalid data from Asana Batch API response.' );
 			}
 		} catch ( \Exception $e ) {
-			($this->handle_error)( $e );
+			( $this->handle_error )( $e );
 		} finally {
 			$this->reset();
 		}

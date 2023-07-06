@@ -162,12 +162,29 @@ export default function TaskListItem({ task, rowNumber = null }) {
 		}
 	}
 
+	/**
+	 * Filters whether the toggle column should be rendered
+	 * in the TaskListItem.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param {boolean} renderToggle If to render the toggle column.
+	 * @param {Object}  task The represented task.
+	 */
 	renderToggle = window.Completionist.hooks.applyFilters(
 		'TaskListItem_if_render_toggle',
 		renderToggle,
 		task
 	);
 
+	/**
+	 * Filters whether the TaskListItem can be toggled (expanded).
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param {boolean} allowToggle If to allow toggling (expansion).
+	 * @param {Object}  task The represented task.
+	 */
 	allowToggle = window.Completionist.hooks.applyFilters(
 		'TaskListItem_if_allow_toggle',
 		allowToggle,
@@ -196,6 +213,19 @@ export default function TaskListItem({ task, rowNumber = null }) {
 					{maybeTags}
 					{maybeDescription}
 					{
+						/**
+						 * Filters content to display after the task
+						 * description within a TaskListItem.
+						 *
+						 * Note that a task does not require a description
+						 * for this content to be displayed.
+						 *
+						 * @since [unreleased]
+						 *
+						 * @param {Object[]} content An array of React
+						 * components or JSX elements to be rendered.
+						 * @param {Object}   task The represented task.
+						 */
 						window.Completionist.hooks.applyFilters(
 							'TaskListItem_content_after_description',
 							[],
