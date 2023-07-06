@@ -153,6 +153,17 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		}
 
 		/**
+		 * Gets the currently authenticated WordPress user's ID.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @return int The WordPress user ID.
+		 */
+		public static function get_wp_user_id() : int {
+			return self::$wp_user_id;
+		}
+
+		/**
 		 * Loads an authenticated Asana API client.
 		 *
 		 * @see get_client() To get the loaded client.
