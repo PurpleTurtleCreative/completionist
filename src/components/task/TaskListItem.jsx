@@ -203,7 +203,28 @@ export default function TaskListItem({ task, rowNumber = null }) {
 
 	let maybeExpandedDetails = null;
 	if ( isExpanded ) {
+
 		extraClassNames += ' --is-expanded';
+
+		/**
+		 * Filters content to display after the task
+		 * description within a TaskListItem.
+		 *
+		 * Note that a task does not require a description
+		 * for this content to be displayed.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param {Object[]} content An array of React
+		 * components or JSX elements to be rendered.
+		 * @param {Object}   task The represented task.
+		 */
+		const maybeContentAfterDescription = window.Completionist.hooks.applyFilters(
+			'TaskListItem_content_after_description',
+			[],
+			task
+		);
+
 		maybeExpandedDetails = (
 			<div className="expanded-details">
 				{ rowNumber && <div className="spacer row-number"></div> }
@@ -212,26 +233,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 				<div className="details">
 					{maybeTags}
 					{maybeDescription}
-					{
-						/**
-						 * Filters content to display after the task
-						 * description within a TaskListItem.
-						 *
-						 * Note that a task does not require a description
-						 * for this content to be displayed.
-						 *
-						 * @since [unreleased]
-						 *
-						 * @param {Object[]} content An array of React
-						 * components or JSX elements to be rendered.
-						 * @param {Object}   task The represented task.
-						 */
-						window.Completionist.hooks.applyFilters(
-							'TaskListItem_content_after_description',
-							[],
-							task
-						)
-					}
+					{maybeContentAfterDescription}
 					{maybeSubtaskList}
 					{maybeAttachments}
 				</div>
