@@ -1,3 +1,15 @@
+### [unreleased]
+
+#### Added
+
+- New filter hooks in JavaScript for adding custom ReactJS components after the task description in the `TaskListItem` component.
+- New filter hooks in PHP for customizing retrieved Asana project data.
+- New PHP class `Asana_Batch` to optimize batching Asana API requests.
+
+#### Changed
+
+- Updated Composer PHP dependencies.
+
 ### 3.8.0 - 2023-06-26
 
 #### Added

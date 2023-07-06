@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d948ce2efaa63d7ea16d6fd6ccb1f1c9",
+    "content-hash": "65b24d44e2415392b334a713b8f15f2a",
     "packages": [
         {
             "name": "adoy/oauth2",
-            "version": "1.3.0",
+            "version": "1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/adoy/PHP-OAuth2.git",
-                "reference": "617d8605955cbb0ca929358fda74eab308c39cfa"
+                "reference": "2f28fc76ad5ad6974333eaf84a3d05164f2ed586"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/adoy/PHP-OAuth2/zipball/617d8605955cbb0ca929358fda74eab308c39cfa",
-                "reference": "617d8605955cbb0ca929358fda74eab308c39cfa",
+                "url": "https://api.github.com/repos/adoy/PHP-OAuth2/zipball/2f28fc76ad5ad6974333eaf84a3d05164f2ed586",
+                "reference": "2f28fc76ad5ad6974333eaf84a3d05164f2ed586",
                 "shasum": ""
             },
             "require": {
@@ -35,33 +35,33 @@
             ],
             "authors": [
                 {
-                    "name": "Berejeb Anis",
-                    "email": "anis.berejeb@gmail.com"
-                },
-                {
                     "name": "Charron Pierrick",
                     "email": "pierrick@webstart.fr"
+                },
+                {
+                    "name": "Berejeb Anis",
+                    "email": "anis.berejeb@gmail.com"
                 }
             ],
             "description": "Light PHP wrapper for the OAuth 2.0 protocol (based on OAuth 2.0 Authorization Protocol draft-ietf-oauth-v2-15)",
             "support": {
                 "issues": "https://github.com/adoy/PHP-OAuth2/issues",
-                "source": "https://github.com/adoy/PHP-OAuth2/tree/1.3.0"
+                "source": "https://github.com/adoy/PHP-OAuth2/tree/1.3.1"
             },
-            "time": "2015-08-03T19:57:06+00:00"
+            "time": "2023-03-10T14:58:54+00:00"
         },
         {
             "name": "asana/asana",
-            "version": "v0.10.2",
+            "version": "v1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Asana/php-asana.git",
-                "reference": "d5c466c3bcb6164e4ee8dec9e6fc23e20181b5af"
+                "reference": "0ef547b7cb9c3964604c3fa81cf9210e0d48a686"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Asana/php-asana/zipball/d5c466c3bcb6164e4ee8dec9e6fc23e20181b5af",
-                "reference": "d5c466c3bcb6164e4ee8dec9e6fc23e20181b5af",
+                "url": "https://api.github.com/repos/Asana/php-asana/zipball/0ef547b7cb9c3964604c3fa81cf9210e0d48a686",
+                "reference": "0ef547b7cb9c3964604c3fa81cf9210e0d48a686",
                 "shasum": ""
             },
             "require": {
@@ -91,27 +91,27 @@
             ],
             "support": {
                 "issues": "https://github.com/Asana/php-asana/issues",
-                "source": "https://github.com/Asana/php-asana/tree/v0.10.2"
+                "source": "https://github.com/Asana/php-asana/tree/v1.0.6"
             },
-            "time": "2021-04-14T23:58:39+00:00"
+            "time": "2023-03-03T23:55:29+00:00"
         },
         {
             "name": "nategood/httpful",
-            "version": "0.2.20",
+            "version": "0.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nategood/httpful.git",
-                "reference": "c1cd4d46a4b281229032cf39d4dd852f9887c0f6"
+                "reference": "0cded3ea97ba905600de9ceb9ef13f3ab681587c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nategood/httpful/zipball/c1cd4d46a4b281229032cf39d4dd852f9887c0f6",
-                "reference": "c1cd4d46a4b281229032cf39d4dd852f9887c0f6",
+                "url": "https://api.github.com/repos/nategood/httpful/zipball/0cded3ea97ba905600de9ceb9ef13f3ab681587c",
+                "reference": "0cded3ea97ba905600de9ceb9ef13f3ab681587c",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
-                "php": ">=5.3"
+                "php": ">=7.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "*"
@@ -145,32 +145,32 @@
             ],
             "support": {
                 "issues": "https://github.com/nategood/httpful/issues",
-                "source": "https://github.com/nategood/httpful/tree/v0.2.20"
+                "source": "https://github.com/nategood/httpful/tree/v0.3.2"
             },
-            "time": "2015-10-26T16:11:30+00:00"
+            "time": "2020-01-25T01:13:13+00:00"
         },
         {
             "name": "yahnis-elsts/plugin-update-checker",
-            "version": "v4.11",
+            "version": "v5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/YahnisElsts/plugin-update-checker.git",
-                "reference": "3155f2d3f1ca5e7ed3f25b256f020e370515af43"
+                "reference": "48b03e93c9c2587f9276dce00ce2b6d94c1190d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/YahnisElsts/plugin-update-checker/zipball/3155f2d3f1ca5e7ed3f25b256f020e370515af43",
-                "reference": "3155f2d3f1ca5e7ed3f25b256f020e370515af43",
+                "url": "https://api.github.com/repos/YahnisElsts/plugin-update-checker/zipball/48b03e93c9c2587f9276dce00ce2b6d94c1190d2",
+                "reference": "48b03e93c9c2587f9276dce00ce2b6d94c1190d2",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": ">=5.2.0"
+                "php": ">=5.6.20"
             },
             "type": "library",
             "autoload": {
                 "files": [
-                    "load-v4p11.php"
+                    "load-v5p1.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -181,7 +181,7 @@
                 {
                     "name": "Yahnis Elsts",
                     "email": "whiteshadow@w-shadow.com",
-                    "homepage": "http://w-shadow.com/",
+                    "homepage": "https://w-shadow.com/",
                     "role": "Developer"
                 }
             ],
@@ -195,9 +195,9 @@
             ],
             "support": {
                 "issues": "https://github.com/YahnisElsts/plugin-update-checker/issues",
-                "source": "https://github.com/YahnisElsts/plugin-update-checker/tree/v4.11"
+                "source": "https://github.com/YahnisElsts/plugin-update-checker/tree/v5.1"
             },
-            "time": "2021-03-15T16:07:52+00:00"
+            "time": "2023-05-20T11:55:43+00:00"
         }
     ],
     "packages-dev": [],
@@ -208,5 +208,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.3.0"
 }

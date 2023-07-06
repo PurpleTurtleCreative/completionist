@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				 *
 				 * @since 3.7.0
 				 *
-				 * @param {object} element - The element to render.
+				 * @param {Object} element - The element to render.
 				 * Default <ProjectTaskList />.
 				 * @param {HTMLDivElement} rootNode - The root node where
 				 * React will render the element.

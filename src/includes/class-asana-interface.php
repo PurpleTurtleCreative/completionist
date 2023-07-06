@@ -14,9 +14,10 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once 'class-options.php';
-require_once 'errors.php';
-require_once 'class-html-builder.php';
+require_once PLUGIN_PATH . 'src/includes/class-options.php';
+require_once PLUGIN_PATH . 'src/includes/errors.php';
+require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
+require_once PLUGIN_PATH . 'src/includes/class-asana-batch.php';
 
 if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 	/**
@@ -149,6 +150,17 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			}
 
 			throw new \Exception( 'Could not retrieve the current Asana user\'s identity. The Asana API may be experiencing issues, see <a href="https://status.asana.com/" target="_blank">https://status.asana.com/</a>', 500 );
+		}
+
+		/**
+		 * Gets the currently authenticated WordPress user's ID.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @return int The WordPress user ID.
+		 */
+		public static function get_wp_user_id() : int {
+			return self::$wp_user_id;
 		}
 
 		/**
@@ -647,22 +659,32 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$asana = self::$asana;
 			}
 
-			// Define all args default values.
-			$default_args = array(
-				'exclude_sections'       => '',
-				'show_gids'              => true,
-				'show_name'              => true,
-				'show_description'       => true,
-				'show_status'            => true,
-				'show_modified'          => true,
-				'show_due'               => true,
-				'show_tasks_description' => true,
-				'show_tasks_assignee'    => true,
-				'show_tasks_subtasks'    => true,
-				'show_tasks_completed'   => true,
-				'show_tasks_due'         => true,
-				'show_tasks_attachments' => true,
-				'show_tasks_tags'        => true,
+			/**
+			 * Filters the default arguments for retrieving Asana
+			 * project data.
+			 *
+			 * @since [unreleased]
+			 *
+			 * @param array $default_args The default argument values.
+			 */
+			$default_args = apply_filters(
+				'ptc_completionist_project_default_args',
+				array(
+					'exclude_sections'       => '',
+					'show_gids'              => true,
+					'show_name'              => true,
+					'show_description'       => true,
+					'show_status'            => true,
+					'show_modified'          => true,
+					'show_due'               => true,
+					'show_tasks_description' => true,
+					'show_tasks_assignee'    => true,
+					'show_tasks_subtasks'    => true,
+					'show_tasks_completed'   => true,
+					'show_tasks_due'         => true,
+					'show_tasks_attachments' => true,
+					'show_tasks_tags'        => true,
+				)
 			);
 
 			// Sanitize provided args.
@@ -919,6 +941,23 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			// Commit all buffered request tokens.
 			Request_Token::buffer_end_flush();
 
+			/**
+			 * Filters Asana project data.
+			 *
+			 * @since [unreleased]
+			 *
+			 * @param \stdClass     $project The Asana project data.
+			 * @param array         $args The request arguments.
+			 * @param \Asana\Client $asana The authenticated Asana
+			 * client instance.
+			 */
+			$project = apply_filters(
+				'ptc_completionist_project_data',
+				$project,
+				$args,
+				$asana
+			);
+
 			// Remove all GIDs if desired.
 			if ( ! $args['show_gids'] ) {
 				require_once PLUGIN_PATH . 'src/includes/class-util.php';
@@ -1025,7 +1064,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				array(),
 				array(
 					'fields' => 'name,host,download_url,view_url',
-					'limit' => 100,
+					'limit'  => 100,
 				)
 			);
 		}
