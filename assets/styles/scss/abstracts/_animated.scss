@@ -23,12 +23,13 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	gap: 0.7em;
 
 	&::before {
 		content: "";
 		display: block;
 		padding: 7px;
-		margin: 0.7em;
+		margin: 0;
 		border-radius: 50%;
 		border: 7px solid color(grey-lighter);
 		border-top: 7px solid color(grey-dark);
