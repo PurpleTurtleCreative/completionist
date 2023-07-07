@@ -619,7 +619,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 						);
 						$replacements[] = $local_attachment_url;
 						return sprintf(
-							'<img src="%s" width="%s" height="%s" alt="%s" style="%s" />',
+							'<img src="%s" width="%s" height="%s" alt="%s" style="%s" draggable="false" />',
 							esc_url( $local_attachment_url ),
 							esc_attr( $data_attrs['data-src-width'] ),
 							esc_attr( $data_attrs['data-src-height'] ),
@@ -650,9 +650,8 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		) : string {
 			// Find and replace all inline objects.
 			return preg_replace_callback(
-				'/<object>.*(https?:\/\/[^<"]+).*<\/object>/m',
+				'/<object.*>.*(https?:\/\/[^<"]+).*<\/object>/m',
 				function ( $object_tag_matches ) use ( &$replacements ) {
-
 					// Replace the object with oEmbed HTML.
 					if ( ! empty( $object_tag_matches[1] ) ) {
 						$oembed_html = wp_oembed_get(
@@ -663,7 +662,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 							)
 						);
 						if ( $oembed_html && is_string( $oembed_html ) ) {
-							$replacements[] = $object_tag_matches[1];
+							$replacements[] = html_entity_decode( $object_tag_matches[1] );
 							return '<div class="ptc-responsive-embed">' . $oembed_html . '</div>';
 						}
 					}

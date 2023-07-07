@@ -982,7 +982,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		) {
 
 			$inline_attachment_urls = array();
-			$inline_oembed_urls = array();
+			$inline_oembed_urls     = array();
 
 			// Process task description.
 			if ( isset( $task->html_notes ) ) {
