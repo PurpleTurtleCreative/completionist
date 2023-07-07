@@ -8,6 +8,7 @@
 
 #### Changed
 
+- Use `wp_remote_get()` instead of PHP's built-in cURL functions to proxy Asana attachments. No substantial change in performance was observed; however, the code is easier to understand and the HTTP requests are now accessible in the WordPress event system flow for third-party customizations.
 - Updated Composer PHP dependencies.
 
 ### 3.8.0 - 2023-06-26

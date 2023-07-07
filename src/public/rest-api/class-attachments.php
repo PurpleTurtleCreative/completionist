@@ -122,69 +122,50 @@ class Attachments {
 			if ( ! empty( $args['proxy_field'] ) ) {
 				if ( ! empty( $attachment->{$args['proxy_field']} ) ) {
 
-					$ch = curl_init();
-					$response_headers = array();
-					curl_setopt_array(
-						$ch,
-						array(
-							CURLOPT_HTTPGET        => true,
-							CURLOPT_URL            => $attachment->{$args['proxy_field']},
-							CURLOPT_FOLLOWLOCATION => true,
-							CURLOPT_RETURNTRANSFER => true,
-							CURLOPT_HEADERFUNCTION => function ( $curl, $header ) use ( &$response_headers ) {
+					// Send proxied request.
+					$response = wp_remote_get( $attachment->{$args['proxy_field']} );
 
-								$len = strlen( $header );
+					// Retrieve response data.
+					$response_code    = wp_remote_retrieve_response_code( $response );
+					$response_body    = wp_remote_retrieve_body( $response );
+					$response_headers = wp_remote_retrieve_headers( $response );
 
-								$header = trim( $header );
-
-								if (
-									! empty( $header ) &&
-									0 !== stripos( $header, 'x-' )
-								) {
-									// Ignore extra, custom headers.
-									if (
-										true === Util::str_starts_with_any(
-											$header,
-											array(
-												'Accept-Ranges:',
-												'Content-Disposition:',
-												'Content-Length:',
-												'Content-Type:',
-												'Date:',
-												'ETag:',
-												'Last-Modified:',
-											),
-											false
-										)
-									) {
-										// Collect trusted header.
-										$response_headers[] = $header;
-									}
-								}
-
-								// Return the header's original length.
-								return $len;
-							},
-						)
-					);
-
-					$response_body = curl_exec( $ch );
-					curl_close( $ch );
+					// Set the response code.
+					http_response_code( $response_code );
 
 					// Remove previously set headers, like from WordPress.
 					header_remove();
 
-					// Configure proxy response and exit.
-					foreach ( $response_headers as $header ) {
-						header( $header );
+					// Proxy response headers.
+					foreach ( $response_headers as $key => &$value ) {
+						if (
+							true === in_array(
+								$key,
+								array(
+									'accept-ranges',
+									'content-disposition',
+									'content-length',
+									'content-type',
+									'date',
+									'etag',
+									'last-modified',
+								),
+								true
+							)
+						) {
+							// Send trusted header.
+							header( sprintf( '%s: %s', $key, $value ) );
+						}
 					}
+
 					// Asana serves user profile photos from AWS S3
 					// with `max-age=1209600`, which is 14 days, so let's
 					// just use that duration here as well. New assets
 					// would be stored under a different attachment GID
 					// and a new location, anyways, so this asset is
 					// actually expected to never change.
-					header( 'Cache-Control: max-age=' . 14 * DAY_IN_SECONDS );
+					header( 'Cache-Control: max-age=' . 14 * \DAY_IN_SECONDS );
+
 					print( $response_body );//phpcs:ignore
 					exit;
 				} else {
