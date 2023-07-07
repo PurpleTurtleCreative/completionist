@@ -174,6 +174,10 @@ class Attachments {
 					// actually expected to never change.
 					header( 'Cache-Control: max-age=' . 14 * \DAY_IN_SECONDS );
 
+					// Maintain noindex signal for search engines.
+					header( 'X-Robots-Tag: noindex' );
+
+					// Output the image data.
 					print( $response_body );//phpcs:ignore
 					exit;
 				} else {
