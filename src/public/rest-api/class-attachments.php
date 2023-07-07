@@ -131,7 +131,15 @@ class Attachments {
 					$response_headers = wp_remote_retrieve_headers( $response );
 
 					// Set the response code.
-					http_response_code( $response_code );
+					if ( ! is_int( $response_code ) ) {
+						trigger_error(
+							'Non-integer response code: ' . $response_code,
+							\E_USER_NOTICE
+						);
+						http_response_code( 200 );
+					} else {
+						http_response_code( $response_code );
+					}
 
 					// Remove previously set headers, like from WordPress.
 					header_remove();
