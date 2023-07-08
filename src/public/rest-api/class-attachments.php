@@ -131,14 +131,26 @@ class Attachments {
 					$response_headers = wp_remote_retrieve_headers( $response );
 
 					// Set the response code.
-					if ( ! is_int( $response_code ) ) {
+					if ( is_int( $response_code ) ) {
+						http_response_code( $response_code );
+					} else {
+						// For example, if the request times out (cURL error 28).
+
 						trigger_error(
-							'Non-integer response code: ' . $response_code,
+							"Failed to proxy Asana attachment. Retrieved non-integer response code ({$response_code}) - See the following error logs for more details.",
 							\E_USER_NOTICE
 						);
-						http_response_code( 200 );
-					} else {
-						http_response_code( $response_code );
+
+						error_log( 'Response headers: ' . print_r( $response_headers, true ) );
+						error_log( 'Response body: ' . print_r( $response_body, true ) );
+
+						if ( is_wp_error( $response ) ) {
+							error_log( 'Response WP_Error: ' . print_r( $response, true ) );
+						}
+
+						// 502 Bad Gateway - failed upstream proxy request.
+						http_response_code( 502 );
+						exit;
 					}
 
 					// Remove previously set headers, like from WordPress.
