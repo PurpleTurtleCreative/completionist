@@ -9,7 +9,14 @@
 #### Changed
 
 - Use `wp_remote_get()` instead of PHP's built-in cURL functions to proxy Asana attachments. No substantial change in performance was observed; however, the code is easier to understand and the HTTP requests are now accessible in the WordPress event system flow for third-party customizations.
+- Proxied attachment responses now include the `X-Robots-Tag: noindex` HTTP header.
 - Updated Composer PHP dependencies.
+
+#### Fixed
+
+- Failure to detect and localize inline attachments where their HTML tag includes attributes.
+- Disabled dragging of attachment images via the `draggable="false"` HTML attribute.
+- Content layout shifting (CLS) of attachment images as they are loaded. Images now feature their intrinsic `width` and `height` to properly reserve space.
 
 ### 3.8.0 - 2023-06-26
 
