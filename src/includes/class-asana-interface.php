@@ -982,7 +982,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		) {
 
 			$inline_attachment_urls = array();
-			$inline_oembed_urls     = array();
 
 			// Process task description.
 			if ( isset( $task->html_notes ) ) {
@@ -998,41 +997,16 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				// Render embedded HTML objects.
 				$task->html_notes = HTML_Builder::replace_urls_with_oembeds(
 					$task->html_notes,
-					$inline_oembed_urls
+					$inline_attachment_urls
 				);
 			}
 
 			// Process attachments.
 			if ( isset( $task->attachments ) ) {
-
-				$keep_attachments = array();
-
-				foreach ( $task->attachments as $i => &$attachment ) {
-
-					$attachment->_ptc_view_url = HTML_Builder::get_local_attachment_view_url(
-						$attachment->gid,
-						-1,
-						static::$wp_user_id
-					);
-
-					if (
-						false === in_array( $attachment->_ptc_view_url, $inline_attachment_urls, true ) &&
-						false === in_array( $attachment->view_url, $inline_oembed_urls, true )
-					) {
-						// Only keep extra attachments which aren't already
-						// found inline elsewhere.
-						//
-						// Attachment was NOT found as a
-						// localized inline attachment.
-						// - AND -
-						// Attachment was NOT found as an
-						// inline oEmbed object.
-						$keep_attachments[] = $attachment;
-					}
-				}
-
-				// Fix index gaps from possible removals.
-				$task->attachments = $keep_attachments;
+				static::localize_attachments(
+					$task->attachments,
+					$inline_attachment_urls
+				);
 			}
 
 			// Recursively localize subtasks.
@@ -1041,6 +1015,46 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 					static::localize_task( $subtask, $recursive );
 				}
 			}
+		}
+
+		/**
+		 * Localizes Asana attachments.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param \stdClass[] $attachments The Asana attachment
+		 * objects to be localized.
+		 * @param string[]    $removal_urls Optional. The URLs of
+		 * attachments which should be removed from the collection.
+		 * Default empty array to keep all attachments.
+		 */
+		public static function localize_attachments(
+			array &$attachments,
+			array $removal_urls = array()
+		) {
+
+			$keep_attachments = array();
+			foreach ( $attachments as $i => &$attachment ) {
+
+				// Ensure attachment is localized.
+				if ( empty( $attachment->_ptc_view_url ) ) {
+					$attachment->_ptc_view_url = HTML_Builder::get_local_attachment_view_url(
+						$attachment->gid,
+						-1,
+						static::$wp_user_id
+					);
+				}
+
+				// Keep attachment if not marked for removal.
+				if (
+					false === in_array( $attachment->_ptc_view_url, $removal_urls, true ) &&
+					false === in_array( $attachment->view_url, $removal_urls, true )
+				) {
+					$keep_attachments[] = $attachment;
+				}
+			}
+
+			$attachments = $keep_attachments;
 		}
 
 		/**
