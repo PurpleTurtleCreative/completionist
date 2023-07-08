@@ -16,6 +16,8 @@ import {
 
 import { getLocaleString } from '../generic/util.jsx';
 
+import { findAndMonitorLoadingMedia } from '../attachment/util.jsx';
+
 import { ReactComponent as CheckmarkIcon } from '../../../assets/icons/fa-check-solid.svg';
 import { ReactComponent as SubtasksIcon } from '../../../assets/icons/fa-code-branch-solid.svg';
 import { ReactComponent as ToggleIcon } from '../../../assets/icons/fa-caret-right-solid.svg';
@@ -24,10 +26,17 @@ import AttachmentThumbnail from '../attachment/AttachmentThumbnail.jsx';
 
 import '../../../assets/styles/scss/components/task/_TaskListItem.scss';
 
-const { useState } = wp.element;
+const { useState, useEffect, useRef } = wp.element;
 
 export default function TaskListItem({ task, rowNumber = null }) {
 	const [ isExpanded, setIsExpanded ] = useState(false);
+	const rootRef = useRef(null);
+
+	useEffect(() => {
+		if ( rootRef.current ) {
+			findAndMonitorLoadingMedia(rootRef.current);
+		}
+	}, [ rootRef.current, isExpanded ]);
 
 	let extraClassNames = '';
 
@@ -242,7 +251,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 	}
 
 	return (
-		<li className={"ptc-TaskListItem"+extraClassNames}>
+		<li className={"ptc-TaskListItem"+extraClassNames} ref={rootRef}>
 			<div
 				className="main"
 				onClick={
