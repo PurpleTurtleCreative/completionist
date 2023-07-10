@@ -16,6 +16,7 @@
 #### Fixed
 
 - Failure to detect and localize inline attachments where their HTML tag includes attributes.
+- Failure to detect and insert oEmbeds within Asana tasks on WordPress <5.9.0.
 - Disabled dragging of attachment images via the `draggable="false"` HTML attribute.
 - Content layout shifting (CLS) of attachment images as they are loaded. Inline images now feature their intrinsic `width` and `height` to properly reserve space. Attachments and images with unknown dimensions reserve space for a 2:1 aspect ratio until loaded.
 
