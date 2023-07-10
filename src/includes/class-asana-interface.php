@@ -986,7 +986,14 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			// Process task description.
 			if ( isset( $task->html_notes ) ) {
 				// Sanitize HTML and format paragraphs.
-				$task->html_notes = wpautop( wp_kses_post( $task->html_notes ) );
+				//
+				// Note that sanitization should occur before adding
+				// oEmbed HTML since foreign iframes will be stripped
+				// as they could be malicious. WordPress doesn't include
+				// <iframe> in their global $allowedposttags for this
+				// reason. Adding our own trusted oEmbeds iframes
+				// later ensures they are the only iframes present.
+				$task->html_notes = wpautop( HTML_Builder::kses_post( $task->html_notes ) );
 				// Use local attachment URLs.
 				$task->html_notes = HTML_Builder::localize_attachment_urls(
 					$task->html_notes,

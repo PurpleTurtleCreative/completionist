@@ -714,5 +714,36 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 				rest_url( REST_API_NAMESPACE_V1 . '/attachments' )
 			);
 		}
+
+		/**
+		 * Sanitizes content for allowed HTML tags for post content.
+		 *
+		 * This is an extension on WordPress's wp_kses_post() for
+		 * backwards compatibility and compatibility with Asana's
+		 * returned markup.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string $content The content.
+		 *
+		 * @return string The sanitized content.
+		 */
+		public static function kses_post( string $content ) : string {
+
+			$allowed_html = wp_kses_allowed_html( 'post' );
+
+			if ( ! isset( $allowed_html['object'] ) ) {
+				// Asana denotes third-party embeds as <object> elements.
+				//
+				// See replace_urls_with_oembeds().
+				//
+				// WordPress allowed <object> tags in this commit https://github.com/WordPress/wordpress-develop/commit/9ca3e8f36b07c41e9298c545135a451718f5d805
+				// of v5.9.0 but with attributes stripped if it doesn't
+				// have the required [data] and [type] attributes.
+				$allowed_html['object'] = array();
+			}
+
+			return wp_kses( $content, $allowed_html );
+		}
 	}//end class
 }//end if class exists
