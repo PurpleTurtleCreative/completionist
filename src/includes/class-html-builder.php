@@ -654,15 +654,16 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 				function ( $object_tag_matches ) use ( &$replacements ) {
 					// Replace the object with oEmbed HTML.
 					if ( ! empty( $object_tag_matches[1] ) ) {
+						$oembed_url = html_entity_decode( $object_tag_matches[1] );
 						$oembed_html = wp_oembed_get(
-							$object_tag_matches[1],
+							$oembed_url,
 							array(
 								'width' => 1280,
 								'height' => 720,
 							)
 						);
 						if ( $oembed_html && is_string( $oembed_html ) ) {
-							$replacements[] = html_entity_decode( $object_tag_matches[1] );
+							$replacements[] = $oembed_url;
 							return '<div class="ptc-responsive-embed">' . $oembed_html . '</div>';
 						}
 					}
