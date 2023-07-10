@@ -2,7 +2,7 @@
 /**
  * Asana Batch class
  *
- * @since [unreleased]
+ * @since 3.9.0
  */
 
 declare(strict_types=1);
@@ -22,7 +22,7 @@ class Asana_Batch {
 	/**
 	 * The authenticated Asana API client object.
 	 *
-	 * @since [unreleased]
+	 * @since 3.9.0
 	 *
 	 * @var \Asana\Client $asana
 	 */
@@ -39,7 +39,7 @@ class Asana_Batch {
 	 * @see add_action() For registering additional callback args
 	 * for processing the batch action.
 	 *
-	 * @since [unreleased]
+	 * @since 3.9.0
 	 *
 	 * @var callable $handle_success
 	 */
@@ -53,7 +53,7 @@ class Asana_Batch {
 	 * exception as its first and only argument since it is
 	 * unrelated to the processing of any individual action.
 	 *
-	 * @since [unreleased]
+	 * @since 3.9.0
 	 *
 	 * @var callable $handle_error
 	 */
@@ -64,7 +64,7 @@ class Asana_Batch {
 	 *
 	 * @link https://developers.asana.com/reference/createbatchrequest
 	 *
-	 * @since [unreleased]
+	 * @since 3.9.0
 	 *
 	 * @var array[] $actions
 	 */
@@ -79,7 +79,7 @@ class Asana_Batch {
 	 *
 	 * @see $handle_success For processing action responses.
 	 *
-	 * @since [unreleased]
+	 * @since 3.9.0
 	 *
 	 * @var array[] $actions
 	 */
@@ -100,7 +100,7 @@ class Asana_Batch {
 	/**
 	 * Instantiates an Asana_Batch object.
 	 *
-	 * @since [unreleased]
+	 * @since 3.9.0
 	 *
 	 * @param \Asana\Client $asana The Asana client.
 	 * @param callable      $handle_success The success handler.
@@ -124,7 +124,7 @@ class Asana_Batch {
 	 *
 	 * @link https://developers.asana.com/reference/createbatchrequest
 	 *
-	 * @since [unreleased]
+	 * @since 3.9.0
 	 *
 	 * @param string $http_method The HTTP method.
 	 * @param string $relative_path The Asana API relative path.
@@ -174,7 +174,7 @@ class Asana_Batch {
 	/**
 	 * Resets the batch data to empty.
 	 *
-	 * @since [unreleased]
+	 * @since 3.9.0
 	 */
 	public function reset() {
 		$this->actions                      = array();
@@ -184,7 +184,7 @@ class Asana_Batch {
 	/**
 	 * Processes the current batch of actions.
 	 *
-	 * @since [unreleased]
+	 * @since 3.9.0
 	 */
 	public function process() {
 

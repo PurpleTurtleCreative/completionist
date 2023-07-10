@@ -175,7 +175,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 	 * Filters whether the toggle column should be rendered
 	 * in the TaskListItem.
 	 *
-	 * @since [unreleased]
+	 * @since 3.9.0
 	 *
 	 * @param {boolean} renderToggle If to render the toggle column.
 	 * @param {Object}  task The represented task.
@@ -189,7 +189,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 	/**
 	 * Filters whether the TaskListItem can be toggled (expanded).
 	 *
-	 * @since [unreleased]
+	 * @since 3.9.0
 	 *
 	 * @param {boolean} allowToggle If to allow toggling (expansion).
 	 * @param {Object}  task The represented task.
@@ -222,7 +222,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 		 * Note that a task does not require a description
 		 * for this content to be displayed.
 		 *
-		 * @since [unreleased]
+		 * @since 3.9.0
 		 *
 		 * @param {Object[]} content An array of React
 		 * components or JSX elements to be rendered.

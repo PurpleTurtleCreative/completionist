@@ -722,7 +722,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		 * backwards compatibility and compatibility with Asana's
 		 * returned markup.
 		 *
-		 * @since [unreleased]
+		 * @since 3.9.0
 		 *
 		 * @param string $content The content.
 		 *

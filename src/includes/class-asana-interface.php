@@ -155,7 +155,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		/**
 		 * Gets the currently authenticated WordPress user's ID.
 		 *
-		 * @since [unreleased]
+		 * @since 3.9.0
 		 *
 		 * @return int The WordPress user ID.
 		 */
@@ -663,7 +663,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			 * Filters the default arguments for retrieving Asana
 			 * project data.
 			 *
-			 * @since [unreleased]
+			 * @since 3.9.0
 			 *
 			 * @param array $default_args The default argument values.
 			 */
@@ -944,7 +944,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			/**
 			 * Filters Asana project data.
 			 *
-			 * @since [unreleased]
+			 * @since 3.9.0
 			 *
 			 * @param \stdClass     $project The Asana project data.
 			 * @param array         $args The request arguments.
@@ -1027,7 +1027,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		/**
 		 * Localizes Asana attachments.
 		 *
-		 * @since [unreleased]
+		 * @since 3.9.0
 		 *
 		 * @param \stdClass[] $attachments The Asana attachment
 		 * objects to be localized.

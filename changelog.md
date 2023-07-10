@@ -1,14 +1,14 @@
-### [unreleased]
+### 3.9.0 - 2023-07-10
 
 #### Added
 
 - New filter hooks in JavaScript for adding custom ReactJS components after the task description in the `TaskListItem` component.
 - New filter hooks in PHP for customizing retrieved Asana project data.
-- New PHP class `Asana_Batch` to optimize batching Asana API requests.
+- New PHP class `Asana_Batch` to handle batching Asana API requests.
 
 #### Changed
 
-- Use `wp_remote_get()` instead of PHP's built-in cURL functions to proxy Asana attachments. No substantial change in performance was observed; however, the code is easier to understand and the HTTP requests are now accessible in the WordPress event system flow for third-party customizations.
+- Use `wp_remote_get()` instead of PHP's built-in cURL functions to proxy Asana attachments.
 - Proxied attachment responses now include the `X-Robots-Tag: noindex` HTTP header.
 - Task attachments and images now feature a loading animation.
 - Updated Composer PHP dependencies.
