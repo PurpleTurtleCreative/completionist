@@ -1115,65 +1115,50 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				$asana = self::$asana;
 			}
 
-			$opt_fields = explode( ',', $opt_fields );
+			// Prepare for batch processing.
 
-			$actions = array();
-			$last = count( $parent_tasks ) - 1;
-			foreach ( $parent_tasks as $i => &$task ) {
+			$asana_subtasks_batcher = new Asana_Batch(
+				$asana,
+				function( &$res, &$task ) {
 
-				if ( ! isset( $task->gid ) ) {
-					continue;
-				}
+					$task->subtasks = array();
 
-				$task_gid = Options::sanitize( 'gid', $task->gid );
-				if ( '' == $task_gid ) {
-					continue;
-				}
-
-				$actions[] = array(
-					'method' => 'GET',
-					'relative_path' => sprintf( '/tasks/%s/subtasks', $task_gid ),
-					'options' => array(
-						'fields' => $opt_fields,
-					),
-				);
-
-				$actions_count = count( $actions );
-				if (
-					( 0 === $actions_count % 9 || $i === $last ) &&
-					$actions_count > 0
-				) {
-					/*
-					 * Using the Batch API to fetch subtasks for multiple
-					 * parent tasks per request instead of the SDK built-in
-					 * which requests all subtasks for a single parent task,
-					 * likely due to potential pagination of the response.
-					 *
-					 * @see $asana->tasks->getSubtasksForTask()
-					 */
-					$res = $asana->post( '/batch', array( 'actions' => $actions ) );
-					$actions = array();
-
-					$last_res_i = count( $res ) - 1;
-					for (
-						$parent_i = $i + 1 - $actions_count, $res_i = 0;
-						$parent_i <= $i, $res_i <= $last_res_i;
-						++$parent_i, ++$res_i
+					if (
+						200 === intval( $res->status_code ) &&
+						! empty( $res->body->data ) &&
+						is_array( $res->body->data )
 					) {
+						$task->subtasks = $res->body->data;
+					}
+				},
+				function( $err ) {
+					trigger_error(
+						'Failed to load subtasks. Error: ' . $err->getMessage(),
+						\E_USER_WARNING
+					);
+				}
+			);
 
-						$parent_tasks[ $parent_i ]->subtasks = array();
+			// Prepare and send batch requests.
 
-						$current_res = $res[ $res_i ];
-						if (
-							200 == $current_res->status_code &&
-							is_array( $current_res->body->data ) &&
-							count( $current_res->body->data ) > 0
-						) {
-							$parent_tasks[ $parent_i ]->subtasks = $current_res->body->data;
-						}
-					}//end foreach batch result
-				}//end if batch ready to send
-			}//end foreach parent task
+			$subtask_options = array(
+				'limit'  => 100,
+				'fields' => explode( ',', $opt_fields ),
+			);
+
+			foreach ( $parent_tasks as &$task ) {
+				$asana_subtasks_batcher->add_action(
+					'GET',
+					"/tasks/{$task->gid}/subtasks",
+					null,
+					$subtask_options,
+					array( $task )
+				);
+			}
+
+			// Process last (incomplete) batch.
+			$asana_subtasks_batcher->process();
+
 		}//end load_subtasks()
 
 		/**
