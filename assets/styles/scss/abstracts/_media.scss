@@ -24,3 +24,29 @@
 		bottom: 0;
 	}
 }
+
+// Loading media.
+
+@keyframes ptc-loader-gradient {
+	from {
+		background-position: 0% 50%;
+	}
+	to {
+		background-position: 100% 50%;
+	}
+}
+
+%is-loading-media {
+	border: 1px solid color(grey-lighter);
+	background: linear-gradient(-45deg, color(white), color(grey-lighter), color(white), color(grey-lighter), color(white));
+	background-blend-mode: multiply;
+	background-size: 400% 400%;
+	animation: ptc-loader-gradient 3s linear alternate infinite;
+
+	&:not([width]),
+	&:not([height]) {
+		display: block;
+		width: 100%;
+		padding-top: 50%;
+	}
+}

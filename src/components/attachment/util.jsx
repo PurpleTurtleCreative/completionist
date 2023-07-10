@@ -38,6 +38,28 @@ export function isVideo(attachment) {
 	return false;
 }
 
+export function findAndMonitorLoadingMedia(rootNode) {
+	for ( let img of rootNode.querySelectorAll('img') ) {
+		if ( 'complete' in img && false === img.complete ) {
+			// Image has not yet loaded.
+			img.classList.add('--is-loading');
+			// Listen for when image is loaded.
+			img.addEventListener('load', handleMediaLoad);
+			// Listen for when image fails to load.
+			img.addEventListener('error', handleMediaError);
+		}
+	}
+}
+
+const handleMediaLoad = (event) => {
+	event.target.classList.remove('--is-loading');
+}
+
+const handleMediaError = (event) => {
+	event.target.classList.remove('--is-loading');
+	event.target.classList.add('--is-error');
+}
+
 export function fetchRefreshedAttachment(attachment) {
 
 	if (

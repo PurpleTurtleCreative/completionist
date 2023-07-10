@@ -584,26 +584,48 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 			}
 
 			// Find and replace all inline Asana attachment images.
+			// Note that we can't already regex capture the attributes
+			// because we don't know what sequence they'll be in.
 			return preg_replace_callback(
 				'/<img .*?data-asana-type="attachment".*?>/m',
 				function ( $img_attachment_matches ) use ( &$auth_user, &$replacements ) {
 
-					// Find the Asana attachment's GID.
-					preg_match(
-						'/ data-asana-gid="([0-9]+)"[\s\/>]/',
+					// Find the Asana attachment's data attributes.
+
+					preg_match_all(
+						'/(data-asana-gid|data-src-width|data-src-height|alt)="(.*?)"/m',
 						$img_attachment_matches[0],
-						$asana_gid_matches
+						$asana_data_attr_matches,
+						PREG_SET_ORDER
 					);
 
+					$data_attrs = array(
+						'data-asana-gid'  => '',
+						'data-src-width'  => '',
+						'data-src-height' => '',
+						'alt' => '',
+					);
+
+					foreach ( $asana_data_attr_matches as &$capture_group ) {
+						$data_attrs[ $capture_group[1] ] = $capture_group[2];
+					}
+
 					// Replace the image, using a local src URL.
-					if ( ! empty( $asana_gid_matches[1] ) ) {
+					if ( ! empty( $data_attrs['data-asana-gid'] ) ) {
 						$local_attachment_url = self::get_local_attachment_view_url(
-							$asana_gid_matches[1],
+							$data_attrs['data-asana-gid'],
 							-1,
 							$auth_user
 						);
 						$replacements[] = $local_attachment_url;
-						return '<img src="' . esc_url( $local_attachment_url ) . '" />';
+						return sprintf(
+							'<img src="%s" width="%s" height="%s" alt="%s" style="%s" draggable="false" />',
+							esc_url( $local_attachment_url ),
+							esc_attr( $data_attrs['data-src-width'] ),
+							esc_attr( $data_attrs['data-src-height'] ),
+							esc_attr( $data_attrs['alt'] ),
+							esc_attr( "aspect-ratio:{$data_attrs['data-src-width']}/{$data_attrs['data-src-height']};max-width:100%;height:auto;" )
+						);
 					}
 
 					return $img_attachment_matches[0];
@@ -628,9 +650,8 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		) : string {
 			// Find and replace all inline objects.
 			return preg_replace_callback(
-				'/<object>.*(https?:\/\/[^<"]+).*<\/object>/m',
+				'/<object.*>.*(https?:\/\/[^<"]+).*<\/object>/m',
 				function ( $object_tag_matches ) use ( &$replacements ) {
-
 					// Replace the object with oEmbed HTML.
 					if ( ! empty( $object_tag_matches[1] ) ) {
 						$oembed_html = wp_oembed_get(
@@ -641,7 +662,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 							)
 						);
 						if ( $oembed_html && is_string( $oembed_html ) ) {
-							$replacements[] = $object_tag_matches[1];
+							$replacements[] = html_entity_decode( $object_tag_matches[1] );
 							return '<div class="ptc-responsive-embed">' . $oembed_html . '</div>';
 						}
 					}

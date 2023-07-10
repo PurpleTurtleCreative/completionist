@@ -26,7 +26,7 @@ export default function AttachmentThumbnail({ attachment }) {
 
 	let content = null;
 	if ( isImage(attachment) ) {
-		content = <img src={attachment._ptc_view_url} alt={attachment.name} />;
+		content = <img src={attachment._ptc_view_url} alt={attachment.name} draggable="false" />;
 	} else if ( isVideo(attachment) ) {
 		content = <video src={attachment._ptc_view_url} controls />;
 	} else {
