@@ -40,10 +40,7 @@ export function isVideo(attachment) {
 
 export function findAndMonitorLoadingMedia(rootNode) {
 	for ( let img of rootNode.querySelectorAll('img') ) {
-		if (
-			! ( 'complete' in img ) ||
-			false === img.complete
-		) {
+		if ( 'complete' in img && false === img.complete ) {
 			// Image has not yet loaded.
 			img.classList.add('--is-loading');
 			// Listen for when image is loaded.
