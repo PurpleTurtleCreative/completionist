@@ -1146,7 +1146,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				'fields' => explode( ',', $opt_fields ),
 			);
 
-			foreach ( $parent_tasks as $i => &$task ) {
+			foreach ( $parent_tasks as &$task ) {
 				$asana_subtasks_batcher->add_action(
 					'GET',
 					"/tasks/{$task->gid}/subtasks",
