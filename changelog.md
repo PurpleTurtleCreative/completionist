@@ -1,3 +1,9 @@
+### [unreleased]
+
+#### Changed
+
+- FontAwesome assets are now included locally to avoid third-party tracking and hosting.
+
 ### 3.9.0 - 2023-07-10
 
 #### Added
