@@ -1,6 +1,6 @@
 {
   "require": {
     "asana/asana": "1.0.6",
-    "yahnis-elsts/plugin-update-checker": "5.1"
+    "freemius/wordpress-sdk": "^2.5"
   }
 }

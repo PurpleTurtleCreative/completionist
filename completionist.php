@@ -117,31 +117,43 @@ add_action(
 );
 
 /**
- * Registers remote plugin updates.
+ * Initializes the Freemius integration object.
  *
- * @since 3.5.1
+ * @since [unreleased]
+ *
+ * @return \Freemius
  */
-function register_remote_plugin_updates() {
-	/* YahnisElsts/plugin-update-checker */
-	require_once PLUGIN_PATH . 'vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php';
-	if ( class_exists( '\Puc_v4_Factory' ) ) {
-		$plugin_server_endpoint = add_query_arg(
+function ptc_completionist_fs() {
+	global $ptc_completionist_fs;
+
+	if ( ! isset( $ptc_completionist_fs ) ) {
+		// Include Freemius SDK for remote updates.
+		require_once PLUGIN_PATH . 'vendor/freemius/wordpress-sdk/start.php';
+		$ptc_completionist_fs = fs_dynamic_init(
 			array(
-				'wp_version' => $GLOBALS['wp_version'],
-				'site_domain' => rawurlencode( get_site_url( null, '', 'https' ) ),
-			),
-			'https://purpleturtlecreative.com/wp-json/ptc-resources/v1/plugins/completionist/latest'
-		);
-		\Puc_v4_Factory::buildUpdateChecker(
-			$plugin_server_endpoint,
-			PLUGIN_FILE,
-			'completionist',
-			12,
-			'external_updates-completionist'
+				'id'                  => '13144',
+				'slug'                => 'completionist',
+				'premium_slug'        => 'completionist-pro',
+				'type'                => 'plugin',
+				'public_key'          => 'pk_bc2f099a7701a0c4646ebb19511b9',
+				'is_premium'          => false,
+				'premium_suffix'      => 'Pro',
+				'has_premium_version' => true,
+				'has_addons'          => false,
+				'has_paid_plans'      => true,
+				'menu'                => array(
+					'slug' => 'ptc-completionist',
+				),
+			)
 		);
 	}
+
+	return $ptc_completionist_fs;
 }
-add_action( 'plugins_loaded', __NAMESPACE__ . '\register_remote_plugin_updates' );
+
+// Init Freemius.
+ptc_completionist_fs();
+do_action( 'ptc_completionist_fs_loaded' );
 
 // Register public functionality.
 foreach ( glob( PLUGIN_PATH . 'src/public/class-*.php' ) as $file ) {
