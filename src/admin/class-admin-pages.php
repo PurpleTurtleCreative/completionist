@@ -119,9 +119,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 		 */
 		public static function register_scripts( $hook_suffix ) {
 
-			wp_register_script(
+			wp_register_style(
 				'fontawesome-5',
-				'https://kit.fontawesome.com/02ab9ff442.js',
+				PLUGIN_URL . '/assets/vendor/fontawesome/css/all.min.css',
 				array(),
 				'5.12.1'
 			);
@@ -139,7 +139,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 				&& $current_screen->is_block_editor()
 			) {
 				// Exit; assets are enqueued in enqueue_block_editor_assets.
-				wp_enqueue_script( 'fontawesome-5' );
+				wp_enqueue_style( 'fontawesome-5' );
 				return;
 			}
 
@@ -179,7 +179,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 						"var PTCCompletionist = {$js_data};",
 						'before'
 					);
-					wp_enqueue_script( 'fontawesome-5' );
+					wp_enqueue_style( 'fontawesome-5' );
 					wp_enqueue_style(
 						'ptc-completionist_DashboardWidget',
 						PLUGIN_URL . '/build/index_DashboardWidget.jsx.css',
@@ -194,9 +194,10 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					wp_enqueue_script(
 						'ptc-completionist_metabox-pinned-tasks-js',
 						PLUGIN_URL . '/assets/scripts/metabox-pinned-tasks.js',
-						array( 'jquery', 'fontawesome-5' ),
+						array( 'jquery' ),
 						PLUGIN_VERSION
 					);
+					wp_enqueue_style( 'fontawesome-5' );
 					wp_localize_script(
 						'ptc-completionist_metabox-pinned-tasks-js',
 						'ptc_completionist_pinned_tasks',
@@ -231,10 +232,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 						array( 'ptc-completionist_admin-theme-css' ),
 						PLUGIN_VERSION
 					);
+					wp_enqueue_style( 'fontawesome-5' );
 					wp_enqueue_script(
 						'ptc-completionist_admin-dashboard-js',
 						PLUGIN_URL . '/assets/scripts/admin-dashboard.js',
-						array( 'jquery', 'fontawesome-5' ),
+						array( 'jquery' ),
 						PLUGIN_VERSION
 					);
 					require_once PLUGIN_PATH . 'src/includes/class-options.php';
@@ -288,7 +290,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 							)
 						);
 					}
-					wp_enqueue_script( 'fontawesome-5' );
+					wp_enqueue_style( 'fontawesome-5' );
 					wp_enqueue_style(
 						'ptc-completionist_admin-automations-css',
 						PLUGIN_URL . '/assets/styles/admin-automations.css',
