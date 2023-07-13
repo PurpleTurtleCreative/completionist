@@ -146,6 +146,7 @@ function ptc_completionist_fs() {
 				'has_paid_plans'      => true,
 				'menu'                => array(
 					'slug'    => 'ptc-completionist',
+					'contact' => false,
 					'support' => false,
 				),
 			)
