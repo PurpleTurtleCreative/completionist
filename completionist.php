@@ -7,7 +7,7 @@
  * @license           GPL-3.0-or-later
  *
  * @wordpress-plugin
- * Plugin Name:       Completionist - Asana for WordPress
+ * Plugin Name:       Completionist
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
  * Description:       Manage, pin, automate, and display Asana tasks in relevant areas of your WordPress admin and website frontend.
  * Version:           [unreleased]
