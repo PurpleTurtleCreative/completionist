@@ -3,6 +3,11 @@
 #### Changed
 
 - FontAwesome assets are now included locally to avoid third-party tracking and hosting.
+- Remote updates are now handled through [Freemius](https://freemius.com/).
+
+#### Removed
+
+- The `YahnisElsts/plugin-update-checker` Composer package which facilitated remote updates.
 
 ### 3.9.0 - 2023-07-10
 
