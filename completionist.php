@@ -106,6 +106,9 @@ register_activation_hook(
 add_action(
 	'plugins_loaded',
 	function() {
+		/* Connect Freemius */
+		ptc_completionist_fs();
+		do_action( 'ptc_completionist_fs_loaded' );
 		/* Ensure Database Tables are Installed */
 		require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
 		Database_Manager::init();
@@ -142,7 +145,8 @@ function ptc_completionist_fs() {
 				'has_addons'          => false,
 				'has_paid_plans'      => true,
 				'menu'                => array(
-					'slug' => 'ptc-completionist',
+					'slug'    => 'ptc-completionist',
+					'support' => false,
 				),
 			)
 		);
@@ -150,10 +154,6 @@ function ptc_completionist_fs() {
 
 	return $ptc_completionist_fs;
 }
-
-// Init Freemius.
-ptc_completionist_fs();
-do_action( 'ptc_completionist_fs_loaded' );
 
 // Register public functionality.
 foreach ( glob( PLUGIN_PATH . 'src/public/class-*.php' ) as $file ) {
