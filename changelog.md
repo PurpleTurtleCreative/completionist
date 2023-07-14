@@ -3,6 +3,7 @@
 #### Added
 
 - New `readme.txt` file for WordPress.org plugins listing.
+- New `Uninstaller` class to handle plugin data removal.
 
 #### Changed
 
@@ -12,6 +13,7 @@
 #### Removed
 
 - The `YahnisElsts/plugin-update-checker` Composer package which facilitated remote updates.
+- The `uninstall.php` file. Data is now uninstalled by using the registered uninstall hook.
 
 ### 3.9.0 - 2023-07-10
 
