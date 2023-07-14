@@ -1,9 +1,13 @@
 ### [unreleased]
 
+#### Added
+
+- New `readme.txt` file for WordPress.org plugins listing.
+
 #### Changed
 
 - FontAwesome assets are now included locally to avoid third-party tracking and hosting.
-- Remote updates are now handled through [Freemius](https://freemius.com/).
+- Remote updates are now handled through WordPress.org and [Freemius](https://freemius.com/). This change also provides the option to upgrade to Completionist Pro.
 
 #### Removed
 
