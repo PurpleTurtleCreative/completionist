@@ -125,6 +125,7 @@ Freemius::register();
 Request_Token::register();
 REST_Server::register();
 Shortcodes::register();
+Uninstaller::register();
 
 // Register admin functionality.
 if ( is_admin() ) {
