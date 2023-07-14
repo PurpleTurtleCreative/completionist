@@ -3,7 +3,7 @@ Contributors: michelleblanchette
 Tags: asana, project, task, management, manager, integration, api, work, business, collaboration, client, customer, portal, dashboard, widget, metabox, shortcodes
 Requires at least: 5.0.0
 Tested up to: 6.2
-Stable tag: [unreleased]
+Stable tag: 4.0.0
 Requires PHP: 7.1
 License: GPL v3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
@@ -54,11 +54,20 @@ Answer to foo bar dilemma.
 
 == Changelog ==
 
-### [unreleased]
+### 4.0.0 - 2023-07-13
+
+#### Added
+
+- New `readme.txt` file for WordPress.org plugins listing.
 
 #### Changed
 
 - FontAwesome assets are now included locally to avoid third-party tracking and hosting.
+- Remote updates are now handled through WordPress.org and [Freemius](https://freemius.com/). This change also provides the option to upgrade to Completionist Pro.
+
+#### Removed
+
+- The `YahnisElsts/plugin-update-checker` Composer package which facilitated remote updates.
 
 ### 3.9.0 - 2023-07-10
 

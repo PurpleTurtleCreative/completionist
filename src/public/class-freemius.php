@@ -2,7 +2,7 @@
 /**
  * Freemius class
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 
 declare(strict_types=1);
@@ -19,7 +19,7 @@ class Freemius {
 	/**
 	 * The Freemius SDK instance.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @var \Freemius $freemius
 	 */
@@ -28,7 +28,7 @@ class Freemius {
 	/**
 	 * Hooks functionality into the WordPress execution flow.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	public static function register() {
 		add_action( 'plugins_loaded', __CLASS__ . '::instance' );
@@ -37,7 +37,7 @@ class Freemius {
 	/**
 	 * Gets the Freemius SDK instance for this plugin.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @return \Freemius The Freemius SDK instance.
 	 */
@@ -72,7 +72,7 @@ class Freemius {
 			/**
 			 * Runs after the Freemius SDK is initialized for this plugin.
 			 *
-			 * @since [unreleased]
+			 * @since 4.0.0
 			 *
 			 * @param \Freemius The Freemius SDK instance.
 			 */
