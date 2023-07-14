@@ -42,15 +42,26 @@ Display Asana project information and tasks on your WordPress site. Automaticall
 
 [**Read the Docs**](https://docs.purpleturtlecreative.com/completionist/shortcodes/)
 
+---
+
+_Completionist by Purple Turtle Creative is not associated with Asana. Asana is a trademark and service mark of Asana, Inc., registered in the U.S. and in other countries. [Learn more.](https://asana.com/)_
+
+_Premium features are sold and distributed via Freemius. [Learn more.](https://freemius.com/)_
+
 == Frequently Asked Questions ==
 
-= A question that someone might have =
+= Are you affiliated with Asana? =
 
-An answer to that question.
+No, I do not have a business relationship with Asana. I just happened to be looking for an Asana integration for WordPress and failed to find an affordable, specialized solution. That is why I created Completionist!
 
-= What about foo bar? =
+= Is an Asana account required? =
 
-Answer to foo bar dilemma.
+Yes, an Asana account is required to use Completionist. You can quickly [create an Asana account](https://asana.com/create-account) for **FREE**!
+
+== Upgrade Notice ==
+
+= 4.0.0 =
+This plugin will now be hosted from the official WordPress.org Plugins directory. Please upgrade immediately so you can continue to receive the latest features, bug fixes, and security updates.
 
 == Changelog ==
 
