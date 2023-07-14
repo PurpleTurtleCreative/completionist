@@ -106,9 +106,6 @@ register_activation_hook(
 add_action(
 	'plugins_loaded',
 	function() {
-		/* Connect Freemius */
-		ptc_completionist_fs();
-		do_action( 'ptc_completionist_fs_loaded' );
 		/* Ensure Database Tables are Installed */
 		require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
 		Database_Manager::init();
@@ -119,48 +116,12 @@ add_action(
 	}
 );
 
-/**
- * Initializes the Freemius integration object.
- *
- * @since [unreleased]
- *
- * @return \Freemius
- */
-function ptc_completionist_fs() {
-	global $ptc_completionist_fs;
-
-	if ( ! isset( $ptc_completionist_fs ) ) {
-		// Include Freemius SDK for remote updates.
-		require_once PLUGIN_PATH . 'vendor/freemius/wordpress-sdk/start.php';
-		$ptc_completionist_fs = fs_dynamic_init(
-			array(
-				'id'                  => '13144',
-				'slug'                => 'completionist',
-				'premium_slug'        => 'completionist-pro',
-				'type'                => 'plugin',
-				'public_key'          => 'pk_bc2f099a7701a0c4646ebb19511b9',
-				'is_premium'          => false,
-				'premium_suffix'      => 'Pro',
-				'has_premium_version' => true,
-				'has_addons'          => false,
-				'has_paid_plans'      => true,
-				'menu'                => array(
-					'slug'    => 'ptc-completionist',
-					'contact' => false,
-					'support' => false,
-				),
-			)
-		);
-	}
-
-	return $ptc_completionist_fs;
-}
-
 // Register public functionality.
 foreach ( glob( PLUGIN_PATH . 'src/public/class-*.php' ) as $file ) {
 	require_once $file;
 }
 
+Freemius::register();
 Request_Token::register();
 REST_Server::register();
 Shortcodes::register();
