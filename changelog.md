@@ -1,4 +1,4 @@
-### [unreleased]
+### 3.9.1 - 2023-07-28
 
 #### Changed
 
@@ -6,7 +6,7 @@
 
 #### Fixed
 
-- Database compatibility for the Request Tokens database table primary key size. The database table would continuously fail to install due to max key length limits, such as 1000 bytes, making shortcodes unusable.
+- Database compatibility for the Request Tokens database table primary key size. The database table would continuously fail to install due to max key length limits, such as 1000 bytes, making shortcodes unusable on some hosting providers.
 
 ### 3.9.0 - 2023-07-10
 
