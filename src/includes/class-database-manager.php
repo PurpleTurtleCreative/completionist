@@ -160,7 +160,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 				self::$request_tokens_table,
 			);
 
-			self::$db_version = 2;
+			self::$db_version = 3;
 			self::$db_version_option = '_ptc_completionist_db_version';
 
 			self::$site_id = $site_id;
@@ -260,7 +260,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 
 			$request_tokens_table = self::$request_tokens_table;
 			$sql = "CREATE TABLE {$request_tokens_table} (
-				token varchar(255) NOT NULL UNIQUE,
+				token char(32) NOT NULL UNIQUE,
 				args text NOT NULL,
 				cache_data longtext NOT NULL,
 				cached_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
@@ -290,6 +290,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 				 */
 				require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
 				Request_Tokens::purge_all();
+			} else {
+				// Warn if unsuccessful.
+				trigger_error(
+					"Failed to install database tables for Completionist. SQL error encountered: {$wpdb->last_error}",
+					E_USER_WARNING
+				);
 			}
 
 			return $success;

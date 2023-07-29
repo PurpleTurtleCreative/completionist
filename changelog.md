@@ -4,6 +4,10 @@
 
 - FontAwesome assets are now included locally to avoid third-party tracking and hosting.
 
+#### Fixed
+
+- Database compatibility for the Request Tokens database table primary key size. The database table would continuously fail to install due to max key length limits, such as 1000 bytes, making shortcodes unusable.
+
 ### 3.9.0 - 2023-07-10
 
 #### Added
