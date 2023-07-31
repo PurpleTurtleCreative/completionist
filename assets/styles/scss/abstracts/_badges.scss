@@ -57,3 +57,28 @@
 		}
 	}
 }
+
+%metadata-count-icon {
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: center;
+	gap: 0.25em;
+	margin: 0;
+	padding: 0;
+	color: color(grey-dark);
+	text-transform: uppercase;
+	font-size: 1em;
+	letter-spacing: 0.05em;
+
+	svg {
+		width: 0.9em;
+		height: 0.9em;
+		margin: 0;
+		overflow: visible;
+		color: color(grey);
+
+		path {
+			fill: currentColor;
+		}
+	}
+}
