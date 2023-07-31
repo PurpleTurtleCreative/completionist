@@ -69,6 +69,8 @@ class Freemius {
 				)
 			);
 
+			static::$freemius->add_filter( 'plugin_icon', __CLASS__ . '::get_plugin_icon' );
+
 			/**
 			 * Runs after the Freemius SDK is initialized for this plugin.
 			 *
@@ -80,5 +82,9 @@ class Freemius {
 		}
 
 		return static::$freemius;
+	}
+
+	public static function get_plugin_icon() : string {
+		return PLUGIN_PATH . '/assets/images/completionist_asana-for-wordpress_300x300.jpg';
 	}
 }//end class
