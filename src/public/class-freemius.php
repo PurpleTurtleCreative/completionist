@@ -84,6 +84,13 @@ class Freemius {
 		return static::$freemius;
 	}
 
+	/**
+	 * Gets the plugin icon file.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @return string
+	 */
 	public static function get_plugin_icon() : string {
 		return PLUGIN_PATH . '/assets/images/completionist_asana-for-wordpress_300x300.jpg';
 	}
