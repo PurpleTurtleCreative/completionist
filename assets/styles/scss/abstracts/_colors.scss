@@ -131,3 +131,12 @@ $asana-palette: (
 		}
 	}
 }
+
+@mixin asana-palette-colors-text() {
+
+	@each $name, $color in $asana-palette {
+		&.--has-asana-palette-color-#{""+$name} {
+			color: $color;
+		}
+	}
+}
