@@ -18,6 +18,19 @@ export function countIncompleteTasks(tasks) {
 	return filterIncompleteTasks(tasks).length;
 }
 
+export function sortTasksByCompleted(tasks) {
+	tasks.sort((a, b) => {
+		const taskCompletedA = getTaskCompleted(a)[0];
+		const taskCompletedB = getTaskCompleted(b)[0];
+		if ( taskCompletedA === taskCompletedB ) {
+			// Order by task name if same completion group.
+			return getTaskName(a).localeCompare(getTaskName(b));
+		}
+		// Order completed tasks after incomplete tasks.
+		return ( true === taskCompletedA ) ? 1 : -1;
+	});
+}
+
 export function filterIncompleteTasks(tasks) {
 	return tasks.filter(t => !t.completed);
 }
@@ -199,6 +212,20 @@ export function getTaskAttachments(task) {
 	}
 
 	return attachments;
+}
+
+export function getTaskLastImageAttachment(task) {
+
+	const attachments = getTaskAttachments(task);
+
+	for ( let i = attachments.length - 1; i >= 0; --i ) {
+		const current = attachments[ i ];
+		if ( isImage(current) ) {
+			return current;
+		}
+	}
+
+	return null;
 }
 
 export function getTaskTags(task) {
