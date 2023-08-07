@@ -87,6 +87,33 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 				null
 			);
 
+			add_submenu_page(
+				static::PARENT_PAGE_SLUG,
+				'Completionist &ndash; Settings (New)',
+				'Settings (New)',
+				'edit_posts',
+				static::PARENT_PAGE_SLUG . '-settings-new',
+				function() {
+					if ( current_user_can( 'edit_posts' ) ) {
+						printf(
+							'<div id="ptc-Settings" data-src="%s"></div>',
+							esc_url(
+								add_query_arg(
+									array(
+										'_wpnonce' => wp_create_nonce( 'wp_rest' ),
+										'nonce'    => wp_create_nonce( 'ptc_completionist' ),
+									),
+									rest_url( REST_API_NAMESPACE_V1 . '/settings' )
+								)
+							)
+						);
+					} else {
+						wp_die( '<strong>Error: Unauthorized.</strong> You must have post editing capabilities to use Completionist.' );
+					}
+				},
+				null
+			);
+
 			// Rename the submenu title for the parent page.
 			// Note that the parent page is only added if the current
 			// user has the required capability.
@@ -294,6 +321,22 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 					wp_enqueue_style(
 						'ptc-completionist_admin-automations-css',
 						PLUGIN_URL . '/assets/styles/admin-automations.css',
+						array(),
+						PLUGIN_VERSION
+					);
+					break;
+
+				case 'completionist_page_ptc-completionist-settings-new':
+					$asset_file = require_once( PLUGIN_PATH . 'build/index_Settings.jsx.asset.php' );
+					wp_enqueue_script(
+						'ptc-completionist-admin-settings',
+						PLUGIN_URL . '/build/index_Settings.jsx.js',
+						$asset_file['dependencies'],
+						PLUGIN_VERSION
+					);
+					wp_enqueue_style(
+						'ptc-completionist-admin-settings',
+						PLUGIN_URL . '/build/index_Settings.jsx.css',
 						array(),
 						PLUGIN_VERSION
 					);
