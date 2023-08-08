@@ -229,58 +229,56 @@ try {
 		</form>
 	</section>
 	<?php
-
 } catch ( Errors\NoAuthorization $e ) {
-
-	/* User is not authenticated for API usage. */
+	/* User is NOT authenticated for API usage. */
 	?>
-	<section id="ptc-asana-connect">
+	<div id="ptc-asana-connect">
 
-		<img src="<?php echo esc_url( PLUGIN_URL . '/assets/images/asana_logo-vertical-color.png' ); ?>" alt="Asana Logo" title="Asana">
-		<h2>Connect</h2>
-		<p>To use Completionist, you must first connect your Asana account.</p>
+		<div class="connect-services">
+			<div class="service-logo service-completionist">
+				<img class="completionist-logo" src="<?php echo esc_url( PLUGIN_URL . '/assets/images/completionist_asana-for-wordpress_300x300.jpg' ); ?>" alt="Completionist" width="90" height="90" />
+			</div>
+			<div class="connect-icon">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M438.6 150.6c12.5-12.5 12.5-32.8 0-45.3l-96-96c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.7 96 32 96C14.3 96 0 110.3 0 128s14.3 32 32 32l306.7 0-41.4 41.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l96-96zm-333.3 352c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 416 416 416c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0 41.4-41.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-96 96c-12.5 12.5-12.5 32.8 0 45.3l96 96z"/></svg>
+			</div>
+			<div class="service-logo service-asana">
+				<img class="asana-logo" src="<?php echo esc_url( PLUGIN_URL . '/assets/images/asana_logo-vertical-color.png' ); ?>" alt="Asana" width="70" height="46" />
+			</div>
+		</div>
 
-		<form method="POST">
-			<div class="field-group">
-				<label for="asana-pat">Personal Access Token:</label>
-				<div class="icon-input-field">
-					<i class="fas fa-key"></i>
-					<input id="asana-pat" name="asana_pat" type="password" autofocus>
+		<div class="content">
+
+			<h2>Connect Asana</h2>
+
+			<form method="POST">
+				<div class="field-group connection-permissions">
+					<p>To&nbsp;use&nbsp;<strong>Completionist</strong>, you must connect your&nbsp;Asana&nbsp;account to grant&nbsp;the&nbsp;plugin&nbsp;permission&nbsp;to:</p>
+					<ul>
+						<li>Access your name and email address for display purposes.</li>
+						<li>Access your tasks, projects, and workspaces for display purposes.</li>
+						<li>Create and modify tasks, projects, and comments on your behalf.</li>
+					</ul>
 				</div>
-				<p class="help-link"><a href="https://app.asana.com/0/developer-console" target="_asana">Visit your Asana developer console.</a></p>
-			</div>
-			<div class="field-group">
-				<p id="connection-agreement-text">
-					I understand that I am granting this application, Completionist by Purple Turtle Creative, access to my Asana account so that it can perform actions on my behalf.
-				</p>
-				<input id="connection-agreement" name="connection_agreement" type="checkbox" value="yes" required>
-				<label for="connection-agreement">I agree.</label>
-			</div>
-			<div class="field-group">
-				<input type="hidden" name="asana_connect_nonce" value="<?php echo esc_attr( wp_create_nonce( 'connect_asana' ) ); ?>">
-				<input type="submit" name="asana_connect" value="Authorize">
-			</div>
-		</form>
+				<div class="field-group asana-pat">
+					<label for="asana-pat">Personal Access Token:</label>
+					<div class="input-submit-field">
+						<div class="icon-input-field">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M336 352c97.2 0 176-78.8 176-176S433.2 0 336 0S160 78.8 160 176c0 18.7 2.9 36.8 8.3 53.7L7 391c-4.5 4.5-7 10.6-7 17v80c0 13.3 10.7 24 24 24h80c13.3 0 24-10.7 24-24V448h40c13.3 0 24-10.7 24-24V384h40c6.4 0 12.5-2.5 17-7l33.3-33.3c16.9 5.4 35 8.3 53.7 8.3zM376 96a40 40 0 1 1 0 80 40 40 0 1 1 0-80z"/></svg>
+							<input id="asana-pat" name="asana_pat" type="password" required autofocus />
+						</div>
+						<input type="hidden" name="asana_connect_nonce" value="<?php echo esc_attr( wp_create_nonce( 'connect_asana' ) ); ?>" />
+						<input type="submit" name="asana_connect" value="Authorize" />
+					</div>
+					<p class="help-link"><a href="https://app.asana.com/0/developer-console" target="_asana">Visit your Asana developer console<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg></a></p>
+				</div>
+			</form>
 
-	</section><!--close section#ptc-asana-connect-->
+		</div>
 
-	<section id="ptc-asana-connect-info">
-		<div class="note-box note-box-info">
-			<i class="fas fa-question"></i>
-			<p><a href="https://app.asana.com/0/developer-console" target="_asana">Visit your Asana developer console</a> to <b>create a Personal Access Token.</b> Be sure to name it something memorable like <em>My <?php echo esc_html( get_bloginfo( 'name', 'display' ) ); ?> WordPress Site</em> in case you want to revoke it later.</p>
-		</div>
-		<div class="note-box">
-			<i class="fas fa-lock"></i>
-			<p class="security">Personal Access Tokens authenticate access to your Asana account just like a username and password, so <b>we encrypt it when saving.</b></p>
-		</div>
-		<div class="note-box">
-			<i class="fas fa-mask"></i>
-			<p class="privacy"><b>Your personal data will not be stored.</b> Completionist only acts on your behalf via Asana's API when you are logged into this site.</p>
-		</div>
 		<p class="footnote">**Completionist by Purple Turtle Creative is not associated with Asana. Asana is a trademark and service mark of Asana, Inc., registered in the U.S. and in other countries.</p>
-	</section><!--close section#ptc-asana-connect-info-->
-	<?php
 
+	</div>
+	<?php
 } catch ( \Exception $e ) {
 	?>
 	<div id="ptc-asana-dashboard-error" class="note-box note-box-error">

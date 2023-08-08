@@ -17,15 +17,8 @@ require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
 if (
 	isset( $_POST['asana_connect'] )
 	&& isset( $_POST['asana_pat'] )
-	&& isset( $_POST['connection_agreement'] )
-	&& isset( $_POST['asana_connect_nonce'] )
 	&& wp_verify_nonce( $_POST['asana_connect_nonce'], 'connect_asana' ) !== false
 ) {
-
-	if ( ! filter_var( wp_unslash( $_POST['connection_agreement'] ), FILTER_VALIDATE_BOOLEAN ) ) {
-		echo '<p class="notice notice-error">To use Completionist, you must accept the agreement.</p>';
-		return;
-	}
 
 	try {
 		$did_save_pat = Options::save( Options::ASANA_PAT, $_POST['asana_pat'] );
@@ -50,7 +43,7 @@ if (
 		}
 
 		if ( $did_delete_pat === true ) {
-			echo '<p class="notice notice-error">An error occurred, causing your Personal Access Token to not be saved.</p>';
+			echo '<p class="notice notice-error">An error occurred, so your Personal Access Token could not be saved.</p>';
 		} elseif ( $did_save_gid === true ) {
 			echo '<p class="notice notice-success">Your Asana account was successfully connected!</p>';
 		}
