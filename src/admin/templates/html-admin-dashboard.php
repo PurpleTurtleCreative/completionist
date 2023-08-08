@@ -252,7 +252,7 @@ try {
 
 			<form method="POST">
 				<div class="field-group connection-permissions">
-					<p>To&nbsp;use&nbsp;<strong>Completionist</strong>, you must connect<br />your&nbsp;Asana&nbsp;account to grant&nbsp;the&nbsp;plugin&nbsp;permission&nbsp;to:</p>
+					<p>To&nbsp;use&nbsp;<strong>Completionist</strong>, you must connect your&nbsp;Asana&nbsp;account to grant&nbsp;the&nbsp;plugin&nbsp;permission&nbsp;to:</p>
 					<ul>
 						<li>Access your name and email address for display purposes.</li>
 						<li>Access your tasks, projects, and workspaces for display purposes.</li>
