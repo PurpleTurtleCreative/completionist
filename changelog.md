@@ -2,7 +2,7 @@
 
 #### Changed
 
-- Improved the language clarity and styling of the Asana authorization screen.
+- Improved the styling and language clarity of the Asana authorization screen.
 
 ### 3.9.1 - 2023-07-28
 
