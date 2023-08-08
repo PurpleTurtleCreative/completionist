@@ -9,8 +9,9 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/public/rest-api/class-projects.php';
 require_once PLUGIN_PATH . 'src/public/rest-api/class-attachments.php';
+require_once PLUGIN_PATH . 'src/public/rest-api/class-projects.php';
+require_once PLUGIN_PATH . 'src/public/rest-api/class-settings.php';
 
 /**
  * Class to register all custom REST API endpoints.
@@ -34,7 +35,8 @@ class REST_Server {
 	 * @since 3.4.0
 	 */
 	public static function register_routes() {
-		REST_API\Projects::register_routes();
 		REST_API\Attachments::register_routes();
+		REST_API\Projects::register_routes();
+		REST_API\Settings::register_routes();
 	}
 }

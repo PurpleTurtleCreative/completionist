@@ -353,6 +353,72 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 		}
 
 		/**
+		 * Gets all recognized and connected Asana users' basic
+		 * WordPress profile information.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string $workspace_gid Optional. The gid of the
+		 * workspace to get Asana users to match by email.
+		 * Default '' to use the chosen workspace.
+		 *
+		 * @return array An associative array of site collaborators
+		 * keyed by their Asana GID.
+		 */
+		public static function get_site_collaborators( string $workspace_gid = '' ) : array {
+
+			if ( '' === $workspace_gid ) {
+				$workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
+			} else {
+				$workspace_gid = Options::sanitize( 'gid', $workspace_gid );
+			}
+
+			if ( '' === $workspace_gid ) {
+				return array();
+			}
+
+			$found_workspace_users     = self::find_workspace_users( $workspace_gid );
+			$connected_workspace_users = self::get_connected_workspace_users( $workspace_gid );
+
+			$site_collaborators = array();
+
+			// Add recognized workspace users.
+			foreach ( $found_workspace_users as $gid => $wp_user ) {
+
+				$has_connected_asana = false;
+				if ( isset( $connected_workspace_users[ $gid ] ) ) {
+					// User has connected Asana.
+					$has_connected_asana = true;
+					unset( $connected_workspace_users[ $gid ] );
+				}
+
+				$site_collaborators[ $gid ] = array(
+					'ID'              => $wp_user->ID,
+					'avatar'          => get_avatar( $wp_user->ID, 30, 'mystery' ),
+					'name'            => $wp_user->display_name,
+					'roles'           => $wp_user->roles,
+					'email'           => $wp_user->email,
+					'connected_asana' => $has_connected_asana,
+				);
+			}
+
+			// Add unrecognized Asana connected users.
+			// For example, could be using a different email for
+			// WordPress versus Asana accounts.
+			foreach ( $connected_workspace_users as $gid => $wp_user ) {
+				$site_collaborators[ $gid ] = array(
+					'avatar'          => get_avatar( $wp_user->ID, 30, 'mystery' ),
+					'name'            => $wp_user->display_name,
+					'roles'           => $wp_user->roles,
+					'email'           => $wp_user->email,
+					'connected_asana' => true,
+				);
+			}
+
+			return $site_collaborators;
+		}
+
+		/**
 		 * Gets an array of WordPress user display names and emails keyed by their
 		 * Asana gid.
 		 *
