@@ -98,7 +98,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 		const [ maybeAssigneeName, maybeAssigneeImg ] = getTaskAssignee(task);
 		maybeAssignee = (
 			<p className="assignee">
-				{ maybeAssigneeImg && <img src={maybeAssigneeImg} width="36" height="36" /> }
+				{ maybeAssigneeImg && <img className="load-monitoring-disabled" src={maybeAssigneeImg} width="36" height="36" /> }
 				{ maybeAssigneeName && <span className="assignee-name">{maybeAssigneeName}</span> }
 			</p>
 		);
