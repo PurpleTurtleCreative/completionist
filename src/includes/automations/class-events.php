@@ -66,11 +66,32 @@ if ( ! class_exists( __NAMESPACE__ . '\Events' ) ) {
 			/* Post Events */
 
 			if ( Data::actions_exist_for( 'wp_insert_post' ) ) {
-				add_action( 'wp_insert_post', function( $post_id, $the_post, $update ) {
-					if ( ! $update && 'auto-draft' != $the_post->post_status ) {
+				add_action( 'transition_post_status', function( $new_status, $old_status, $the_post ) {
+					if (
+						$old_status !== $new_status &&
+						false === wp_is_post_revision( $the_post ) &&
+						in_array( $old_status, array( 'new', 'auto-draft' ), true ) &&
+						! in_array( $new_status, array( 'new', 'auto-draft' ), true )
+					) {
 						$automation_ids = Data::get_all_automation_ids_for( 'wp_insert_post' );
 						if ( count( $automation_ids ) > 0 ) {
 							foreach ( $automation_ids as $id ) {
+								trigger_error( "Checking Automation {$id} to run actions..." );
+								( new Automation( $id, [ 'post' => $the_post ] ) )->maybe_run_actions();
+							}
+						}
+					}
+				}, 10, 3 );
+				add_action( 'wp_insert_post', function( $post_id, $the_post, $update = true ) {
+					if (
+						! $update &&
+						'auto-draft' != $the_post->post_status &&
+						false === wp_is_post_revision( $the_post )
+					) {
+						$automation_ids = Data::get_all_automation_ids_for( 'wp_insert_post' );
+						if ( count( $automation_ids ) > 0 ) {
+							foreach ( $automation_ids as $id ) {
+								trigger_error( "Checking Automation {$id} to run actions..." );
 								( new Automation( $id, [ 'post' => $the_post ] ) )->maybe_run_actions();
 							}
 						}
