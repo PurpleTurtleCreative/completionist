@@ -202,7 +202,8 @@ form p.error-note {
 	}
 }
 
-.ptc-icon-button {
+.ptc-icon-button,
+.ptc-icon-button:visited {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -225,7 +226,8 @@ form p.error-note {
 	}
 }
 
-a.ptc-button {
+a.ptc-button,
+a.ptc-button:visited {
 	display: inline-block;
 	background: #627D98;
 	border-radius: 999px;
