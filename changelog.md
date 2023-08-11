@@ -7,6 +7,7 @@
 #### Fixed
 
 - Minor style fixes on the Settings admin page.
+- Large images that failed to load would overflow the container in Project Embeds.
 
 ### 3.9.1 - 2023-07-28
 

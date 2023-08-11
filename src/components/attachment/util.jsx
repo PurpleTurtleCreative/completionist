@@ -39,7 +39,7 @@ export function isVideo(attachment) {
 }
 
 export function findAndMonitorLoadingMedia(rootNode) {
-	for ( let img of rootNode.querySelectorAll('img') ) {
+	for ( let img of rootNode.querySelectorAll('img:not(.load-monitoring-disabled)') ) {
 		if ( 'complete' in img && false === img.complete ) {
 			// Image has not yet loaded.
 			img.classList.add('--is-loading');

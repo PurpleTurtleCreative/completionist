@@ -36,7 +36,7 @@
 	}
 }
 
-%is-loading-media {
+%is-loading-media:not(.load-monitoring-disabled) {
 	border: 1px solid color(grey-lighter);
 	background: linear-gradient(-45deg, color(white), color(grey-lighter), color(white), color(grey-lighter), color(white));
 	background-blend-mode: multiply;
@@ -48,5 +48,14 @@
 		display: block;
 		width: 100%;
 		padding-top: 50%;
+	}
+}
+
+%is-error-media:not(.load-monitoring-disabled) {
+	border-color: color(danger);
+	background-color: color(danger-lightest);
+
+	&[width] {
+		width: fit-content; // max-width doesn't work for broken media.
 	}
 }
