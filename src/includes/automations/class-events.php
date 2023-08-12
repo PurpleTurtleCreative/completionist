@@ -66,8 +66,23 @@ if ( ! class_exists( __NAMESPACE__ . '\Events' ) ) {
 			/* Post Events */
 
 			if ( Data::actions_exist_for( 'wp_insert_post' ) ) {
-				add_action( 'wp_insert_post', function( $post_id, $the_post, $update ) {
-					if ( ! $update && 'auto-draft' != $the_post->post_status ) {
+				add_action( 'transition_post_status', function( $new_status, $old_status, $the_post ) {
+					if (
+						$old_status !== $new_status &&
+						in_array( $old_status, array( 'new', 'auto-draft' ), true ) &&
+						! in_array( $new_status, array( 'new', 'auto-draft' ), true ) &&
+						false === wp_is_post_revision( $the_post )
+					) {
+						/**
+						 * Note that the original hook for 'Post is Created'
+						 * was 'wp_insert_post' but this proved to cause
+						 * duplicate or missed executions. This now makes
+						 * no sense in the database, but it's more semantic
+						 * than 'transition_post_status' so I still prefer it.
+						 *
+						 * @since [unreleased]
+						 * @ignore
+						 */
 						$automation_ids = Data::get_all_automation_ids_for( 'wp_insert_post' );
 						if ( count( $automation_ids ) > 0 ) {
 							foreach ( $automation_ids as $id ) {
