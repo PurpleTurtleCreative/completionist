@@ -403,7 +403,7 @@ class Request_Token {
 		 */
 		return apply_filters(
 			'ptc_completionist_request_tokens_ttl',
-			15 * MINUTE_IN_SECONDS
+			Options::get( Options::CACHE_TTL_SECONDS )
 		);
 	}
 

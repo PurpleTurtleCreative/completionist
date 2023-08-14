@@ -215,6 +215,41 @@ try {
 	</section>
 	<?php endif; ?>
 
+	<?php
+	if (
+		current_user_can( 'manage_options' ) ||
+		current_user_can( 'edit_posts' )
+	) :
+	?>
+	<section id="ptc-asana-data-cache">
+		<div class="section-title">Asana Data Cache</div>
+		<form id="ptc-asana-cache-duration-ttl" method="POST">
+			<div class="field-group">
+				<label for="asana-cache-ttl">Cache Duration (TTL)</label>
+				<div class="suffixed-input-field">
+					<input id="asana-cache-ttl" name="asana_cache_ttl" type="number" min="0" step="1" value="<?php echo esc_attr( Options::get( Options::CACHE_TTL_SECONDS ) ); ?>" <?php echo esc_attr( ( current_user_can( 'manage_options' ) ) ? 'required' : 'readonly' ); ?> />
+					<span>Seconds</span>
+				</div>
+				<?php if ( current_user_can( 'manage_options' ) ) : ?>
+				<input type="hidden" name="asana_cache_ttl_save_nonce" value="<?php echo esc_attr( wp_create_nonce( 'asana_cache_ttl_save' ) ); ?>">
+				<input type="submit" name="asana_cache_ttl_save" value="Save">
+				<?php endif; ?>
+			</div>
+		</form>
+		<form id="ptc-asana-data-cache-purge" method="POST">
+			<div class="field-group">
+				<input type="hidden" name="purge_asana_cache_nonce" value="<?php echo esc_attr( wp_create_nonce( 'purge_asana_cache' ) ); ?>">
+				<div class="note-box">
+					<p class="cache-purge-notice">
+						<input class="warning" type="submit" name="purge_asana_cache" value="Clear Cache">
+						This will clear all cached Asana data such as projects, tasks, and media attachments. You can use this to ensure the latest information is fetched from Asana.
+					</p>
+				</div>
+			</div>
+		</form>
+	</section>
+	<?php endif; ?>
+
 	<section id="ptc-disconnect-asana">
 		<form method="POST">
 			<div class="field-group">
