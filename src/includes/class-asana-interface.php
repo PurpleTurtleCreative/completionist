@@ -1730,7 +1730,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
 			$params['tags'] = $site_tag_gid;
 
-			$name = sanitize_text_field( wp_unslash( $args['name'] ) );
+			$name = Options::sanitize( 'string', wp_unslash( $args['name'] ) );
 			if ( ! empty( $name ) ) {
 				$params['name'] = $name;
 			} else {
@@ -1769,7 +1769,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			}
 
 			if ( isset( $args['notes'] ) ) {
-				$notes = sanitize_textarea_field( wp_unslash( $args['notes'] ) );
+				$notes = Options::sanitize( 'string', wp_unslash( $args['notes'] ) );
 				if ( ! empty( $notes ) ) {
 					$params['notes'] = $notes;
 				}

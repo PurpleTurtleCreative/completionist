@@ -8,6 +8,7 @@
 
 - Automation actions firing multiple times or never at all for the *Post is Created* event. The `'transition_post_status'` action hook is now used instead of `'wp_insert_post'`.
 - Large images that failed to load would overflow the container in Project Embeds.
+- Special characters would be encoded to HTML entities or completely stripped in automations and Asana tasks created by automations.
 - Minor style fix on the Settings admin page.
 
 ### 3.9.1 - 2023-07-28
