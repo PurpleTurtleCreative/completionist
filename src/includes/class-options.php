@@ -635,11 +635,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 					}
 
 				case 'string':
-					$filtered_value = filter_var(
-						$value,
-						FILTER_UNSAFE_RAW,
-						FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
-					);
+					$filtered_value = wp_strip_all_tags( $value, false );
 					return ( false !== $filtered_value ) ? trim( $filtered_value ) : '';
 
 				case 'html':
