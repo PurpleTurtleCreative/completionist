@@ -126,9 +126,12 @@ class Request_Token {
 	/**
 	 * Deletes all request tokens and their data.
 	 *
+	 * @since [unreleased] Returns boolean instead of void.
 	 * @since 3.7.0
+	 *
+	 * @return bool If successful.
 	 */
-	public static function delete_all() {
+	public static function delete_all() : bool {
 
 		Database_Manager::init();
 		$success = Database_Manager::truncate_table(
@@ -143,6 +146,8 @@ class Request_Token {
 			 */
 			do_action( 'ptc_completionist_deleted_all_request_tokens' );
 		}
+
+		return $success;
 	}
 
 	/**

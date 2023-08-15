@@ -103,6 +103,51 @@ if (
 	}
 }//end if asana_frontend_user_save
 
+if (
+	isset( $_POST['asana_cache_ttl_save'] )
+	&& current_user_can( 'manage_options' )
+	&& ! empty( $_POST['asana_cache_ttl'] )
+	&& isset( $_POST['asana_cache_ttl_save_nonce'] )
+	&& wp_verify_nonce( $_POST['asana_cache_ttl_save_nonce'], 'asana_cache_ttl_save' ) !== false
+) {
+
+	// Sanitize submitted value.
+	$submitted_ttl = (int) Options::sanitize( Options::CACHE_TTL_SECONDS, $_POST['asana_cache_ttl'] );
+
+	// Save the value.
+	Options::save(
+		Options::CACHE_TTL_SECONDS,
+		(string) $submitted_ttl,
+		true
+	);
+
+	// Get the saved and validated value.
+	$retrieved_ttl = (int) Options::get( Options::CACHE_TTL_SECONDS );
+
+	// Confirm that it was saved successfully.
+	if ( $retrieved_ttl === $submitted_ttl ) {
+		echo '<p class="notice notice-success">The Asana data cache duration was successfully saved!</p>';
+	} else {
+		echo '<p class="notice notice-error">Failed to save the Asana data cache duration.</p>';
+	}
+}//end if asana_cache_ttl_save
+
+if (
+	isset( $_POST['purge_asana_cache'] ) &&
+	(
+		current_user_can( 'manage_options' ) ||
+		current_user_can( 'edit_posts' )
+	) &&
+	isset( $_POST['purge_asana_cache_nonce'] ) &&
+	wp_verify_nonce( $_POST['purge_asana_cache_nonce'], 'purge_asana_cache' ) !== false
+) {
+	if ( Request_Token::delete_all() ) {
+		echo '<p class="notice notice-success">The Asana data cache was successfully cleared!</p>';
+	} else {
+		echo '<p class="notice notice-error">Failed to clear the Asana data cache.</p>';
+	}
+}//end if purge_asana_cache
+
 try {
 	if (
 		isset( $_POST['asana_workspace_save'] )

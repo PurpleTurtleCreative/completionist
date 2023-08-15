@@ -282,9 +282,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 					return self::maybe_update_option( $key, $sanitized_asana_gid, true );
 
 				case self::CACHE_TTL_SECONDS:
-					$value = (int) $value;
-					$sanitized_value = (int) self::sanitize( $key, $value );
-					if ( ! $force && $value !== $sanitized_value ) {
+					$sanitized_value = self::sanitize( $key, $value );
+					if ( ! $force && $value != $sanitized_value ) {
 						throw new \Exception( 'ERROR: Refused to save different value for option: ' . $key );
 					}
 					return self::maybe_update_option( $key, $sanitized_value, true );

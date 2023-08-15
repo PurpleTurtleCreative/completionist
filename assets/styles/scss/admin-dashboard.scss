@@ -219,6 +219,86 @@ section#ptc-frontend-auth-user {
 	}
 }
 
+/* ASANA DATA CACHE */
+section#ptc-asana-data-cache {
+	padding: 0;
+
+	.section-title {
+		margin: 0;
+		padding: 7px 21px;
+		background: color(grey-lightest);
+		border-bottom: 1px solid color(grey-lighter);
+		font-weight: 600;
+	}
+
+	form#ptc-asana-cache-duration-ttl {
+		padding: 21px 21px 0;
+
+		input[type=submit] {
+			margin: 0;
+			padding: 0.3em 1.3em 0.4em;
+			width: auto;
+			box-sizing: border-box;
+		}
+
+		.field-group {
+			display: flex;
+			align-items: stretch;
+			justify-content: center;
+			gap: 14px;
+
+			label {
+				margin: 0;
+				align-self: center;
+			}
+
+			.suffixed-input-field {
+				display: flex;
+				flex-wrap: nowrap;
+				align-items: stretch;
+
+				input {
+					margin: 0;
+					border-radius: 4px 0 0 4px;
+				}
+
+				.field-suffix {
+					display: block;
+					padding: 5px 10px;
+					border-radius: 0 4px 4px 0;
+					background: color(grey-lightest);
+					border: 1px solid #8c8f94;
+					border-left: none;
+					color: color(grey-darker);
+				}
+			}
+		}
+	}
+
+	form#ptc-asana-data-cache-purge {
+		padding: 0 21px 21px;
+
+		input {
+			display: block;
+			width: 200px;
+			max-width: 100%;
+			margin: 0 auto 14px;
+			padding: 10px 21px;
+			box-sizing: border-box;
+		}
+
+		.note-box {
+			margin: 0;
+		}
+
+		p.cache-purge-notice {
+			padding: 21px;
+			text-align: center;
+			border-radius: 5px;
+		}
+	}
+}
+
 /* DEAUTHORIZE ACCOUNT */
 section#ptc-disconnect-asana {
 	padding: 0;
@@ -229,8 +309,11 @@ section#ptc-disconnect-asana {
 
 		input {
 			display: block;
-			margin: 0 auto 0.75em;
-			padding: 0.4em 0.75em 0.5em;
+			width: 200px;
+			max-width: 100%;
+			margin: 0 auto 14px;
+			padding: 10px 21px;
+			box-sizing: border-box;
 		}
 
 		.note-box {
@@ -238,6 +321,7 @@ section#ptc-disconnect-asana {
 		}
 
 		p.disconnect-notice {
+			padding: 21px;
 			text-align: center;
 			border-radius: 5px;
 			border: none;
