@@ -570,6 +570,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 				case self::ASANA_WORKSPACE_GID:
 				case self::ASANA_TAG_GID:
 				case self::FRONTEND_AUTH_USER_ID:
+				case self::CACHE_TTL_SECONDS:
 					return delete_option( $key );
 			}
 
