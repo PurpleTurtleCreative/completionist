@@ -1,5 +1,9 @@
 ### [unreleased]
 
+#### Added
+
+- Settings to clear the Asana data cache and set the cache duration (TTL).
+
 #### Changed
 
 - Improved the styling and language clarity of the Asana authorization screen.

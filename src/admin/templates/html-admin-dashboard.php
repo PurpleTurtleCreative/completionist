@@ -215,16 +215,49 @@ try {
 	</section>
 	<?php endif; ?>
 
+	<?php
+	if (
+		current_user_can( 'manage_options' ) ||
+		current_user_can( 'edit_posts' )
+	) :
+		$saved_asana_cache_ttl = Options::get( Options::CACHE_TTL_SECONDS );
+	?>
+	<section id="ptc-asana-data-cache">
+		<div class="section-title">Asana Data Cache</div>
+		<form id="ptc-asana-cache-duration-ttl" method="POST">
+			<div class="field-group">
+				<label for="asana-cache-ttl">Cache Duration (TTL)</label>
+				<div class="suffixed-input-field">
+					<input id="asana-cache-ttl" name="asana_cache_ttl" type="number" min="0" step="1" value="<?php echo esc_attr( $saved_asana_cache_ttl ); ?>" <?php echo esc_attr( ( current_user_can( 'manage_options' ) ) ? 'required' : 'readonly' ); ?> />
+					<span class="field-suffix">Seconds</span>
+				</div>
+				<?php if ( current_user_can( 'manage_options' ) ) : ?>
+				<input type="hidden" name="asana_cache_ttl_save_nonce" value="<?php echo esc_attr( wp_create_nonce( 'asana_cache_ttl_save' ) ); ?>">
+				<input type="submit" name="asana_cache_ttl_save" value="Save">
+				<?php endif; ?>
+			</div>
+			<p>Currently set to <strong><?php echo esc_html( $saved_asana_cache_ttl ); ?> seconds</strong> which is <strong><?php echo esc_html( human_readable_duration( gmdate( 'H:i:s', $saved_asana_cache_ttl ) ) ); ?></strong>.</p>
+		</form>
+		<form id="ptc-asana-data-cache-purge" method="POST">
+			<input type="hidden" name="purge_asana_cache_nonce" value="<?php echo esc_attr( wp_create_nonce( 'purge_asana_cache' ) ); ?>">
+			<div class="note-box">
+				<p class="cache-purge-notice">
+					<input class="warning" type="submit" name="purge_asana_cache" value="Clear Cache">
+					This will clear all cached Asana data such as projects, tasks, and media attachments. You can use this to ensure the latest information is fetched from Asana during the next load. Be cautious of this if your site caches HTML content, though! (aka "page caching")
+				</p>
+			</div>
+		</form>
+	</section>
+	<?php endif; ?>
+
 	<section id="ptc-disconnect-asana">
 		<form method="POST">
-			<div class="field-group">
-				<input type="hidden" name="asana_disconnect_nonce" value="<?php echo esc_attr( wp_create_nonce( 'disconnect_asana' ) ); ?>">
-				<div class="note-box note-box-error">
-					<p class="disconnect-notice">
-						<input class="error" type="submit" name="asana_disconnect" value="Disconnect">
-						This will remove your encrypted Personal Access Token and Asana user id from this site, thus deauthorizing access to your Asana account. Until connecting your Asana account again, you will not have access to use Completionist's features.
-					</p>
-				</div>
+			<input type="hidden" name="asana_disconnect_nonce" value="<?php echo esc_attr( wp_create_nonce( 'disconnect_asana' ) ); ?>">
+			<div class="note-box note-box-error">
+				<p class="disconnect-notice">
+					<input class="error" type="submit" name="asana_disconnect" value="Disconnect">
+					This will remove your encrypted Personal Access Token and Asana user id from this site, thus deauthorizing access to your Asana account. Until connecting your Asana account again, you will not have access to use Completionist's features.
+				</p>
 			</div>
 		</form>
 	</section>
