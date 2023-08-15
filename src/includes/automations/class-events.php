@@ -80,7 +80,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Events' ) ) {
 						 * no sense in the database, but it's more semantic
 						 * than 'transition_post_status' so I still prefer it.
 						 *
-						 * @since [unreleased]
+						 * @since 3.10.0
 						 * @ignore
 						 */
 						$automation_ids = Data::get_all_automation_ids_for( 'wp_insert_post' );

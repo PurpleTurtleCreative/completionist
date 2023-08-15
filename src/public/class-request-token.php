@@ -126,7 +126,7 @@ class Request_Token {
 	/**
 	 * Deletes all request tokens and their data.
 	 *
-	 * @since [unreleased] Returns boolean instead of void.
+	 * @since 3.10.0 Returns boolean instead of void.
 	 * @since 3.7.0
 	 *
 	 * @return bool If successful.

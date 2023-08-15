@@ -88,7 +88,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		 * This key's value should be of type int and always
 		 * greater than or equal to 0.
 		 *
-		 * @since [unreleased]
+		 * @since 3.10.0
 		 *
 		 * @var string CACHE_TTL_SECONDS
 		 */
