@@ -85,9 +85,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		 * The option key name for the number of seconds that Asana
 		 * data is cached.
 		 *
-		 * This key's value should be of type int. Defaults to -1 if
-		 * the value has not been set. The value should always be
-		 * greater than or equal to 0.
+		 * This key's value should be of type int. The value should
+		 * always be greater than or equal to 0.
 		 *
 		 * @since [unreleased]
 		 *
