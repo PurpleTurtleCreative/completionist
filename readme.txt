@@ -48,6 +48,8 @@ _Completionist by Purple Turtle Creative is not associated with Asana. Asana is 
 
 _Premium features are sold and distributed via Freemius. [Learn more.](https://freemius.com/)_
 
+_All source code is available on [GitHub](https://github.com/PurpleTurtleCreative/completionist)._
+
 == Frequently Asked Questions ==
 
 = Are you affiliated with Asana? =
@@ -64,6 +66,8 @@ Yes, an Asana account is required to use Completionist. You can quickly [create 
 This plugin will now be hosted from the official WordPress.org Plugins directory. Please upgrade immediately so you can continue to receive the latest features, bug fixes, and security updates.
 
 == Changelog ==
+
+_Here are the latest changes. You can access the complete changelog history at [https://purpleturtlecreative.com/completionist/plugin-info/](https://purpleturtlecreative.com/completionist/plugin-info/)_
 
 ### 4.0.0 - 2023-09-03
 
