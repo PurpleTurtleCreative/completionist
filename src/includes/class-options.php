@@ -82,6 +82,19 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		public const FRONTEND_AUTH_USER_ID = '_ptc_asana_frontend_auth_user_id';
 
 		/**
+		 * The option key name for the number of seconds that Asana
+		 * data is cached.
+		 *
+		 * This key's value should be of type int and always
+		 * greater than or equal to 0.
+		 *
+		 * @since 3.10.0
+		 *
+		 * @var string CACHE_TTL_SECONDS
+		 */
+		public const CACHE_TTL_SECONDS = '_ptc_asana_cache_ttl_seconds';
+
+		/**
 		 * The postmeta key name for request tokens data.
 		 *
 		 * @see Request_Tokens
@@ -157,6 +170,13 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 						error_log( 'ALERT: Sanitization occurred. Saved option is corrupt for: ' . $key );
 					}
 					return (string) $sanitized_asana_gid;
+
+				case self::CACHE_TTL_SECONDS:
+					$value = get_option( $key, 15 * \MINUTE_IN_SECONDS );
+					if ( $value < 0 ) {
+						error_log( 'ALERT: Invalid value. Saved option is corrupt for: ' . $key );
+					}
+					return (int) self::sanitize( $key, (string) $value );
 
 				case self::PINNED_TASK_GID:
 					if ( 0 === $object_id ) {
@@ -259,6 +279,13 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 						throw new \Exception( 'ERROR: Refused to save different value for option: ' . $key );
 					}
 					return self::maybe_update_option( $key, $sanitized_asana_gid, true );
+
+				case self::CACHE_TTL_SECONDS:
+					$sanitized_value = self::sanitize( $key, $value );
+					if ( ! $force && $value != $sanitized_value ) {
+						throw new \Exception( 'ERROR: Refused to save different value for option: ' . $key );
+					}
+					return self::maybe_update_option( $key, $sanitized_value, true );
 
 				case self::PINNED_TASK_GID:
 					$post_meta = $value;
@@ -543,6 +570,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 				case self::ASANA_WORKSPACE_GID:
 				case self::ASANA_TAG_GID:
 				case self::FRONTEND_AUTH_USER_ID:
+				case self::CACHE_TTL_SECONDS:
 					return delete_option( $key );
 			}
 
@@ -602,6 +630,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 					$sanitized_integer_string = trim( preg_replace( '/[^0-9]+/', '', $filtered_integer_string ) );
 					return (string) $sanitized_integer_string;
 
+				case 'absint':
+				case self::CACHE_TTL_SECONDS:
+					$sanitized_integer_string = trim( preg_replace( '/[^0-9]+/', '', $value ) );
+					return (string) abs( (int) $sanitized_integer_string );
+
 				case 'datetime':
 					$filtered_datetime = filter_var(
 						$value,
@@ -635,11 +668,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 					}
 
 				case 'string':
-					$filtered_value = filter_var(
-						$value,
-						FILTER_UNSAFE_RAW,
-						FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
-					);
+					$filtered_value = wp_strip_all_tags( $value, false );
 					return ( false !== $filtered_value ) ? trim( $filtered_value ) : '';
 
 				case 'html':

@@ -70,7 +70,7 @@ export default function TaskListItemSimple({ task, onClick }) {
 	if ( 'assignee' in task ) {
 		const [ _, taskAssigneeImage ] = getTaskAssignee(task);
 		if ( taskAssigneeImage ) {
-			maybeAssignee = <img className="assignee" src={taskAssigneeImage} width="36" height="36" />;
+			maybeAssignee = <img className="assignee load-monitoring-disabled" src={taskAssigneeImage} width="36" height="36" />;
 		}
 	} else {
 		maybeAssignee = null;

@@ -47,11 +47,9 @@ a:active {
 }
 
 .notice {
-	background: color(white);
-	border: 2px solid color(grey-lighter);
-	border-radius: 3px;
 	padding: 0.5em 1.3em 0.6em;
 	margin: 7px 0;
+	background: color(white);
 	color: color(grey-darkest);
 }
 
@@ -111,28 +109,6 @@ form input[type="checkbox"] {
 	margin: 0 0.15em;
 	position: relative;
 	bottom: 1px;
-}
-
-div.icon-input-field {
-	background: color(brand-primary-light);
-	display: inline-block;
-	border-radius: 3px 5px 5px 3px;
-	border: 1px solid color(brand-primary);
-
-	input {
-		border-radius: 0 5px 5px 0;
-		border: none;
-		border-left: 1px solid color(brand-primary) !important;
-	}
-
-	i {
-		width: 1.75em;
-		text-align: center;
-		padding: 0;
-		margin: 0;
-		margin-left: 0.15em;
-		color: #004440;
-	}
 }
 
 form input[type=submit] {
@@ -226,7 +202,8 @@ form p.error-note {
 	}
 }
 
-.ptc-icon-button {
+.ptc-icon-button,
+.ptc-icon-button:visited {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -249,7 +226,8 @@ form p.error-note {
 	}
 }
 
-a.ptc-button {
+a.ptc-button,
+a.ptc-button:visited {
 	display: inline-block;
 	background: #627D98;
 	border-radius: 999px;

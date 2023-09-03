@@ -470,11 +470,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 			foreach ( $params as $col => &$val ) {
 				switch ( $col ) {
 					case 'title':
-						$val = Options::sanitize( 'string', $val );
-						$format[] = '%s';
-						break;
 					case 'description':
-						$val = sanitize_textarea_field( $val );
+						$val = Options::sanitize( 'string', $val );
 						$format[] = '%s';
 						break;
 					case 'hook_name':
@@ -593,12 +590,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 		public static function update_action_meta_by_key( int $action_id, string $meta_key, string $meta_value ) : bool {
 
 			$meta_key = (string) Options::sanitize( 'string', $meta_key );
-
-			if ( 'notes' === $meta_key ) {
-				$meta_value = sanitize_textarea_field( $meta_value );
-			} else {
-				$meta_value = Options::sanitize( 'string', $meta_value );
-			}
+			$meta_value = Options::sanitize( 'string', $meta_value );
 
 			if ( $meta_value == self::get_action_meta_by_key( $action_id, $meta_key ) ) {
 				return true;
@@ -641,7 +633,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 		public static function add_automation( string $title, string $description, string $hook_name ) : int {
 
 			$title = Options::sanitize( 'string', $title );
-			$description = sanitize_textarea_field( $description );
+			$description = Options::sanitize( 'string', $description );
 			$hook_name = Options::sanitize( 'string', $hook_name );
 
 			if (
@@ -782,12 +774,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Data' ) ) {
 		public static function add_action_meta( int $action_id, string $meta_key, string $meta_value ) : int {
 
 			$meta_key = (string) Options::sanitize( 'string', $meta_key );
-
-			if ( 'notes' === $meta_key ) {
-				$meta_value = sanitize_textarea_field( $meta_value );
-			} else {
-				$meta_value = Options::sanitize( 'string', $meta_value );
-			}
+			$meta_value = Options::sanitize( 'string', $meta_value );
 
 			if (
 				$action_id <= 0

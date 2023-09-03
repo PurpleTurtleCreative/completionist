@@ -1,62 +1,213 @@
-.notice,
-#ptc-asana-dashboard-error {
-	max-width: 700px;
-	margin: 7px auto;
-	box-sizing: border-box;
-}
+@import 'abstracts/colors';
+@import 'abstracts/responsive';
 
-section#ptc-asana-connect {
-	padding: 80px;
+//----------------------
 
-	img[title="Asana"] {
-		width: 33%;
-		margin-bottom: 20px;
-		border-bottom: 1px dashed #bccbdb;
-		padding-bottom: 40px;
+#ptc-asana-connect {
+	max-width: 600px;
+	margin: 3rem auto;
+	text-align: center;
+
+	svg {
+		height: 1em;
+		fill: currentColor;
+
+		path {
+			fill: currentColor;
+		}
+	}
+
+	.connect-services {
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: center;
+		justify-content: center;
+		gap: 2em;
+
+		.connect-icon {
+			color: color(grey-darker);
+
+			svg {
+				height: 30px;
+			}
+		}
+
+		.service-logo {
+			width: 94px;
+			height: 94px;
+			overflow: hidden;
+			box-sizing: border-box;
+			border-radius: 50%;
+			border: 2px solid color(grey-light);
+			background: color(white);
+		}
+
+		.service-completionist {
+
+			img {
+				display: block;
+				width: 100%;
+				height: 100%;
+			}
+		}
+
+		.service-asana {
+			flex: none;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 10px 10px 15px;
+
+			img {
+				display: block;
+				width: fit-content;
+				height: fit-content;
+				max-width: 100%;
+				max-height: 100%;
+			}
+		}
+	}
+
+	.content {
+		padding: 3rem 1rem;
+		margin: 2rem auto;
+		background: color(white);
+		color: color(black);
+		border: 2px solid color(grey-lighter);
+		border-radius: 1rem;
+
+		@include breakpoint(medium) {
+			padding: 4rem 3rem;
+		}
 	}
 
 	h2 {
 		font-weight: 800;
 		letter-spacing: 0.03em;
-		color: #243B53;
-		font-size: 2em;
-		margin: 0.5em 0;
+		font-size: 24px;
+		margin: 0 0 1em;
+
+		@include breakpoint(medium) {
+			font-size: 30px;
+		}
+	}
+
+	p,
+	label,
+	li {
+		margin: 0 0 0.5em;
+		font-size: 1.15em;
 	}
 
 	form {
-		margin: 30px 0 30px;
+		margin: 0;
 
 		div.field-group {
 			margin: 2em 0;
-		}
 
-		div.icon-input-field {
-			width: 66%;
-			text-align: right;
-		}
+			&:last-child {
+				margin-bottom: 0;
+			}
 
-		div.icon-input-field input {
-			width: calc( 100% - 2.1em);
-		}
+			&.connection-permissions {
 
-		p#connection-agreement-text {
-			margin: 0.5em 0;
-		}
+				ul {
+					display: inline-block;
+					list-style: disc;
+					list-style-position: outside;
+					padding-left: 2em;
+					text-align: left;
+				}
+			}
 
-		label[for="connection-agreement"] {
-			display: inline-block;
+			&.asana-pat {
+
+				label {
+					margin: 0 0 15px;
+					font-size: 1.3em;
+				}
+
+				.input-submit-field {
+					display: flex;
+					flex-wrap: nowrap;
+					align-items: stretch;
+					width: 100%;
+					filter: drop-shadow(0 1px 7px rgba(color(brand-primary-light), 0.5));
+
+					> :first-child {
+						flex: 1;
+						min-width: 100px;
+						border-right: none;
+						border-radius: 0.5em 0 0 0.5em;
+					}
+
+					input[type="submit"] {
+						width: auto;
+						margin: 0;
+						padding: 0.5em 1em;
+						border-radius: 0 0.5em 0.5em 0;
+						font-size: 1.15em;
+						letter-spacing: 0.05em;
+
+						@include breakpoint(medium) {
+							padding: 0.7em 1.5em;
+						}
+					}
+				}
+
+				.icon-input-field {
+					display: flex;
+					flex-wrap: nowrap;
+					align-items: center;
+					background: color(white);
+					border: 1px solid color(brand-primary);
+					gap: 0.5em;
+					padding: 0 0.5em;
+
+					@include breakpoint(medium) {
+						gap: 1em;
+						padding: 0 1em;
+					}
+
+					svg {
+						color: color(brand-primary);
+						flex: none;
+					}
+
+					input[type="password"] {
+						flex: 1;
+						min-width: 100px;
+						margin: 0;
+						padding: 0;
+						background: none !important;
+						border: none !important;
+						font-size: 1.3em !important;
+						line-height: 1 !important;
+
+						&:active,
+						&:focus {
+							box-shadow: none !important;
+							outline: none !important;
+						}
+					}
+				}
+
+				.help-link {
+					margin: 15px 0 0;
+					font-size: 1em;
+
+					svg {
+						height: 0.8em;
+						margin-left: 0.3em;
+						transform: translateY(0.03em);
+					}
+				}
+			}
 		}
 	}
-}//end section#ptc-asana-connect
 
-section#ptc-asana-connect-info {
-	padding: 5px 3px;
-	background: none;
-	border: none;
-	box-shadow: none;
-
-	p.footnote {
-		padding: 0 80px;
-		margin-top: 1.5em;
+	.footnote {
+		font-size: 0.8rem;
+		padding: 0 1rem;
 	}
 }

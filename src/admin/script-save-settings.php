@@ -17,15 +17,8 @@ require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
 if (
 	isset( $_POST['asana_connect'] )
 	&& isset( $_POST['asana_pat'] )
-	&& isset( $_POST['connection_agreement'] )
-	&& isset( $_POST['asana_connect_nonce'] )
 	&& wp_verify_nonce( $_POST['asana_connect_nonce'], 'connect_asana' ) !== false
 ) {
-
-	if ( ! filter_var( wp_unslash( $_POST['connection_agreement'] ), FILTER_VALIDATE_BOOLEAN ) ) {
-		echo '<p class="notice notice-error">To use Completionist, you must accept the agreement.</p>';
-		return;
-	}
 
 	try {
 		$did_save_pat = Options::save( Options::ASANA_PAT, $_POST['asana_pat'] );
@@ -50,7 +43,7 @@ if (
 		}
 
 		if ( $did_delete_pat === true ) {
-			echo '<p class="notice notice-error">An error occurred, causing your Personal Access Token to not be saved.</p>';
+			echo '<p class="notice notice-error">An error occurred, so your Personal Access Token could not be saved.</p>';
 		} elseif ( $did_save_gid === true ) {
 			echo '<p class="notice notice-success">Your Asana account was successfully connected!</p>';
 		}
@@ -109,6 +102,51 @@ if (
 		echo '<p class="notice notice-error">Failed to save the frontend authentication user.</p>';
 	}
 }//end if asana_frontend_user_save
+
+if (
+	isset( $_POST['asana_cache_ttl_save'] )
+	&& current_user_can( 'manage_options' )
+	&& ! empty( $_POST['asana_cache_ttl'] )
+	&& isset( $_POST['asana_cache_ttl_save_nonce'] )
+	&& wp_verify_nonce( $_POST['asana_cache_ttl_save_nonce'], 'asana_cache_ttl_save' ) !== false
+) {
+
+	// Sanitize submitted value.
+	$submitted_ttl = (int) Options::sanitize( Options::CACHE_TTL_SECONDS, $_POST['asana_cache_ttl'] );
+
+	// Save the value.
+	Options::save(
+		Options::CACHE_TTL_SECONDS,
+		(string) $submitted_ttl,
+		true
+	);
+
+	// Get the saved and validated value.
+	$retrieved_ttl = (int) Options::get( Options::CACHE_TTL_SECONDS );
+
+	// Confirm that it was saved successfully.
+	if ( $retrieved_ttl === $submitted_ttl ) {
+		echo '<p class="notice notice-success">The Asana data cache duration was successfully saved!</p>';
+	} else {
+		echo '<p class="notice notice-error">Failed to save the Asana data cache duration.</p>';
+	}
+}//end if asana_cache_ttl_save
+
+if (
+	isset( $_POST['purge_asana_cache'] ) &&
+	(
+		current_user_can( 'manage_options' ) ||
+		current_user_can( 'edit_posts' )
+	) &&
+	isset( $_POST['purge_asana_cache_nonce'] ) &&
+	wp_verify_nonce( $_POST['purge_asana_cache_nonce'], 'purge_asana_cache' ) !== false
+) {
+	if ( Request_Token::delete_all() ) {
+		echo '<p class="notice notice-success">The Asana data cache was successfully cleared!</p>';
+	} else {
+		echo '<p class="notice notice-error">Failed to clear the Asana data cache.</p>';
+	}
+}//end if purge_asana_cache
 
 try {
 	if (

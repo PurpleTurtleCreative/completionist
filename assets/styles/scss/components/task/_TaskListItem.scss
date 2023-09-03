@@ -16,6 +16,10 @@
 		@extend %is-loading-media;
 	}
 
+	img.--is-error {
+		@extend %is-error-media;
+	}
+
 	&.--can-expand {
 
 		> .main {
