@@ -464,18 +464,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 			];
 
 			$users = get_users( $query_args );
-			$users_count = count( $users );
 
-			if (
-				1 === $users_count
-				&& isset( $users[0] )
-				&& $users[0] > 0
-			) {
+			if ( isset( $users[0] ) && $users[0] > 0 ) {
 				return (int) $users[0];
-			} elseif ( $users_count > 1 ) {
-				// TODO: This error state should not be allowed.
-				// Check PATs and User GIDs for dups when saving them.
-				error_log( 'Warning: Multiple users have the same Asana User GID saved. Their WordPress User IDs are:' + print_r( $users, true ) );
 			}
 
 			return 0;
