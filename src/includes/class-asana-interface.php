@@ -457,16 +457,21 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 
 			$user_gid = Options::sanitize( 'gid', $user_gid );
 
-			$query_args = [
-				'meta_key' => Options::ASANA_USER_GID,
+			$query_args = array(
+				'meta_key'   => Options::ASANA_USER_GID,
 				'meta_value' => $user_gid,
-				'fields' => 'ID',
-			];
+				'fields'     => 'ID',
+			);
 
-			$users = get_users( $query_args );
+			$user_ids = get_users( $query_args );
 
-			if ( isset( $users[0] ) && $users[0] > 0 ) {
-				return (int) $users[0];
+			if ( isset( $user_ids[0] ) && $user_ids[0] > 0 ) {
+				// Multiple WordPress users may be using the same
+				// Asana user GID, but just use the first result.
+				// This is a common use case to limit an agency's seats
+				// in a client's Asana workspace, while still tracking
+				// agency workers separately in WordPress.
+				return (int) $user_ids[0];
 			}
 
 			return 0;
