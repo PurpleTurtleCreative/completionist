@@ -1,3 +1,9 @@
+### 3.10.1-rc.1 - 2023-09-05
+
+#### Fixed
+
+- PHP error when creating or displaying Asana tasks assigned to an Asana user connection that's being used by multiple WordPress users in Completionist.
+
 ### 3.10.0 - 2023-08-15
 
 #### Added
