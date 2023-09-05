@@ -2,6 +2,8 @@
 /**
  * Freemius class
  *
+ * @link https://github.com/Freemius/wordpress-sdk/blob/47aaeb6611c8f4c7a0a88793c0d79eafdebfbf4f/start.php#L314 Available hooks in the Freemius SDK.
+ *
  * @since 4.0.0
  */
 

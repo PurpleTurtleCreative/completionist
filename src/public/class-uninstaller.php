@@ -80,8 +80,5 @@ class Uninstaller {
 				Database_Manager::drop_all_tables();
 			}
 		}
-
-		// Remove PUC's data. Legacy.
-		delete_site_option( 'external_updates-completionist' );
 	}
 }//end class
