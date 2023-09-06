@@ -121,11 +121,13 @@ foreach ( glob( PLUGIN_PATH . 'src/public/class-*.php' ) as $file ) {
 	require_once $file;
 }
 
+Admin_Notices::register();
 Freemius::register();
 Request_Token::register();
 REST_Server::register();
 Shortcodes::register();
 Uninstaller::register();
+Upgrader::register();
 
 // Register admin functionality.
 if ( is_admin() ) {
