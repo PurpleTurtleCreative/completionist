@@ -1,6 +1,10 @@
 <?php
 /**
- * Upgrader class
+ * Plugin Version Checker class
+ *
+ * @todo Update Admin Notices messages to link to the Freemius
+ * support form page instead of my exact email. I need to also
+ * test how this form actually works in the Freemius backend.
  *
  * @since [unreleased]
  */
@@ -21,11 +25,13 @@ require_once \PTC_Completionist\PLUGIN_PATH . 'src/public/class-admin-notices.ph
  *
  * @since [unreleased]
  */
-abstract class Plugin_Version_Upgrader {
+abstract class Plugin_Version_Checker {
 
 	/**
 	 * The option name storing the last successfully upgraded
 	 * plugin version.
+	 *
+	 * Required to be set in child class.
 	 *
 	 * @since [unreleased]
 	 *
@@ -35,6 +41,8 @@ abstract class Plugin_Version_Upgrader {
 
 	/**
 	 * The current running plugin version.
+	 *
+	 * Required to be set in child class.
 	 *
 	 * @since [unreleased]
 	 *

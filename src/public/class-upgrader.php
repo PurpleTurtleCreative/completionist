@@ -11,14 +11,14 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/includes/abstracts/class-plugin-version-upgrader.php';
+require_once PLUGIN_PATH . 'src/includes/abstracts/class-plugin-version-checker.php';
 
 /**
  * Static class to handle plugin upgrades.
  *
  * @since [unreleased]
  */
-class Upgrader extends Abstracts\Plugin_Version_Upgrader {
+class Upgrader extends Abstracts\Plugin_Version_Checker {
 
 	/**
 	 * The option name storing the last successfully upgraded
