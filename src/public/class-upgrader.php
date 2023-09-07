@@ -59,7 +59,9 @@ class Upgrader extends Abstracts\Plugin_Version_Checker {
 			// removed the YahnisElsts/plugin-update-checker package.
 			delete_site_option( 'external_updates-completionist' );
 			wp_clear_scheduled_hook( 'puc_cron_check_updates-completionist' );
-			return true; // Assume success.
+			// Assume success because they could've been deleted already.
+			// It also isn't problematic if they actually failed.
+			return true;
 		}
 
 		// No upgrade needed, so consider success.

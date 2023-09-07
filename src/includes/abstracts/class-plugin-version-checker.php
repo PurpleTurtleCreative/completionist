@@ -6,6 +6,11 @@
  * support form page instead of my exact email. I need to also
  * test how this form actually works in the Freemius backend.
  *
+ * @todo Add plugin name value in child class to use in notices.
+ *
+ * @todo Convert member variables into abstract function stubs
+ * to ensure the values are set in the child class.
+ *
  * @since [unreleased]
  */
 
@@ -73,14 +78,6 @@ abstract class Plugin_Version_Checker {
 	 * @since [unreleased]
 	 */
 	final public static function maybe_run() {
-
-		if ( empty( static::$upgraded_version_option ) ) {
-			// Doing it wrong.
-		}
-
-		if ( empty( static::$current_plugin_version ) ) {
-			// Doing it wrong.
-		}
 
 		$last_upgraded_version = (string) get_option( static::$upgraded_version_option, '0.0.0' );
 
@@ -172,9 +169,11 @@ abstract class Plugin_Version_Checker {
 	 * @since [unreleased]
 	 *
 	 * @param string $old_version The plugin version string from
-	 * which to upgrade.
+	 * which to upgrade. (eg. '1.2.3')
 	 *
 	 * @return bool If upgraded successfully.
 	 */
 	abstract protected static function upgrade_from_version( string $old_version ) : bool;
+
+	abstract protected static function get_current_version() : string;
 }//end class
