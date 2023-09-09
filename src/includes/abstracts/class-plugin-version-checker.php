@@ -2,15 +2,6 @@
 /**
  * Plugin Version Checker class
  *
- * @todo Update Admin Notices messages to link to the Freemius
- * support form page instead of my exact email. I need to also
- * test how this form actually works in the Freemius backend.
- *
- * @todo Add plugin name value in child class to use in notices.
- *
- * @todo Convert member variables into abstract function stubs
- * to ensure the values are set in the child class.
- *
  * @since [unreleased]
  */
 
@@ -31,29 +22,6 @@ require_once \PTC_Completionist\PLUGIN_PATH . 'src/public/class-admin-notices.ph
  * @since [unreleased]
  */
 abstract class Plugin_Version_Checker {
-
-	/**
-	 * The option name storing the last successfully upgraded
-	 * plugin version.
-	 *
-	 * Required to be set in child class.
-	 *
-	 * @since [unreleased]
-	 *
-	 * @var string $upgraded_version_option
-	 */
-	protected static $upgraded_version_option;
-
-	/**
-	 * The current running plugin version.
-	 *
-	 * Required to be set in child class.
-	 *
-	 * @since [unreleased]
-	 *
-	 * @var string $current_plugin_version
-	 */
-	protected static $current_plugin_version;
 
 	/**
 	 * Hooks functionality into the WordPress execution flow.
@@ -79,37 +47,54 @@ abstract class Plugin_Version_Checker {
 	 */
 	final public static function maybe_run() {
 
-		$last_upgraded_version = (string) get_option( static::$upgraded_version_option, '0.0.0' );
+		$upgraded_version_option = static::get_upgraded_version_option_name();
+		$last_upgraded_version   = (string) get_option( $upgraded_version_option, '0.0.0' );
 
-		if ( static::$current_plugin_version === $last_upgraded_version ) {
+		$current_plugin_version = static::get_current_plugin_version();
+
+		if ( $current_plugin_version === $last_upgraded_version ) {
 			// Plugin state is up-to-date.
 			return;
-		} elseif ( version_compare( static::$current_plugin_version, $last_upgraded_version, '>' ) ) {
+		} elseif ( version_compare( $current_plugin_version, $last_upgraded_version, '>' ) ) {
 			// Plugin state is old and needs upgrade.
-			if ( static::upgrade_from_version( $last_upgraded_version, static::$current_plugin_version ) ) {
+			if ( static::upgrade_from_version( $last_upgraded_version, $current_plugin_version ) ) {
 				// Update option on successful upgrade.
-				update_option( static::$upgraded_version_option, static::$current_plugin_version, true );
-				// Notify the user.
-				Admin_Notices::add_notice(
-					sprintf(
-						'Completionist successfully upgraded from v%s to v%s!',
-						$last_upgraded_version,
-						static::$current_plugin_version
-					),
-					'success',
-					false,
-					'update_plugins'
+				update_option(
+					$upgraded_version_option,
+					$current_plugin_version,
+					true
+				);
+				// Notify success.
+				Admin_Notices::add(
+					array(
+						'id'          => 'plugin_version_check',
+						'message'     => sprintf(
+							'<strong>%s successfully upgraded from v%s to v%s!</strong> We greatly appreciate your continued support!',
+							static::get_plugin_name(),
+							$last_upgraded_version,
+							$current_plugin_version
+						),
+						'type'        => 'success',
+						'dismissible' => false,
+						'capability'  => 'update_plugins',
+					)
 				);
 			} else {
-				Admin_Notices::add_notice(
-					sprintf(
-						'Completionist failed to upgrade from v%s to v%s!',
-						$last_upgraded_version,
-						static::$current_plugin_version
-					),
-					'error',
-					true,
-					'update_plugins'
+				// Notify error.
+				Admin_Notices::add(
+					array(
+						'id'          => 'plugin_version_check',
+						'message'     => sprintf(
+							'<strong>%s failed to upgrade from v%s to v%s!</strong> If you\'re experiencing issues, please do not hesitate to <a href="%s">contact support</a>! We\'re always happy to help!',
+							static::get_plugin_name(),
+							$last_upgraded_version,
+							$current_plugin_version,
+							esc_url( static::get_support_link() )
+						),
+						'type'        => 'error',
+						'dismissible' => true,
+						'capability'  => 'update_plugins',
+					)
 				);
 			}
 		} else {
@@ -135,20 +120,25 @@ abstract class Plugin_Version_Checker {
 			to completely remove all data and reset the plugin's state.
 			*/
 			update_option(
-				static::$upgraded_version_option,
-				static::$current_plugin_version,
+				$upgraded_version_option,
+				$current_plugin_version,
 				true
 			);
 			// Offer assistance.
-			Admin_Notices::add_notice(
-				sprintf(
-					'Completionist plugin rollback detected from v%s to v%s – Please email michelle@purpleturtlecreative.com if you\'re experiencing issues. We\'re happy to help!',
-					$last_upgraded_version,
-					static::$current_plugin_version
-				),
-				'warning',
-				true,
-				'update_plugins'
+			Admin_Notices::add(
+				array(
+					'id'          => 'plugin_version_check',
+					'message'     => sprintf(
+						'<strong>%s plugin rollback detected from v%s to v%s</strong> – If you\'re experiencing issues, please do not hesitate to <a href="%s">contact support</a>! We\'re always happy to help!',
+						static::get_plugin_name(),
+						$last_upgraded_version,
+						$current_plugin_version,
+						esc_url( static::get_support_link() )
+					),
+					'type'        => 'warning',
+					'dismissible' => true,
+					'capability'  => 'update_plugins',
+				)
 			);
 		}
 	}
@@ -159,8 +149,45 @@ abstract class Plugin_Version_Checker {
 	 * @since [unreleased]
 	 */
 	final public static function reset() {
-		delete_option( static::$upgraded_version_option );
+		delete_option( static::get_upgraded_version_option_name() );
 	}
+
+	/**
+	 * Gets the current running plugin version.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @return string
+	 */
+	abstract protected static function get_current_plugin_version() : string;
+
+	/**
+	 * Gets the option name storing the last successfully upgraded
+	 * plugin version.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @return string
+	 */
+	abstract protected static function get_upgraded_version_option_name() : string;
+
+	/**
+	 * Gets the plugin name to display in alerts and notices.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @return string
+	 */
+	abstract protected static function get_plugin_name() : string;
+
+	/**
+	 * Gets the URL for the plugin's support page.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @return string
+	 */
+	abstract protected static function get_support_link() : string;
 
 	/**
 	 * Runs migration processes to upgrade the plugin's state from
@@ -174,6 +201,4 @@ abstract class Plugin_Version_Checker {
 	 * @return bool If upgraded successfully.
 	 */
 	abstract protected static function upgrade_from_version( string $old_version ) : bool;
-
-	abstract protected static function get_current_version() : string;
 }//end class

@@ -7,7 +7,7 @@
  * @license           GPL-3.0-or-later
  *
  * @wordpress-plugin
- * Plugin Name:       Completionist
+ * Plugin Name:       Completionist – Asana for WordPress
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
  * Description:       Manage, pin, automate, and display Asana tasks in relevant areas of your WordPress admin and website frontend.
  * Version:           4.0.0
@@ -16,13 +16,13 @@
  * Tested up to:      6.3
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
- * License:           GPL v3 or later
+ * License:           GPL v3
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.txt
  */
 
 /*
-This program is open-source software: you can redistribute it and/or modify
-it UNDER THE TERMS of the GNU General Public License as published by
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
@@ -32,7 +32,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program. If not, see https://www.gnu.org/licenses/gpl-3.0.txt.
+along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 namespace PTC_Completionist;
