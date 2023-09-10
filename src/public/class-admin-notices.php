@@ -30,7 +30,7 @@ class Admin_Notices {
 	 * The active admin notices for display.
 	 *
 	 * These are persisted in the database and loaded during the
-	 * 'admin_init' action. Unset until loaded.
+	 * 'plugins_loaded' action.
 	 *
 	 * @since [unreleased]
 	 *
@@ -39,7 +39,7 @@ class Admin_Notices {
 	private static $notices = array();
 
 	/**
-	 * If the admin notices have been updated in memory after
+	 * If the admin notices have been updated in memory since
 	 * being loaded from the database.
 	 *
 	 * @since [unreleased]
@@ -57,24 +57,47 @@ class Admin_Notices {
 	 */
 	private const ADMIN_NOTICES_OPTION_NAME = '_ptc_completionist_admin_notices';
 
+	/**
+	 * Hooks functionality into the WordPress execution flow.
+	 *
+	 * @since [unreleased]
+	 */
 	public static function register() {
 		add_action( 'plugins_loaded', __CLASS__ . '::load', \PHP_INT_MIN );
 		add_action( 'admin_notices', __CLASS__ . '::display', \PHP_INT_MAX );
 		add_action( 'shutdown', __CLASS__ . '::save' );
 	}
 
+	/**
+	 * Loads the admin notices from the database.
+	 *
+	 * @since [unreleased]
+	 */
 	public static function load() {
 		static::$notices = get_option( static::ADMIN_NOTICES_OPTION_NAME, array() );
 	}
 
+	/**
+	 * Saves the admin notices to the database.
+	 *
+	 * @since [unreleased]
+	 */
 	public static function save() {
 		if ( static::$has_updates ) {
 			update_option( static::ADMIN_NOTICES_OPTION_NAME, static::$notices, true );
 		}
 	}
 
+	/**
+	 * Displays all admin notices per the current user's capabilities.
+	 *
+	 * @since [unreleased]
+	 */
 	public static function display() {
 		if ( is_array( static::$notices ) && count( static::$notices ) > 0 ) {
+
+			$is_displaying_dismissible = false;
+
 			foreach ( static::$notices as $id => $notice ) {
 
 				if ( ! current_user_can( $notice['capability'] ) ) {
@@ -94,6 +117,7 @@ class Admin_Notices {
 
 				if ( $notice['dismissible'] ) {
 					$class .= ' is-dismissible';
+					$is_displaying_dismissible = true;
 				} else {
 					// Non-dismissible notices display once.
 					unset( static::$notices[ $id ] );
@@ -107,15 +131,45 @@ class Admin_Notices {
 					wp_kses_post( "[{$formatted_timestamp}] $message" )
 				);
 			}
+
+			if ( $is_displaying_dismissible ) {
+				?>
+				<script type="text/javascript">
+					// @TODO - Send AJAX request when notice dismissed.
+				</script>
+				<?php
+			}
 		}
 	}
 
+	/**
+	 * Adds an admin notice.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param array $args {
+	 *     The admin notice's data.
+	 *
+	 *     @type string $id          The data storage key.
+	 *     @type int    $timestamp   The unix timestamp.
+	 *     @type string $message     The notice message.
+	 *     @type string $type        The notice type like
+	 *                               'success' or 'error'.
+	 *     @type bool   $dismissible If the notice is dismissible
+	 *                               and should persist until
+	 *                               dismissed on the frontend.
+	 *     @type string $capability  The user capability for
+	 *                               displaying the notice.
+	 * }
+	 *
+	 * @return string The notice's ID. Empty string on failure.
+	 */
 	public static function add( array $args = array() ) : string {
 
 		$notice = wp_parse_args(
 			$args,
 			array(
-				'id'          => uniqid(),
+				'id'          => uniqid( 'notice_' ),
 				'timestamp'   => time(),
 				'message'     => '',
 				'type'        => 'info',
@@ -124,13 +178,33 @@ class Admin_Notices {
 			)
 		);
 
-		static::$notices[ $args['id'] ] = $notice;
+		if (
+			empty( $notice['id'] ) ||
+			empty( $notice['timestamp'] ) ||
+			empty( $notice['message'] ) ||
+			empty( $notice['type'] )
+		) {
+			trigger_error(
+				'Refused to add an admin notice with missing data. The keys id, timestamp, message, and type are all required: ' . print_r( $notice, true ),
+				\E_USER_WARNING
+			);
+			return '';
+		}
+
+		static::$notices[ $notice['id'] ] = $notice;
 
 		static::$has_updates = true;
 
-		return $args['id'];
+		return $notice['id'];
 	}
 
+	/**
+	 * Removes an admin notice.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param string $id The notice's ID.
+	 */
 	public static function remove( string $id ) {
 		if ( isset( static::$notices[ $id ] ) ) {
 			unset( static::$notices[ $id ] );
@@ -138,6 +212,11 @@ class Admin_Notices {
 		}
 	}
 
+	/**
+	 * Deletes all admin notices data.
+	 *
+	 * @since [unreleased]
+	 */
 	public static function delete_all() {
 		delete_option( static::ADMIN_NOTICES_OPTION_NAME );
 	}

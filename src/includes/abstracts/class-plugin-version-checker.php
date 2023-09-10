@@ -148,7 +148,7 @@ abstract class Plugin_Version_Checker {
 	 *
 	 * @since [unreleased]
 	 */
-	final public static function reset() {
+	final public static function delete_data() {
 		delete_option( static::get_upgraded_version_option_name() );
 	}
 
