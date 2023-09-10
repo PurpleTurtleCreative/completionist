@@ -79,12 +79,15 @@ class Upgrader extends Abstracts\Plugin_Version_Checker {
 	 */
 	protected static function upgrade_from_version( string $old_version ) : bool {
 
+		$success = true;
+
 		if ( version_compare( $old_version, '3.7.0', '<' ) ) {
-			// Check installed database version.
+			// v3.7.0 is when the new Request_Token class replaced
+			// the postmeta-based Request_Tokens class. If successful,
+			// the new class installs custom database tables to work.
 			require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
 			Database_Manager::init();
-			$db_version = Database_Manager::get_installed_version();
-			if ( $db_version >= 2 ) {
+			if ( Database_Manager::get_installed_version() >= 2 ) {
 				// Now that the custom request tokens database table
 				// is successfully installed, all deprecated Request
 				// Tokens (stored within postmeta) should be purged.
@@ -94,17 +97,13 @@ class Upgrader extends Abstracts\Plugin_Version_Checker {
 		}
 
 		if ( version_compare( $old_version, '4.0.0', '<' ) ) {
-			// First upgrade process, so the $old_version is always zero.
 			// v4.0.0 is when plugin hosting changed from
 			// <purpleturtlecreative.com> to <wordpress.org> which
 			// removed the YahnisElsts/plugin-update-checker package.
 			delete_site_option( 'external_updates-completionist' );
 			wp_clear_scheduled_hook( 'puc_cron_check_updates-completionist' );
-			// Assume success because they could've been deleted already.
-			// It also isn't problematic if they actually failed.
 		}
 
-		// No upgrade needed, so consider success.
-		return true;
+		return $success;
 	}
 }//end class

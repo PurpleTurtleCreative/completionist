@@ -5,12 +5,7 @@
  * Despite the name, this class is registered publicly so that
  * admin notices can be added under any context. It's simply
  * that the notices themselves are only ever displayed in the
- * admin context—meaning they are "notices for the admin".
- *
- * @todo Remove dismissed notices via AJAX from frontend. Otherwise,
- * they never go away! Be mindful that you must prevent race conditions
- * by making these calls atomic... If that's even possible by using
- * a single database option_name and option_value...
+ * admin context which means they are "notices for the admin".
  *
  * @since [unreleased]
  */
@@ -66,6 +61,48 @@ class Admin_Notices {
 		add_action( 'plugins_loaded', __CLASS__ . '::load', \PHP_INT_MIN );
 		add_action( 'admin_notices', __CLASS__ . '::display', \PHP_INT_MAX );
 		add_action( 'shutdown', __CLASS__ . '::save' );
+	}
+
+	/**
+	 * Registers the custom REST API endpoints.
+	 *
+	 * @since [unreleased]
+	 */
+	public static function register_routes() {
+		register_rest_route(
+			REST_API_NAMESPACE_V1,
+			'/admin-notices/dismiss',
+			array(
+				array(
+					'methods'             => 'POST',
+					'callback'            => __CLASS__ . '::handle_post_dismiss',
+					'permission_callback' => 'is_user_logged_in',
+					'args'                => array(
+						'id' => array(
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+					),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Handles a POST request to dismiss an admin notice.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param \WP_REST_Request $request The API request.
+	 *
+	 * @return \WP_REST_Response|\WP_Error The API response.
+	 */
+	public static function handle_post_dismiss(
+		\WP_REST_Request $request
+	) {
+		static::remove( $request['id'] );
+		return new \WP_REST_Response( null, 204 );
 	}
 
 	/**
@@ -130,12 +167,35 @@ class Admin_Notices {
 					esc_attr( $id ),
 					wp_kses_post( "[{$formatted_timestamp}] $message" )
 				);
-			}
+			}//end foreach.
 
 			if ( $is_displaying_dismissible ) {
 				?>
 				<script type="text/javascript">
-					// @TODO - Send AJAX request when notice dismissed.
+				document.addEventListener('DOMContentLoaded', () => {
+					document
+						.querySelectorAll('.ptc-completionist-admin-notice.is-dismissible[data-notice-id]')
+						.forEach(notice => {
+							if ( notice.dataset.noticeId ) {
+								notice.addEventListener('click', event => {
+									if ( event.target.classList.contains('notice-dismiss') ) {
+										window.fetch(
+											'<?php echo esc_url( rest_url( REST_API_NAMESPACE_V1 . '/admin-notices/dismiss' ) ); ?>',
+											{
+												method: 'POST',
+												headers: {
+													'Content-Type': 'application/x-www-form-urlencoded',
+													'X-WP-Nonce': '<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>',
+												},
+												body: `id=${notice.dataset.noticeId}`,
+												credentials: 'same-origin', // Include cookies.
+											}
+										);
+									}
+								});
+							}
+						});
+				});
 				</script>
 				<?php
 			}
