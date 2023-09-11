@@ -13,7 +13,6 @@ defined( 'ABSPATH' ) || die();
 
 use \PTC_Completionist\Admin_Notices;
 
-require_once \PTC_Completionist\PLUGIN_PATH . 'src/includes/class-util.php';
 require_once \PTC_Completionist\PLUGIN_PATH . 'src/public/class-admin-notices.php';
 
 /**
@@ -196,7 +195,7 @@ abstract class Plugin_Version_Checker {
 	 * @since [unreleased]
 	 *
 	 * @param string $old_version The plugin version string from
-	 * which to upgrade. (eg. '1.2.3')
+	 * which to upgrade.
 	 *
 	 * @return bool If upgraded successfully.
 	 */
