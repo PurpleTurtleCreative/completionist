@@ -109,5 +109,12 @@ class Uninstaller {
 				Upgrader::delete_data();
 			}
 		}
+
+		/**
+		 * Runs after uninstalling plugin data for the current blog.
+		 *
+		 * @since 4.0.0
+		 */
+		do_action( 'ptc_completionist_after_uninstall_current_blog' );
 	}
 }//end class
