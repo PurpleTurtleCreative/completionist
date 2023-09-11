@@ -168,6 +168,28 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		}
 
 		/**
+		 * Gets the currently installed database version.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @return int The database version.
+		 */
+		public static function get_installed_version() : int {
+
+			self::require_initialiation();
+
+			$installed_version = 0;
+
+			if ( function_exists( 'get_blog_option' ) ) {
+				$installed_version = (int) get_blog_option( self::$site_id, self::$db_version_option, 0 );
+			} else {
+				$installed_version = (int) get_option( self::$db_version_option, 0 );
+			}
+
+			return $installed_version;
+		}
+
+		/**
 		 * Creates or updates all tables.
 		 *
 		 * @link https://dev.mysql.com/doc/refman/5.7/en/data-types.html
@@ -177,28 +199,21 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		 * @return bool If all tables were successfully created.
 		 */
 		public static function install_all_tables() : bool {
+			global $wpdb;
 
 			self::require_initialiation();
 
+			if ( self::get_installed_version() === self::$db_version ) {
+				// Currently up-to-date! No installation needed.
+				return false;
+			}
+
+			// !! BEGIN !! Fix some dbDelta() incompatibilities.
+			add_filter( 'query', __CLASS__ . '::filter_install_query', PHP_INT_MAX, 1 );
+
 			$success = true;
 
-			global $wpdb;
 			$charset_collate = $wpdb->get_charset_collate();
-
-			if ( function_exists( 'get_blog_option' ) ) {
-				$installed_version = (int) get_blog_option( self::$site_id, self::$db_version_option, 0 );
-			} else {
-				$installed_version = (int) get_option( self::$db_version_option, 0 );
-			}
-
-			if ( $installed_version === self::$db_version ) {
-				// Currently up-to-date! No installation needed.
-				$success = false;
-				return $success;
-			}
-
-			// Fix some dbDelta() incompatibilities.
-			add_filter( 'query', __CLASS__ . '::filter_install_query', PHP_INT_MAX, 1 );
 
 			$automations_table = self::$automations_table;
 			$sql = "CREATE TABLE {$automations_table} (
@@ -272,7 +287,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 				$success = false;
 			}
 
-			// Done altering database queries.
+			// !! END !! Done altering database queries.
 			remove_filter( 'query', __CLASS__ . '::filter_install_query', PHP_INT_MAX );
 
 			if ( $success ) {
@@ -282,14 +297,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 				} else {
 					update_option( self::$db_version_option, self::$db_version );
 				}
-
-				/*
-				 * Now that the custom request tokens database table
-				 * is successfully installed, all deprecated Request
-				 * Tokens (stored within postmeta) should be purged.
-				 */
-				require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
-				Request_Tokens::purge_all();
 			} else {
 				// Warn if unsuccessful.
 				trigger_error(
