@@ -1,13 +1,16 @@
-### 4.0.0 - 2023-09-03
+### 4.0.0 - 2023-09-10
 
 #### Added
 
+- New submenu page to upgrade to Completionist Pro for premium features via [Freemius](https://freemius.com/).
 - New `readme.txt` file for WordPress.org plugins listing.
 - New `Uninstaller` class to handle plugin data removal.
+- New `Upgrader` class to handle plugin version updates. This also offers support assistance when a version rollback is detected, which usually indicates that the user is experiencing issues with the newer version of the plugin.
+- New `Admin_Notices` class to handle displaying of admin notices. All notices are respectful in that they are either displayed once or dismissible.
 
 #### Changed
 
-- Remote updates are now handled through WordPress.org and [Freemius](https://freemius.com/). This change also provides the option to upgrade to Completionist Pro.
+- Remote updates are now handled through WordPress.org.
 
 #### Removed
 
