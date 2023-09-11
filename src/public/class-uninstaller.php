@@ -71,7 +71,7 @@ class Uninstaller {
 		 * @param bool $uninstall_all_data If all plugin data should
 		 * be uninstalled. Default true.
 		 */
-		$uninstall_all_data = apply_filters( 'ptc_completionist_freemius_init_args', true );
+		$uninstall_all_data = apply_filters( 'ptc_completionist_uninstall_all_data', true );
 		if ( ! $uninstall_all_data ) {
 			return;
 		}
