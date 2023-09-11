@@ -113,6 +113,9 @@ class Uninstaller {
 		/**
 		 * Runs after uninstalling plugin data for the current blog.
 		 *
+		 * Note that this runs for each blog if Completionist is
+		 * uninstalled on a WordPress multisite.
+		 *
 		 * @since 4.0.0
 		 */
 		do_action( 'ptc_completionist_after_uninstall_current_blog' );
