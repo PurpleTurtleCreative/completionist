@@ -62,6 +62,22 @@ class Uninstaller {
 	 */
 	public static function uninstall_current_blog() {
 
+		/**
+		 * Filters whether all plugin data should be removed during
+		 * uninstallation.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param bool $uninstall_all_data If all plugin data should
+		 * be uninstalled. Default true.
+		 */
+		$uninstall_all_data = apply_filters( 'ptc_completionist_freemius_init_args', true );
+		if ( ! $uninstall_all_data ) {
+			return;
+		}
+
+		// Remove all plugin data.
+
 		require_once PLUGIN_PATH . 'src/includes/class-options.php';
 		if ( class_exists( __NAMESPACE__ . '\Options' ) ) {
 			if ( method_exists( __NAMESPACE__ . '\Options', 'delete_all' ) ) {
