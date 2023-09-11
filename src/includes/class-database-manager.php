@@ -170,7 +170,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		/**
 		 * Gets the currently installed database version.
 		 *
-		 * @since [unreleased]
+		 * @since 4.0.0
 		 *
 		 * @return int The database version.
 		 */

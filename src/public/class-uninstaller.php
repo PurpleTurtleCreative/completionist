@@ -2,7 +2,7 @@
 /**
  * Uninstaller class
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 
 declare(strict_types=1);
@@ -14,14 +14,14 @@ defined( 'ABSPATH' ) || die();
 /**
  * Static class to handle plugin uninstallation.
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 class Uninstaller {
 
 	/**
 	 * Hooks functionality into the WordPress execution flow.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	public static function register() {
 		add_action(
@@ -38,7 +38,7 @@ class Uninstaller {
 	/**
 	 * Removes this plugin's data for the entire WordPress site.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	public static function uninstall_all() {
 		if ( function_exists( 'get_sites' ) ) {
@@ -58,7 +58,7 @@ class Uninstaller {
 	/**
 	 * Removes this plugin's data for the current blog.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	public static function uninstall_current_blog() {
 
@@ -66,7 +66,7 @@ class Uninstaller {
 		 * Filters whether all plugin data should be removed during
 		 * uninstallation.
 		 *
-		 * @since [unreleased]
+		 * @since 4.0.0
 		 *
 		 * @param bool $uninstall_all_data If all plugin data should
 		 * be uninstalled. Default true.

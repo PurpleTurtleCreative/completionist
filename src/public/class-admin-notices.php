@@ -7,7 +7,7 @@
  * that the notices themselves are only ever displayed in the
  * admin context which means they are "notices for the admin".
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 
 declare(strict_types=1);
@@ -27,7 +27,7 @@ class Admin_Notices {
 	 * These are persisted in the database and loaded during the
 	 * 'plugins_loaded' action.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @var array $notices
 	 */
@@ -37,7 +37,7 @@ class Admin_Notices {
 	 * If the admin notices have been updated in memory since
 	 * being loaded from the database.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @var bool $has_updates
 	 */
@@ -46,7 +46,7 @@ class Admin_Notices {
 	/**
 	 * The option name for storing the active admin notices.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @var string ADMIN_NOTICES_OPTION_NAME
 	 */
@@ -55,7 +55,7 @@ class Admin_Notices {
 	/**
 	 * Hooks functionality into the WordPress execution flow.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	public static function register() {
 		add_action( 'plugins_loaded', __CLASS__ . '::load', \PHP_INT_MIN );
@@ -66,7 +66,7 @@ class Admin_Notices {
 	/**
 	 * Registers the custom REST API endpoints.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	public static function register_routes() {
 		register_rest_route(
@@ -92,7 +92,7 @@ class Admin_Notices {
 	/**
 	 * Handles a POST request to dismiss an admin notice.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *
@@ -108,7 +108,7 @@ class Admin_Notices {
 	/**
 	 * Loads the admin notices from the database.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	public static function load() {
 		static::$notices = get_option( static::ADMIN_NOTICES_OPTION_NAME, array() );
@@ -117,7 +117,7 @@ class Admin_Notices {
 	/**
 	 * Saves the admin notices to the database.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	public static function save() {
 		if ( static::$has_updates ) {
@@ -128,7 +128,7 @@ class Admin_Notices {
 	/**
 	 * Displays all admin notices per the current user's capabilities.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	public static function display() {
 		if ( is_array( static::$notices ) && count( static::$notices ) > 0 ) {
@@ -205,7 +205,7 @@ class Admin_Notices {
 	/**
 	 * Adds an admin notice.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param array $args {
 	 *     The admin notice's data.
@@ -261,7 +261,7 @@ class Admin_Notices {
 	/**
 	 * Removes an admin notice.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param string $id The notice's ID.
 	 */
@@ -275,7 +275,7 @@ class Admin_Notices {
 	/**
 	 * Deletes all admin notices data.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	public static function delete_all() {
 		delete_option( static::ADMIN_NOTICES_OPTION_NAME );

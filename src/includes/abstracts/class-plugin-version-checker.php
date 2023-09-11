@@ -2,7 +2,7 @@
 /**
  * Plugin Version Checker class
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 
 declare(strict_types=1);
@@ -18,14 +18,14 @@ require_once \PTC_Completionist\PLUGIN_PATH . 'src/public/class-admin-notices.ph
 /**
  * Static class to handle plugin version checks and migrations.
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 abstract class Plugin_Version_Checker {
 
 	/**
 	 * Hooks functionality into the WordPress execution flow.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	final public static function register() {
 		if ( ! defined( 'DOING_AJAX' ) || ! \DOING_AJAX ) {
@@ -42,7 +42,7 @@ abstract class Plugin_Version_Checker {
 	 * Checks the last successfully upgraded plugin version and
 	 * runs the upgrade processes if needed.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	final public static function maybe_run() {
 
@@ -145,7 +145,7 @@ abstract class Plugin_Version_Checker {
 	/**
 	 * Resets the upgrader by deleting its data.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	final public static function delete_data() {
 		delete_option( static::get_upgraded_version_option_name() );
@@ -154,7 +154,7 @@ abstract class Plugin_Version_Checker {
 	/**
 	 * Gets the current running plugin version.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
@@ -164,7 +164,7 @@ abstract class Plugin_Version_Checker {
 	 * Gets the option name storing the last successfully upgraded
 	 * plugin version.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
@@ -173,7 +173,7 @@ abstract class Plugin_Version_Checker {
 	/**
 	 * Gets the plugin name to display in alerts and notices.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
@@ -182,7 +182,7 @@ abstract class Plugin_Version_Checker {
 	/**
 	 * Gets the URL for the plugin's support page.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
@@ -192,7 +192,7 @@ abstract class Plugin_Version_Checker {
 	 * Runs migration processes to upgrade the plugin's state from
 	 * the specified version.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param string $old_version The plugin version string from
 	 * which to upgrade.

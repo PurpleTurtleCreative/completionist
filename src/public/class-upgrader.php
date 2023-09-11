@@ -2,7 +2,7 @@
 /**
  * Upgrader class
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 
 declare(strict_types=1);
@@ -17,14 +17,14 @@ require_once PLUGIN_PATH . 'src/public/class-freemius.php';
 /**
  * Static class to handle plugin upgrades.
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 class Upgrader extends Abstracts\Plugin_Version_Checker {
 
 	/**
 	 * Gets the current running plugin version.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
@@ -36,7 +36,7 @@ class Upgrader extends Abstracts\Plugin_Version_Checker {
 	 * Gets the option name storing the last successfully upgraded
 	 * plugin version.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
@@ -47,7 +47,7 @@ class Upgrader extends Abstracts\Plugin_Version_Checker {
 	/**
 	 * Gets the plugin name to display in alerts and notices.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
@@ -58,7 +58,7 @@ class Upgrader extends Abstracts\Plugin_Version_Checker {
 	/**
 	 * Gets the URL for the plugin's support page.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
@@ -70,7 +70,7 @@ class Upgrader extends Abstracts\Plugin_Version_Checker {
 	 * Runs migration processes to upgrade the plugin's state from
 	 * the specified version.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param string $old_version The plugin version string from
 	 * which to upgrade.

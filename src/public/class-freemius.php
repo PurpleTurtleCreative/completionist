@@ -55,7 +55,7 @@ class Freemius {
 			/**
 			 * Filters the arguments for initializing the Freemius SDK.
 			 *
-			 * @since [unreleased]
+			 * @since 4.0.0
 			 *
 			 * @param array $freemius_init_args Freemius SDK init args.
 			 */
@@ -102,7 +102,7 @@ class Freemius {
 	/**
 	 * Gets the plugin icon file.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
