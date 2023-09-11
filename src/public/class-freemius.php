@@ -13,6 +13,8 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
+require_once PLUGIN_PATH . 'src/admin/class-admin-pages.php';
+
 /**
  * A static class for managing the Freemius integration.
  */
@@ -50,8 +52,15 @@ class Freemius {
 			// Include Freemius SDK for remote updates.
 			require_once PLUGIN_PATH . 'vendor/freemius/wordpress-sdk/start.php';
 
-			// Initialize the Freemius SDK object.
-			static::$freemius = fs_dynamic_init(
+			/**
+			 * Filters the arguments for initializing the Freemius SDK.
+			 *
+			 * @since [unreleased]
+			 *
+			 * @param array $freemius_init_args Freemius SDK init args.
+			 */
+			$freemius_init_args = apply_filters(
+				'ptc_completionist_freemius_init_args',
 				array(
 					'id'                  => '13144',
 					'slug'                => 'completionist',
@@ -64,13 +73,17 @@ class Freemius {
 					'has_addons'          => false,
 					'has_paid_plans'      => true,
 					'menu'                => array(
-						'slug'    => 'ptc-completionist',
+						'slug'    => Admin_Pages::PARENT_PAGE_SLUG,
 						'contact' => false,
 						'support' => false,
 					),
 				)
 			);
 
+			// Initialize the Freemius SDK object.
+			static::$freemius = fs_dynamic_init( $freemius_init_args );
+
+			// Add customizations.
 			static::$freemius->add_filter( 'plugin_icon', __CLASS__ . '::get_plugin_icon' );
 
 			/**
@@ -94,6 +107,6 @@ class Freemius {
 	 * @return string
 	 */
 	public static function get_plugin_icon() : string {
-		return PLUGIN_PATH . '/assets/images/completionist_asana-for-wordpress_300x300.jpg';
+		return PLUGIN_PATH . 'assets/images/completionist_asana-for-wordpress_300x300.jpg';
 	}
 }//end class
