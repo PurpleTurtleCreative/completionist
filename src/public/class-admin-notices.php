@@ -58,9 +58,9 @@ class Admin_Notices {
 	 * @since 4.0.0
 	 */
 	public static function register() {
-		add_action( 'plugins_loaded', __CLASS__ . '::load', \PHP_INT_MIN );
-		add_action( 'admin_notices', __CLASS__ . '::display', \PHP_INT_MAX );
-		add_action( 'shutdown', __CLASS__ . '::save' );
+		add_action( 'plugins_loaded', __CLASS__ . '::load', 5 );
+		add_action( 'admin_notices', __CLASS__ . '::display', 10 );
+		add_action( 'shutdown', __CLASS__ . '::save', 10 );
 	}
 
 	/**
