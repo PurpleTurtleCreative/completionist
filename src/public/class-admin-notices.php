@@ -31,7 +31,7 @@ class Admin_Notices {
 	 *
 	 * @var array $notices
 	 */
-	private static $notices = array();
+	private static $notices;
 
 	/**
 	 * If the admin notices have been updated in memory since
@@ -111,7 +111,9 @@ class Admin_Notices {
 	 * @since 4.0.0
 	 */
 	public static function load() {
-		static::$notices = get_option( static::ADMIN_NOTICES_OPTION_NAME, array() );
+		if ( ! isset( static::$notices ) ) {
+			static::$notices = get_option( static::ADMIN_NOTICES_OPTION_NAME, array() );
+		}
 	}
 
 	/**
