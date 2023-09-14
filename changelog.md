@@ -1,8 +1,10 @@
-### 3.10.1-rc.1 - 2023-09-05
+### 3.10.1-rc.2 - 2023-09-14
 
 #### Fixed
 
 - PHP error when creating or displaying Asana tasks assigned to an Asana user connection that's being used by multiple WordPress users in Completionist.
+- PHP 8.2 compatibility for handling dates which was causing fatal errors when trying to create and display tasks in the Pinned Tasks metabox.
+- Increased minimum version requirement to PHP 7.2 due to Composer dependencies.
 
 ### 3.10.0 - 2023-08-15
 

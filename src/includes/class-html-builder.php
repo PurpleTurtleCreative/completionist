@@ -433,7 +433,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 		 */
 		public static function get_relative_due( \stdClass $task ) : \stdClass {
 
-			// TODO: just pass a string, don't require using a task object...
+			// TODO: just pass a string, don't require using an entire task object...
 
 			$relative_due = new \stdClass();
 			$relative_due->label = '';
@@ -442,20 +442,20 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 			if ( isset( $task->due_on ) ) {
 				$due_date = Options::sanitize( 'date', $task->due_on );
 				if ( ! empty( $due_date ) ) {
-					$dt = \DateTime::createFromFormat( 'Y-m-d', $due_date );
-					if ( false !== $dt && 0 === array_sum( $dt::getLastErrors() ) ) {
+					$dt_due = \DateTimeImmutable::createFromFormat( 'Y-m-d', $due_date );
+					if ( false !== $dt_due && method_exists( $dt_due, 'setTime' ) ) {
 
-						$dt_today = new \DateTime( 'today' );
-						$dt->setTime( 0, 0 );
+						$dt_today = new \DateTimeImmutable( 'today' );
+						$dt_due->setTime( 0, 0 );
 						$dt_today->setTime( 0, 0 );
-						$days_diff = $dt_today->diff( $dt )->days;
+						$days_diff = $dt_today->diff( $dt_due )->days;
 
-						if ( $dt < $dt_today && 0 !== $days_diff ) {
+						if ( $dt_due < $dt_today && 0 !== $days_diff ) {
 
 							if ( 1 === $days_diff ) {
 								$dt_string = 'Yesterday';
 							} else {
-								$dt_string = human_time_diff( $dt->getTimestamp() ) . ' ago';
+								$dt_string = human_time_diff( $dt_due->getTimestamp() ) . ' ago';
 							}
 
 							$relative_due->status = 'past';
@@ -472,7 +472,7 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 								if ( 1 === $days_diff ) {
 									$dt_string = 'Tomorrow';
 								} else {
-									$dt_string = $dt->format( 'l' );
+									$dt_string = $dt_due->format( 'l' );
 								}
 								$relative_due->status = 'soon';
 
@@ -514,36 +514,39 @@ if ( ! class_exists( __NAMESPACE__ . '\HTML_Builder' ) ) {
 				return [];
 			}
 
-			$success = usort( $tasks, function( $a, $b ) {
+			$success = usort(
+				$tasks,
+				function( $a, $b ) {
 
-				$a_unix = PHP_INT_MAX;
+					$a_unix = PHP_INT_MAX;
 
-				if ( isset( $a->due_on ) ) {
-					$a_due_date = Options::sanitize( 'date', $a->due_on );
-					if ( ! empty( $a_due_date ) ) {
-						$a_dt = \DateTime::createFromFormat( 'Y-m-d', $a_due_date );
-						if ( false !== $a_dt || 0 === array_sum( $a_dt::getLastErrors() ) ) {
-							$a_dt->setTime( 0, 0 );
-							$a_unix = $a_dt->getTimestamp();
+					if ( isset( $a->due_on ) ) {
+						$a_due_date = Options::sanitize( 'date', $a->due_on );
+						if ( ! empty( $a_due_date ) ) {
+							$a_dt = \DateTimeImmutable::createFromFormat( 'Y-m-d', $a_due_date );
+							if ( false !== $a_dt && method_exists( $a_dt, 'setTime' ) ) {
+								$a_dt->setTime( 0, 0 );
+								$a_unix = $a_dt->getTimestamp();
+							}
 						}
 					}
-				}
 
-				$b_unix = PHP_INT_MAX;
+					$b_unix = PHP_INT_MAX;
 
-				if ( isset( $b->due_on ) ) {
-					$b_due_date = Options::sanitize( 'date', $b->due_on );
-					if ( ! empty( $b_due_date ) ) {
-						$b_dt = \DateTime::createFromFormat( 'Y-m-d', $b_due_date );
-						if ( false !== $b_dt || 0 === array_sum( $b_dt::getLastErrors() ) ) {
-							$b_dt->setTime( 0, 0 );
-							$b_unix = $b_dt->getTimestamp();
+					if ( isset( $b->due_on ) ) {
+						$b_due_date = Options::sanitize( 'date', $b->due_on );
+						if ( ! empty( $b_due_date ) ) {
+							$b_dt = \DateTimeImmutable::createFromFormat( 'Y-m-d', $b_due_date );
+							if ( false !== $b_dt && method_exists( $b_dt, 'setTime' ) ) {
+								$b_dt->setTime( 0, 0 );
+								$b_unix = $b_dt->getTimestamp();
+							}
 						}
 					}
-				}
 
-				return ( $a_unix - $b_unix );
-			} );
+					return ( $a_unix - $b_unix );
+				}
+			);
 
 			if ( $success ) {
 				return $tasks;
