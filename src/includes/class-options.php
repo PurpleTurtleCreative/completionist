@@ -643,8 +643,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 					);
 					$sanitized_datetime = trim( preg_replace( '/[^0-9:\- ]+/', '', $filtered_datetime ) );
 					/* should be string in format Y-m-d H:i:s */
-					$dt = \DateTime::createFromFormat( 'Y-m-d H:i:s', $date );
-					if ( false !== $dt && 0 === array_sum( $dt::getLastErrors() ) ) {
+					$dt = \DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $date );
+					if ( false !== $dt && method_exists( $dt, 'format' ) ) {
 						$dt_string = $dt->format( 'Y-m-d H:i:s' );
 						return ( false !== $dt_string ) ? $dt_string : '';
 					} else {
@@ -658,9 +658,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 						FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
 					);
 					$sanitized_date = trim( preg_replace( '/[^0-9\-]+/', '', $filtered_date ) );
-					/* should be string in format yyyy-mm-dd */
-					$dt = \DateTime::createFromFormat( 'Y-m-d', $sanitized_date );
-					if ( false !== $dt && 0 === array_sum( $dt::getLastErrors() ) ) {
+					// Should be string in format yyyy-mm-dd.
+					// Use DateTime to validate if the string represents
+					// a valid date.
+					$dt = \DateTimeImmutable::createFromFormat( 'Y-m-d', $sanitized_date );
+					if ( false !== $dt && method_exists( $dt, 'format' ) ) {
 						$dt_string = $dt->format( 'Y-m-d' );
 						return ( false !== $dt_string ) ? $dt_string : '';
 					} else {
