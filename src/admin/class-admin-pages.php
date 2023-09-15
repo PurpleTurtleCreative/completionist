@@ -98,14 +98,15 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 		/**
 		 * Edits the plugin row's action links.
 		 *
+		 * @since [unreleased] Array keys are now named instead of numeric indices.
 		 * @since 3.0.0 Moved to Admin_Pages class.
 		 * @since 1.0.0
 		 *
 		 * @param string[] $links The plugin action link HTML items.
 		 */
 		public static function filter_plugin_action_links( $links ) {
-			$links[] = '<a href="https://docs.purpleturtlecreative.com/completionist/" target="_blank">Docs</a>';
-			$links[] = '<a href="' . esc_url( static::get_settings_url() ) . '">Settings</a>';
+			$links['docs'] = '<a href="https://docs.purpleturtlecreative.com/completionist/" target="_blank">Docs</a>';
+			$links['settings'] = '<a href="' . esc_url( static::get_settings_url() ) . '">Settings</a>';
 			return $links;
 		}
 
