@@ -75,7 +75,7 @@ class Admin_Notices {
 			array(
 				array(
 					'methods'             => 'POST',
-					'callback'            => __CLASS__ . '::handle_post_dismiss',
+					'callback'            => __CLASS__ . '::handle_notice_dismiss',
 					'permission_callback' => 'is_user_logged_in',
 					'args'                => array(
 						'id' => array(
@@ -98,7 +98,7 @@ class Admin_Notices {
 	 *
 	 * @return \WP_REST_Response|\WP_Error The API response.
 	 */
-	public static function handle_post_dismiss(
+	public static function handle_notice_dismiss(
 		\WP_REST_Request $request
 	) {
 		static::remove( $request['id'] );
