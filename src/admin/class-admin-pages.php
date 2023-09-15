@@ -105,8 +105,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 		 * @param string[] $links The plugin action link HTML items.
 		 */
 		public static function filter_plugin_action_links( $links ) {
-			$links['docs'] = '<a href="https://docs.purpleturtlecreative.com/completionist/" target="_blank">Docs</a>';
-			$links['settings'] = '<a href="' . esc_url( static::get_settings_url() ) . '">Settings</a>';
+			$links['ptc_docs'] = '<a href="https://docs.purpleturtlecreative.com/completionist/" target="_blank">Docs</a>';
+			$links['ptc_settings'] = '<a href="' . esc_url( static::get_settings_url() ) . '">Settings</a>';
 			return $links;
 		}
 
