@@ -137,9 +137,15 @@ class Admin_Notices {
 
 			$is_displaying_dismissible = false;
 
+			// Custom admin notice capability check for specific user ID.
+			$is_user_cap = '_is_user_' . get_current_user_id();
+
 			foreach ( static::$notices as $id => $notice ) {
 
-				if ( ! current_user_can( $notice['capability'] ) ) {
+				if (
+					! current_user_can( $notice['capability'] ) &&
+					$is_user_cap !== $notice['capability']
+				) {
 					// User does not have permission to read
 					// or dismiss this notice.
 					continue;
@@ -147,10 +153,14 @@ class Admin_Notices {
 
 				$class = "notice notice-{$notice['type']} ptc-completionist-admin-notice";
 
-				$formatted_timestamp = date_i18n(
-					get_option( 'date_format' ) . ' ' . get_option( 'time_format' ),
-					$notice['timestamp']
-				);
+				$maybe_formatted_timestamp = '';
+				if ( ! empty( $notice['timestamp'] ) ) {
+					$maybe_formatted_timestamp = date_i18n(
+						get_option( 'date_format' ) . ' ' . get_option( 'time_format' ),
+						$notice['timestamp']
+					);
+					$maybe_formatted_timestamp = '[' . $maybe_formatted_timestamp . '] ';
+				}
 
 				$message = $notice['message'];
 
@@ -159,19 +169,19 @@ class Admin_Notices {
 					$is_displaying_dismissible = true;
 				} else {
 					// Non-dismissible notices display once.
-					unset( static::$notices[ $id ] );
-					static::$has_updates = true;
+					static::remove( $id );
 				}
 
 				printf(
 					'<div class="%1$s" data-notice-id="%2$s"><p>%3$s</p></div>',
 					esc_attr( $class ),
 					esc_attr( $id ),
-					wp_kses_post( "[{$formatted_timestamp}] $message" )
+					wp_kses_post( "{$maybe_formatted_timestamp}{$message}" )
 				);
 			}//end foreach.
 
 			if ( $is_displaying_dismissible ) {
+				// AJAX handler for dismissible notices.
 				?>
 				<script type="text/javascript">
 				document.addEventListener('DOMContentLoaded', () => {
@@ -212,16 +222,28 @@ class Admin_Notices {
 	 * @param array $args {
 	 *     The admin notice's data.
 	 *
-	 *     @type string $id          The data storage key.
-	 *     @type int    $timestamp   The unix timestamp.
+	 *     @type string $id          The data storage key. Default
+	 *                               randomly generated unique ID.
+	 *
+	 *     @type int    $timestamp   The unix timestamp. Set to false
+	 *                               or 0 if not important.
+	 *                               Default current time.
+	 *
 	 *     @type string $message     The notice message.
-	 *     @type string $type        The notice type like
-	 *                               'success' or 'error'.
+	 *
+	 *     @type string $type        The notice type like 'info',
+	 *                               'warning', 'success', or 'error'.
+	 *
 	 *     @type bool   $dismissible If the notice is dismissible
 	 *                               and should persist until
 	 *                               dismissed on the frontend.
+	 *
 	 *     @type string $capability  The user capability for
-	 *                               displaying the notice.
+	 *                               displaying the notice. Can also
+	 *                               use the custom format
+	 *                               "_is_user_{$wp_user->id}" to
+	 *                               limit the notice to a particular
+	 *                               individual user by ID.
 	 * }
 	 *
 	 * @return string The notice's ID. Empty string on failure.
@@ -242,12 +264,11 @@ class Admin_Notices {
 
 		if (
 			empty( $notice['id'] ) ||
-			empty( $notice['timestamp'] ) ||
 			empty( $notice['message'] ) ||
 			empty( $notice['type'] )
 		) {
 			trigger_error(
-				'Refused to add an admin notice with missing data. The keys id, timestamp, message, and type are all required: ' . print_r( $notice, true ),
+				'Refused to add an admin notice with missing data. The keys id, message, and type are all required: ' . print_r( $notice, true ),
 				\E_USER_WARNING
 			);
 			return '';
