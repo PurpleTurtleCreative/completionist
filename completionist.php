@@ -98,7 +98,7 @@ define( __NAMESPACE__ . '\REST_API_NAMESPACE_V1', PLUGIN_SLUG . '/v1' );
  * This ensures all variables are contained within the declared
  * namespace to not contaminate the global namespace.
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 function init() {
 

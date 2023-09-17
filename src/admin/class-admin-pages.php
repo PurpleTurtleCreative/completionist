@@ -98,7 +98,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Admin_Pages' ) ) {
 		/**
 		 * Edits the plugin row's action links.
 		 *
-		 * @since [unreleased] Array keys are now named instead of numeric indices.
+		 * @since 4.0.0 Array keys are now named instead of numeric indices.
 		 * @since 3.0.0 Moved to Admin_Pages class.
 		 * @since 1.0.0
 		 *
