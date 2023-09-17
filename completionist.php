@@ -92,51 +92,65 @@ define( __NAMESPACE__ . '\REST_API_NAMESPACE_V1', PLUGIN_SLUG . '/v1' );
 
 /* REGISTER PLUGIN FUNCTIONS ---------------------- */
 
-/* Activation Hook */
-register_activation_hook(
-	PLUGIN_FILE,
-	function() {
-		require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
-		Database_Manager::init();
-		Database_Manager::install_all_tables();
-	}
-);
+/**
+ * Initializes the plugin's code.
+ *
+ * This ensures all variables are contained within the declared
+ * namespace to not contaminate the global namespace.
+ *
+ * @since [unreleased]
+ */
+function init() {
 
-/* Plugins Loaded */
-add_action(
-	'plugins_loaded',
-	function() {
-		/* Ensure Database Tables are Installed */
-		require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
-		Database_Manager::init();
-		Database_Manager::install_all_tables();
-		/* Enqueue Automation Actions */
-		require_once PLUGIN_PATH . 'src/includes/automations/class-events.php';
-		Automations\Events::add_actions();
-	}
-);
+	/* Activation Hook */
+	register_activation_hook(
+		PLUGIN_FILE,
+		function() {
+			require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
+			Database_Manager::init();
+			Database_Manager::install_all_tables();
+		}
+	);
 
-// Register public functionality.
-foreach ( glob( PLUGIN_PATH . 'src/public/class-*.php' ) as $file ) {
-	require_once $file;
-}
+	/* Plugins Loaded */
+	add_action(
+		'plugins_loaded',
+		function() {
+			/* Ensure Database Tables are Installed */
+			require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
+			Database_Manager::init();
+			Database_Manager::install_all_tables();
+			/* Enqueue Automation Actions */
+			require_once PLUGIN_PATH . 'src/includes/automations/class-events.php';
+			Automations\Events::add_actions();
+		}
+	);
 
-Admin_Notices::register();
-Freemius::register();
-Request_Token::register();
-REST_Server::register();
-Shortcodes::register();
-Uninstaller::register();
-Upgrader::register();
-
-// Register admin functionality.
-if ( is_admin() ) {
-
-	foreach ( glob( PLUGIN_PATH . 'src/admin/class-*.php' ) as $file ) {
+	// Register public functionality.
+	foreach ( glob( PLUGIN_PATH . 'src/public/class-*.php' ) as $file ) {
 		require_once $file;
 	}
 
-	Admin_Pages::register();
-	Admin_Widgets::register();
-	Admin_Ajax::register();
+	Admin_Notices::register();
+	Freemius::register();
+	Request_Token::register();
+	REST_Server::register();
+	Shortcodes::register();
+	Uninstaller::register();
+	Upgrader::register();
+
+	// Register admin functionality.
+	if ( is_admin() ) {
+
+		foreach ( glob( PLUGIN_PATH . 'src/admin/class-*.php' ) as $file ) {
+			require_once $file;
+		}
+
+		Admin_Pages::register();
+		Admin_Widgets::register();
+		Admin_Ajax::register();
+	}
 }
+
+// Load the plugin code.
+init();
