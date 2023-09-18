@@ -137,7 +137,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 				empty( get_sites( array( 'ID' => $site_id ) ) )
 			) {
 				$err_msg = "Cannot initialize Database Manager for unrecognized site id {$site_id}.";
-				trigger_error( $err_msg, E_USER_ERROR );
+				trigger_error( $err_msg, \E_USER_ERROR );
 				wp_die( esc_html( $err_msg ) );
 			}
 
@@ -301,7 +301,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 				// Warn if unsuccessful.
 				trigger_error(
 					"Failed to install database tables for Completionist. SQL error encountered: {$wpdb->last_error}",
-					E_USER_WARNING
+					\E_USER_WARNING
 				);
 			}
 
@@ -349,8 +349,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 			} else {
 				delete_option( self::$db_version_option );
 			}
-
-			error_log( '[PTC Completionist] Uninstalled database tables for site: ' . self::$site_id );
 		}
 
 		/**
@@ -458,7 +456,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 			if ( ! in_array( $table_name, self::$table_names, true ) ) {
 				trigger_error(
 					"Table name '{$table_name}' is not in the allowlist:\n" . print_r( self::$table_names, true ),
-					E_USER_WARNING
+					\E_USER_WARNING
 				);
 				return false;
 			}
@@ -514,7 +512,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 		private static function require_initialiation() {
 			if ( ! self::$has_been_initialized ) {
 				$err_msg = 'The Database Manager must be initialized before usage.';
-				trigger_error( $err_msg, E_USER_ERROR );
+				trigger_error( $err_msg, \E_USER_ERROR );
 				wp_die( esc_html( $err_msg ) );
 			}
 		}

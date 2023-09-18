@@ -11,6 +11,8 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
+require_once PLUGIN_PATH . 'src/public/class-freemius.php';
+
 /**
  * Static class to handle plugin uninstallation.
  *
@@ -24,14 +26,9 @@ class Uninstaller {
 	 * @since 4.0.0
 	 */
 	public static function register() {
-		add_action(
-			'ptc_completionist_freemius_loaded',
-			function( $freemius ) {
-				$freemius->add_action(
-					'after_uninstall',
-					__CLASS__ . '::uninstall_all'
-				);
-			}
+		Freemius::instance()->add_action(
+			'after_uninstall',
+			__CLASS__ . '::uninstall_all'
 		);
 	}
 

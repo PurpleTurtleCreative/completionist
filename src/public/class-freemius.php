@@ -35,7 +35,7 @@ class Freemius {
 	 * @since 4.0.0
 	 */
 	public static function register() {
-		add_action( 'plugins_loaded', __CLASS__ . '::instance' );
+		static::instance(); // Immediately load the Freemius SDK.
 	}
 
 	/**
