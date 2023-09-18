@@ -4,13 +4,13 @@ completionist/*.map
 completionist/*.sh
 completionist/*.DS_Store
 completionist/.git*
-completionist/action.yml
 completionist/exclude.lst
 completionist/composer.json
 completionist/composer.lock
 completionist/node_modules/*
 completionist/package-lock.json
 completionist/package.json
+completionist/phpcs.xml
 completionist/assets/styles/scss/*
 completionist/src/components/*
 completionist/src/*.js
