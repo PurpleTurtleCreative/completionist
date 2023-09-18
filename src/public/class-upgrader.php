@@ -81,6 +81,14 @@ class Upgrader extends Abstracts\Plugin_Version_Checker {
 
 		$success = true;
 
+		if ( '0.0.0' === $old_version ) {
+			// !! Initial plugin activation !!
+			// Use this instead of registering an activation hook.
+			require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
+			Database_Manager::init();
+			Database_Manager::install_all_tables();
+		}
+
 		if ( version_compare( $old_version, '3.7.0', '<' ) ) {
 			// v3.7.0 is when the new Request_Token class replaced
 			// the postmeta-based Request_Tokens class. If successful,

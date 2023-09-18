@@ -55,24 +55,38 @@ abstract class Plugin_Version_Checker {
 			// Plugin state is up-to-date.
 			return;
 		} elseif ( version_compare( $current_plugin_version, $last_upgraded_version, '>' ) ) {
+
 			// Plugin state is old and needs upgrade.
 			if ( static::upgrade_from_version( $last_upgraded_version, $current_plugin_version ) ) {
+
 				// Update option on successful upgrade.
 				update_option(
 					$upgraded_version_option,
 					$current_plugin_version,
 					true
 				);
+
 				// Notify success.
+
+				$success_message = sprintf(
+					'<strong>Successfully upgraded %s from v%s to v%s!</strong> Thank you for your continued support!',
+					static::get_plugin_name(),
+					$last_upgraded_version,
+					$current_plugin_version
+				);
+
+				if ( '0.0.0' === $last_upgraded_version ) {
+					$success_message = sprintf(
+						'<strong>Successfully activated %s v%s!</strong> Thank you for your support!',
+						static::get_plugin_name(),
+						$current_plugin_version
+					);
+				}
+
 				Admin_Notices::add(
 					array(
 						'id'          => 'plugin_version_check',
-						'message'     => sprintf(
-							'<strong>%s successfully upgraded from v%s to v%s!</strong> We greatly appreciate your continued support!',
-							static::get_plugin_name(),
-							$last_upgraded_version,
-							$current_plugin_version
-						),
+						'message'     => $success_message,
 						'type'        => 'success',
 						'dismissible' => false,
 						'capability'  => 'update_plugins',

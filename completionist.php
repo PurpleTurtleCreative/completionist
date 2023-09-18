@@ -102,16 +102,6 @@ define( __NAMESPACE__ . '\REST_API_NAMESPACE_V1', PLUGIN_SLUG . '/v1' );
  */
 function init() {
 
-	/* Activation Hook */
-	register_activation_hook(
-		PLUGIN_FILE,
-		function() {
-			require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
-			Database_Manager::init();
-			Database_Manager::install_all_tables();
-		}
-	);
-
 	/* Plugins Loaded */
 	add_action(
 		'plugins_loaded',
