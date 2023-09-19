@@ -63,7 +63,7 @@ class Upgrader extends Abstracts\Plugin_Version_Checker {
 	 * @return string
 	 */
 	protected static function get_support_link() : string {
-		return Freemius::instance()->contact_url();
+		return 'mailto:support@purpleturtlecreative.com';
 	}
 
 	/**

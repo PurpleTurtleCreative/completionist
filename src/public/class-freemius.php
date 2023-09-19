@@ -68,7 +68,7 @@ class Freemius {
 					'type'                => 'plugin',
 					'public_key'          => 'pk_bc2f099a7701a0c4646ebb19511b9',
 					'is_premium'          => false,
-					'premium_suffix'      => 'Pro',
+					'premium_suffix'      => '(Pro)',
 					'has_premium_version' => true,
 					'has_addons'          => false,
 					'has_paid_plans'      => true,
