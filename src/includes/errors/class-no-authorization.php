@@ -1,6 +1,6 @@
 <?php
 /**
- * No Authorization class
+ * Errors: No Authorization class
  *
  * @since 4.0.0
  */

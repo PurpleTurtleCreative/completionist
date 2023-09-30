@@ -1,6 +1,6 @@
 <?php
 /**
- * General Tasks Categorizer class
+ * Task Categorizer: General class
  *
  * Task Categorizer for tasks that are NOT pinned on the site.
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * Pinned Tasks Categorizer class
+ * Task Categorizer: Pinned class
  *
  * Task Categorizer for tasks that are pinned on the site.
  *

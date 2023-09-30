@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Version Checker class
+ * Plugin Version Checker abstract class
  *
  * @since 4.0.0
  */

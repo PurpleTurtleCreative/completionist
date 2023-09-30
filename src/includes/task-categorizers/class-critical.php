@@ -1,6 +1,6 @@
 <?php
 /**
- * Critical Tasks Categorizer class
+ * Task Categorizer: Critical class
  *
  * Task Categorizer for tasks that are due in the past, today,
  * or within 7 days.

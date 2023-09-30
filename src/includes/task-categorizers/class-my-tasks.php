@@ -1,6 +1,6 @@
 <?php
 /**
- * My_Tasks Tasks Categorizer class
+ * Task Categorizer: My Tasks class
  *
  * Task Categorizer for tasks that are assigned to the current user.
  *
