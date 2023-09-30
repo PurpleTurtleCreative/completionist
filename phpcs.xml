@@ -26,9 +26,6 @@
 	<!-- Exclude the Node Modules directory. -->
 	<exclude-pattern>/node_modules/*</exclude-pattern>
 
-	<!-- Exclude the base plugin directory. -->
-	<exclude-pattern>/completionist/*</exclude-pattern>
-
 	<!-- Exclude build files. -->
 	<exclude-pattern>/build/*</exclude-pattern>
 
