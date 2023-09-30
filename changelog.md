@@ -16,6 +16,7 @@
 
 - The `YahnisElsts/plugin-update-checker` Composer package which facilitated remote updates.
 - The `uninstall.php` file. Data is now uninstalled by using the registered uninstall hook.
+- The deprecated `Request_Tokens` class file, options, and other references.
 
 ### 3.10.1 - 2023-09-15
 

@@ -89,21 +89,6 @@ class Upgrader extends Abstracts\Plugin_Version_Checker {
 			Database_Manager::install_all_tables();
 		}
 
-		if ( version_compare( $old_version, '3.7.0', '<' ) ) {
-			// v3.7.0 is when the new Request_Token class replaced
-			// the postmeta-based Request_Tokens class. If successful,
-			// the new class installs custom database tables to work.
-			require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
-			Database_Manager::init();
-			if ( Database_Manager::get_installed_version() >= 2 ) {
-				// Now that the custom request tokens database table
-				// is successfully installed, all deprecated Request
-				// Tokens (stored within postmeta) should be purged.
-				require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
-				Request_Tokens::purge_all();
-			}
-		}
-
 		if ( version_compare( $old_version, '4.0.0', '<' ) ) {
 			// v4.0.0 is when plugin hosting changed from
 			// <purpleturtlecreative.com> to <wordpress.org> which

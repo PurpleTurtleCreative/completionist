@@ -95,21 +95,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 		public const CACHE_TTL_SECONDS = '_ptc_asana_cache_ttl_seconds';
 
 		/**
-		 * The postmeta key name for request tokens data.
-		 *
-		 * @see Request_Tokens
-		 *
-		 * @since 3.4.0
-		 *
-		 * @deprecated 3.7.0 The Request_Tokens class which
-		 * uses postmeta has been deprecated in favor of the new
-		 * Request_Token class which instead uses custom tables.
-		 *
-		 * @var string REQUEST_TOKENS
-		 */
-		public const REQUEST_TOKENS = '_ptc_asana_request_tokens';
-
-		/**
 		 * Gets a sanitized value for an option of this class returned in the key's
 		 * format as documented on this class's constants.
 		 *
@@ -210,24 +195,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 						}
 					}
 					return (int) $frontend_auth_user_id;
-
-				case self::REQUEST_TOKENS:
-					trigger_error(
-						'Postmeta request tokens have been deprecated along with the \PTC_Completionist\Request_Tokens class. Please use the \PTC_Completionist\Request_Token class instead.',
-						E_USER_DEPRECATED
-					);
-					if ( 0 === $object_id ) {
-						$object_id = get_the_ID();
-						if ( 0 === $object_id || false === $object_id ) {
-							error_log( 'Could not identify post to get value for: ' . $key );
-							return [];
-						}
-					}
-					$request_tokens = get_post_meta( $object_id, $key, true );
-					if ( ! is_array( $request_tokens ) || empty( $request_tokens ) ) {
-						return [];
-					}
-					return $request_tokens;
 			}
 
 			error_log( 'Invalid key to get value: ' . $key );
@@ -302,13 +269,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 						throw new \Exception( 'ERROR: Refused to save different value for option: ' . $key );
 					}
 					return self::maybe_update_option( $key, $sanitized_user_id, true );
-
-				case self::REQUEST_TOKENS:
-					trigger_error(
-						'Postmeta request tokens have been deprecated along with the \PTC_Completionist\Request_Tokens class. Please use the \PTC_Completionist\Request_Token class instead.',
-						E_USER_DEPRECATED
-					);
-					return update_post_meta( $object_id, $key, $value ) ? true : false;
 			}
 
 			error_log( 'Invalid key to save value: ' . $key );
@@ -559,7 +519,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Options' ) ) {
 						return delete_user_meta( $object_id, $key );
 					}
 				case self::PINNED_TASK_GID:
-				case self::REQUEST_TOKENS:
 					if ( -1 === $object_id ) {
 						return delete_metadata( 'post', 0, $key, '', true );
 					} elseif ( 0 === $object_id && get_the_ID() !== false ) {
