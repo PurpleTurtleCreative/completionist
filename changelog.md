@@ -21,7 +21,7 @@
 - The `uninstall.php` file. Data is now uninstalled by using the registered uninstall hook.
 - The deprecated `Request_Tokens` class file, options, and other references.
 - The `Errors\NoAuthorization` class due to inconsistent naming and class file.
-- All `require_once` calls which manually include class files. The new `Autoloader` class now handles this.
+- All `require_once` calls which manually included class files. The new `Autoloader` class now handles this.
 
 ### 3.10.1 - 2023-09-15
 
