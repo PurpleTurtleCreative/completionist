@@ -50,7 +50,7 @@ try {
         $comment_text .= get_site_url();
       }
 
-      /** This filter is documented in src/automations/class-actions.php */
+      /** This filter is documented in src/includes/automations/class-actions.php */
       $comment_text = apply_filters( 'ptc_cmp_create_task_comment', $comment_text, 'ajax' );
 
       $asana->tasks->addComment( $task->gid, [ 'text' => $comment_text ] );
