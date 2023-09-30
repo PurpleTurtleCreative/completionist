@@ -11,10 +11,6 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
-require_once PLUGIN_PATH . 'src/includes/class-options.php';
-require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
-
 try {
 
 	Asana_Interface::require_settings();
@@ -98,7 +94,6 @@ try {
 	<?php
 } catch ( \PTC_Completionist\Errors\No_Authorization $e ) {
 	/* User is not authenticated for API usage. */
-	require_once PLUGIN_PATH . 'src/admin/class-admin-pages.php';
 	?>
 	<div class="note-box note-box-error">
 		<p>

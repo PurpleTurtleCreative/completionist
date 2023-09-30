@@ -12,9 +12,7 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
-
-// Begin output.
+// Begin processing result output.
 require_once PLUGIN_PATH . 'src/admin/script-save-settings.php';
 
 try {
@@ -107,7 +105,6 @@ try {
 					try {
 						Asana_Interface::require_settings();
 					} catch ( \Exception $e ) {
-						require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
 						$alert_msg = HTML_Builder::get_error_message( $e );
 						echo '<p class="error-note"><i class="fas fa-exclamation-circle"></i>' . esc_html( $alert_msg ) . '</p>';
 					}

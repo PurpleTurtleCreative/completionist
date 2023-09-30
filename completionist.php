@@ -106,16 +106,14 @@ function init() {
 	require_once PLUGIN_PATH . 'src/includes/class-autoloader.php';
 	Autoloader::register();
 
-	/* Plugins Loaded */
+	// Plugins loaded.
 	add_action(
 		'plugins_loaded',
 		function () {
-			/* Ensure Database Tables are Installed */
-			require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
+			// Ensure database tables are installed.
 			Database_Manager::init();
 			Database_Manager::install_all_tables();
-			/* Enqueue Automation Actions */
-			require_once PLUGIN_PATH . 'src/includes/automations/class-events.php';
+			// Enqueue automation actions.
 			Automations\Events::add_actions();
 		}
 	);
