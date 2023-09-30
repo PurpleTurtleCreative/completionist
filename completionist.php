@@ -102,10 +102,14 @@ define( __NAMESPACE__ . '\REST_API_NAMESPACE_V1', PLUGIN_SLUG . '/v1' );
  */
 function init() {
 
+	// Register class autoloading.
+	require_once PLUGIN_PATH . 'src/includes/class-autoloader.php';
+	Autoloader::register();
+
 	/* Plugins Loaded */
 	add_action(
 		'plugins_loaded',
-		function() {
+		function () {
 			/* Ensure Database Tables are Installed */
 			require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
 			Database_Manager::init();
@@ -117,10 +121,6 @@ function init() {
 	);
 
 	// Register public functionality.
-	foreach ( glob( PLUGIN_PATH . 'src/public/class-*.php' ) as $file ) {
-		require_once $file;
-	}
-
 	Admin_Notices::register();
 	Freemius::register();
 	Request_Token::register();
@@ -131,11 +131,6 @@ function init() {
 
 	// Register admin functionality.
 	if ( is_admin() ) {
-
-		foreach ( glob( PLUGIN_PATH . 'src/admin/class-*.php' ) as $file ) {
-			require_once $file;
-		}
-
 		Admin_Pages::register();
 		Admin_Widgets::register();
 		Admin_Ajax::register();

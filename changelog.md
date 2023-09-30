@@ -7,16 +7,21 @@
 - New `Uninstaller` class to handle plugin data removal.
 - New `Upgrader` class to handle plugin version updates. This also offers support assistance when a version rollback is detected, which usually indicates that the user is experiencing issues with a newer version of the plugin.
 - New `Admin_Notices` class to handle displaying of admin notices. All notices are respectful in that they are either displayed once or dismissible.
+- New `Errors\No_Authorization` exception type class to fix class name and file inconsistency.
+- New `Autoloader` class to autoload class files.
 
 #### Changed
 
 - Remote updates are now handled through WordPress.org.
+- Class declarations are no longer wrapped in `if ( class_exists( ... ) )` checks. All classes are properly namespaced and should not normally cause collisions.
 
 #### Removed
 
 - The `YahnisElsts/plugin-update-checker` Composer package which facilitated remote updates.
 - The `uninstall.php` file. Data is now uninstalled by using the registered uninstall hook.
 - The deprecated `Request_Tokens` class file, options, and other references.
+- The `Errors\NoAuthorization` class due to inconsistent naming and class file.
+- All `require_once` calls which manually include class files. The new `Autoloader` class now handles this.
 
 ### 3.10.1 - 2023-09-15
 

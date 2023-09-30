@@ -11,9 +11,6 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
-require_once PLUGIN_PATH . 'src/includes/class-options.php';
-
 $res['status'] = 'error';
 $res['code'] = 400;
 $res['message'] = 'Invalid submission';

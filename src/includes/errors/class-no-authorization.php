@@ -1,8 +1,8 @@
 <?php
 /**
- * All custom error types.
+ * No Authorization class
  *
- * @since 1.0.0
+ * @since 4.0.0
  */
 
 namespace PTC_Completionist\Errors;
@@ -10,4 +10,4 @@ namespace PTC_Completionist\Errors;
 /**
  * Invalid Asana API authorization error.
  */
-class NoAuthorization extends \Exception {}
+class No_Authorization extends \Exception {}

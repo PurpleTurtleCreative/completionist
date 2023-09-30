@@ -9,10 +9,6 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/public/rest-api/class-projects.php';
-require_once PLUGIN_PATH . 'src/public/rest-api/class-attachments.php';
-require_once PLUGIN_PATH . 'src/public/class-admin-notices.php';
-
 /**
  * Class to register all custom REST API endpoints.
  *

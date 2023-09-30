@@ -11,9 +11,6 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/includes/abstracts/class-plugin-version-checker.php';
-require_once PLUGIN_PATH . 'src/public/class-freemius.php';
-
 /**
  * Static class to handle plugin upgrades.
  *
@@ -84,7 +81,6 @@ class Upgrader extends Abstracts\Plugin_Version_Checker {
 		if ( '0.0.0' === $old_version ) {
 			// !! Initial plugin activation !!
 			// Use this instead of registering an activation hook.
-			require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
 			Database_Manager::init();
 			Database_Manager::install_all_tables();
 		}

@@ -29,7 +29,7 @@ try {
 		<p class="ptc-loading"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>Loading...</p>
 	</div>
 	<?php
-} catch ( Errors\NoAuthorization $e ) {
+} catch ( Errors\No_Authorization $e ) {
 	/* User is not authenticated for API usage. */
 	require_once PLUGIN_PATH . 'src/admin/class-admin-pages.php';
 	?>

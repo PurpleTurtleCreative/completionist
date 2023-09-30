@@ -262,7 +262,7 @@ try {
 		</form>
 	</section>
 	<?php
-} catch ( Errors\NoAuthorization $e ) {
+} catch ( Errors\No_Authorization $e ) {
 	/* User is NOT authenticated for API usage. */
 	?>
 	<div id="ptc-asana-connect">

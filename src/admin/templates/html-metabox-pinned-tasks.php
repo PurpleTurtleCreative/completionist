@@ -96,7 +96,7 @@ try {
 		<p class="task-loader"><i class="fas fa-circle-notch fa-spin"></i>Waiting to load tasks...</p>
 	</main>
 	<?php
-} catch ( \PTC_Completionist\Errors\NoAuthorization $e ) {
+} catch ( \PTC_Completionist\Errors\No_Authorization $e ) {
 	/* User is not authenticated for API usage. */
 	require_once PLUGIN_PATH . 'src/admin/class-admin-pages.php';
 	?>

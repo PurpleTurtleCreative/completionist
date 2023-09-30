@@ -11,11 +11,6 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/includes/automations/class-automation.php';
-require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
-require_once PLUGIN_PATH . 'src/includes/class-options.php';
-require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
-
 $res['status'] = 'error';
 $res['code'] = 400;
 $res['message'] = 'Invalid submission';
