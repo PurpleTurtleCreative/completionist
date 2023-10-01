@@ -24,8 +24,8 @@ class Admin_Widgets {
 	 * @since 3.0.0
 	 */
 	public static function register() {
-		add_action( 'add_meta_boxes', [ __CLASS__, 'add_meta_boxes' ] );
-		add_action( 'wp_dashboard_setup', [ __CLASS__, 'add_dashboard_widgets' ] );
+		add_action( 'add_meta_boxes', __CLASS__ . '::add_meta_boxes' );
+		add_action( 'wp_dashboard_setup', __CLASS__ . '::add_dashboard_widgets' );
 	}
 
 	/**
@@ -36,15 +36,26 @@ class Admin_Widgets {
 	 */
 	public static function add_meta_boxes() {
 		add_meta_box(
-			'ptc-completionist_pinned-tasks',
-			'Tasks',
-			function() {
-				include_once PLUGIN_PATH . 'src/admin/templates/html-metabox-pinned-tasks.php';
+			'ptc-completionist-pinned-tasks',
+			'Completionist',
+			function () {
+				?>
+				<style type="text/css">
+					#ptc-completionist-pinned-tasks:not(.closed) .postbox-header {
+						border-bottom: none;
+					}
+					#ptc-completionist-pinned-tasks:not(.closed) .inside {
+						margin: 0;
+						padding: 0;
+					}
+				</style>
+				<div id="ptc-PinnedTasksMetabox"></div>
+				<?php
 			},
 			null,
 			'side',
 			'default',
-			[ '__back_compat_meta_box' => true ]
+			array( '__back_compat_meta_box' => true )
 		);
 	}
 
@@ -58,7 +69,7 @@ class Admin_Widgets {
 		wp_add_dashboard_widget(
 			'ptc-completionist_site-tasks',
 			'Completionist Tasks',
-			function() {
+			function () {
 				include_once PLUGIN_PATH . 'src/admin/templates/html-dashboard-widget.php';
 			}
 		);
