@@ -152,7 +152,6 @@ class Admin_Pages {
 			&& $current_screen->is_block_editor()
 		) {
 			// Exit; assets are enqueued in enqueue_block_editor_assets.
-			wp_enqueue_style( 'fontawesome-5' );
 			return;
 		}
 
@@ -165,7 +164,7 @@ class Admin_Pages {
 					PLUGIN_URL . '/build/index_DashboardWidget.jsx.js',
 					$asset_file['dependencies'],
 					PLUGIN_VERSION,
-					false
+					true
 				);
 				$js_data = array(
 					'error' => array(
@@ -209,45 +208,16 @@ class Admin_Pages {
 
 			case 'post.php':
 			case 'post-new.php':
-				// Classic Editor, legacy.
-				wp_enqueue_script(
-					'ptc-completionist_metabox-pinned-tasks-js',
-					PLUGIN_URL . '/assets/scripts/metabox-pinned-tasks.js',
-					array( 'jquery' ),
-					PLUGIN_VERSION,
-					false
-				);
-				wp_enqueue_style( 'fontawesome-5' );
-				wp_localize_script(
-					'ptc-completionist_metabox-pinned-tasks-js',
-					'ptc_completionist_pinned_tasks',
-					array(
-						'post_id'          => get_the_ID(),
-						'pinned_task_gids' => Options::get( Options::PINNED_TASK_GID, get_the_ID() ),
-						'nonce_pin'        => wp_create_nonce( 'ptc_completionist' ),
-						'nonce_list'       => wp_create_nonce( 'ptc_completionist_list_task' ),
-						'nonce_create'     => wp_create_nonce( 'ptc_completionist_create_task' ),
-						'nonce_delete'     => wp_create_nonce( 'ptc_completionist' ),
-						'nonce_update'     => wp_create_nonce( 'ptc_completionist' ),
-					)
-				);
-				wp_enqueue_style(
-					'ptc-completionist_metabox-pinned-tasks-css',
-					PLUGIN_URL . '/assets/styles/metabox-pinned-tasks.css',
-					array(),
-					PLUGIN_VERSION
-				);
-				///////////////////////////////////////
-				// New metabox, based on BlockEditorPanelTasks.
-				///////////////////////////////////////
+				// Classic Editor metabox for backwards compatibility.
 				$asset_file = require_once PLUGIN_PATH . 'build/index_PinnedTasksMetabox.jsx.asset.php';
 				wp_enqueue_script(
 					'ptc-completionist-pinned-tasks',
 					PLUGIN_URL . '/build/index_PinnedTasksMetabox.jsx.js',
 					$asset_file['dependencies'],
 					PLUGIN_VERSION,
-					false
+					true
 				);
+				wp_enqueue_style( 'fontawesome-5' );
 				wp_enqueue_style(
 					'ptc-completionist-pinned-tasks',
 					PLUGIN_URL . '/build/index_PinnedTasksMetabox.jsx.css',
@@ -281,7 +251,7 @@ class Admin_Pages {
 					PLUGIN_URL . '/assets/scripts/admin-dashboard.js',
 					array( 'jquery' ),
 					PLUGIN_VERSION,
-					false
+					true
 				);
 				wp_localize_script(
 					'ptc-completionist_admin-dashboard-js',
@@ -308,7 +278,7 @@ class Admin_Pages {
 						PLUGIN_URL . '/build/index_Automations.jsx.js',
 						$asset_file['dependencies'],
 						PLUGIN_VERSION,
-						false
+						true
 					);
 					wp_localize_script(
 						'ptc-completionist_Automations',
@@ -352,8 +322,9 @@ class Admin_Pages {
 			PLUGIN_URL . '/build/index_BlockEditor.jsx.js',
 			$asset_file['dependencies'],
 			PLUGIN_VERSION,
-			false
+			true
 		);
+		wp_enqueue_style( 'fontawesome-5' );
 		wp_enqueue_style(
 			'ptc-completionist-block-editor',
 			PLUGIN_URL . '/build/index_BlockEditor.jsx.css',

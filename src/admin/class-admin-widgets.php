@@ -36,17 +36,6 @@ class Admin_Widgets {
 	 */
 	public static function add_meta_boxes() {
 		add_meta_box(
-			'ptc-completionist_pinned-tasks',
-			'Tasks',
-			function () {
-				include_once PLUGIN_PATH . 'src/admin/templates/html-metabox-pinned-tasks.php';
-			},
-			null,
-			'side',
-			'default',
-			array( '__back_compat_meta_box' => true )
-		);
-		add_meta_box(
 			'ptc-completionist-pinned-tasks',
 			'Completionist',
 			function () {
