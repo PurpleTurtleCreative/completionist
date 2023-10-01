@@ -28,7 +28,7 @@ class Admin_Pages {
 	public const PARENT_PAGE_SLUG = 'ptc-completionist';
 
 	/**
-	 * The data for frontend scripts.
+	 * The data for frontend scripts relating to tasks.
 	 *
 	 * @see get_frontend_task_data()
 	 *
