@@ -26,6 +26,11 @@ export default function BlockEditorPanelTasks() {
 		}
 	);
 
+	// @TODO - Check if currentPostId null due to being a new draft
+	// post and display a notice to first save the post.
+	// I haven't experienced this personally, though, so proper
+	// testing needs to be done to confirm this state possibility.
+
 	return (
 		<div className="ptc-BlockEditorPanelTasks">
 			<TaskPinToPostBar postId={currentPostId} />

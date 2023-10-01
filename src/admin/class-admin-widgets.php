@@ -24,8 +24,8 @@ class Admin_Widgets {
 	 * @since 3.0.0
 	 */
 	public static function register() {
-		add_action( 'add_meta_boxes', [ __CLASS__, 'add_meta_boxes' ] );
-		add_action( 'wp_dashboard_setup', [ __CLASS__, 'add_dashboard_widgets' ] );
+		add_action( 'add_meta_boxes', __CLASS__ . '::add_meta_boxes' );
+		add_action( 'wp_dashboard_setup', __CLASS__ . '::add_dashboard_widgets' );
 	}
 
 	/**
