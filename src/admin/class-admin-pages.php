@@ -189,6 +189,7 @@ class Admin_Pages {
 
 			case 'post.php':
 			case 'post-new.php':
+				// Classic Editor, legacy.
 				wp_enqueue_script(
 					'ptc-completionist_metabox-pinned-tasks-js',
 					PLUGIN_URL . '/assets/scripts/metabox-pinned-tasks.js',
@@ -214,6 +215,72 @@ class Admin_Pages {
 					PLUGIN_URL . '/assets/styles/metabox-pinned-tasks.css',
 					array(),
 					PLUGIN_VERSION
+				);
+				///////////////////////////////////////
+				// New metabox, based on BlockEditorPanelTasks.
+				///////////////////////////////////////
+				$asset_file = require_once( PLUGIN_PATH . 'build/index_PinnedTasksMetabox.jsx.asset.php' );
+				wp_enqueue_script(
+					'ptc-completionist-pinned-tasks',
+					PLUGIN_URL . '/build/index_PinnedTasksMetabox.jsx.js',
+					$asset_file['dependencies'],
+					PLUGIN_VERSION
+				);
+				wp_enqueue_style(
+					'ptc-completionist-pinned-tasks',
+					PLUGIN_URL . '/build/index_PinnedTasksMetabox.jsx.css',
+					array(),
+					PLUGIN_VERSION
+				);
+				try {
+
+					$all_site_tasks = Asana_Interface::maybe_get_all_site_tasks();
+
+					$post_id = get_the_ID();
+					$pinned_tasks = array();
+					if ( $post_id && is_int( $post_id ) ) {
+						$pinned_task_gids = Options::get( Options::PINNED_TASK_GID, get_the_ID() );
+						// Map pinned task gids to full task objects.
+						foreach ( $pinned_task_gids as &$task_gid ) {
+							// Ignore tasks this user doesn't have permission to view.
+							if ( isset( $all_site_tasks[ $task_gid ] ) ) {
+								$pinned_tasks[] = $all_site_tasks[ $task_gid ];
+							}
+						}
+					}
+
+					// @TODO - extract this object to generic getter with caching on it
+					// This is something like get_frontend_data_global() which is also
+					// used for the Dashboard Widget ReactJS code.
+					$js_data = array(
+						'api' => array(
+							'nonce_pin' => wp_create_nonce( 'ptc_completionist' ),
+							'nonce_list' => wp_create_nonce( 'ptc_completionist_list_task' ),
+							'nonce_create' => wp_create_nonce( 'ptc_completionist_create_task' ),
+							'nonce_delete' => wp_create_nonce( 'ptc_completionist' ),
+							'nonce_update' => wp_create_nonce( 'ptc_completionist' ),
+							'nonce' => wp_create_nonce( 'ptc_completionist' ),
+							'url' => get_rest_url(),
+						),
+						'tasks' => $pinned_tasks,
+						'users' => Asana_Interface::get_connected_workspace_users(),
+						'projects' => Asana_Interface::get_workspace_project_options(),
+						'me' => Asana_Interface::get_me(),
+						'tag_url' => HTML_Builder::get_asana_tag_url(),
+					);
+				} catch ( \Exception $err ) {
+					$js_data = array(
+						'error' => array(
+							'code' => $err->getCode(),
+							'message' => $err->getMessage(),
+						),
+					);
+				}
+				$js_data = json_encode( $js_data );
+				wp_add_inline_script(
+					'ptc-completionist-pinned-tasks',
+					"var PTCCompletionist = {$js_data};",
+					'before'
 				);
 				break;
 
