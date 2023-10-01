@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Version Checker class
+ * Plugin Version Checker abstract class
  *
  * @since 4.0.0
  */
@@ -11,9 +11,7 @@ namespace PTC_Completionist\Abstracts;
 
 defined( 'ABSPATH' ) || die();
 
-use \PTC_Completionist\Admin_Notices;
-
-require_once \PTC_Completionist\PLUGIN_PATH . 'src/public/class-admin-notices.php';
+use PTC_Completionist\Admin_Notices;
 
 /**
  * Static class to handle plugin version checks and migrations.
@@ -31,7 +29,8 @@ abstract class Plugin_Version_Checker {
 		if ( ! defined( 'DOING_AJAX' ) || ! \DOING_AJAX ) {
 			add_action(
 				'plugins_loaded',
-				function() {
+				function () {
+					// Dynamically use the concrete subclass's context.
 					static::maybe_run();
 				}
 			);

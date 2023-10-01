@@ -13,8 +13,6 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/admin/class-admin-pages.php';
-
 /**
  * A static class for managing the Freemius integration.
  */

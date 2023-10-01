@@ -12,8 +12,6 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
-
 try {
 
 	Asana_Interface::require_settings();
@@ -28,8 +26,6 @@ try {
 		throw new \Exception( 'Not Authorized. Please connect your Asana account to use Completionist.', 401 );
 	}
 } catch ( \Exception $e ) {
-	require_once PLUGIN_PATH . 'src/admin/class-admin-pages.php';
-	require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
 	?>
 	<div class="ptc-error-screen">
 		<p>

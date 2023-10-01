@@ -11,8 +11,6 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/public/class-freemius.php';
-
 /**
  * Static class to handle plugin uninstallation.
  *
@@ -75,14 +73,12 @@ class Uninstaller {
 
 		// Remove all plugin data.
 
-		require_once PLUGIN_PATH . 'src/includes/class-options.php';
 		if ( class_exists( __NAMESPACE__ . '\Options' ) ) {
 			if ( method_exists( __NAMESPACE__ . '\Options', 'delete_all' ) ) {
 				Options::delete_all();
 			}
 		}
 
-		require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
 		if ( class_exists( __NAMESPACE__ . '\Database_Manager' ) ) {
 			if (
 				method_exists( __NAMESPACE__ . '\Database_Manager', 'init' )
@@ -93,14 +89,12 @@ class Uninstaller {
 			}
 		}
 
-		require_once PLUGIN_PATH . 'src/public/class-admin-notices.php';
 		if ( class_exists( __NAMESPACE__ . '\Admin_Notices' ) ) {
 			if ( method_exists( __NAMESPACE__ . '\Admin_Notices', 'delete_all' ) ) {
 				Admin_Notices::delete_all();
 			}
 		}
 
-		require_once PLUGIN_PATH . 'src/public/class-upgrader.php';
 		if ( class_exists( __NAMESPACE__ . '\Upgrader' ) ) {
 			if ( method_exists( __NAMESPACE__ . '\Upgrader', 'delete_data' ) ) {
 				Upgrader::delete_data();

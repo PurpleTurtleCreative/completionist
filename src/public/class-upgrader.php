@@ -11,9 +11,6 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/includes/abstracts/class-plugin-version-checker.php';
-require_once PLUGIN_PATH . 'src/public/class-freemius.php';
-
 /**
  * Static class to handle plugin upgrades.
  *
@@ -84,24 +81,8 @@ class Upgrader extends Abstracts\Plugin_Version_Checker {
 		if ( '0.0.0' === $old_version ) {
 			// !! Initial plugin activation !!
 			// Use this instead of registering an activation hook.
-			require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
 			Database_Manager::init();
 			Database_Manager::install_all_tables();
-		}
-
-		if ( version_compare( $old_version, '3.7.0', '<' ) ) {
-			// v3.7.0 is when the new Request_Token class replaced
-			// the postmeta-based Request_Tokens class. If successful,
-			// the new class installs custom database tables to work.
-			require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
-			Database_Manager::init();
-			if ( Database_Manager::get_installed_version() >= 2 ) {
-				// Now that the custom request tokens database table
-				// is successfully installed, all deprecated Request
-				// Tokens (stored within postmeta) should be purged.
-				require_once PLUGIN_PATH . 'src/public/class-request-tokens.php';
-				Request_Tokens::purge_all();
-			}
 		}
 
 		if ( version_compare( $old_version, '4.0.0', '<' ) ) {

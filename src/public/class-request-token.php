@@ -9,8 +9,6 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
-
 /**
  * Class to manage frontend request tokens.
  *

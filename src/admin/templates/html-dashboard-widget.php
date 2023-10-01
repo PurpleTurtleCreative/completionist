@@ -12,9 +12,6 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-// Libraries.
-require_once PLUGIN_PATH . 'src/includes/class-asana-interface.php';
-
 try {
 
 	Asana_Interface::require_settings();
@@ -29,9 +26,8 @@ try {
 		<p class="ptc-loading"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>Loading...</p>
 	</div>
 	<?php
-} catch ( Errors\NoAuthorization $e ) {
+} catch ( Errors\No_Authorization $e ) {
 	/* User is not authenticated for API usage. */
-	require_once PLUGIN_PATH . 'src/admin/class-admin-pages.php';
 	?>
 	<div class="note-box note-box-error">
 		<p>
@@ -44,6 +40,5 @@ try {
 	</div>
 	<?php
 } catch ( \Exception $e ) {
-	require_once PLUGIN_PATH . 'src/includes/class-html-builder.php';
 	echo HTML_Builder::format_error_box( $e, 'Feature unavailable. ', false );
 }//end try catch asana client

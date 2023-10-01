@@ -102,25 +102,23 @@ define( __NAMESPACE__ . '\REST_API_NAMESPACE_V1', PLUGIN_SLUG . '/v1' );
  */
 function init() {
 
-	/* Plugins Loaded */
+	// Register class autoloading.
+	require_once PLUGIN_PATH . 'src/includes/class-autoloader.php';
+	Autoloader::register();
+
+	// Plugins loaded.
 	add_action(
 		'plugins_loaded',
-		function() {
-			/* Ensure Database Tables are Installed */
-			require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
+		function () {
+			// Ensure database tables are installed.
 			Database_Manager::init();
 			Database_Manager::install_all_tables();
-			/* Enqueue Automation Actions */
-			require_once PLUGIN_PATH . 'src/includes/automations/class-events.php';
+			// Enqueue automation actions.
 			Automations\Events::add_actions();
 		}
 	);
 
 	// Register public functionality.
-	foreach ( glob( PLUGIN_PATH . 'src/public/class-*.php' ) as $file ) {
-		require_once $file;
-	}
-
 	Admin_Notices::register();
 	Freemius::register();
 	Request_Token::register();
@@ -131,11 +129,6 @@ function init() {
 
 	// Register admin functionality.
 	if ( is_admin() ) {
-
-		foreach ( glob( PLUGIN_PATH . 'src/admin/class-*.php' ) as $file ) {
-			require_once $file;
-		}
-
 		Admin_Pages::register();
 		Admin_Widgets::register();
 		Admin_Ajax::register();
