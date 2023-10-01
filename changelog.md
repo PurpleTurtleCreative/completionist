@@ -1,4 +1,4 @@
-### 4.0.0 - 2023-09-19
+### 4.0.0 - [unreleased]
 
 #### Added
 
@@ -14,6 +14,8 @@
 
 - Remote updates are now handled through WordPress.org.
 - Class declarations are no longer wrapped in `if ( class_exists( ... ) )` checks. All classes are properly namespaced and should not normally cause collisions.
+- Upgraded the legacy Tasks metabox within the Classic Editor. This offers great UX/UI and performance improvements, matching the Pinned Tasks panel in the Block Editor. This also removes script dependencies on jQuery.
+- All admin scripts are now loaded in the document footer.
 
 #### Removed
 
