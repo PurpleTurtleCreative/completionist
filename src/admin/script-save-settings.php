@@ -11,229 +11,234 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-if (
-	isset( $_POST['asana_connect'] )
-	&& isset( $_POST['asana_pat'] )
-	&& wp_verify_nonce( $_POST['asana_connect_nonce'], 'connect_asana' ) !== false
-) {
+// Immediately invoked function expression (IIFE)
+// to avoid variables polluting the global namespace.
+( function () {
 
-	try {
-		$did_save_pat = Options::save( Options::ASANA_PAT, $_POST['asana_pat'] );
-	} catch ( \Exception $e ) {
-		echo '<p class="notice notice-error">' . esc_html( $e->getMessage() ) . '</p>';
-		$did_save_pat = false;
-	}
-
-	if ( $did_save_pat === true ) {
+	if (
+		isset( $_POST['asana_connect'] )
+		&& isset( $_POST['asana_pat'] )
+		&& wp_verify_nonce( $_POST['asana_connect_nonce'], 'connect_asana' ) !== false
+	) {
 
 		try {
-			$asana = Asana_Interface::get_client();
-			$me = Asana_Interface::get_me();
-			$did_save_gid = Options::save( Options::ASANA_USER_GID, $me->gid );
-			$did_delete_pat = false;
-			$did_delete_gid = false;
+			$did_save_pat = Options::save( Options::ASANA_PAT, $_POST['asana_pat'] );
 		} catch ( \Exception $e ) {
 			echo '<p class="notice notice-error">' . esc_html( $e->getMessage() ) . '</p>';
-			$did_save_gid = false;
-			$did_delete_pat = Options::delete( Options::ASANA_PAT );
-			$did_delete_gid = Options::delete( Options::ASANA_USER_GID );
+			$did_save_pat = false;
 		}
 
-		if ( $did_delete_pat === true ) {
-			echo '<p class="notice notice-error">An error occurred, so your Personal Access Token could not be saved.</p>';
-		} elseif ( $did_save_gid === true ) {
-			echo '<p class="notice notice-success">Your Asana account was successfully connected!</p>';
-		}
-	}//end if did_save_pat
-}//end if asana_connect
+		if ( true === $did_save_pat ) {
 
-if (
-	isset( $_POST['asana_disconnect'] )
-	&& isset( $_POST['asana_disconnect_nonce'] )
-	&& wp_verify_nonce( $_POST['asana_disconnect_nonce'], 'disconnect_asana' ) !== false
-) {
+			try {
+				$asana          = Asana_Interface::get_client();
+				$me             = Asana_Interface::get_me();
+				$did_save_gid   = Options::save( Options::ASANA_USER_GID, $me->gid );
+				$did_delete_pat = false;
+				$did_delete_gid = false;
+			} catch ( \Exception $e ) {
+				echo '<p class="notice notice-error">' . esc_html( $e->getMessage() ) . '</p>';
+				$did_save_gid   = false;
+				$did_delete_pat = Options::delete( Options::ASANA_PAT );
+				$did_delete_gid = Options::delete( Options::ASANA_USER_GID );
+			}
 
-	$user_id = (int) get_current_user_id();
+			if ( true === $did_delete_pat ) {
+				echo '<p class="notice notice-error">An error occurred, so your Personal Access Token could not be saved.</p>';
+			} elseif ( true === $did_save_gid ) {
+				echo '<p class="notice notice-success">Your Asana account was successfully connected!</p>';
+			}
+		}//end if did_save_pat
+	}//end if asana_connect
 
-	$did_delete_pat = Options::delete( Options::ASANA_PAT, $user_id );
-	$did_delete_gid = Options::delete( Options::ASANA_USER_GID, $user_id );
-
-	if ( $did_delete_pat || $did_delete_gid ) {
-
-		echo '<p class="notice notice-success">Your Asana account was successfully forgotten!</p>';
-
-		$frontend_auth_user_id = (int) Options::get( Options::FRONTEND_AUTH_USER_ID );
-		if ( $user_id === $frontend_auth_user_id ) {
-			Options::delete( Options::FRONTEND_AUTH_USER_ID );
-			echo '<p class="notice notice-warning">You were the default frontend authentication user. Completionist shortcodes may not work until a new frontend authentication user is saved!</p>';
-		}
-	} else {
-		echo '<p class="notice notice-error">Your Asana account could not be disconnected.</p>';
-	}
-}//end if asana_disconnect
-
-if (
-	isset( $_POST['asana_frontend_user_save'] )
-	&& ! empty( $_POST['wp_user_id'] )
-	&& isset( $_POST['asana_frontend_user_save_nonce'] )
-	&& wp_verify_nonce( $_POST['asana_frontend_user_save_nonce'], 'asana_frontend_user_save' ) !== false
-	&& current_user_can( 'manage_options' )
-) {
-
-	$submitted_wp_user_id = (int) Options::sanitize( Options::FRONTEND_AUTH_USER_ID, $_POST['wp_user_id'] );
-
-	// Save the frontend authentication user ID.
-	Options::save(
-		Options::FRONTEND_AUTH_USER_ID,
-		(string) $submitted_wp_user_id,
-		true
-	);
-
-	// Get the saved and validated user ID.
-	$retrieved_wp_user_id = (int) Options::get( Options::FRONTEND_AUTH_USER_ID );
-
-	// Confirm that it was saved successfully.
-	if ( $retrieved_wp_user_id === $submitted_wp_user_id ) {
-		echo '<p class="notice notice-success">The frontend authentication user was successfully saved!</p>';
-	} else {
-		echo '<p class="notice notice-error">Failed to save the frontend authentication user.</p>';
-	}
-}//end if asana_frontend_user_save
-
-if (
-	isset( $_POST['asana_cache_ttl_save'] )
-	&& current_user_can( 'manage_options' )
-	&& ! empty( $_POST['asana_cache_ttl'] )
-	&& isset( $_POST['asana_cache_ttl_save_nonce'] )
-	&& wp_verify_nonce( $_POST['asana_cache_ttl_save_nonce'], 'asana_cache_ttl_save' ) !== false
-) {
-
-	// Sanitize submitted value.
-	$submitted_ttl = (int) Options::sanitize( Options::CACHE_TTL_SECONDS, $_POST['asana_cache_ttl'] );
-
-	// Save the value.
-	Options::save(
-		Options::CACHE_TTL_SECONDS,
-		(string) $submitted_ttl,
-		true
-	);
-
-	// Get the saved and validated value.
-	$retrieved_ttl = (int) Options::get( Options::CACHE_TTL_SECONDS );
-
-	// Confirm that it was saved successfully.
-	if ( $retrieved_ttl === $submitted_ttl ) {
-		echo '<p class="notice notice-success">The Asana data cache duration was successfully saved!</p>';
-	} else {
-		echo '<p class="notice notice-error">Failed to save the Asana data cache duration.</p>';
-	}
-}//end if asana_cache_ttl_save
-
-if (
-	isset( $_POST['purge_asana_cache'] ) &&
-	(
-		current_user_can( 'manage_options' ) ||
-		current_user_can( 'edit_posts' )
-	) &&
-	isset( $_POST['purge_asana_cache_nonce'] ) &&
-	wp_verify_nonce( $_POST['purge_asana_cache_nonce'], 'purge_asana_cache' ) !== false
-) {
-	if ( Request_Token::delete_all() ) {
-		echo '<p class="notice notice-success">The Asana data cache was successfully cleared!</p>';
-	} else {
-		echo '<p class="notice notice-error">Failed to clear the Asana data cache.</p>';
-	}
-}//end if purge_asana_cache
-
-try {
 	if (
-		isset( $_POST['asana_workspace_save'] )
-		&& isset( $_POST['asana_workspace'] )
-		&& isset( $_POST['asana_tag'] )
-		&& isset( $_POST['asana_workspace_save_nonce'] )
-		&& wp_verify_nonce( $_POST['asana_workspace_save_nonce'], 'asana_workspace_save' ) !== false//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		isset( $_POST['asana_disconnect'] )
+		&& isset( $_POST['asana_disconnect_nonce'] )
+		&& wp_verify_nonce( $_POST['asana_disconnect_nonce'], 'disconnect_asana' ) !== false
+	) {
+
+		$user_id = (int) get_current_user_id();
+
+		$did_delete_pat = Options::delete( Options::ASANA_PAT, $user_id );
+		$did_delete_gid = Options::delete( Options::ASANA_USER_GID, $user_id );
+
+		if ( $did_delete_pat || $did_delete_gid ) {
+
+			echo '<p class="notice notice-success">Your Asana account was successfully forgotten!</p>';
+
+			$frontend_auth_user_id = (int) Options::get( Options::FRONTEND_AUTH_USER_ID );
+			if ( $user_id === $frontend_auth_user_id ) {
+				Options::delete( Options::FRONTEND_AUTH_USER_ID );
+				echo '<p class="notice notice-warning">You were the default frontend authentication user. Completionist shortcodes may not work until a new frontend authentication user is saved!</p>';
+			}
+		} else {
+			echo '<p class="notice notice-error">Your Asana account could not be disconnected.</p>';
+		}
+	}//end if asana_disconnect
+
+	if (
+		isset( $_POST['asana_frontend_user_save'] )
+		&& ! empty( $_POST['wp_user_id'] )
+		&& isset( $_POST['asana_frontend_user_save_nonce'] )
+		&& wp_verify_nonce( $_POST['asana_frontend_user_save_nonce'], 'asana_frontend_user_save' ) !== false
 		&& current_user_can( 'manage_options' )
 	) {
 
-		/* Save workspace */
+		$submitted_wp_user_id = (int) Options::sanitize( Options::FRONTEND_AUTH_USER_ID, $_POST['wp_user_id'] );
 
-		$workspace_gid = Options::sanitize( Options::ASANA_WORKSPACE_GID, $_POST['asana_workspace'] );
-		if ( '' === $workspace_gid ) {
-			throw new \Exception( 'Invalid workspace identifier', 400 );
+		// Save the frontend authentication user ID.
+		Options::save(
+			Options::FRONTEND_AUTH_USER_ID,
+			(string) $submitted_wp_user_id,
+			true
+		);
+
+		// Get the saved and validated user ID.
+		$retrieved_wp_user_id = (int) Options::get( Options::FRONTEND_AUTH_USER_ID );
+
+		// Confirm that it was saved successfully.
+		if ( $retrieved_wp_user_id === $submitted_wp_user_id ) {
+			echo '<p class="notice notice-success">The frontend authentication user was successfully saved!</p>';
+		} else {
+			echo '<p class="notice notice-error">Failed to save the frontend authentication user.</p>';
 		}
+	}//end if asana_frontend_user_save
 
-		if ( Options::save( Options::ASANA_WORKSPACE_GID, $workspace_gid ) ) {
-			echo '<p class="notice notice-success">This site\'s workspace was updated successfully.</p>';
-			if ( Options::delete( Options::PINNED_TASK_GID, -1 ) ) {
-				echo '<p class="notice notice-success">All pinned tasks were removed from this site.</p>';
+	if (
+		isset( $_POST['asana_cache_ttl_save'] )
+		&& current_user_can( 'manage_options' )
+		&& ! empty( $_POST['asana_cache_ttl'] )
+		&& isset( $_POST['asana_cache_ttl_save_nonce'] )
+		&& wp_verify_nonce( $_POST['asana_cache_ttl_save_nonce'], 'asana_cache_ttl_save' ) !== false
+	) {
+
+		// Sanitize submitted value.
+		$submitted_ttl = (int) Options::sanitize( Options::CACHE_TTL_SECONDS, $_POST['asana_cache_ttl'] );
+
+		// Save the value.
+		Options::save(
+			Options::CACHE_TTL_SECONDS,
+			(string) $submitted_ttl,
+			true
+		);
+
+		// Get the saved and validated value.
+		$retrieved_ttl = (int) Options::get( Options::CACHE_TTL_SECONDS );
+
+		// Confirm that it was saved successfully.
+		if ( $retrieved_ttl === $submitted_ttl ) {
+			echo '<p class="notice notice-success">The Asana data cache duration was successfully saved!</p>';
+		} else {
+			echo '<p class="notice notice-error">Failed to save the Asana data cache duration.</p>';
+		}
+	}//end if asana_cache_ttl_save
+
+	if (
+		isset( $_POST['purge_asana_cache'] ) &&
+		(
+			current_user_can( 'manage_options' ) ||
+			current_user_can( 'edit_posts' )
+		) &&
+		isset( $_POST['purge_asana_cache_nonce'] ) &&
+		wp_verify_nonce( $_POST['purge_asana_cache_nonce'], 'purge_asana_cache' ) !== false
+	) {
+		if ( Request_Token::delete_all() ) {
+			echo '<p class="notice notice-success">The Asana data cache was successfully cleared!</p>';
+		} else {
+			echo '<p class="notice notice-error">Failed to clear the Asana data cache.</p>';
+		}
+	}//end if purge_asana_cache
+
+	try {
+		if (
+			isset( $_POST['asana_workspace_save'] )
+			&& isset( $_POST['asana_workspace'] )
+			&& isset( $_POST['asana_tag'] )
+			&& isset( $_POST['asana_workspace_save_nonce'] )
+			&& wp_verify_nonce( $_POST['asana_workspace_save_nonce'], 'asana_workspace_save' ) !== false//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+			&& current_user_can( 'manage_options' )
+		) {
+
+			/* Save workspace */
+
+			$workspace_gid = Options::sanitize( Options::ASANA_WORKSPACE_GID, $_POST['asana_workspace'] );
+			if ( '' === $workspace_gid ) {
+				throw new \Exception( 'Invalid workspace identifier', 400 );
 			}
-		}
 
-		/* Save site tag */
+			if ( Options::save( Options::ASANA_WORKSPACE_GID, $workspace_gid ) ) {
+				echo '<p class="notice notice-success">This site\'s workspace was updated successfully.</p>';
+				if ( Options::delete( Options::PINNED_TASK_GID, -1 ) ) {
+					echo '<p class="notice notice-success">All pinned tasks were removed from this site.</p>';
+				}
+			}
 
-		if ( 'create' === Options::sanitize( 'string', $_POST['asana_tag'] ) ) {
+			/* Save site tag */
 
-			if ( isset( $_POST['asana_tag_name'] ) ) {
-				$tag_name = Options::sanitize( 'string', $_POST['asana_tag_name'] );
-				if ( empty( $tag_name ) ) {
-					throw new \Exception( 'Invalid name for new tag.', 400 );
+			if ( 'create' === Options::sanitize( 'string', $_POST['asana_tag'] ) ) {
+
+				if ( isset( $_POST['asana_tag_name'] ) ) {
+					$tag_name = Options::sanitize( 'string', $_POST['asana_tag_name'] );
+					if ( empty( $tag_name ) ) {
+						throw new \Exception( 'Invalid name for new tag.', 400 );
+					}
+				} else {
+					throw new \Exception( 'A tag name is required to create a new tag.', 400 );
+				}
+
+				try {
+
+					$asana   = Asana_Interface::get_client();
+					$params  = array(
+						'name'      => $tag_name,
+						'workspace' => Options::get( Options::ASANA_WORKSPACE_GID ),
+					);
+					$new_tag = $asana->tags->create( $params );
+					$tag_gid = $new_tag->gid;
+
+				} catch ( \Asana\Errors\NotFoundError $e ) {
+					if ( Options::delete( Options::ASANA_WORKSPACE_GID ) ) {
+						throw new \Exception( 'The saved workspace does not exist, so it was reset. Please save a different workspace and tag.', 404 );
+					} else {
+						throw new \Exception( 'The specified workspace does not exist.', 404 );
+					}
 				}
 			} else {
-				throw new \Exception( 'A tag name is required to create a new tag.', 400 );
-			}
 
-			try {
+				$tag_gid = Options::sanitize( Options::ASANA_TAG_GID, $_POST['asana_tag'] );
 
-				$asana = Asana_Interface::get_client();
-				$params = [
-					'name' => $tag_name,
-					'workspace' => Options::get( Options::ASANA_WORKSPACE_GID ),
-				];
-				$new_tag = $asana->tags->create( $params );
-				$tag_gid = $new_tag->gid;
-
-			} catch ( \Asana\Errors\NotFoundError $e ) {
-				if ( Options::delete( Options::ASANA_WORKSPACE_GID ) ) {
-					throw new \Exception( 'The saved workspace does not exist, so it was reset. Please save a different workspace and tag.', 404 );
-				} else {
-					throw new \Exception( 'The specified workspace does not exist.', 404 );
+				try {
+					$asana   = Asana_Interface::get_client();
+					$the_tag = $asana->tags->findById( $tag_gid );
+					$tag_gid = $the_tag->gid;
+					if (
+						isset( $the_tag->workspace->gid )
+						&& Options::get( Options::ASANA_WORKSPACE_GID ) !== $the_tag->workspace->gid
+					) {
+						throw new \Exception( 'Tag does not belong to the saved workspace.', 409 );
+					}
+				} catch ( \Asana\Errors\NotFoundError $e ) {
+					throw new \Exception( 'Tag does not exist.', 404 );
 				}
+			}//end if create new tag
+
+			if ( ! isset( $tag_gid ) || '' === $tag_gid ) {
+				throw new \Exception( 'Invalid tag identifier.', 400 );
 			}
-		} else {
 
-			$tag_gid = Options::sanitize( Options::ASANA_TAG_GID, $_POST['asana_tag'] );
-
-			try {
-				$asana = Asana_Interface::get_client();
-				$the_tag = $asana->tags->findById( $tag_gid );
-				$tag_gid = $the_tag->gid;
-				if (
-					isset( $the_tag->workspace->gid )
-					&& $the_tag->workspace->gid !== Options::get( Options::ASANA_WORKSPACE_GID )
-				) {
-					throw new \Exception( 'Tag does not belong to the saved workspace.', 409 );
-				}
-			} catch ( \Asana\Errors\NotFoundError $e ) {
-				throw new \Exception( 'Tag does not exist.', 404 );
+			if ( Options::save( Options::ASANA_TAG_GID, $tag_gid ) ) {
+				echo '<p class="notice notice-success">This site\'s tag was updated successfully.</p>';
 			}
-		}//end if create new tag
-
-		if ( ! isset( $tag_gid ) || '' === $tag_gid ) {
-			throw new \Exception( 'Invalid tag identifier.', 400 );
+		}//end if asana_workspace_save
+	} catch ( \Exception $e ) {
+		$err_code = $e->getCode();
+		if (
+			0 === $err_code
+			&& isset( $e->status )
+			&& $e->status > 0
+		) {
+			$err_code = $e->status;
 		}
-
-		if ( Options::save( Options::ASANA_TAG_GID, $tag_gid ) ) {
-			echo '<p class="notice notice-success">This site\'s tag was updated successfully.</p>';
-		}
-	}//end if asana_workspace_save
-} catch ( \Exception $e ) {
-	$err_code = $e->getCode();
-	if (
-		0 === $err_code
-		&& isset( $e->status )
-		&& $e->status > 0
-	) {
-		$err_code = $e->status;
+		echo '<p class="notice notice-error">Error ' . esc_html( $err_code ) . ': ' . esc_html( $e->getMessage() ) . '</p>';
 	}
-	echo '<p class="notice notice-error">Error ' . esc_html( $err_code ) . ': ' . esc_html( $e->getMessage() ) . '</p>';
-}
+} )();
