@@ -166,32 +166,7 @@ class Admin_Pages {
 					PLUGIN_VERSION,
 					true
 				);
-				$js_data = array(
-					'error' => array(
-						'code'    => 500,
-						'message' => 'An unexpected error occurred.',
-					),
-				);
-				try {
-					$js_data = array(
-						'api'     => array(
-							'nonce' => wp_create_nonce( 'ptc_completionist' ),
-							'url'   => get_rest_url(),
-						),
-						'tasks'   => array_values( Asana_Interface::maybe_get_all_site_tasks() ),
-						'users'   => Asana_Interface::get_connected_workspace_users(),
-						'me'      => Asana_Interface::get_me(),
-						'tag_url' => HTML_Builder::get_asana_tag_url(),
-					);
-				} catch ( \Exception $err ) {
-					$js_data = array(
-						'error' => array(
-							'code'    => $err->getCode(),
-							'message' => $err->getMessage(),
-						),
-					);
-				}
-				$js_data = wp_json_encode( $js_data );
+				$js_data = wp_json_encode( static::get_frontend_task_data() );
 				wp_add_inline_script(
 					'ptc-completionist_DashboardWidget',
 					"var PTCCompletionist = {$js_data};",
@@ -364,20 +339,34 @@ class Admin_Pages {
 
 		try {
 
+			// Ensure required settings.
+			Asana_Interface::require_settings();
+
+			// Load Asana client context for current user.
+			Asana_Interface::get_client();
+
+			if ( ! Asana_Interface::is_workspace_member() ) {
+				throw new \Exception( 'You are not a member of the assigned Asana Workspace.', 403 );
+			}
+
 			$all_site_tasks = Asana_Interface::maybe_get_all_site_tasks();
 
-			$post_id      = get_the_ID();
-			$pinned_tasks = array();
+			$post_id       = get_the_ID();
+			$display_tasks = array();
 
 			if ( $post_id && is_int( $post_id ) ) {
+				// Only display pinned tasks in post context.
 				$pinned_task_gids = Options::get( Options::PINNED_TASK_GID, get_the_ID() );
 				// Map pinned task gids to full task objects.
 				foreach ( $pinned_task_gids as &$task_gid ) {
 					// Ignore tasks this user doesn't have permission to view.
 					if ( isset( $all_site_tasks[ $task_gid ] ) ) {
-						$pinned_tasks[] = $all_site_tasks[ $task_gid ];
+						$display_tasks[] = $all_site_tasks[ $task_gid ];
 					}
 				}
+			} else {
+				// Display all tasks outside of post context.
+				$display_tasks = array_values( $all_site_tasks );
 			}
 
 			$js_data = array(
@@ -390,7 +379,7 @@ class Admin_Pages {
 					'nonce'        => wp_create_nonce( 'ptc_completionist' ),
 					'url'          => get_rest_url(),
 				),
-				'tasks'    => $pinned_tasks,
+				'tasks'    => $display_tasks,
 				'users'    => Asana_Interface::get_connected_workspace_users(),
 				'projects' => Asana_Interface::get_workspace_project_options(),
 				'me'       => Asana_Interface::get_me(),
