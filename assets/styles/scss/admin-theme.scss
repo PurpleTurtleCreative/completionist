@@ -69,7 +69,7 @@ a:active {
 	}
 }
 
-section {
+section[id^="ptc-"] {
 	background: color(white);
 	border: 2px solid color(grey-lighter);
 	border-radius: 7px;
