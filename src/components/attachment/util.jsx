@@ -11,12 +11,13 @@ export function isImage(attachment) {
 		'name' in attachment &&
 		attachment.name
 	) {
+		const attachmentName = attachment.name.toLowerCase();
 		return (
-			attachment.name.endsWith('.jpg') ||
-			attachment.name.endsWith('.jpeg') ||
-			attachment.name.endsWith('.png') ||
-			attachment.name.endsWith('.bmp') ||
-			attachment.name.endsWith('.gif')
+			attachmentName.endsWith('.jpg') ||
+			attachmentName.endsWith('.jpeg') ||
+			attachmentName.endsWith('.png') ||
+			attachmentName.endsWith('.bmp') ||
+			attachmentName.endsWith('.gif')
 		);
 	}
 
@@ -30,8 +31,9 @@ export function isVideo(attachment) {
 		'name' in attachment &&
 		attachment.name
 	) {
+		const attachmentName = attachment.name.toLowerCase();
 		return (
-			attachment.name.endsWith('.mp4')
+			attachmentName.endsWith('.mp4')
 		);
 	}
 
