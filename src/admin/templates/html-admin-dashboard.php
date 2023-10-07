@@ -243,7 +243,7 @@ try {
 			<div class="note-box">
 				<p class="cache-purge-notice">
 					<input class="warning" type="submit" name="purge_asana_cache" value="Clear Cache">
-					This will clear all cached Asana data such as projects, tasks, and media attachments. You can use this to ensure the latest information is fetched from Asana during the next load. Be cautious of this if your site caches HTML content, though! (aka "page caching")
+					This will clear all cached Asana data such as projects, tasks, and media attachments. You can use this to ensure the latest information is fetched from Asana during the next load.
 				</p>
 			</div>
 		</form>
