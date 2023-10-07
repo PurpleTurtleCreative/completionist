@@ -1,5 +1,9 @@
 ### [unreleased]
 
+#### Changed
+
+- Clearing the Asana Data Cache no longer completely deletes all request tokens, so it's now compatible with frontend page caching.
+
 #### Fixed
 
 - Media attachments with uppercase file suffix, such as `JPG` or `PNG`, would not be displayed in Project Embeds.
