@@ -153,7 +153,7 @@ class Request_Token {
 	/**
 	 * Clears all request tokens' cached data.
 	 *
-	 * @since [unreleased]
+	 * @since 3.10.2
 	 *
 	 * @return int The number of rows affected.
 	 */
@@ -178,7 +178,7 @@ class Request_Token {
 			/**
 			 * Fires after all request tokens' cache data was cleared.
 			 *
-			 * @since [unreleased]
+			 * @since 3.10.2
 			 *
 			 * @param int $count The number of cache records that
 			 * were cleared.
