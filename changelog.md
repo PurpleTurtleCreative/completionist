@@ -8,6 +8,7 @@
 
 - Media attachments with uppercase file suffix, such as `JPG` or `PNG`, would not be displayed in Project Embeds.
 - Style issues on the Settings screen when using Chrome with the Loom browser extension.
+- Error 404 when using the new Asana project URL as the `src` in Project Embeds.
 
 ### 3.10.1 - 2023-09-15
 
