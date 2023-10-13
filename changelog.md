@@ -25,6 +25,18 @@
 - The `Errors\NoAuthorization` class due to inconsistent naming and class file.
 - All `require_once` calls which manually included class files. The new `Autoloader` class now handles this.
 
+### 3.10.2 - 2023-10-10
+
+#### Changed
+
+- Clearing the Asana Data Cache no longer completely deletes all request tokens, so it's now compatible with frontend page caching.
+
+#### Fixed
+
+- Media attachments with uppercase file suffix, such as `JPG` or `PNG`, would not be displayed in Project Embeds.
+- Style issues on the Settings screen when using Chrome with the Loom browser extension.
+- Error 404 when using the new Asana project URL as the `src` in Project Embeds.
+
 ### 3.10.1 - 2023-09-15
 
 #### Fixed

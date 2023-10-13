@@ -142,11 +142,11 @@ defined( 'ABSPATH' ) || die();
 		isset( $_POST['purge_asana_cache_nonce'] ) &&
 		wp_verify_nonce( $_POST['purge_asana_cache_nonce'], 'purge_asana_cache' ) !== false
 	) {
-		if ( Request_Token::delete_all() ) {
-			echo '<p class="notice notice-success">The Asana data cache was successfully cleared!</p>';
-		} else {
-			echo '<p class="notice notice-error">Failed to clear the Asana data cache.</p>';
-		}
+		$rows_affected = Request_Token::clear_cache_data();
+		printf(
+			'<p class="notice notice-info">Cleared %s cache record(s) &mdash; Fresh data will be fetched from Asana on the next page load.</p>',
+			esc_html( $rows_affected )
+		);
 	}//end if purge_asana_cache
 
 	try {

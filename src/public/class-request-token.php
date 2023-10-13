@@ -94,7 +94,7 @@ class Request_Token {
 		global $wpdb;
 		$rows_affected = $wpdb->query(
 			$wpdb->prepare(
-				"DELETE FROM {$table}
+				"DELETE FROM `{$table}`
 					WHERE last_accessed <= %s",
 				$staleness_timestamp
 			)
@@ -146,6 +146,48 @@ class Request_Token {
 		}
 
 		return $success;
+	}
+
+	/**
+	 * Clears all request tokens' cached data.
+	 *
+	 * @since 3.10.2
+	 *
+	 * @return int The number of rows affected.
+	 */
+	public static function clear_cache_data() : int {
+
+		Database_Manager::init();
+		$table = Database_Manager::$request_tokens_table;
+
+		global $wpdb;
+		$rows_affected = $wpdb->query(
+			"UPDATE `{$table}`
+				SET cache_data = '', cached_at = '0000-00-00 00:00:00'"
+		);
+
+		if ( false === $rows_affected ) {
+			trigger_error(
+				"Failed to clear request tokens' cache data. SQL error encountered: {$wpdb->last_error}",
+				E_USER_NOTICE
+			);
+			$rows_affected = 0;
+		} else {
+			/**
+			 * Fires after all request tokens' cache data was cleared.
+			 *
+			 * @since 3.10.2
+			 *
+			 * @param int $count The number of cache records that
+			 * were cleared.
+			 */
+			do_action(
+				'ptc_completionist_cleared_request_tokens_cache_data',
+				$rows_affected
+			);
+		}
+
+		return $rows_affected;
 	}
 
 	/**
@@ -233,6 +275,7 @@ class Request_Token {
 	public static function save( array &$request_args ) : string {
 
 		// Generate the token.
+		$args_as_json = '';
 		$token = static::generate_token( $request_args, $args_as_json );
 		if ( empty( $token ) ) {
 			trigger_error(
@@ -258,7 +301,7 @@ class Request_Token {
 			global $wpdb;
 			$rows_affected = $wpdb->query(
 				$wpdb->prepare(
-					"INSERT INTO {$table} (token,args) VALUES (%s,%s)
+					"INSERT INTO `{$table}` (token,args) VALUES (%s,%s)
 						ON DUPLICATE KEY UPDATE last_accessed=CURRENT_TIMESTAMP",
 					$token,
 					$args_as_json
@@ -537,7 +580,7 @@ class Request_Token {
 		global $wpdb;
 		$res = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM {$table}
+				"SELECT * FROM `{$table}`
 					WHERE token = %s LIMIT 1",
 				$this->data['token']
 			),

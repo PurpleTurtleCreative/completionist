@@ -602,10 +602,14 @@ class Asana_Interface {
 			if ( ! empty( $matches[2] ) && 'overview' !== $matches[2] ) {
 				$parsed_project_data['layout'] = $matches[2];
 			}
-		} elseif ( preg_match( '/\/([0-9]+)$/', $project_link, $matches ) ) {
+		} elseif ( preg_match( '/\/([0-9]+)\/[0-9]+$/', $project_link, $matches ) ) {
 			/*
 			 * Copied project URL from project details dropdown in Asana.
 			 * ex. https://app.asana.com/0/1234567890/1234567890
+				 *
+				 * Or new project URL from the web browser address bar
+				 * with a project view GID.
+				 * ex. https://app.asana.com/0/1234567890/2345678901
 			 */
 			if ( ! empty( $matches[1] ) ) {
 				$parsed_project_data['gid'] = Options::sanitize( 'gid', $matches[1] );
