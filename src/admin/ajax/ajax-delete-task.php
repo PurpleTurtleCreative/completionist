@@ -29,6 +29,10 @@ try {
 			throw new \Exception( 'Invalid task gid.', 400 );
 		}
 
+		// @TODO - I don't think this is necessary because the task
+		// is ultimately being deleted..? And if so, then ALL pins
+		// of this task GID should be removed rather than one
+		// particular post.
 		if ( isset( $_POST['post_id'] ) ) {
 			$the_post_id = (int) Options::sanitize( 'gid', $_POST['post_id'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 			if ( $the_post_id < 1 ) {
