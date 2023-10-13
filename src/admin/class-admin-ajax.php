@@ -26,12 +26,14 @@ class Admin_Ajax {
 	 */
 	public static function register() {
 
-		/* Task AJAX Handlers */
-		add_action( 'wp_ajax_ptc_pin_task', [ __CLASS__, 'ajax_pin_task' ] );
-		add_action( 'wp_ajax_ptc_unpin_task', [ __CLASS__, 'ajax_unpin_task' ] );
+		/* DEPRECATED - PLEASE REMOVE */
 		add_action( 'wp_ajax_ptc_get_pins', [ __CLASS__, 'ajax_get_pins' ] );
 		add_action( 'wp_ajax_ptc_list_task', [ __CLASS__, 'ajax_list_task' ] );
 		add_action( 'wp_ajax_ptc_list_tasks', [ __CLASS__, 'ajax_list_tasks' ] );
+
+		/* Task AJAX Handlers */
+		add_action( 'wp_ajax_ptc_pin_task', [ __CLASS__, 'ajax_pin_task' ] );
+		add_action( 'wp_ajax_ptc_unpin_task', [ __CLASS__, 'ajax_unpin_task' ] );
 		add_action( 'wp_ajax_ptc_create_task', [ __CLASS__, 'ajax_create_task' ] );
 		add_action( 'wp_ajax_ptc_delete_task', [ __CLASS__, 'ajax_delete_task' ] );
 		add_action( 'wp_ajax_ptc_update_task', [ __CLASS__, 'ajax_update_task' ] );

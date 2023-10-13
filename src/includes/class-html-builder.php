@@ -39,6 +39,8 @@ class HTML_Builder {
 	 */
 	public static function format_task_row( \stdClass $task, bool $detailed_view = false ) : string {
 
+		_deprecated_function( __FUNCTION__, '[unreleased]' );
+
 		/* Task GID */
 		if ( isset( $task->gid ) ) {
 			$task_gid = Options::sanitize( 'gid', $task->gid );

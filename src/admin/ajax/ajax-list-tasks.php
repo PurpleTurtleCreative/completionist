@@ -11,6 +11,8 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
+_deprecated_file( __FILE__, '[unreleased]' );
+
 $res['status'] = 'error';
 $res['code'] = 400;
 $res['message'] = 'Invalid submission';
