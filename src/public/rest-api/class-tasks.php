@@ -15,6 +15,7 @@ use PTC_Completionist\Asana_Interface;
 use PTC_Completionist\Options;
 use PTC_Completionist\HTML_Builder;
 use PTC_Completionist\Request_Token;
+use PTC_Completionist\REST_Server;
 use PTC_Completionist\Util;
 
 /**
@@ -94,8 +95,11 @@ class Tasks {
 				array(
 					'methods'             => 'DELETE',
 					'callback'            => array( __CLASS__, 'handle_delete_task' ),
-					'permission_callback' => '__return_false',
+					'permission_callback' => function () {
+						return Asana_Interface::has_connected_asana();
+					},
 					'args'                => array(
+						'nonce'    => REST_Server::get_route_arg_nonce( 'ptc_completionist_delete_task' ),
 						'task_gid' => array(
 							'type'              => 'string',
 							'required'          => true,
@@ -107,5 +111,46 @@ class Tasks {
 				),
 			)
 		);
+	}//end register_routes()
+
+	/**
+	 * Handles a DELETE request to delete an Asana task.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param \WP_REST_Request $request The API request.
+	 *
+	 * @return \WP_REST_Response|\WP_Error The API response.
+	 */
+	public static function handle_delete_task(
+		\WP_REST_Request $request
+	) {
+
+		$res = array(
+			'status'  => 'error',
+			'code'    => 500,
+			'message' => 'An unknown error occurred.',
+			'data'    => $request['task_gid'],
+		);
+
+		try {
+			Asana_Interface::delete_task( $request['task_gid'] );
+			Options::delete( Options::PINNED_TASK_GID, -1, $request['task_gid'] );
+			$res = array(
+				'status'  => 'success',
+				'code'    => 200,
+				'message' => "Successfully deleted task {$request['task_gid']}.",
+				'data'    => $request['task_gid'],
+			);
+		} catch ( \Exception $err ) {
+			$res = array(
+				'status'  => 'error',
+				'code'    => HTML_Builder::get_error_code( $err ),
+				'message' => HTML_Builder::format_error_string( $err, 'Failed to delete task.' ),
+				'data'    => $request['task_gid'],
+			);
+		}
+
+		return new \WP_REST_Response( $res, $res['code'] );
 	}
 }

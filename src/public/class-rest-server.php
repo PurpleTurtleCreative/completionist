@@ -33,6 +33,26 @@ class REST_Server {
 	public static function register_routes() {
 		REST_API\Projects::register_routes();
 		REST_API\Attachments::register_routes();
+		REST_API\Tasks::register_routes();
 		Admin_Notices::register_routes();
+	}
+
+	/**
+	 * Gets the route argument definition for a nonce.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param string $nonce_action The nonce action to verify.
+	 * @return array The nonce argument definition.
+	 */
+	public static function get_route_arg_nonce( string $nonce_action ) {
+		return array(
+			'type'              => 'string',
+			'required'          => true,
+			'sanitize_callback' => 'sanitize_text_field',
+			'validate_callback' => function ( $value ) use ( $nonce_action ) {
+				return ( false !== wp_verify_nonce( $value, $nonce_action ) );
+			},
+		);
 	}
 }

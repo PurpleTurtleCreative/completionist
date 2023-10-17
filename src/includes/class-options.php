@@ -551,7 +551,7 @@ class Options {
 			case self::ASANA_PAT:
 			case self::ASANA_USER_GID:
 				if ( -1 === $object_id ) {
-					return delete_metadata( 'user', 0, $key, '', true );
+					return delete_metadata( 'user', 0, $key, $value, true );
 				} elseif ( 0 === $object_id && 0 !== get_current_user_id() ) {
 					return delete_user_meta( get_current_user_id(), $key );
 				}
@@ -559,7 +559,7 @@ class Options {
 
 			case self::PINNED_TASK_GID:
 				if ( -1 === $object_id ) {
-					return delete_metadata( 'post', 0, $key, '', true );
+					return delete_metadata( 'post', 0, $key, $value, true );
 				} elseif ( 0 === $object_id && get_the_ID() !== false ) {
 					return delete_post_meta( get_the_ID(), $key, $value );
 				}

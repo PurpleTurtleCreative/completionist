@@ -87,38 +87,30 @@ export function TaskContextProvider({children}) {
 
 		deleteTask: async (taskGID) => {
 
-			const task = context.tasks.find(t => taskGID === t.gid);
-
-			let data = {
-				'action': 'ptc_delete_task',
-				'nonce': window.PTCCompletionist.api.nonce,
-				'task_gid': taskGID
-			};
-
-			if ( task.action_link.post_id ) {
-				data.post_id = task.action_link.post_id;
-			}
-
 			const init = {
-				'method': 'POST',
+				'method': 'DELETE',
 				'credentials': 'same-origin',
-				'body': new URLSearchParams(data)
+				'headers': {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': window.PTCCompletionist.api.auth_nonce
+				},
+				'body': window.JSON.stringify({
+					'nonce': window.PTCCompletionist.api.nonce_delete,
+					'task_gid': taskGID
+				})
 			};
 
-			return await window.fetch(window.ajaxurl, init)
+			return await window.fetch( `${window.PTCCompletionist.api.v1}/tasks/${taskGID}`, init)
 				.then( res => res.json() )
 				.then( res => {
 
-					if(res.status == 'success' && res.data) {
+					if ( 'success' === res.status && res.data ) {
 						context.removeTask(res.data);
 						return true;
-					} else if ( 'code' in res && 'message' in res ) {
-						addNotice(
-							<><strong>{`Error ${res.code}.`}</strong> {res.message}</>,
-							'error'
-						);
+					} else if ( res.message ) {
+						addNotice(res.message, 'error');
 					} else {
-						throw 'error';
+						throw 'unknown error';
 					}
 
 					return false;

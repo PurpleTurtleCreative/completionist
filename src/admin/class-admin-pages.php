@@ -371,13 +371,15 @@ class Admin_Pages {
 
 			$js_data = array(
 				'api'      => array(
+					'auth_nonce'   => wp_create_nonce( 'wp_rest' ),
 					'nonce_pin'    => wp_create_nonce( 'ptc_completionist' ),
 					'nonce_list'   => wp_create_nonce( 'ptc_completionist_list_task' ),
 					'nonce_create' => wp_create_nonce( 'ptc_completionist_create_task' ),
-					'nonce_delete' => wp_create_nonce( 'ptc_completionist' ),
+					'nonce_delete' => wp_create_nonce( 'ptc_completionist_delete_task' ),
 					'nonce_update' => wp_create_nonce( 'ptc_completionist' ),
 					'nonce'        => wp_create_nonce( 'ptc_completionist' ),
-					'url'          => get_rest_url(),
+					'v1'           => rest_url( REST_API_NAMESPACE_V1 ),
+					'url'          => rest_url(),
 				),
 				'tasks'    => $display_tasks,
 				'users'    => Asana_Interface::get_connected_workspace_users(),
