@@ -107,4 +107,24 @@ class Util {
 		// No matches.
 		return false;
 	}
+
+	/**
+	 * Removes empty values from an array.
+	 *
+	 * Note that indexes are maintained which means you may want
+	 * to use `array_values()` on indexed arrays after filtering.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param array $arr An indexed or associative array.
+	 * @return array The filtered array.
+	 */
+	public static function remove_empty_values( array $arr ) : array {
+		return array_filter(
+			$arr,
+			function ( $value ) {
+				return ! empty( $value );
+			}
+		);
+	}
 }//end class

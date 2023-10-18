@@ -100,12 +100,12 @@ export function TaskContextProvider({children}) {
 				})
 			};
 
-			return await window.fetch( `${window.PTCCompletionist.api.v1}/tasks/${taskGID}`, init)
+			return await window.fetch( `${window.PTCCompletionist.api.v1}/tasks/${taskGID}`, init )
 				.then( res => res.json() )
 				.then( res => {
 
-					if ( 'success' === res.status && res.data ) {
-						context.removeTask(res.data);
+					if ( 'success' === res.status && res.data?.task_gid ) {
+						context.removeTask(res.data.task_gid);
 						return true;
 					} else if ( res.message ) {
 						addNotice(res.message, 'error');
@@ -226,36 +226,34 @@ export function TaskContextProvider({children}) {
 		 */
 		createTask: async (taskData, postID = null) => {
 
-			let data = {
-				'action': 'ptc_create_task',
-				'nonce': window.PTCCompletionist.api.nonce_create,
-				...taskData
-			};
-
 			if ( postID ) {
-				data.post_id = postID;
+				taskData.post_id = postID;
 			}
 
 			const init = {
 				'method': 'POST',
 				'credentials': 'same-origin',
-				'body': new URLSearchParams(data)
+				'headers': {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': window.PTCCompletionist.api.auth_nonce
+				},
+				'body': window.JSON.stringify({
+					'nonce': window.PTCCompletionist.api.nonce_create,
+					'task': taskData
+				})
 			};
 
-			return await window.fetch(window.ajaxurl, init)
+			return await window.fetch( `${window.PTCCompletionist.api.v1}/tasks`, init )
 				.then( res => res.json() )
 				.then( res => {
 
-					if(res.status == 'success' && res.data) {
-						context.addTask(res.data);
+					if ( res.status == 'success' && res.data?.task ) {
+						context.addTask(res.data.task);
 						return true;
-					} else if ( 'code' in res && 'message' in res ) {
-						addNotice(
-							<><strong>{`Error ${res.code}.`}</strong> {res.message}</>,
-							'error'
-						);
+					} else if ( res.message ) {
+						addNotice(res.message, 'error');
 					} else {
-						throw 'error';
+						throw 'unknown error';
 					}
 
 					return false;

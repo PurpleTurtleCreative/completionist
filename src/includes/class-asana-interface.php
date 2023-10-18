@@ -1677,15 +1677,12 @@ class Asana_Interface {
 	/**
 	 * Creates a task in Asana and optionally pins it to a WordPress post.
 	 *
+	 * @since [unreleased] Adds a comment on the Asana task if
+	 * a valid 'post_id' is provided.
 	 * @since 1.1.0
 	 *
-	 * @param array $args The unsanitized task params. Accepted keys are:
-	 * * 'name' => (string) Required. The task title.
-	 * * 'post_id' => (int) The WordPress post ID on which to pin the new task.
-	 * * 'assignee' => (gid) The assignee's Asana gid.
-	 * * 'due_on' => (date string) The task due date.
-	 * * 'project' => (gid) The Asana project gid to house the task.
-	 * * 'notes' => (string) The task description.
+	 * @param array      $args The unsanitized task params. See
+	 * Asana_Interface::prepare_task_args() for supported fields.
 	 * @param string|int $user_id_or_gid Optional. The task author's Asana user
 	 * GID string or WordPress user ID integer. Default 0 to use the current
 	 * WordPress user.
@@ -1696,100 +1693,186 @@ class Asana_Interface {
 	 */
 	public static function create_task( array $args, $user_id_or_gid = 0 ) : \stdClass {
 
-		if ( ! isset( $args['name'] ) ) {
-			throw new \Exception( 'A task name is required.', 409 );
-		}
-
-		$asana = self::get_client( $user_id_or_gid );
+		// Always add the site tag.
 
 		$site_tag_gid = Options::get( Options::ASANA_TAG_GID );
 		if ( '' === $site_tag_gid ) {
 			throw new \Exception( 'A site tag is required to create a task. Please set a site tag in Completionist\'s settings.', 409 );
 		}
 
-		if ( isset( $args['post_id'] ) ) {
-			/* Validate for pinning */
-			$the_post_id = (int) Options::sanitize( 'gid', $args['post_id'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-			$the_post = get_post( $the_post_id );
-			if ( null === $the_post ) {
-				throw new \Exception( 'The provided post id is invalid.', 400 );
-			}
-		}
-
-		/* Gather Input Data */
-
-		$params['tags'] = $site_tag_gid;
-
-		$name = Options::sanitize( 'string', wp_unslash( $args['name'] ) );
-		if ( ! empty( $name ) ) {
-			$params['name'] = $name;
+		if ( ! isset( $args['tags'] ) ) {
+			$args['tags'] = array( $site_tag_gid );
 		} else {
-			throw new \Exception( 'A task name is required.', 400 );
+			$args['tags'][] = $site_tag_gid;
 		}
 
-		if ( isset( $args['assignee'] ) ) {
-			$assignee_gid = Options::sanitize( 'gid', $args['assignee'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-			if ( ! empty( $assignee_gid ) ) {
-				$params['assignee'] = $assignee_gid;
-			}
+		// Prepare task fields.
+
+		$params = static::prepare_task_args( $args );
+
+		if ( ! isset( $params['name'] ) ) {
+			throw new \Exception( 'A task name is required to create a task.', 409 );
 		}
 
-		if ( isset( $args['due_on'] ) ) {
-			$due_on = Options::sanitize( 'date', $args['due_on'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-			if ( ! empty( $due_on ) ) {
-				$params['due_on'] = $due_on;
-			}
+		if ( ! isset( $params['post_id'] ) && isset( $args['post_id'] ) ) {
+			throw new \Exception( 'The provided post ID is invalid.', 400 );
 		}
 
-		if ( isset( $args['project'] ) ) {
-			$project_gid = Options::sanitize( 'gid', $args['project'] );//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-			if ( ! empty( $project_gid ) ) {
-				$params['projects'] = $project_gid;
-			}
-		}
+		// Create the task.
 
-		if ( ! isset( $params['projects'] ) ) {
-			/* A workspace is required if a project hasn't been provided. */
-			$workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
-			if ( ! empty( $workspace_gid ) ) {
-				$params['workspace'] = $workspace_gid;
-			} else {
-				throw new \Exception( 'Please set a Workspace in Completionist\'s settings before creating a task.', 400 );
-			}
-		}
-
-		if ( isset( $args['notes'] ) ) {
-			$notes = Options::sanitize( 'string', wp_unslash( $args['notes'] ) );
-			if ( ! empty( $notes ) ) {
-				$params['notes'] = $notes;
-			}
-		}
-
-		/* Create the task */
-
-		$task = $asana->tasks->create( $params );
-
+		$asana = self::get_client( $user_id_or_gid );
+		$task  = $asana->tasks->create( $params );
 		if ( ! isset( $task->gid ) ) {
 			throw new \Exception( 'Unrecognized API response to create task.', 409 );
 		}
 
-		if ( isset( $the_post_id ) ) {
+		$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
 
-			/* Pin the task */
+		// Pin the task if desired.
+		if ( isset( $params['post_id'] ) ) {
 
 			try {
-				$did_pin_task = Options::save( Options::PINNED_TASK_GID, $task->gid, false, $the_post_id );
+				$did_pin_task = Options::save( Options::PINNED_TASK_GID, $task->gid, false, $params['post_id'] );
 			} catch ( \Exception $e ) {
 				$did_pin_task = false;
 			}
 
-			if ( false === $did_pin_task ) {
-				error_log( "Failed to pin new task {$task->gid} to post {$the_post_id}." );
+			// Add comment if successfully pinned.
+			if ( $did_pin_task ) {
+				try {
+
+					$referrer = '';
+					if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
+						$referrer = wp_unslash( $_SERVER['HTTP_REFERER'] );
+					} else {
+						$referrer = get_site_url();
+					}
+
+					$comment_text = sprintf(
+						'I just created this task using Completionist on the %s WordPress website, here: %s',
+						get_bloginfo( 'name', 'display' ),
+						esc_url_raw( $referrer )
+					);
+
+					/** This filter is documented in src/includes/automations/class-actions.php */
+					$comment_text = apply_filters( 'ptc_cmp_create_task_comment', $comment_text, 'rest_api' );
+
+					if ( $comment_text ) {
+						$asana->tasks->addComment(
+							$task->gid,
+							array( 'text' => $comment_text )
+						);
+					}
+				} catch ( \Exception $err ) {
+					trigger_error(
+						wp_kses_post( HTML_Builder::format_error_string( $err, 'Failed to leave pinned task comment on new task.' ) ),
+						\E_USER_NOTICE
+					);
+				}//endcatch
 			}
 		}
 
-		$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
-
 		return $task;
 	}//end create_task()
+
+	/**
+	 * Prepares task arguments for Asana requests.
+	 *
+	 * @link https://developers.asana.com/reference/updatetask
+	 * Specifies all possible field definitions for reference.
+	 * Note that not all fields may be supported by this function.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param array $args An associative array of task fields.
+	 * The following Asana task fields are currently supported:
+	 * - name
+	 * - assignee
+	 * - due_on
+	 * - notes
+	 * - tags
+	 * - projects
+	 * - workspace
+	 * The following additional fields are custom supports:
+	 * - post_id (int) WordPress post ID to pin the task.
+	 * - project (string) A single Asana project GID.
+	 * @return array The prepared task arguments.
+	 */
+	public static function prepare_task_args( array $args ) : array {
+
+		// Used for pinning a task to a WordPress post.
+		if ( isset( $args['post_id'] ) ) {
+			// Using absint changes the actual value that was provided,
+			// such as turning -1 (a common default value) into 1 (a
+			// potentially valid post ID which might not have been
+			// the intention). So using intval for least transformation.
+			$args['post_id'] = intval( $args['post_id'] );
+			if ( null === get_post( $args['post_id'] ) ) {
+				// Not a valid post ID.
+				unset( $args['post_id'] );
+			}
+		}
+
+		// Basic fields.
+
+		if ( isset( $args['name'] ) ) {
+			$args['name'] = sanitize_text_field( wp_unslash( $args['name'] ) );
+		}
+
+		if ( isset( $args['assignee'] ) ) {
+			$args['assignee'] = Options::sanitize( 'gid', $args['assignee'] );
+		}
+
+		if ( isset( $args['due_on'] ) ) {
+			$args['due_on'] = Options::sanitize( 'date', $args['due_on'] );
+		}
+
+		if ( isset( $args['notes'] ) ) {
+			$args['notes'] = sanitize_textarea_field( wp_unslash( $args['notes'] ) );
+		}
+
+		if ( isset( $args['tags'] ) ) {
+			foreach ( $args['tags'] as &$tag_gid ) {
+				$tag_gid = Options::sanitize( 'gid', $tag_gid );
+			}
+			$args['tags'] = Util::remove_empty_values( $args['tags'] );
+		}
+
+		if ( isset( $args['workspace'] ) ) {
+			$args['workspace'] = Options::sanitize( 'gid', $args['workspace'] );
+		}
+
+		// Projects.
+
+		if ( ! isset( $args['projects'] ) ) {
+			$args['projects'] = array();
+		}
+
+		if ( isset( $args['project'] ) ) {
+			// Asana expects an array of project GIDs.
+			$args['projects'][] = $args['project'];
+			// This isn't a valid argument for Asana, so remove it.
+			unset( $args['project'] );
+		}
+
+		foreach ( $args['projects'] as &$project_gid ) {
+			$project_gid = Options::sanitize( 'gid', $project_gid );
+		}
+
+		$args['projects'] = Util::remove_empty_values( $args['projects'] );
+
+		if ( empty( $args['projects'] ) && empty( $args['workspace'] ) ) {
+			// A workspace is required if a project hasn't been provided.
+			$workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
+			if ( ! empty( $workspace_gid ) ) {
+				$args['workspace'] = $workspace_gid;
+			}
+		}
+
+		// Final cleanup.
+
+		$args = Util::remove_empty_values( $args );
+
+		return $args;
+	}
 }//end class

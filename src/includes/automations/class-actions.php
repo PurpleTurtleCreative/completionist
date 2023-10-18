@@ -119,10 +119,11 @@ class Actions {
 				/**
 				 * Filters the comment added to new Asana tasks.
 				 *
+				 * @since [unreleased] Replaced 'ajax' context with 'rest_api'.
 				 * @since 1.1.0
 				 *
 				 * @param string $comment_text The plain text string to comment on the new task.
-				 * @param string $context The context of this filter, 'automation' or 'ajax'.
+				 * @param string $context The context of this filter, 'automation' or 'rest_api'.
 				 */
 				$comment_text = apply_filters( 'ptc_cmp_create_task_comment', $comment_text, 'automation' );
 				if ( $comment_text ) {

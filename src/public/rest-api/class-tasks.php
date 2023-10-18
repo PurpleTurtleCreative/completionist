@@ -40,8 +40,17 @@ class Tasks {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( __CLASS__, 'handle_create_task' ),
-					'permission_callback' => '__return_false',
-					'args'                => array(),
+					'permission_callback' => function () {
+						return Asana_Interface::has_connected_asana();
+					},
+					'args'                => array(
+						'nonce' => REST_Server::get_route_arg_nonce( 'ptc_completionist_create_task' ),
+						'task'  => array(
+							'type'              => 'object',
+							'required'          => true,
+							'sanitize_callback' => array( Asana_Interface::class, 'prepare_task_args' ),
+						),
+					),
 				),
 			)
 		);
@@ -114,6 +123,47 @@ class Tasks {
 	}//end register_routes()
 
 	/**
+	 * Handles a POST request to create an Asana task.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param \WP_REST_Request $request The API request.
+	 *
+	 * @return \WP_REST_Response|\WP_Error The API response.
+	 */
+	public static function handle_create_task(
+		\WP_REST_Request $request
+	) {
+
+		$res = array(
+			'status'  => 'error',
+			'code'    => 500,
+			'message' => 'An unknown error occurred.',
+			'data'    => null,
+		);
+
+		try {
+			Asana_Interface::get_client(); // Use current user.
+			$task = Asana_Interface::create_task( $request['task'] );
+			$res  = array(
+				'status'  => 'success',
+				'code'    => 201,
+				'message' => "Successfully created task {$task->gid}.",
+				'data'    => array( 'task' => $task ),
+			);
+		} catch ( \Exception $err ) {
+			$res = array(
+				'status'  => 'error',
+				'code'    => HTML_Builder::get_error_code( $err ),
+				'message' => HTML_Builder::format_error_string( $err, 'Failed to create task.' ),
+				'data'    => null,
+			);
+		}
+
+		return new \WP_REST_Response( $res, $res['code'] );
+	}
+
+	/**
 	 * Handles a DELETE request to delete an Asana task.
 	 *
 	 * @since [unreleased]
@@ -130,24 +180,25 @@ class Tasks {
 			'status'  => 'error',
 			'code'    => 500,
 			'message' => 'An unknown error occurred.',
-			'data'    => $request['task_gid'],
+			'data'    => array( 'task_gid' => $request['task_gid'] ),
 		);
 
 		try {
+			Asana_Interface::get_client(); // Use current user.
 			Asana_Interface::delete_task( $request['task_gid'] );
 			Options::delete( Options::PINNED_TASK_GID, -1, $request['task_gid'] );
 			$res = array(
 				'status'  => 'success',
 				'code'    => 200,
 				'message' => "Successfully deleted task {$request['task_gid']}.",
-				'data'    => $request['task_gid'],
+				'data'    => array( 'task_gid' => $request['task_gid'] ),
 			);
 		} catch ( \Exception $err ) {
 			$res = array(
 				'status'  => 'error',
 				'code'    => HTML_Builder::get_error_code( $err ),
 				'message' => HTML_Builder::format_error_string( $err, 'Failed to delete task.' ),
-				'data'    => $request['task_gid'],
+				'data'    => array( 'task_gid' => $request['task_gid'] ),
 			);
 		}
 
