@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace PTC_Completionist;
 
+_deprecated_file( __FILE__, '[unreleased]' );
+
 defined( 'ABSPATH' ) || die();
 
 $res['status'] = 'error';

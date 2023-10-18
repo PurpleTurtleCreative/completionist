@@ -1661,6 +1661,8 @@ class Asana_Interface {
 	/**
 	 * Deletes a task in Asana.
 	 *
+	 * @link https://developers.asana.com/reference/deletetask
+	 *
 	 * @since 3.1.0
 	 *
 	 * @param string $task_gid The task gid to delete.
@@ -1676,6 +1678,8 @@ class Asana_Interface {
 
 	/**
 	 * Creates a task in Asana and optionally pins it to a WordPress post.
+	 *
+	 * @link https://developers.asana.com/reference/createtask
 	 *
 	 * @since [unreleased] Adds a comment on the Asana task if
 	 * a valid 'post_id' is provided.
@@ -1776,9 +1780,46 @@ class Asana_Interface {
 	}//end create_task()
 
 	/**
-	 * Prepares task arguments for Asana requests.
+	 * Updates a task in Asana.
 	 *
 	 * @link https://developers.asana.com/reference/updatetask
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param string $task_gid The task GID to update.
+	 * @param array  $args The unsanitized task params. See
+	 * Asana_Interface::prepare_task_args() for supported fields.
+	 * @return \stdClass The complete updated task object.
+	 *
+	 * @throws \Exception Authentication may fail when first loading the client
+	 * or requests could fail due to request limits or server issues.
+	 */
+	public static function update_task( string $task_gid, array $args ) : \stdClass {
+
+		$params = static::prepare_task_args( $args );
+
+		// Remove allowed task args that don't make sense in this context.
+		unset( $params['gid'], $params['post_id'] );
+
+		if ( empty( $params ) ) {
+			throw new \Exception( 'No valid parameters were supplied for task update.', 400 );
+		}
+
+		$asana = static::get_client();
+		$task  = $asana->tasks->update( $task_gid, $params );
+		if ( ! isset( $task->gid ) ) {
+			throw new \Exception( 'Unrecognized API response to update task.', 409 );
+		}
+
+		$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
+
+		return $task;
+	}
+
+	/**
+	 * Prepares task arguments for Asana requests.
+	 *
+	 * @link https://developers.asana.com/reference/createtask
 	 * Specifies all possible field definitions for reference.
 	 * Note that not all fields may be supported by this function.
 	 *
@@ -1786,12 +1827,14 @@ class Asana_Interface {
 	 *
 	 * @param array $args An associative array of task fields.
 	 * The following Asana task fields are currently supported:
-	 * - name
 	 * - assignee
+	 * - completed
 	 * - due_on
+	 * - gid
+	 * - name
 	 * - notes
-	 * - tags
 	 * - projects
+	 * - tags
 	 * - workspace
 	 * The following additional fields are custom supports:
 	 * - post_id (int) WordPress post ID to pin the task.
@@ -1799,6 +1842,24 @@ class Asana_Interface {
 	 * @return array The prepared task arguments.
 	 */
 	public static function prepare_task_args( array $args ) : array {
+
+		// Select only supported arguments.
+		$args = array_intersect_key(
+			$args,
+			array(
+				'assignee'  => true,
+				'completed' => true,
+				'due_on'    => true,
+				'gid'       => true,
+				'name'      => true,
+				'notes'     => true,
+				'post_id'   => true,
+				'project'   => true,
+				'projects'  => true,
+				'tags'      => true,
+				'workspace' => true,
+			)
+		);
 
 		// Used for pinning a task to a WordPress post.
 		if ( isset( $args['post_id'] ) ) {
@@ -1814,6 +1875,14 @@ class Asana_Interface {
 		}
 
 		// Basic fields.
+
+		if ( isset( $args['gid'] ) ) {
+			$args['gid'] = Options::sanitize( 'gid', $args['gid'] );
+		}
+
+		if ( isset( $args['completed'] ) ) {
+			$args['completed'] = rest_sanitize_boolean( $args['completed'] );
+		}
 
 		if ( isset( $args['name'] ) ) {
 			$args['name'] = sanitize_text_field( wp_unslash( $args['name'] ) );
@@ -1835,7 +1904,7 @@ class Asana_Interface {
 			foreach ( $args['tags'] as &$tag_gid ) {
 				$tag_gid = Options::sanitize( 'gid', $tag_gid );
 			}
-			$args['tags'] = Util::remove_empty_values( $args['tags'] );
+			$args['tags'] = array_filter( $args['tags'] );
 		}
 
 		if ( isset( $args['workspace'] ) ) {
@@ -1859,7 +1928,7 @@ class Asana_Interface {
 			$project_gid = Options::sanitize( 'gid', $project_gid );
 		}
 
-		$args['projects'] = Util::remove_empty_values( $args['projects'] );
+		$args['projects'] = array_filter( $args['projects'] );
 
 		if ( empty( $args['projects'] ) && empty( $args['workspace'] ) ) {
 			// A workspace is required if a project hasn't been provided.
@@ -1869,10 +1938,18 @@ class Asana_Interface {
 			}
 		}
 
-		// Final cleanup.
+		// Remove empty fields that aren't explicitly false.
+		$args = array_filter(
+			$args,
+			function ( $value ) {
+				if ( is_bool( $value ) ) {
+					return true;
+				}
+				return ! empty( $value );
+			}
+		);
 
-		$args = Util::remove_empty_values( $args );
-
+		// All done!
 		return $args;
 	}
 }//end class

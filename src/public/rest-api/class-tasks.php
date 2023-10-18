@@ -44,7 +44,7 @@ class Tasks {
 						return Asana_Interface::has_connected_asana();
 					},
 					'args'                => array(
-						'nonce' => REST_Server::get_route_arg_nonce( 'ptc_completionist_create_task' ),
+						'nonce' => REST_Server::get_arg_def_nonce( 'ptc_completionist_create_task' ),
 						'task'  => array(
 							'type'              => 'object',
 							'required'          => true,
@@ -83,14 +83,16 @@ class Tasks {
 				array(
 					'methods'             => 'PUT',
 					'callback'            => array( __CLASS__, 'handle_update_task' ),
-					'permission_callback' => '__return_false',
+					'permission_callback' => function () {
+						return Asana_Interface::has_connected_asana();
+					},
 					'args'                => array(
-						'task_gid' => array(
-							'type'              => 'string',
+						'nonce'    => REST_Server::get_arg_def_nonce( 'ptc_completionist_update_task' ),
+						'task_gid' => REST_Server::get_arg_def_gid( true ),
+						'updates'  => array(
+							'type'              => 'object',
 							'required'          => true,
-							'sanitize_callback' => function ( $value ) {
-								return Options::sanitize( 'gid', $value );
-							},
+							'sanitize_callback' => array( Asana_Interface::class, 'prepare_task_args' ),
 						),
 					),
 				),
@@ -108,14 +110,8 @@ class Tasks {
 						return Asana_Interface::has_connected_asana();
 					},
 					'args'                => array(
-						'nonce'    => REST_Server::get_route_arg_nonce( 'ptc_completionist_delete_task' ),
-						'task_gid' => array(
-							'type'              => 'string',
-							'required'          => true,
-							'sanitize_callback' => function ( $value ) {
-								return Options::sanitize( 'gid', $value );
-							},
-						),
+						'nonce'    => REST_Server::get_arg_def_nonce( 'ptc_completionist_delete_task' ),
+						'task_gid' => REST_Server::get_arg_def_gid( true ),
 					),
 				),
 			)
@@ -156,6 +152,47 @@ class Tasks {
 				'status'  => 'error',
 				'code'    => HTML_Builder::get_error_code( $err ),
 				'message' => HTML_Builder::format_error_string( $err, 'Failed to create task.' ),
+				'data'    => null,
+			);
+		}
+
+		return new \WP_REST_Response( $res, $res['code'] );
+	}
+
+	/**
+	 * Handles a PUT request to update an Asana task.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param \WP_REST_Request $request The API request.
+	 *
+	 * @return \WP_REST_Response|\WP_Error The API response.
+	 */
+	public static function handle_update_task(
+		\WP_REST_Request $request
+	) {
+
+		$res = array(
+			'status'  => 'error',
+			'code'    => 500,
+			'message' => 'An unknown error occurred.',
+			'data'    => null,
+		);
+
+		try {
+			Asana_Interface::get_client(); // Use current user.
+			$task = Asana_Interface::update_task( $request['task_gid'], $request['updates'] );
+			$res  = array(
+				'status'  => 'success',
+				'code'    => 200,
+				'message' => "Successfully updated task {$task->gid}.",
+				'data'    => array( 'task' => $task ),
+			);
+		} catch ( \Exception $err ) {
+			$res = array(
+				'status'  => 'error',
+				'code'    => HTML_Builder::get_error_code( $err ),
+				'message' => HTML_Builder::format_error_string( $err, 'Failed to update task.' ),
 				'data'    => null,
 			);
 		}

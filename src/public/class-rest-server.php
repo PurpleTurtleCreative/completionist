@@ -38,20 +38,42 @@ class REST_Server {
 	}
 
 	/**
-	 * Gets the route argument definition for a nonce.
+	 * Gets the route argument definition for a nonce field.
 	 *
 	 * @since [unreleased]
 	 *
 	 * @param string $nonce_action The nonce action to verify.
-	 * @return array The nonce argument definition.
+	 * @return array The argument definition.
 	 */
-	public static function get_route_arg_nonce( string $nonce_action ) {
+	public static function get_arg_def_nonce( string $nonce_action ) : array {
 		return array(
 			'type'              => 'string',
 			'required'          => true,
 			'sanitize_callback' => 'sanitize_text_field',
 			'validate_callback' => function ( $value ) use ( $nonce_action ) {
 				return ( false !== wp_verify_nonce( $value, $nonce_action ) );
+			},
+		);
+	}
+
+	/**
+	 * Gets the route argument definition for an Asana GID field.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param bool $required Optional. If the argument is required.
+	 * Default true.
+	 * @return array The argument definition.
+	 */
+	public static function get_arg_def_gid( bool $required = true ) : array {
+		return array(
+			'type'              => 'string',
+			'required'          => $required,
+			'sanitize_callback' => function ( $value ) {
+				return Options::sanitize( 'gid', $value );
+			},
+			'validate_callback' => function ( $value ) {
+				return ( ! empty( $value ) );
 			},
 		);
 	}
