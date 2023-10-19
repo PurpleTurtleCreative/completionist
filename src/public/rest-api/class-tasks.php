@@ -60,27 +60,6 @@ class Tasks {
 			'/tasks/(?P<task_gid>[0-9]+)',
 			array(
 				array(
-					'methods'             => 'GET',
-					'callback'            => array( __CLASS__, 'handle_get_task' ),
-					'permission_callback' => '__return_false',
-					'args'                => array(
-						'task_gid' => array(
-							'type'              => 'string',
-							'required'          => true,
-							'sanitize_callback' => function ( $value ) {
-								return Options::sanitize( 'gid', $value );
-							},
-						),
-					),
-				),
-			)
-		);
-
-		register_rest_route(
-			REST_API_NAMESPACE_V1,
-			'/tasks/(?P<task_gid>[0-9]+)',
-			array(
-				array(
 					'methods'             => 'PUT',
 					'callback'            => array( __CLASS__, 'handle_update_task' ),
 					'permission_callback' => function () {
@@ -96,13 +75,6 @@ class Tasks {
 						),
 					),
 				),
-			)
-		);
-
-		register_rest_route(
-			REST_API_NAMESPACE_V1,
-			'/tasks/(?P<task_gid>[0-9]+)',
-			array(
 				array(
 					'methods'             => 'DELETE',
 					'callback'            => array( __CLASS__, 'handle_delete_task' ),
@@ -116,10 +88,36 @@ class Tasks {
 				),
 			)
 		);
+
+		register_rest_route(
+			REST_API_NAMESPACE_V1,
+			'/tasks/(?P<task_gid>[0-9]+)/pins',
+			array(
+				array(
+					'methods'             => 'POST',
+					'callback'            => array( __CLASS__, 'handle_pin_task' ),
+					'permission_callback' => function () {
+						return Asana_Interface::has_connected_asana();
+					},
+					'args'                => array(
+						'nonce'    => REST_Server::get_arg_def_nonce( 'ptc_completionist_pin_task' ),
+						'task_gid' => REST_Server::get_arg_def_gid( true ),
+						'post_id'  => array(
+							'type'              => 'integer',
+							'required'          => true,
+							'sanitize_callback' => function ( $value ) {
+								return intval( $value );
+							},
+							'validate_callback' => 'get_post',
+						),
+					),
+				),
+			)
+		);
 	}//end register_routes()
 
 	/**
-	 * Handles a POST request to create an Asana task.
+	 * Handles a request to create an Asana task.
 	 *
 	 * @since [unreleased]
 	 *
@@ -144,7 +142,7 @@ class Tasks {
 			$res  = array(
 				'status'  => 'success',
 				'code'    => 201,
-				'message' => "Successfully created task {$task->gid}.",
+				'message' => 'Successfully created a new task.',
 				'data'    => array( 'task' => $task ),
 			);
 		} catch ( \Exception $err ) {
@@ -160,7 +158,7 @@ class Tasks {
 	}
 
 	/**
-	 * Handles a PUT request to update an Asana task.
+	 * Handles a request to update an Asana task.
 	 *
 	 * @since [unreleased]
 	 *
@@ -185,7 +183,7 @@ class Tasks {
 			$res  = array(
 				'status'  => 'success',
 				'code'    => 200,
-				'message' => "Successfully updated task {$task->gid}.",
+				'message' => 'Successfully updated the task.',
 				'data'    => array( 'task' => $task ),
 			);
 		} catch ( \Exception $err ) {
@@ -201,7 +199,7 @@ class Tasks {
 	}
 
 	/**
-	 * Handles a DELETE request to delete an Asana task.
+	 * Handles a request to delete an Asana task.
 	 *
 	 * @since [unreleased]
 	 *
@@ -227,7 +225,7 @@ class Tasks {
 			$res = array(
 				'status'  => 'success',
 				'code'    => 200,
-				'message' => "Successfully deleted task {$request['task_gid']}.",
+				'message' => 'Successfully deleted the task.',
 				'data'    => array( 'task_gid' => $request['task_gid'] ),
 			);
 		} catch ( \Exception $err ) {
@@ -236,6 +234,63 @@ class Tasks {
 				'code'    => HTML_Builder::get_error_code( $err ),
 				'message' => HTML_Builder::format_error_string( $err, 'Failed to delete task.' ),
 				'data'    => array( 'task_gid' => $request['task_gid'] ),
+			);
+		}
+
+		return new \WP_REST_Response( $res, $res['code'] );
+	}
+
+	/**
+	 * Handles a request to pin an Asana task to a WordPress post.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param \WP_REST_Request $request The API request.
+	 *
+	 * @return \WP_REST_Response|\WP_Error The API response.
+	 */
+	public static function handle_pin_task(
+		\WP_REST_Request $request
+	) {
+
+		$res = array(
+			'status'  => 'error',
+			'code'    => 500,
+			'message' => 'An unknown error occurred.',
+			'data'    => null,
+		);
+
+		try {
+
+			Asana_Interface::get_client(); // Use current user.
+
+			// Ensure task is valid and can be retrieved.
+			$task = Asana_Interface::maybe_get_task_data( $request['task_gid'] );
+			if ( ! $task ) {
+				throw new \Exception( 'Task data could not be retrieved from Asana.', 500 );
+			}
+
+			if (
+				! Asana_Interface::pin_task_to_post(
+					$request['task_gid'],
+					$request['post_id']
+				)
+			) {
+				throw new \Exception( 'Something went wrong.', 500 );
+			}
+
+			$res = array(
+				'status'  => 'success',
+				'code'    => 200,
+				'message' => 'Successfully pinned the task.',
+				'data'    => array( 'task' => $task ),
+			);
+		} catch ( \Exception $err ) {
+			$res = array(
+				'status'  => 'error',
+				'code'    => HTML_Builder::get_error_code( $err ),
+				'message' => HTML_Builder::format_error_string( $err, 'Failed to pin task.' ),
+				'data'    => null,
 			);
 		}
 

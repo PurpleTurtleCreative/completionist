@@ -372,7 +372,7 @@ class Admin_Pages {
 			$js_data = array(
 				'api'      => array(
 					'auth_nonce'   => wp_create_nonce( 'wp_rest' ),
-					'nonce_pin'    => wp_create_nonce( 'ptc_completionist' ),
+					'nonce_pin'    => wp_create_nonce( 'ptc_completionist_pin_task' ),
 					'nonce_list'   => wp_create_nonce( 'ptc_completionist_list_task' ),
 					'nonce_create' => wp_create_nonce( 'ptc_completionist_create_task' ),
 					'nonce_delete' => wp_create_nonce( 'ptc_completionist_delete_task' ),

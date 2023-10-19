@@ -1,5 +1,7 @@
 import { NoticeContext } from '../notice/NoticeContext.jsx';
 
+import { getTaskGIDFromTaskUrl } from './util';
+
 const { createContext, useContext, useEffect, useState } = wp.element;
 
 export const TaskContext = createContext(false);
@@ -48,7 +50,6 @@ export function TaskContextProvider({children}) {
 				},
 				'body': window.JSON.stringify({
 					'nonce': window.PTCCompletionist.api.nonce_update,
-					'task_gid': taskGID,
 					'updates': { completed }
 				})
 			};
@@ -89,7 +90,6 @@ export function TaskContextProvider({children}) {
 				},
 				'body': window.JSON.stringify({
 					'nonce': window.PTCCompletionist.api.nonce_delete,
-					'task_gid': taskGID
 				})
 			};
 
@@ -171,33 +171,39 @@ export function TaskContextProvider({children}) {
 		 */
 		pinTask: async (taskLink, postID) => {
 
-			let data = {
-				'action': 'ptc_pin_task',
-				'nonce': window.PTCCompletionist.api.nonce_pin,
-				'task_link': taskLink,
-				'post_id': postID
-			};
+			const taskGID = getTaskGIDFromTaskUrl( taskLink );
+			if ( ! taskGID ) {
+				addNotice(
+					'Failed to pin task. Invalid task link.',
+					'error'
+				);
+				return false;
+			}
 
 			const init = {
 				'method': 'POST',
 				'credentials': 'same-origin',
-				'body': new URLSearchParams(data)
+				'headers': {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': window.PTCCompletionist.api.auth_nonce
+				},
+				'body': window.JSON.stringify({
+					'nonce': window.PTCCompletionist.api.nonce_pin,
+					'post_id': postID
+				})
 			};
 
-			return await window.fetch(window.ajaxurl, init)
+			return await window.fetch( `${window.PTCCompletionist.api.v1}/tasks/${taskGID}/pins`, init )
 				.then( res => res.json() )
 				.then( res => {
 
-					if(res.status == 'success' && res.data) {
-						context.addTask(res.data);
+					if ( 'success' === res.status && res.data?.task ) {
+						context.addTask(res.data.task);
 						return true;
-					} else if ( 'code' in res && 'message' in res ) {
-						addNotice(
-							<><strong>{`Error ${res.code}.`}</strong> {res.message}</>,
-							'error'
-						);
+					} else if ( res.message ) {
+						addNotice(res.message, 'error');
 					} else {
-						throw 'error';
+						throw 'unknown error';
 					}
 
 					return false;

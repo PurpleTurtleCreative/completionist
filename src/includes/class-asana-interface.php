@@ -568,7 +568,6 @@ class Asana_Interface {
 
 		if (
 			preg_match( '/\/([0-9]+)\/.$/', $task_link, $matches ) === 1
-			&& isset( $matches[1] )
 			&& ! empty( $matches[1] )
 		) {
 			return Options::sanitize( 'gid', $matches[1] );
@@ -1337,9 +1336,9 @@ class Asana_Interface {
 		];
 
 		/*
-		** An Asana Collection (Iterator) is returned. To actually perform the
-		** API requests to get all the tasks, we must use the Iterator.
-		*/
+		 * An Asana Collection (Iterator) is returned. To actually perform the
+		 * API requests to get all the tasks, we must use the Iterator.
+		 */
 		$site_tasks = $asana->tasks->findByTag( $site_tag_gid, $params, $options );
 		$all_tasks = [];
 		foreach ( $site_tasks as $task ) {
@@ -1353,61 +1352,56 @@ class Asana_Interface {
 	/**
 	 * Sends a batch request to tag and comment on a task in Asana.
 	 *
+	 * @since [unreleased] Removed deprecated $opt_fields param.
 	 * @since 3.1.0 Marked $opt_fields param as deprecated.
 	 * @since 1.0.0
 	 *
 	 * @param string $task_gid The task to act on.
 	 * @param string $tag_gid The tag to add.
 	 * @param string $comment The comment text.
-	 * @param string $opt_fields_deprecated Deprecated.
 	 * @return \stdClass[] An array of response objects. Instance members
 	 * include 'body', 'status_code', and 'headers'.
 	 *
 	 * @throws \Exception Authentication may fail when first loading the client
 	 * or requests could fail due to request limits or server issues.
 	 */
-	public static function tag_and_comment( string $task_gid, string $tag_gid, string $comment, string $opt_fields_deprecated = '' ) : array {
-
-		if ( ! empty( $opt_fields_deprecated ) ) {
-			_deprecated_argument(
-				__FUNCTION__,
-				'3.1.0',
-				'$opt_fields is now a member constant, ' . __CLASS__ . '::TASK_OPT_FIELDS'
-			);
-		}
+	public static function tag_and_comment( string $task_gid, string $tag_gid, string $comment ) : array {
 
 		$asana = self::get_client();
 
 		$task_gid = Options::sanitize( 'gid', $task_gid );
+		if ( ! $task_gid ) {
+			throw new \Exception( 'Invalid task GID to tag and comment.', 400 );
+		}
+
 		$tag_gid = Options::sanitize( 'gid', $tag_gid );
+		if ( ! $tag_gid ) {
+			throw new \Exception( 'Invalid tag GID to tag and comment.', 400 );
+		}
+
 		$comment = Options::sanitize( 'string', $comment );
 
 		$opt_fields = explode( ',', self::TASK_OPT_FIELDS );
 
-		$data = [
-			'actions' => [
-				[
-					'method' => 'POST',
+		$data = array(
+			'actions' => array(
+				array(
+					'method'        => 'POST',
 					'relative_path' => sprintf( '/tasks/%s/addTag', $task_gid ),
-					'data' => [
-						'tag' => $tag_gid,
-					],
-					'options' => [
-						'fields' => $opt_fields,
-					],
-				],
-				[
-					'method' => 'POST',
-					'relative_path' => sprintf( '/tasks/%s/stories', $task_gid ),
-					'data' => [
-						'text' => $comment,
-					],
-					'options' => [
-						'fields' => $opt_fields,
-					],
-				],
-			],
-		];
+					'data'          => array( 'tag' => $tag_gid ),
+					'options'       => array( 'fields' => $opt_fields ),
+				),
+			),
+		);
+
+		if ( $comment ) {
+			$data['actions'][] = array(
+				'method'        => 'POST',
+				'relative_path' => sprintf( '/tasks/%s/stories', $task_gid ),
+				'data'          => array( 'text' => $comment ),
+				'options'       => array( 'fields' => $opt_fields ),
+			);
+		}
 
 		return $asana->post( '/batch', $data );
 	}
@@ -1734,50 +1728,103 @@ class Asana_Interface {
 
 		// Pin the task if desired.
 		if ( isset( $params['post_id'] ) ) {
-
-			try {
-				$did_pin_task = Options::save( Options::PINNED_TASK_GID, $task->gid, false, $params['post_id'] );
-			} catch ( \Exception $e ) {
-				$did_pin_task = false;
-			}
-
-			// Add comment if successfully pinned.
-			if ( $did_pin_task ) {
-				try {
-
-					$referrer = '';
-					if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-						$referrer = wp_unslash( $_SERVER['HTTP_REFERER'] );
-					} else {
-						$referrer = get_site_url();
-					}
-
-					$comment_text = sprintf(
-						'I just created this task using Completionist on the %s WordPress website, here: %s',
-						get_bloginfo( 'name', 'display' ),
-						esc_url_raw( $referrer )
-					);
-
-					/** This filter is documented in src/includes/automations/class-actions.php */
-					$comment_text = apply_filters( 'ptc_cmp_create_task_comment', $comment_text, 'rest_api' );
-
-					if ( $comment_text ) {
-						$asana->tasks->addComment(
-							$task->gid,
-							array( 'text' => $comment_text )
-						);
-					}
-				} catch ( \Exception $err ) {
-					trigger_error(
-						wp_kses_post( HTML_Builder::format_error_string( $err, 'Failed to leave pinned task comment on new task.' ) ),
-						\E_USER_NOTICE
-					);
-				}//endcatch
-			}
+			static::pin_task_to_post( $task->gid, $params['post_id'] );
 		}
 
 		return $task;
 	}//end create_task()
+
+	/**
+	 * Pins an Asana task to a WordPress post and leaves a comment
+	 * if successful.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param string $task_gid The Asana task GID.
+	 * @param int    $post_id The WordPress post ID.
+	 * @return bool If the task was pinned to the WordPress post.
+	 *
+	 * @throws \Exception For the following reasons:
+	 * - Site tag is not set in the plugin settings.
+	 * - The task does not belong to the site's assigned workspace.
+	 */
+	public static function pin_task_to_post( string $task_gid, int $post_id ) : bool {
+
+		if (
+			Options::postmeta_exists(
+				Options::PINNED_TASK_GID,
+				$task_gid,
+				$post_id
+			)
+		) {
+			throw new \Exception( 'That task is already pinned to the post.', 409 );
+		}
+
+		$site_tag_gid = Options::get( Options::ASANA_TAG_GID );
+		if ( '' === $site_tag_gid ) {
+			throw new \Exception( 'A site tag is required to pin tasks. Please set a site tag in Completionist\'s settings.', 409 );
+		}
+
+		if ( ! static::is_workspace_task( $task_gid ) ) {
+			throw new \Exception( 'Task does not belong to this site\'s assigned workspace.', 409 );
+		}
+
+		try {
+			$did_pin_task = Options::save(
+				Options::PINNED_TASK_GID,
+				$task_gid,
+				false,
+				$post_id
+			);
+		} catch ( \Exception $e ) {
+			$did_pin_task = false;
+		}
+
+		// Add tag and comment if successfully pinned.
+		if ( $did_pin_task ) {
+			try {
+
+				$referrer = '';
+				if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
+					$referrer = wp_unslash( $_SERVER['HTTP_REFERER'] );
+				} else {
+					$referrer = get_site_url();
+				}
+
+				$comment_text = sprintf(
+					'I just pinned this task using Completionist on the "%s" WordPress website, here: %s',
+					get_bloginfo( 'name', 'display' ),
+					esc_url_raw( $referrer )
+				);
+
+				/**
+				 * Filters the comment text to add on the Asana task
+				 * after it is pinned to a WordPress post.
+				 *
+				 * @since [unreleased]
+				 *
+				 * @param string $comment_text The comment text. Return
+				 * empty string to not leave a comment.
+				 * @param string $task_gid The Asana task GID.
+				 * @param int $post_id The WordPress post ID.
+				 */
+				$comment_text = (string) apply_filters( 'ptc_completionist_pinned_task_comment', $comment_text, $task_gid, $post_id );
+
+				static::tag_and_comment(
+					$task_gid,
+					$site_tag_gid,
+					$comment_text
+				);
+			} catch ( \Exception $err ) {
+				trigger_error(
+					wp_kses_post( HTML_Builder::format_error_string( $err, 'Failed to tag and/or leave pinned task comment.' ) ),
+					\E_USER_NOTICE
+				);
+			}//endcatch
+		}
+
+		return $did_pin_task;
+	}
 
 	/**
 	 * Updates a task in Asana.

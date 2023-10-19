@@ -8,6 +8,16 @@ export function getTaskUrl(taskGID) {
 	return `https://app.asana.com/0/0/${taskGID}/f`;
 }
 
+export function getTaskGIDFromTaskUrl(url) {
+
+	const matches = url.trim().match(/\/(\d+)\/.$/);
+	if ( matches && matches[1] ) {
+		return matches[1];
+	}
+
+	return '';
+}
+
 export function isCriticalTask(task) {
 	const DAY_IN_SECONDS = 86400;
 	const limit = 7 * DAY_IN_SECONDS;
