@@ -26,16 +26,6 @@ class Admin_Ajax {
 	 */
 	public static function register() {
 
-		/* DEPRECATED - PLEASE REMOVE */
-		add_action( 'wp_ajax_ptc_get_pins', [ __CLASS__, 'ajax_get_pins' ] );
-		add_action( 'wp_ajax_ptc_list_task', [ __CLASS__, 'ajax_list_task' ] );
-		add_action( 'wp_ajax_ptc_list_tasks', [ __CLASS__, 'ajax_list_tasks' ] );
-		add_action( 'wp_ajax_ptc_delete_task', [ __CLASS__, 'ajax_delete_task' ] );
-		add_action( 'wp_ajax_ptc_create_task', [ __CLASS__, 'ajax_create_task' ] );
-		add_action( 'wp_ajax_ptc_update_task', [ __CLASS__, 'ajax_update_task' ] );
-		add_action( 'wp_ajax_ptc_pin_task', [ __CLASS__, 'ajax_pin_task' ] );
-		add_action( 'wp_ajax_ptc_unpin_task', [ __CLASS__, 'ajax_unpin_task' ] );
-
 		/* Generic AJAX Handlers */
 		add_action( 'wp_ajax_ptc_get_tag_options', [ __CLASS__, 'ajax_get_tag_options' ] );
 		add_action( 'wp_ajax_ptc_get_post_options_by_title', [ __CLASS__, 'ajax_ptc_get_post_options_by_title' ] );
@@ -56,86 +46,6 @@ class Admin_Ajax {
 	 */
 	public static function ajax_get_tag_options() {
 		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-get-tag-options.php';
-	}
-
-	/**
-	 * AJAX handler to pin a task.
-	 *
-	 * @since 3.0.0 Moved to Admin_Ajax class.
-	 * @since 1.0.0
-	 */
-	public static function ajax_pin_task() {
-		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-pin-task.php';
-	}
-
-	/**
-	 * AJAX handler to unpin a task.
-	 *
-	 * @since 3.0.0 Moved to Admin_Ajax class.
-	 * @since 1.0.0
-	 */
-	public static function ajax_unpin_task() {
-		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-unpin-task.php';
-	}
-
-	/**
-	 * AJAX handler to load task HTML.
-	 *
-	 * @since 3.0.0 Moved to Admin_Ajax class.
-	 * @since 1.0.0
-	 */
-	public static function ajax_get_pins() {
-		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-get-pins.php';
-	}
-
-	/**
-	 * AJAX handler to load task HTML.
-	 *
-	 * @since 3.0.0 Moved to Admin_Ajax class.
-	 * @since 1.0.0
-	 */
-	public static function ajax_list_task() {
-		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-list-task.php';
-	}
-
-	/**
-	 * AJAX handler to load HTML for multiple tasks.
-	 *
-	 * @since 3.0.0 Moved to Admin_Ajax class.
-	 * @since 1.0.0
-	 */
-	public static function ajax_list_tasks() {
-		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-list-tasks.php';
-	}
-
-	/**
-	 * AJAX handler to create and pin a new task.
-	 *
-	 * @since 3.0.0 Moved to Admin_Ajax class.
-	 * @since 1.0.0
-	 */
-	public static function ajax_create_task() {
-		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-create-task.php';
-	}
-
-	/**
-	 * AJAX handler to delete and unpin a task.
-	 *
-	 * @since 3.0.0 Moved to Admin_Ajax class.
-	 * @since 1.0.0
-	 */
-	public static function ajax_delete_task() {
-		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-delete-task.php';
-	}
-
-	/**
-	 * AJAX handler to update a task.
-	 *
-	 * @since 3.0.0 Moved to Admin_Ajax class.
-	 * @since 1.0.0
-	 */
-	public static function ajax_update_task() {
-		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-update-task.php';
 	}
 
 	/**
