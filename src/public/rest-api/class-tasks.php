@@ -102,14 +102,38 @@ class Tasks {
 					'args'                => array(
 						'nonce'    => REST_Server::get_arg_def_nonce( 'ptc_completionist_pin_task' ),
 						'task_gid' => REST_Server::get_arg_def_gid( true ),
-						'post_id'  => array(
-							'type'              => 'integer',
-							'required'          => true,
-							'sanitize_callback' => function ( $value ) {
-								return intval( $value );
-							},
-							'validate_callback' => 'get_post',
-						),
+						'post_id'  => REST_Server::get_arg_def_post_id( true ),
+					),
+				),
+				array(
+					'methods'             => 'DELETE',
+					'callback'            => array( __CLASS__, 'handle_unpin_task' ),
+					'permission_callback' => function () {
+						return Asana_Interface::has_connected_asana();
+					},
+					'args'                => array(
+						'nonce'    => REST_Server::get_arg_def_nonce( 'ptc_completionist_unpin_task' ),
+						'task_gid' => REST_Server::get_arg_def_gid( true ),
+						'post_id'  => REST_Server::get_arg_def_post_id( false ),
+					),
+				),
+			)
+		);
+
+		register_rest_route(
+			REST_API_NAMESPACE_V1,
+			'/tasks/(?P<task_gid>[0-9]+)/pins/(?P<post_id>[0-9]+)',
+			array(
+				array(
+					'methods'             => 'DELETE',
+					'callback'            => array( __CLASS__, 'handle_unpin_task' ),
+					'permission_callback' => function () {
+						return Asana_Interface::has_connected_asana();
+					},
+					'args'                => array(
+						'nonce'    => REST_Server::get_arg_def_nonce( 'ptc_completionist_unpin_task' ),
+						'task_gid' => REST_Server::get_arg_def_gid( true ),
+						'post_id'  => REST_Server::get_arg_def_post_id( true ),
 					),
 				),
 			)
@@ -290,6 +314,57 @@ class Tasks {
 				'status'  => 'error',
 				'code'    => HTML_Builder::get_error_code( $err ),
 				'message' => HTML_Builder::format_error_string( $err, 'Failed to pin task.' ),
+				'data'    => null,
+			);
+		}
+
+		return new \WP_REST_Response( $res, $res['code'] );
+	}
+
+	/**
+	 * Handles a request to unpin an Asana task.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param \WP_REST_Request $request The API request.
+	 *
+	 * @return \WP_REST_Response|\WP_Error The API response.
+	 */
+	public static function handle_unpin_task(
+		\WP_REST_Request $request
+	) {
+
+		$res = array(
+			'status'  => 'error',
+			'code'    => 500,
+			'message' => 'An unknown error occurred.',
+			'data'    => null,
+		);
+
+		try {
+
+			Asana_Interface::get_client(); // Use current user.
+
+			if (
+				! Asana_Interface::unpin_task(
+					$request['task_gid'],
+					$request['post_id'] ?? -1
+				)
+			) {
+				throw new \Exception( 'Something went wrong.', 500 );
+			}
+
+			$res = array(
+				'status'  => 'success',
+				'code'    => 200,
+				'message' => 'Successfully unpinned the task.',
+				'data'    => array( 'task_gid' => $request['task_gid'] ),
+			);
+		} catch ( \Exception $err ) {
+			$res = array(
+				'status'  => 'error',
+				'code'    => HTML_Builder::get_error_code( $err ),
+				'message' => HTML_Builder::format_error_string( $err, 'Failed to unpin task.' ),
 				'data'    => null,
 			);
 		}

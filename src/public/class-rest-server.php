@@ -77,4 +77,25 @@ class REST_Server {
 			},
 		);
 	}
+
+	/**
+	 * Gets the route argument definition for a WordPress post ID field.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param bool $required Optional. If the argument is required.
+	 * Default true.
+	 * @return array The argument definition.
+	 */
+	public static function get_arg_def_post_id( bool $required = true ) : array {
+		return array(
+			'type'              => 'integer',
+			'required'          => $required,
+			'minimum'           => 1,
+			'sanitize_callback' => function ( $value ) {
+				return intval( $value );
+			},
+			'validate_callback' => 'get_post',
+		);
+	}
 }

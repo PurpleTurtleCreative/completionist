@@ -1746,6 +1746,7 @@ class Asana_Interface {
 	 *
 	 * @throws \Exception For the following reasons:
 	 * - Site tag is not set in the plugin settings.
+	 * - The task is already pinned to the post.
 	 * - The task does not belong to the site's assigned workspace.
 	 */
 	public static function pin_task_to_post( string $task_gid, int $post_id ) : bool {
@@ -1824,6 +1825,106 @@ class Asana_Interface {
 		}
 
 		return $did_pin_task;
+	}
+
+	/**
+	 * Unpins an Asana task from a WordPress post or the entire site.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param string $task_gid The Asana task GID.
+	 * @param int    $post_id Optional. The WordPress post ID to
+	 * unpin the task from. Default -1 to unpin the task from
+	 * the entire site.
+	 * @return bool If the task was unpinned.
+	 *
+	 * @throws \Exception
+	 */
+	public static function unpin_task( string $task_gid, int $post_id = -1 ) : bool {
+
+		$params = static::prepare_task_args(
+			array(
+				'gid'     => $task_gid,
+				'post_id' => $post_id,
+			)
+		);
+
+		if ( ! isset( $params['gid'] ) ) {
+			throw new \Exception( 'Invalid task gid.', 400 );
+		}
+
+		$site_tag_gid = Options::get( Options::ASANA_TAG_GID );
+		if ( '' === $site_tag_gid ) {
+			throw new \Exception( 'A site tag is required to unpin tasks. Please set a site tag in Completionist\'s settings.', 409 );
+		}
+
+		$did_unpin_task = false;
+		if ( -1 !== $post_id ) {
+			// Unpin task from specific post.
+
+			if ( ! isset( $params['post_id'] ) ) {
+				throw new \Exception( 'Invalid post identifier.', 400 );
+			}
+
+			if (
+				! Options::postmeta_exists(
+					Options::PINNED_TASK_GID,
+					$params['gid'],
+					$params['post_id']
+				)
+			) {
+				throw new \Exception( 'That task is not currently pinned to the post.', 409 );
+			}
+
+			try {
+				$did_unpin_task = Options::delete(
+					Options::PINNED_TASK_GID,
+					$params['post_id'],
+					$params['gid']
+				);
+			} catch ( \Exception $e ) {
+				$did_unpin_task = false;
+			}
+		} else {
+			// Unpin task from entire site.
+			try {
+				$did_unpin_task = Options::delete(
+					Options::PINNED_TASK_GID,
+					-1, // all posts.
+					$params['gid']
+				);
+			} catch ( \Exception $e ) {
+				$did_unpin_task = false;
+			}
+		}
+
+		// Remove site tag if completely unpinned.
+		if (
+				! Options::postmeta_exists(
+					Options::PINNED_TASK_GID,
+					$params['gid'],
+					-1 // any post.
+				)
+		) {
+			try {
+				$asana = static::get_client();
+				$asana->tasks->removeTag(
+					$params['gid'],
+					array( 'tag' => $site_tag_gid )
+				);
+				// If not pinned to any post and the site tag was
+				// successfully removed, then the task is effectively
+				// unpinned from the entire site.
+				$did_unpin_task = true;
+			} catch ( \Exception $err ) {
+				throw new \Exception(
+					wp_kses_post( HTML_Builder::format_error_string( $err, 'Failed to remove site tag from the unpinned task.' ) ),
+					intval( HTML_Builder::get_error_code( $err ) )
+				);
+			}
+		}
+
+		return $did_unpin_task;
 	}
 
 	/**

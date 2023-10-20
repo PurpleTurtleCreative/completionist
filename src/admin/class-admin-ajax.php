@@ -34,13 +34,13 @@ class Admin_Ajax {
 		add_action( 'wp_ajax_ptc_create_task', [ __CLASS__, 'ajax_create_task' ] );
 		add_action( 'wp_ajax_ptc_update_task', [ __CLASS__, 'ajax_update_task' ] );
 		add_action( 'wp_ajax_ptc_pin_task', [ __CLASS__, 'ajax_pin_task' ] );
-
-		/* Task AJAX Handlers */
 		add_action( 'wp_ajax_ptc_unpin_task', [ __CLASS__, 'ajax_unpin_task' ] );
+
 		/* Generic AJAX Handlers */
 		add_action( 'wp_ajax_ptc_get_tag_options', [ __CLASS__, 'ajax_get_tag_options' ] );
 		add_action( 'wp_ajax_ptc_get_post_options_by_title', [ __CLASS__, 'ajax_ptc_get_post_options_by_title' ] );
 		add_action( 'wp_ajax_ptc_get_post_title_by_id', [ __CLASS__, 'ajax_ptc_get_post_title_by_id' ] );
+
 		/* Automation AJAX Handlers */
 		add_action( 'wp_ajax_ptc_save_automation', [ __CLASS__, 'ajax_ptc_save_automation' ] );
 		add_action( 'wp_ajax_ptc_get_automation', [ __CLASS__, 'ajax_ptc_get_automation' ] );

@@ -3,10 +3,26 @@ import { getTaskUrl } from './util';
 
 import '../../../assets/styles/scss/components/task/_TaskActions.scss';
 
-const { useCallback, useContext } = wp.element;
+import { useSelect } from '@wordpress/data';
+import { store as editorStore } from '@wordpress/editor';
+
+import { useCallback, useContext } from '@wordpress/element';
 
 export default function TaskActions({taskGID, processingStatus}) {
 	const { deleteTask, unpinTask, removeTask, setTaskProcessingStatus } = useContext(TaskContext);
+	const currentPostId = useSelect(
+		select => {
+			let id = select( editorStore ).getCurrentPostId();
+			if ( ! id ) {
+				// Fallback check for Classic Editor.
+				const postIdInput = document.getElementById( 'post_ID' );
+				if ( postIdInput && postIdInput.value ) {
+					id = postIdInput.value;
+				}
+			}
+			return id;
+		}
+	);
 
 	const handleUnpinTask = useCallback((taskGID) => {
 		if ( processingStatus ) {
@@ -14,7 +30,7 @@ export default function TaskActions({taskGID, processingStatus}) {
 			return;
 		}
 		setTaskProcessingStatus(taskGID, 'unpinning');
-		unpinTask(taskGID).then(success => {
+		unpinTask(taskGID, currentPostId).then(success => {
 			if ( ! success ) {
 				// Only set processing status if task wasn't successfully removed.
 				setTaskProcessingStatus(taskGID, false);
@@ -41,6 +57,8 @@ export default function TaskActions({taskGID, processingStatus}) {
 	const unpinIcon = ('unpinning' === processingStatus) ? 'fa-sync-alt fa-spin' : 'fa-thumbtack';
 	const deleteIcon = ('deleting' === processingStatus) ? 'fa-sync-alt fa-spin' : 'fa-minus';
 
+	const unpinTitle = ( currentPostId ) ? 'Unpin from post' : 'Unpin from site';
+
 	return (
 		<div className="ptc-TaskActions">
 			<a href={task_url} target="_asana">
@@ -48,7 +66,7 @@ export default function TaskActions({taskGID, processingStatus}) {
 					<i className="fas fa-link"></i>
 				</button>
 			</a>
-			<button title="Unpin from Site" className="unpin" type="button" onClick={() => handleUnpinTask(taskGID)} disabled={!!processingStatus}>
+			<button title={unpinTitle} className="unpin" type="button" onClick={() => handleUnpinTask(taskGID)} disabled={!!processingStatus}>
 				<i className={`fas ${unpinIcon}`}></i>
 			</button>
 			<button title="Delete from Asana" className="delete" type="button" onClick={() => handleDeleteTask(taskGID)} disabled={!!processingStatus}>
