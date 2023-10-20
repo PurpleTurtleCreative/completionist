@@ -1,4 +1,5 @@
 import { PostSearchSelectInput } from './PostSearchSelectInput.js';
+import PostSearchPicker from './post/PostSearchPicker.jsx';
 
 const { Component } = wp.element;
 
@@ -531,6 +532,11 @@ class AutomationActionsInputs extends Component {
                 initialValue={action.meta.post_id}
                 onSelectOption={(value) => this.props.changeActionMeta(action.ID, 'post_id', value)}
               />
+            </div>
+
+            <div className='form-group'>
+              <label for={"ptc-new-task_post_picker_id_"+index}>Post Picker</label>
+              <PostSearchPicker />
             </div>
 
           </div>

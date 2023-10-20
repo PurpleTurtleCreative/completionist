@@ -274,6 +274,9 @@ class Admin_Pages {
 						)
 					);
 				}
+				foreach ( $asset_file['dependencies'] as $style ) {
+					wp_enqueue_style( $style );
+				}
 				wp_enqueue_style( 'fontawesome-5' );
 				wp_enqueue_style(
 					'ptc-completionist_admin-automations-css',
