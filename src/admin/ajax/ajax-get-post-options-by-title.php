@@ -2,6 +2,9 @@
 /**
  * Get WordPress post ID and title options by searching for like titles.
  *
+ * @todo Should be able to replace this functionality with WordPress
+ * REST API's /search endpoint like http://localhost/wp-json/wp/v2/search?type=post&context=view&search=Sample+Page
+ *
  * @since 1.1.0
  */
 

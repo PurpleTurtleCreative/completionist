@@ -2,6 +2,12 @@
 /**
  * Get WordPress post ID and title options by searching for like titles.
  *
+ * @internal Sadly, it seems this can't be replaced with a core WordPress
+ * REST API endpoint since custom post types need to explicitly
+ * opt-in to being available via the REST API when registered.
+ * Also, the REST API endpoints require you to know which post type
+ * you are requesting. There's no way to generically request by post ID.
+ *
  * @since 1.1.0
  */
 
