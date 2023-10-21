@@ -25,14 +25,10 @@ class Admin_Ajax {
 	 * @since 1.0.0
 	 */
 	public static function register() {
-
 		/* Generic AJAX Handlers */
 		add_action( 'wp_ajax_ptc_get_tag_options', [ __CLASS__, 'ajax_get_tag_options' ] );
 		add_action( 'wp_ajax_ptc_get_post_options_by_title', [ __CLASS__, 'ajax_ptc_get_post_options_by_title' ] );
 		add_action( 'wp_ajax_ptc_get_post_title_by_id', [ __CLASS__, 'ajax_ptc_get_post_title_by_id' ] );
-
-		/* Automation AJAX Handlers */
-		add_action( 'wp_ajax_ptc_save_automation', [ __CLASS__, 'ajax_ptc_save_automation' ] );
 	}
 
 	/**
@@ -63,15 +59,5 @@ class Admin_Ajax {
 	 */
 	public static function ajax_ptc_get_post_title_by_id() {
 		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-get-post-title-by-id.php';
-	}
-
-	/**
-	 * AJAX handler to save automation data.
-	 *
-	 * @since 3.0.0 Moved to Admin_Ajax class.
-	 * @since 1.1.0
-	 */
-	public static function ajax_ptc_save_automation() {
-		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-save-automation.php';
 	}
 }//end class

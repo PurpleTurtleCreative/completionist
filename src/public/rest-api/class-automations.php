@@ -67,6 +67,20 @@ class Automations {
 						),
 					),
 				),
+				array(
+					'methods'             => 'POST',
+					'callback'            => array( __CLASS__, 'handle_create_automation' ),
+					'permission_callback' => function () {
+						return Asana_Interface::has_connected_asana();
+					},
+					'args'                => array(
+						'nonce'      => REST_Server::get_arg_def_nonce( 'ptc_completionist_create_automation' ),
+						'automation' => array(
+							'type'     => 'object',
+							'required' => true,
+						),
+					),
+				),
 			)
 		);
 
@@ -92,11 +106,11 @@ class Automations {
 						return Asana_Interface::has_connected_asana();
 					},
 					'args'                => array(
-						'nonce'         => REST_Server::get_arg_def_nonce( 'ptc_completionist_automations' ),
+						'nonce'         => REST_Server::get_arg_def_nonce( 'ptc_completionist_update_automation' ),
 						'automation_id' => REST_Server::get_arg_def_id( true ),
-						'updates'       => array(
-							'type'              => 'object',
-							'required'          => true,
+						'automation'    => array(
+							'type'     => 'object',
+							'required' => true,
 						),
 					),
 				),
@@ -155,6 +169,137 @@ class Automations {
 				'status'  => 'error',
 				'code'    => HTML_Builder::get_error_code( $err ),
 				'message' => HTML_Builder::format_error_string( $err, 'Failed to get automations.' ),
+				'data'    => null,
+			);
+		}
+
+		return new \WP_REST_Response( $res, $res['code'] );
+	}
+
+	/**
+	 * Handles a request to save a new Automation.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param \WP_REST_Request $request The API request.
+	 *
+	 * @return \WP_REST_Response|\WP_Error The API response.
+	 */
+	public static function handle_create_automation(
+		\WP_REST_Request $request
+	) {
+
+		$res = array(
+			'status'  => 'error',
+			'code'    => 500,
+			'message' => 'An unknown error occurred.',
+			'data'    => null,
+		);
+
+		try {
+
+			$automation = $request['automation'];
+			if ( is_array( $automation ) ) {
+				// Must be converted to stdClass objects.
+				$automation = json_decode( wp_json_encode( $automation ), false );
+			}
+
+			if (
+				! is_a( $automation, '\stdClass' ) ||
+				! isset( $automation->ID )
+			) {
+				throw new \Exception( 'Invalid automation data.', 400 );
+			}
+
+			if ( 0 !== $automation->ID ) {
+				throw new \Exception( 'Creating a new automation from an existing one is not supported.', 400 );
+			}
+
+			$automation = Data::save_automation( $automation );
+			if ( ! isset( $automation->ID ) || $automation->ID <= 0 ) {
+				throw new \Exception( 'There was an issue writing to the database.', 500 );
+			}
+
+			$res = array(
+				'status'  => 'success',
+				'code'    => 201,
+				'message' => 'Successfully saved the new automation.',
+				'data'    => array( 'automation' => $automation ),
+			);
+		} catch ( \Exception $err ) {
+			$res = array(
+				'status'  => 'error',
+				'code'    => HTML_Builder::get_error_code( $err ),
+				'message' => HTML_Builder::format_error_string( $err, 'Failed to save the new automation.' ),
+				'data'    => null,
+			);
+		}
+
+		return new \WP_REST_Response( $res, $res['code'] );
+	}
+
+	/**
+	 * Handles a request to update an existing Automation.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param \WP_REST_Request $request The API request.
+	 *
+	 * @return \WP_REST_Response|\WP_Error The API response.
+	 */
+	public static function handle_update_automation(
+		\WP_REST_Request $request
+	) {
+
+		$res = array(
+			'status'  => 'error',
+			'code'    => 500,
+			'message' => 'An unknown error occurred.',
+			'data'    => null,
+		);
+
+		try {
+
+			$automation = $request['automation'];
+			if ( is_array( $automation ) ) {
+				// Must be converted to stdClass objects.
+				$automation = json_decode( wp_json_encode( $automation ), false );
+			}
+
+			if (
+				! is_a( $automation, '\stdClass' ) ||
+				! isset( $automation->ID )
+			) {
+				throw new \Exception( 'Invalid automation data.', 400 );
+			}
+
+			if ( $request['automation_id'] !== $automation->ID ) {
+				throw new \Exception( 'Automation record does not match route.', 400 );
+			}
+
+			if ( 0 === $automation->ID ) {
+				throw new \Exception( 'Invalid automation ID.', 400 );
+			}
+
+			$automation = Data::save_automation( $automation );
+			if (
+				! isset( $automation->ID ) ||
+				$request['automation_id'] !== $automation->ID
+			) {
+				throw new \Exception( 'There was an issue writing to the database.', 500 );
+			}
+
+			$res = array(
+				'status'  => 'success',
+				'code'    => 200,
+				'message' => 'Successfully updated the automation.',
+				'data'    => array( 'automation' => $automation ),
+			);
+		} catch ( \Exception $err ) {
+			$res = array(
+				'status'  => 'error',
+				'code'    => HTML_Builder::get_error_code( $err ),
+				'message' => HTML_Builder::format_error_string( $err, 'Failed to update the automation.' ),
 				'data'    => null,
 			);
 		}

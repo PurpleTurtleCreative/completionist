@@ -84,46 +84,61 @@ export class AutomationDetailsForm extends Component {
 
       this.setState({ "isSubmitting": true }, () => {
 
-        let data = {
-          "action": 'ptc_save_automation',
-          "nonce": window.ptc_completionist_automations.nonce,
-          "automation": this.state
+        const { saveButtonLabel, isSubmitting, ...automation } = this.state;
+
+        const ajaxRequest = {
+          'method': 'PUT',
+          'url': `${window.ptc_completionist_automations.api.v1}/automations/${automation.ID}`,
+          'headers': {
+            'Content-Type': 'application/json',
+            'X-WP-Nonce': window.ptc_completionist_automations.api.auth_nonce
+          },
+          'contentType': 'application/json',
+          'data': {
+            'nonce': window.ptc_completionist_automations.api.nonce_update,
+            'automation': automation
+          },
+          'dataType': 'json',
         };
 
-        window.jQuery.post(window.ajaxurl, data, (res) => {
+        if ( 0 === automation.ID ) {
+          ajaxRequest.method = 'POST';
+          ajaxRequest.url = `${window.ptc_completionist_automations.api.v1}/automations`;
+          ajaxRequest.data.nonce = window.ptc_completionist_automations.api.nonce_create;
+        }
 
-          if (
-            res.status
-            && res.status == 'success'
-            && res.code
-            && res.data
-            && typeof res.data == 'object'
-            && 'ID' in res.data
-            && res.data.ID
-            && res.data.ID > 0
-          ) {
-            if ( res.code == 201 ) {
-//               console.log( res.message );
-              this.props.goToAutomation( res.data.ID );
-            } else if ( res.code == 200 ) {
-              // TODO: display success message in notice section
-//               console.log( res.message );
-              this.setState({
-                ...res.data,
-                "isSubmitting": false
-              });
-            }
-          } else {
-            // TODO: display error messages in notice section
-            if ( res.message && res.code ) {
-              alert( 'Error ' + res.code + '. The automation could not be saved. ' + res.message);
+        ajaxRequest.data = JSON.stringify(ajaxRequest.data);
+
+        window.jQuery
+          .ajax(ajaxRequest)
+          .done((res) => {
+
+            if (
+              'success' === res.status
+              && [ 200, 201 ].includes(res.code)
+              && res?.data?.automation?.ID > 0
+            ) {
+              if ( 201 === res.code ) {
+  //               console.log( res.message );
+                this.props.goToAutomation( res.data.automation.ID );
+              } else if ( 200 === res.code ) {
+                // TODO: display success message in notice section
+  //               console.log( res.message );
+                this.setState({
+                  ...res.data.automation,
+                  "isSubmitting": false
+                });
+              }
             } else {
-              alert( 'Error 409. The automation could not be saved.' );
+              // TODO: display error messages in notice section
+              if ( res.message && res.code ) {
+                alert( 'Error ' + res.code + '. The automation could not be saved. ' + res.message);
+              } else {
+                alert( 'Error 409. The automation could not be saved.' );
+              }
+              this.setState({ "isSubmitting": false });
             }
-            this.setState({ "isSubmitting": false });
-          }
-
-        }, 'json')
+          })
           .fail(() => {
             alert( 'Error 500. The automation could not be saved.' );
             this.setState({ "isSubmitting": false });
