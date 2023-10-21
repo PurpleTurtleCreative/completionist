@@ -37,11 +37,13 @@ export default class PTCCompletionistAutomations extends Component {
       } else if ( isNaN( parseInt( automationId ) ) || automationId <= 0 ) {
 
         let data = {
-          'action': 'ptc_get_automation_overviews',
-          'nonce': window.ptc_completionist_automations.nonce,
+          '_wpnonce': window.ptc_completionist_automations.api.auth_nonce,
+          'nonce': window.ptc_completionist_automations.api.nonce_get,
+          'order_by': 'title',
+          'return_html': true,
         };
 
-        window.jQuery.post(window.ajaxurl, data, (res) => {
+        window.jQuery.getJSON(`${window.ptc_completionist_automations.api.v1}/automations`, data, (res) => {
 
           if ( res.status == 'success' && typeof res.data == 'object' ) {
             let queryParams = new URLSearchParams( location.search );
@@ -53,7 +55,7 @@ export default class PTCCompletionistAutomations extends Component {
             );
             document.title = 'Completionist – Automations';
             this.setState({
-              automations: res.data,
+              automations: res.data?.automation_overviews ?? [],
               isLoading: false
             });
           } else {

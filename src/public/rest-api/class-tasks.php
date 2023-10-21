@@ -14,9 +14,7 @@ use const PTC_Completionist\REST_API_NAMESPACE_V1;
 use PTC_Completionist\Asana_Interface;
 use PTC_Completionist\Options;
 use PTC_Completionist\HTML_Builder;
-use PTC_Completionist\Request_Token;
 use PTC_Completionist\REST_Server;
-use PTC_Completionist\Util;
 
 /**
  * Class to register and handle custom REST API endpoints

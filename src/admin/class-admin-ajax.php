@@ -34,7 +34,6 @@ class Admin_Ajax {
 		/* Automation AJAX Handlers */
 		add_action( 'wp_ajax_ptc_save_automation', [ __CLASS__, 'ajax_ptc_save_automation' ] );
 		add_action( 'wp_ajax_ptc_get_automation', [ __CLASS__, 'ajax_ptc_get_automation' ] );
-		add_action( 'wp_ajax_ptc_get_automation_overviews', [ __CLASS__, 'ajax_ptc_get_automation_overviews' ] );
 		add_action( 'wp_ajax_ptc_delete_automation', [ __CLASS__, 'ajax_ptc_delete_automation' ] );
 	}
 
@@ -86,16 +85,6 @@ class Admin_Ajax {
 	 */
 	public static function ajax_ptc_get_automation() {
 		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-get-automation.php';
-	}
-
-	/**
-	 * AJAX handler to get overview data for all automations.
-	 *
-	 * @since 3.0.0 Moved to Admin_Ajax class.
-	 * @since 1.1.0
-	 */
-	public static function ajax_ptc_get_automation_overviews() {
-		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-get-automation-overviews.php';
 	}
 
 	/**

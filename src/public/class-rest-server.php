@@ -34,6 +34,7 @@ class REST_Server {
 		REST_API\Projects::register_routes();
 		REST_API\Attachments::register_routes();
 		REST_API\Tasks::register_routes();
+		REST_API\Automations::register_routes();
 		Admin_Notices::register_routes();
 	}
 
@@ -74,6 +75,26 @@ class REST_Server {
 			},
 			'validate_callback' => function ( $value ) {
 				return ( ! empty( $value ) );
+			},
+		);
+	}
+
+	/**
+	 * Gets the route argument definition for an integer ID field.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param bool $required Optional. If the argument is required.
+	 * Default true.
+	 * @return array The argument definition.
+	 */
+	public static function get_arg_def_id( bool $required = true ) : array {
+		return array(
+			'type'              => 'integer',
+			'required'          => $required,
+			'minimum'           => 1,
+			'sanitize_callback' => function ( $value ) {
+				return intval( $value );
 			},
 		);
 	}
