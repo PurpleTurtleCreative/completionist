@@ -107,7 +107,7 @@ class Automations {
 						return Asana_Interface::has_connected_asana();
 					},
 					'args'                => array(
-						'nonce'         => REST_Server::get_arg_def_nonce( 'ptc_completionist_automations' ),
+						'nonce'         => REST_Server::get_arg_def_nonce( 'ptc_completionist_delete_automation' ),
 						'automation_id' => REST_Server::get_arg_def_id( true ),
 					),
 				),
@@ -197,6 +197,50 @@ class Automations {
 				'status'  => 'error',
 				'code'    => HTML_Builder::get_error_code( $err ),
 				'message' => HTML_Builder::format_error_string( $err, 'Failed to get automations.' ),
+				'data'    => null,
+			);
+		}
+
+		return new \WP_REST_Response( $res, $res['code'] );
+	}
+
+	/**
+	 * Handles a request to delete an Automation.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param \WP_REST_Request $request The API request.
+	 *
+	 * @return \WP_REST_Response|\WP_Error The API response.
+	 */
+	public static function handle_delete_automation(
+		\WP_REST_Request $request
+	) {
+
+		$res = array(
+			'status'  => 'error',
+			'code'    => 500,
+			'message' => 'An unknown error occurred.',
+			'data'    => null,
+		);
+
+		try {
+
+			if ( ! Data::delete_automation( $request['automation_id'] ) ) {
+				throw new \Exception( 'The database record could not be deleted.', 500 );
+			}
+
+			$res = array(
+				'status'  => 'success',
+				'code'    => 200,
+				'message' => 'Successfully deleted the automation.',
+				'data'    => array( 'automation_id' => $request['automation_id'] ),
+			);
+		} catch ( \Exception $err ) {
+			$res = array(
+				'status'  => 'error',
+				'code'    => HTML_Builder::get_error_code( $err ),
+				'message' => HTML_Builder::format_error_string( $err, 'Failed to delete automation.' ),
 				'data'    => null,
 			);
 		}

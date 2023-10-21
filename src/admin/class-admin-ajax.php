@@ -33,7 +33,6 @@ class Admin_Ajax {
 
 		/* Automation AJAX Handlers */
 		add_action( 'wp_ajax_ptc_save_automation', [ __CLASS__, 'ajax_ptc_save_automation' ] );
-		add_action( 'wp_ajax_ptc_delete_automation', [ __CLASS__, 'ajax_ptc_delete_automation' ] );
 	}
 
 	/**
@@ -74,15 +73,5 @@ class Admin_Ajax {
 	 */
 	public static function ajax_ptc_save_automation() {
 		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-save-automation.php';
-	}
-
-	/**
-	 * AJAX handler to delete an automation by ID.
-	 *
-	 * @since 3.0.0 Moved to Admin_Ajax class.
-	 * @since 1.1.0
-	 */
-	public static function ajax_ptc_delete_automation() {
-		require_once PLUGIN_PATH . 'src/admin/ajax/ajax-delete-automation.php';
 	}
 }//end class

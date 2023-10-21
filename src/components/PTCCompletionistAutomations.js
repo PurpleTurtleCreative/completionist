@@ -114,38 +114,44 @@ export default class PTCCompletionistAutomations extends Component {
 
   deleteAutomation( automationId, callback ) {
 
-    let data = {
-      'action': 'ptc_delete_automation',
-      'nonce': window.ptc_completionist_automations.nonce,
-      'ID': automationId
-    };
+    window.jQuery
+      .ajax({
+        'method': 'DELETE',
+        'url': `${window.ptc_completionist_automations.api.v1}/automations/${automationId}`,
+        'headers': {
+          'Content-Type': 'application/json',
+          'X-WP-Nonce': window.ptc_completionist_automations.api.auth_nonce
+        },
+        'contentType': 'application/json',
+        'data': JSON.stringify({
+          'nonce': window.ptc_completionist_automations.api.nonce_delete
+        }),
+        'dataType': 'json',
+      })
+      .done((res) => {
 
-    window.jQuery.post(window.ajaxurl, data, (res) => {
-
-      if (
-        res.status
-        && res.status == 'success'
-        && res.code
-        && res.code == 200
-        && res.data
-      ) {
-        // TODO: display success message in notice section
-        console.log( res.message );
-        this.setState((state) => ({
-          automations: state.automations.filter((automation) => automation.ID !== res.data)
-        }));
-      } else {
-        // TODO: display error messages in notice section
-        if ( res.message && res.code ) {
-          alert( 'Error ' + res.code + '. The automation could not be deleted. ' + res.message);
+        if (
+          'success' == res?.status
+          && 200 == res?.code
+          && res?.data?.automation_id
+        ) {
+          // TODO: display success message in notice section
+          console.log( res.message );
+          this.setState((state) => ({
+            automations: state.automations.filter((automation) => automation.ID !== res.data.automation_id)
+          }));
         } else {
-          alert( 'Error. The automation could not be deleted.' );
+          // TODO: display error messages in notice section
+          if ( res.message && res.code ) {
+            alert( 'Error ' + res.code + '. The automation could not be deleted. ' + res.message);
+          } else {
+            alert( 'Error. The automation could not be deleted.' );
+          }
         }
-      }
 
-      typeof callback === 'function' && callback( res );
+        typeof callback === 'function' && callback( res );
 
-    }, 'json')
+      })
       .fail(() => {
         // TODO: display error messages in notice section
         alert( 'Error 500. The automation could not be deleted.' );
