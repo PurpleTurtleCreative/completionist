@@ -81,19 +81,18 @@ export default class PTCCompletionistAutomations extends Component {
       } else {
 
         let data = {
-          'action': 'ptc_get_automation',
-          'nonce': window.ptc_completionist_automations.nonce,
-          'ID': automationId
+          '_wpnonce': window.ptc_completionist_automations.api.auth_nonce,
+          'nonce': window.ptc_completionist_automations.api.nonce_get
         };
 
-        window.jQuery.post(window.ajaxurl, data, (res) => {
+        window.jQuery.getJSON(`${window.ptc_completionist_automations.api.v1}/automations/${automationId}`, data, (res) => {
 
-          if ( res.status == 'success' && typeof res.data == 'object' ) {
-            let docTitle = 'Completionist – Automation ' + res.data.ID + ' – ' + res.data.title;
+          if ( res.status == 'success' && typeof res.data == 'object' && res.data?.automation ) {
+            let docTitle = 'Completionist – Automation ' + res.data.automation.ID + ' – ' + res.data.automation.title;
             let queryParams = new URLSearchParams( location.search );
             queryParams.set( 'automation', automationId );
             history.pushState(
-              res.data,
+              res.data.automation,
               docTitle,
               '?' + queryParams.toString()
             );

@@ -12,6 +12,7 @@ defined( 'ABSPATH' ) || die();
 use const PTC_Completionist\REST_API_NAMESPACE_V1;
 
 use PTC_Completionist\Asana_Interface;
+use PTC_Completionist\Automation;
 use PTC_Completionist\Automations\Data;
 use PTC_Completionist\Options;
 use PTC_Completionist\HTML_Builder;
@@ -73,6 +74,17 @@ class Automations {
 			REST_API_NAMESPACE_V1,
 			'/automations/(?P<automation_id>[0-9]+)',
 			array(
+				array(
+					'methods'             => 'GET',
+					'callback'            => array( __CLASS__, 'handle_get_automation' ),
+					'permission_callback' => function () {
+						return Asana_Interface::has_connected_asana();
+					},
+					'args'                => array(
+						'nonce'         => REST_Server::get_arg_def_nonce( 'ptc_completionist_get_automation' ),
+						'automation_id' => REST_Server::get_arg_def_id( true ),
+					),
+				),
 				array(
 					'methods'             => 'PUT',
 					'callback'            => array( __CLASS__, 'handle_update_automation' ),
@@ -137,6 +149,48 @@ class Automations {
 				'code'    => 200,
 				'message' => "Successfully retrieved {$records_count} automation overviews.",
 				'data'    => array( 'automation_overviews' => $automation_overviews ),
+			);
+		} catch ( \Exception $err ) {
+			$res = array(
+				'status'  => 'error',
+				'code'    => HTML_Builder::get_error_code( $err ),
+				'message' => HTML_Builder::format_error_string( $err, 'Failed to get automations.' ),
+				'data'    => null,
+			);
+		}
+
+		return new \WP_REST_Response( $res, $res['code'] );
+	}
+
+	/**
+	 * Handles a request to get an Automation.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param \WP_REST_Request $request The API request.
+	 *
+	 * @return \WP_REST_Response|\WP_Error The API response.
+	 */
+	public static function handle_get_automation(
+		\WP_REST_Request $request
+	) {
+
+		$res = array(
+			'status'  => 'error',
+			'code'    => 500,
+			'message' => 'An unknown error occurred.',
+			'data'    => null,
+		);
+
+		try {
+
+			$automation = ( new Automation( $request['automation_id'] ) )->to_stdClass();
+
+			$res = array(
+				'status'  => 'success',
+				'code'    => 200,
+				'message' => 'Successfully retrieved the automation.',
+				'data'    => array( 'automation' => $automation ),
 			);
 		} catch ( \Exception $err ) {
 			$res = array(
