@@ -9,7 +9,7 @@
 - New `Admin_Notices` class to handle displaying of admin notices. All notices are respectful in that they are either displayed once or dismissible.
 - New `Errors\No_Authorization` exception type class to fix class name and file inconsistency.
 - New `Autoloader` class to autoload class files.
-- New REST API endpoints for managing tasks. These replace the old WP Admin AJAX endpoints.
+- New REST API endpoints for managing tasks and automations, respectively. These replace the old WP Admin AJAX actions.
 
 #### Changed
 
@@ -25,17 +25,17 @@
 - The deprecated `Request_Tokens` class file, options, and other references.
 - The `Errors\NoAuthorization` class due to inconsistent naming and class file.
 - All `require_once` calls which manually included class files. The new `Autoloader` class now handles this.
-- All WP Admin AJAX actions for managing tasks. Use the new REST API endpoints instead!
+- All WP Admin AJAX actions for managing tasks and automations. Use the new REST API endpoints instead!
 
 #### Fixed
 
 - Unpinning a task from the post editor would unpin the task across the entire site.
-- Many edge-case oddities with the WP Admin AJAX actions for managing tasks. The new REST API endpoints are now more robust after a thorough code review and refactor.
+- Some edge-case oddities with the WP Admin AJAX actions for managing tasks. The new REST API endpoints are now more robust after a thorough code review and refactor.
 
 #### Security
 
-- Improved security with the new REST API endpoints for managing tasks. The old WP Admin AJAX actions were still secured with nonces and proper sanitization, but the REST API is more robust.
-- Improved security for managing tasks by using unique nonces for each action. (ie. create, update, delete, pin, unpin)
+- Improved security with the new REST API endpoints for managing tasks and automations. The old WP Admin AJAX actions were still secured with nonces and proper sanitization, but the REST API is more robust.
+- Improved security for managing tasks and automations by using unique nonces for each action. (ie. create, update, delete, etc.)
 
 ### 3.10.2 - 2023-10-10
 
