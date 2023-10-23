@@ -31,11 +31,13 @@
 
 - Unpinning a task from the post editor would unpin the task across the entire site.
 - Some edge-case oddities with the WP Admin AJAX actions for managing tasks. The new REST API endpoints are now more robust after a thorough code review and refactor.
+- Searching for posts in an Automation Action's "Pin to Post" field would include WordPress's internal types such as `wp_navigation` and `wp_global_styles`.
 
 #### Security
 
 - Improved security with the new REST API endpoints for managing tasks and automations. The old WP Admin AJAX actions were still secured with nonces and proper sanitization, but the REST API is more robust.
 - Improved security for managing tasks and automations by using unique nonces for each action. (ie. create, update, delete, etc.)
+- Searching for posts in an Automation Action's "Pin to Post" field would include posts that the current user did not have permission to read.
 
 ### 3.10.2 - 2023-10-10
 

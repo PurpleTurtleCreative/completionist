@@ -277,12 +277,13 @@ class Admin_Pages {
 							'workspace_projects'        => Asana_Interface::get_workspace_project_options(),
 							'nonce'                     => wp_create_nonce( 'ptc_completionist_automations' ),
 							'api'                       => array(
-								'auth_nonce'   => wp_create_nonce( 'wp_rest' ),
-								'nonce_create' => wp_create_nonce( 'ptc_completionist_create_automation' ),
-								'nonce_update' => wp_create_nonce( 'ptc_completionist_update_automation' ),
-								'nonce_get'    => wp_create_nonce( 'ptc_completionist_get_automation' ),
-								'nonce_delete' => wp_create_nonce( 'ptc_completionist_delete_automation' ),
-								'v1'           => rest_url( REST_API_NAMESPACE_V1 ),
+								'auth_nonce'      => wp_create_nonce( 'wp_rest' ),
+								'nonce_create'    => wp_create_nonce( 'ptc_completionist_create_automation' ),
+								'nonce_update'    => wp_create_nonce( 'ptc_completionist_update_automation' ),
+								'nonce_get'       => wp_create_nonce( 'ptc_completionist_get_automation' ),
+								'nonce_delete'    => wp_create_nonce( 'ptc_completionist_delete_automation' ),
+								'nonce_get_posts' => wp_create_nonce( 'ptc_completionist_get_posts' ),
+								'v1'              => rest_url( REST_API_NAMESPACE_V1 ),
 							),
 						)
 					);

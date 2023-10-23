@@ -48,36 +48,26 @@ export class PostSearchSelectInput extends Component {
       }, () => {
 
         let data = {
-          'action': 'ptc_get_post_options_by_title',
-          'nonce': window.ptc_completionist_automations.nonce,
-          'title': this.state.currentLabel,
+          '_wpnonce': window.ptc_completionist_automations.api.auth_nonce,
+          'nonce': window.ptc_completionist_automations.api.nonce_get_posts,
+          'like': `%${this.state.currentLabel}%`,
+          'limit': 20,
+          'offset': 0,
         };
 
-        let post_search_request = window.jQuery.post(window.ajaxurl, data, (res) => {
-
-          // TODO: Look at using WP REST API: https://developer.wordpress.org/rest-api/reference/search-results/
-
-          this.setState({
-            isLoading: false,
-            currentRequest: {},
-            options: res.data
-          });
-
-          // TODO: handle error responses
-          // if(res.status == 'success' && res.data != '') {
-          //   remove_task_row(data.task_gid);
-          //   remove_task_gid(data.task_gid, false);
-          // } else if(res.status == 'error' && res.data != '') {
-          //   display_alert_html(res.data);
-          //   disable_element(thisButton, false);
-          //   buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
-          // } else {
-          //   alert('[Completionist] Error '+res.code+': '+res.message);
-          //   disable_element(thisButton, false);
-          //   buttonIcon.removeClass('fa-circle-notch fa-spin').addClass('fa-check');
-          // }
-
-        }, 'json')
+        let post_search_request = window.jQuery.getJSON(`${window.ptc_completionist_automations.api.v1}/posts/where-title-like`, data, (res) => {
+          if ( 'success' === res?.status && res?.data?.posts ) {
+            this.setState({
+              isLoading: false,
+              currentRequest: {},
+              options: res.data.posts
+            });
+          } else if ( res?.message ) {
+            throw res.message;
+          } else {
+            throw 'unknown error';
+          }
+        })
           .fail((jqXHR, exception) => {
             if ( exception != 'abort' ) {
               alert('Failed to search for posts by title.');

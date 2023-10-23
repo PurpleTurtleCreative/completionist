@@ -90,7 +90,7 @@ jQuery(function($) {
         alert('Failed to load tag options.');
       }
 
-    }, 'json')
+    })
       .fail(function() {
         alert('Failed to load tag options.');
       })

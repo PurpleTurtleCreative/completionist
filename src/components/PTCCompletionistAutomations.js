@@ -64,7 +64,7 @@ export default class PTCCompletionistAutomations extends Component {
             this.setState({ isLoading: false });
           }
 
-        }, 'json')
+        })
           .fail(() => {
             console.error( 'Failed to load automation overviews.' );
             let queryParams = new URLSearchParams( location.search );
@@ -103,7 +103,7 @@ export default class PTCCompletionistAutomations extends Component {
             this.goToAutomation();
           }
 
-        }, 'json')
+        })
           .fail(() => {
             console.error( 'Failed to get data for automation ' + automationId );
             this.goToAutomation();
