@@ -135,20 +135,20 @@ export class PostSearchSelectInput extends Component {
       this.setState({ currentLabel: '(Loading...)' }, () => {
 
         let data = {
-          'action': 'ptc_get_post_title_by_id',
-          'nonce': window.ptc_completionist_automations.nonce,
-          'post_id': this.state.currentValue,
+          '_wpnonce': window.ptc_completionist_automations.api.auth_nonce,
+          'nonce': window.ptc_completionist_automations.api.nonce_get_posts,
+          'post_fields': [ 'post_title' ]
         };
 
-        window.jQuery.post(window.ajaxurl, data, (res) => {
-          if ( res.status == 'success' && res.data != '' ) {
-            this.setState({ currentLabel: res.data });
+        window.jQuery.getJSON(`${window.ptc_completionist_automations.api.v1}/posts/${this.state.currentValue}`, data, (res) => {
+          if ( 'success' === res?.status && res?.data?.post?.post_title ) {
+            this.setState({ currentLabel: res.data.post.post_title });
           } else {
             console.error( 'Failed to load initial PostSearchSelectInput label for initial value.' );
             console.error( res );
             this.setState({ currentLabel: '(Error: Failed to load post title)' });
           }
-        }, 'json')
+        })
           .fail(() => {
             console.error( 'Failed to load initial PostSearchSelectInput label for initial value.' );
             this.setState({ currentLabel: '(Error: Failed to load post title)' });

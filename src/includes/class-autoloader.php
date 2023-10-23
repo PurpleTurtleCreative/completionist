@@ -31,7 +31,6 @@ class Autoloader {
 	private const CLASS_FILE_MAP = array(
 
 		// Admin.
-		'Admin_Ajax'                       => 'src/admin/class-admin-ajax.php',
 		'Admin_Pages'                      => 'src/admin/class-admin-pages.php',
 		'Admin_Widgets'                    => 'src/admin/class-admin-widgets.php',
 

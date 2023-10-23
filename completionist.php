@@ -131,7 +131,6 @@ function init() {
 	if ( is_admin() ) {
 		Admin_Pages::register();
 		Admin_Widgets::register();
-		Admin_Ajax::register();
 	}
 }
 
