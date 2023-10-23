@@ -67,25 +67,25 @@ jQuery(function($) {
       return;
     }
 
-    var data = {
-      'action': 'ptc_get_tag_options',
-      'nonce': ptc_completionist_dashboard.nonce,
+    let data = {
+      '_wpnonce': window.ptc_completionist_dashboard.api.auth_nonce,
+      'nonce': window.ptc_completionist_dashboard.api.nonce_get_tags,
       'workspace_gid': workspace_gid,
     };
 
-    $.post(ajaxurl, data, function(res) {
+    $.getJSON(`${window.ptc_completionist_dashboard.api.v1}/tags`, data, function(res) {
 
-      if(res.status == 'success') {
-        if(res.data != '') {
-          selectTag.append(res.data);
+      if(res?.status == 'success') {
+        if(res?.data?.html_options != '') {
+          selectTag.append(res.data.html_options);
           selected_tag_id = selectTag.find('option:selected').val();
           if(selected_tag_id) {
             ptc_completionist_dashboard.saved_tag_gid = selected_tag_id;
           }
         }
         disable_element(selectTag, false);
-      } else if(res.status == 'error' && res.data != '') {
-        display_alert_note_after(res.data, tagWarningNote);
+      } else if(res?.status == 'error' && res?.message != '') {
+        display_alert_note_after(res.message, tagWarningNote);
       } else {
         alert('Failed to load tag options.');
       }

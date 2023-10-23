@@ -77,6 +77,7 @@ class Autoloader {
 		'REST_API\Projects'                => 'src/public/rest-api/class-projects.php',
 		'REST_API\Tasks'                   => 'src/public/rest-api/class-tasks.php',
 		'REST_API\Automations'             => 'src/public/rest-api/class-automations.php',
+		'REST_API\Tags'                    => 'src/public/rest-api/class-tags.php',
 
 	);
 

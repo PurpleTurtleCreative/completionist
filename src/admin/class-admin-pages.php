@@ -235,6 +235,11 @@ class Admin_Pages {
 						'saved_workspace_gid' => Options::get( Options::ASANA_WORKSPACE_GID ),
 						'saved_tag_gid'       => Options::get( Options::ASANA_TAG_GID ),
 						'nonce'               => wp_create_nonce( 'ptc_completionist_dashboard' ),
+						'api'                 => array(
+							'auth_nonce'     => wp_create_nonce( 'wp_rest' ),
+							'nonce_get_tags' => wp_create_nonce( 'ptc_completionist_get_tags' ),
+							'v1'             => rest_url( REST_API_NAMESPACE_V1 ),
+						),
 					)
 				);
 				break;
