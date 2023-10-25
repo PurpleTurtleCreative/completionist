@@ -45,7 +45,7 @@ export default class PTCCompletionistAutomations extends Component {
 
         window.jQuery.getJSON(`${window.ptc_completionist_automations.api.v1}/automations`, data, (res) => {
 
-          if ( res.status == 'success' && typeof res.data == 'object' ) {
+          if ( res?.status == 'success' && typeof res?.data == 'object' ) {
             let queryParams = new URLSearchParams( location.search );
             queryParams.delete('automation');
             history.pushState(
@@ -87,7 +87,7 @@ export default class PTCCompletionistAutomations extends Component {
 
         window.jQuery.getJSON(`${window.ptc_completionist_automations.api.v1}/automations/${automationId}`, data, (res) => {
 
-          if ( res.status == 'success' && typeof res.data == 'object' && res.data?.automation ) {
+          if ( res?.status == 'success' && typeof res?.data == 'object' && res?.data?.automation ) {
             let docTitle = 'Completionist – Automation ' + res.data.automation.ID + ' – ' + res.data.automation.title;
             let queryParams = new URLSearchParams( location.search );
             queryParams.set( 'automation', automationId );
@@ -136,13 +136,12 @@ export default class PTCCompletionistAutomations extends Component {
           && res?.data?.automation_id
         ) {
           // TODO: display success message in notice section
-          console.log( res.message );
           this.setState((state) => ({
             automations: state.automations.filter((automation) => automation.ID !== res.data.automation_id)
           }));
         } else {
           // TODO: display error messages in notice section
-          if ( res.message && res.code ) {
+          if ( res?.message && res?.code ) {
             alert( 'Error ' + res.code + '. The automation could not be deleted. ' + res.message);
           } else {
             alert( 'Error. The automation could not be deleted.' );

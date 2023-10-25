@@ -58,10 +58,10 @@ export function TaskContextProvider({children}) {
 				.then( res => res.json() )
 				.then( res => {
 
-					if ( res.status == 'success' && res.data?.task ) {
+					if ( res?.status == 'success' && res?.data?.task ) {
 						context.updateTask({ ...res.data.task });
 						return true;
-					} else if ( res.message ) {
+					} else if ( res?.message ) {
 						addNotice(res.message, 'error');
 					} else {
 						throw 'unknown error';
@@ -97,10 +97,10 @@ export function TaskContextProvider({children}) {
 				.then( res => res.json() )
 				.then( res => {
 
-					if ( 'success' === res.status && res.data?.task_gid ) {
+					if ( 'success' === res?.status && res?.data?.task_gid ) {
 						context.removeTask(res.data.task_gid);
 						return true;
-					} else if ( res.message ) {
+					} else if ( res?.message ) {
 						addNotice(res.message, 'error');
 					} else {
 						throw 'unknown error';
@@ -141,10 +141,10 @@ export function TaskContextProvider({children}) {
 				.then( res => res.json() )
 				.then( res => {
 
-					if ( 'success' === res.status && res.data?.task_gid ) {
+					if ( 'success' === res?.status && res?.data?.task_gid ) {
 						context.removeTask(res.data.task_gid);
 						return true;
-					} else if ( res.message ) {
+					} else if ( res?.message ) {
 						addNotice(res.message, 'error');
 					} else {
 						throw 'unknown error';
@@ -194,10 +194,10 @@ export function TaskContextProvider({children}) {
 				.then( res => res.json() )
 				.then( res => {
 
-					if ( 'success' === res.status && res.data?.task ) {
+					if ( 'success' === res?.status && res?.data?.task ) {
 						context.addTask(res.data.task);
 						return true;
-					} else if ( res.message ) {
+					} else if ( res?.message ) {
 						addNotice(res.message, 'error');
 					} else {
 						throw 'unknown error';
@@ -243,10 +243,10 @@ export function TaskContextProvider({children}) {
 				.then( res => res.json() )
 				.then( res => {
 
-					if ( res.status == 'success' && res.data?.task ) {
+					if ( res?.status == 'success' && res?.data?.task ) {
 						context.addTask(res.data.task);
 						return true;
-					} else if ( res.message ) {
+					} else if ( res?.message ) {
 						addNotice(res.message, 'error');
 					} else {
 						throw 'unknown error';

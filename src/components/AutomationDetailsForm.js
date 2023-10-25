@@ -114,8 +114,8 @@ export class AutomationDetailsForm extends Component {
           .done((res) => {
 
             if (
-              'success' === res.status
-              && [ 200, 201 ].includes(res.code)
+              'success' === res?.status
+              && [ 200, 201 ].includes(res?.code)
               && res?.data?.automation?.ID > 0
             ) {
               if ( 201 === res.code ) {
@@ -131,7 +131,7 @@ export class AutomationDetailsForm extends Component {
               }
             } else {
               // TODO: display error messages in notice section
-              if ( res.message && res.code ) {
+              if ( res?.message && res?.code ) {
                 alert( 'Error ' + res.code + '. The automation could not be saved. ' + res.message);
               } else {
                 alert( 'Error 409. The automation could not be saved.' );

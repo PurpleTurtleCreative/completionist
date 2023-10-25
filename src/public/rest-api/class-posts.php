@@ -43,8 +43,8 @@ class Posts {
 						return current_user_can( 'read_post', $request['post_id'] );
 					},
 					'args'                => array(
-						'nonce'   => REST_Server::get_arg_def_nonce( 'ptc_completionist_get_posts' ),
-						'post_id' => REST_Server::get_arg_def_post_id( true ),
+						'nonce'       => REST_Server::get_arg_def_nonce( 'ptc_completionist_get_posts' ),
+						'post_id'     => REST_Server::get_arg_def_post_id( true ),
 						'post_fields' => array(
 							'type'     => 'array',
 							'required' => false,
