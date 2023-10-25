@@ -20,12 +20,13 @@
 
 #### Removed
 
-- The `YahnisElsts/plugin-update-checker` Composer package which facilitated remote updates.
+- The `YahnisElsts/plugin-update-checker` Composer package which facilitated remote updates. Remote updates are now hosted by WordPress.org.
 - The `uninstall.php` file. Data is now uninstalled by using the registered uninstall hook.
 - The deprecated `Request_Tokens` class file, options, and other references.
 - The `Errors\NoAuthorization` class due to inconsistent naming and class file.
 - All `require_once` calls which manually included class files. The new `Autoloader` class now handles this.
 - All WP Admin AJAX actions to instead use the new REST API endpoints.
+- The `HTML_Builder::format_task_row()` function. It was only used by the legacy Tasks metabox within the Classic Editor, which is now replaced by the upgraded ReactJS-based components.
 
 #### Fixed
 
