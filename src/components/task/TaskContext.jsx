@@ -49,7 +49,7 @@ export function TaskContextProvider({children}) {
 					'X-WP-Nonce': window.PTCCompletionist.api.auth_nonce
 				},
 				'body': window.JSON.stringify({
-					'nonce': window.PTCCompletionist.api.nonce_update,
+					'nonce': window.PTCCompletionist.api.nonce_update_task,
 					'updates': { completed }
 				})
 			};
@@ -89,7 +89,7 @@ export function TaskContextProvider({children}) {
 					'X-WP-Nonce': window.PTCCompletionist.api.auth_nonce
 				},
 				'body': window.JSON.stringify({
-					'nonce': window.PTCCompletionist.api.nonce_delete,
+					'nonce': window.PTCCompletionist.api.nonce_delete_task,
 				})
 			};
 
@@ -128,7 +128,7 @@ export function TaskContextProvider({children}) {
 					'X-WP-Nonce': window.PTCCompletionist.api.auth_nonce
 				},
 				'body': window.JSON.stringify({
-					'nonce': window.PTCCompletionist.api.nonce_unpin,
+					'nonce': window.PTCCompletionist.api.nonce_unpin_task,
 				})
 			};
 
@@ -185,7 +185,7 @@ export function TaskContextProvider({children}) {
 					'X-WP-Nonce': window.PTCCompletionist.api.auth_nonce
 				},
 				'body': window.JSON.stringify({
-					'nonce': window.PTCCompletionist.api.nonce_pin,
+					'nonce': window.PTCCompletionist.api.nonce_pin_task,
 					'post_id': postID
 				})
 			};
@@ -234,7 +234,7 @@ export function TaskContextProvider({children}) {
 					'X-WP-Nonce': window.PTCCompletionist.api.auth_nonce
 				},
 				'body': window.JSON.stringify({
-					'nonce': window.PTCCompletionist.api.nonce_create,
+					'nonce': window.PTCCompletionist.api.nonce_create_task,
 					'task': taskData
 				})
 			};

@@ -95,7 +95,7 @@ export class AutomationDetailsForm extends Component {
           },
           'contentType': 'application/json',
           'data': {
-            'nonce': window.ptc_completionist_automations.api.nonce_update,
+            'nonce': window.ptc_completionist_automations.api.nonce_update_automation,
             'automation': automation
           },
           'dataType': 'json',
@@ -104,7 +104,7 @@ export class AutomationDetailsForm extends Component {
         if ( 0 === automation.ID ) {
           ajaxRequest.method = 'POST';
           ajaxRequest.url = `${window.ptc_completionist_automations.api.v1}/automations`;
-          ajaxRequest.data.nonce = window.ptc_completionist_automations.api.nonce_create;
+          ajaxRequest.data.nonce = window.ptc_completionist_automations.api.nonce_create_automation;
         }
 
         ajaxRequest.data = JSON.stringify(ajaxRequest.data);

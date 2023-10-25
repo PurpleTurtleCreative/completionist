@@ -49,7 +49,7 @@ export class PostSearchSelectInput extends Component {
 
         let data = {
           '_wpnonce': window.ptc_completionist_automations.api.auth_nonce,
-          'nonce': window.ptc_completionist_automations.api.nonce_get_posts,
+          'nonce': window.ptc_completionist_automations.api.nonce_get_post,
           'like': `%${this.state.currentLabel}%`,
           'limit': 20,
           'offset': 0,
@@ -136,7 +136,7 @@ export class PostSearchSelectInput extends Component {
 
         let data = {
           '_wpnonce': window.ptc_completionist_automations.api.auth_nonce,
-          'nonce': window.ptc_completionist_automations.api.nonce_get_posts,
+          'nonce': window.ptc_completionist_automations.api.nonce_get_post,
           'post_fields': [ 'post_title' ]
         };
 

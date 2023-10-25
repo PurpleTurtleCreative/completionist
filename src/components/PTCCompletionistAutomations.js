@@ -38,7 +38,7 @@ export default class PTCCompletionistAutomations extends Component {
 
         let data = {
           '_wpnonce': window.ptc_completionist_automations.api.auth_nonce,
-          'nonce': window.ptc_completionist_automations.api.nonce_get,
+          'nonce': window.ptc_completionist_automations.api.nonce_get_automation,
           'order_by': 'title',
           'return_html': true,
         };
@@ -82,7 +82,7 @@ export default class PTCCompletionistAutomations extends Component {
 
         let data = {
           '_wpnonce': window.ptc_completionist_automations.api.auth_nonce,
-          'nonce': window.ptc_completionist_automations.api.nonce_get
+          'nonce': window.ptc_completionist_automations.api.nonce_get_automation
         };
 
         window.jQuery.getJSON(`${window.ptc_completionist_automations.api.v1}/automations/${automationId}`, data, (res) => {
@@ -124,7 +124,7 @@ export default class PTCCompletionistAutomations extends Component {
         },
         'contentType': 'application/json',
         'data': JSON.stringify({
-          'nonce': window.ptc_completionist_automations.api.nonce_delete
+          'nonce': window.ptc_completionist_automations.api.nonce_delete_automation
         }),
         'dataType': 'json',
       })
