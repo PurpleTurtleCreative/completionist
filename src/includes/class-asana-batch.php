@@ -196,7 +196,7 @@ class Asana_Batch {
 			// This will result in an HTTP 400 response from Asana,
 			// so let's not waste our API rate limit.
 			trigger_error(
-				'Refused to process Asana Batch API request with ' . $actions_count . ' actions (max: ' . self::MAX_BATCH_SIZE . ')',
+				'Refused to process Asana Batch API request with ' . intval( $actions_count ) . ' actions (max: ' . intval( self::MAX_BATCH_SIZE ) . ')',
 				\E_USER_WARNING
 			);
 			$this->reset();

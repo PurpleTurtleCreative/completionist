@@ -39,6 +39,17 @@ class Admin_Pages {
 	private static $frontend_task_data;
 
 	/**
+	 * The data for frontend scripts relating to API requests.
+	 *
+	 * @see get_frontend_api_data()
+	 *
+	 * @since [unreleased]
+	 *
+	 * @var array $frontend_api_data
+	 */
+	private static $frontend_api_data;
+
+	/**
 	 * Registers code.
 	 *
 	 * @since 3.0.0
@@ -234,7 +245,14 @@ class Admin_Pages {
 					array(
 						'saved_workspace_gid' => Options::get( Options::ASANA_WORKSPACE_GID ),
 						'saved_tag_gid'       => Options::get( Options::ASANA_TAG_GID ),
-						'nonce'               => wp_create_nonce( 'ptc_completionist_dashboard' ),
+						'api'                 => array_intersect_key(
+							static::get_frontend_api_data(),
+							array(
+								'auth_nonce'     => true,
+								'nonce_get_tags' => true,
+								'v1'             => true,
+							)
+						),
 					)
 				);
 				break;
@@ -259,18 +277,29 @@ class Admin_Pages {
 						'ptc-completionist_Automations',
 						'ptc_completionist_automations',
 						array(
-							'automations'               => Automations\Data::get_automation_overviews( null, true ),
-							'event_user_options'        => Automations\Events::USER_OPTIONS,
-							'event_post_options'        => Automations\Events::POST_OPTIONS,
-							'event_custom_options'      => Automations\Events::CUSTOM_OPTIONS,
-							'field_user_options'        => Automations\Fields::USER_OPTIONS,
-							'field_post_options'        => Automations\Fields::POST_OPTIONS,
-							'field_comparison_methods'  => Automations\Fields::COMPARISON_METHODS,
 							'action_options'            => Automations\Actions::ACTION_OPTIONS,
-							'workspace_users'           => Asana_Interface::get_workspace_user_options(),
+							'api'                       => array_intersect_key(
+								static::get_frontend_api_data(),
+								array(
+									'auth_nonce'              => true,
+									'nonce_create_automation' => true,
+									'nonce_delete_automation' => true,
+									'nonce_get_automation'    => true,
+									'nonce_get_post'          => true,
+									'nonce_update_automation' => true,
+									'v1'                      => true,
+								)
+							),
+							'automations'               => Automations\Data::get_automation_overviews( null, true ),
 							'connected_workspace_users' => Asana_Interface::get_connected_workspace_user_options(),
+							'event_custom_options'      => Automations\Events::CUSTOM_OPTIONS,
+							'event_post_options'        => Automations\Events::POST_OPTIONS,
+							'event_user_options'        => Automations\Events::USER_OPTIONS,
+							'field_comparison_methods'  => Automations\Fields::COMPARISON_METHODS,
+							'field_post_options'        => Automations\Fields::POST_OPTIONS,
+							'field_user_options'        => Automations\Fields::USER_OPTIONS,
 							'workspace_projects'        => Asana_Interface::get_workspace_project_options(),
-							'nonce'                     => wp_create_nonce( 'ptc_completionist_automations' ),
+							'workspace_users'           => Asana_Interface::get_workspace_user_options(),
 						)
 					);
 				}
@@ -370,14 +399,17 @@ class Admin_Pages {
 			}
 
 			$js_data = array(
-				'api'      => array(
-					'nonce_pin'    => wp_create_nonce( 'ptc_completionist' ),
-					'nonce_list'   => wp_create_nonce( 'ptc_completionist_list_task' ),
-					'nonce_create' => wp_create_nonce( 'ptc_completionist_create_task' ),
-					'nonce_delete' => wp_create_nonce( 'ptc_completionist' ),
-					'nonce_update' => wp_create_nonce( 'ptc_completionist' ),
-					'nonce'        => wp_create_nonce( 'ptc_completionist' ),
-					'url'          => get_rest_url(),
+				'api'      => array_intersect_key(
+					static::get_frontend_api_data(),
+					array(
+						'auth_nonce'        => true,
+						'nonce_create_task' => true,
+						'nonce_delete_task' => true,
+						'nonce_pin_task'    => true,
+						'nonce_unpin_task'  => true,
+						'nonce_update_task' => true,
+						'v1'                => true,
+					)
 				),
 				'tasks'    => $display_tasks,
 				'users'    => Asana_Interface::get_connected_workspace_users(),
@@ -396,5 +428,43 @@ class Admin_Pages {
 
 		static::$frontend_task_data = $js_data;
 		return $js_data;
+	}
+
+	/**
+	 * Gets the data for frontend script use relating to API requests.
+	 *
+	 * @see $frontend_task_data
+	 *
+	 * @since [unreleased]
+	 *
+	 * @return array The data. Remember to JSON encode for use
+	 * on the frontend.
+	 */
+	public static function get_frontend_api_data() : array {
+
+		if ( ! empty( static::$frontend_api_data ) ) {
+			return static::$frontend_api_data;
+		}
+
+		$api_data = array(
+			'auth_nonce'              => wp_create_nonce( 'wp_rest' ),
+			'nonce'                   => wp_create_nonce( 'ptc_completionist' ),
+			'nonce_create_automation' => wp_create_nonce( 'ptc_completionist_create_automation' ),
+			'nonce_create_task'       => wp_create_nonce( 'ptc_completionist_create_task' ),
+			'nonce_delete_automation' => wp_create_nonce( 'ptc_completionist_delete_automation' ),
+			'nonce_delete_task'       => wp_create_nonce( 'ptc_completionist_delete_task' ),
+			'nonce_get_automation'    => wp_create_nonce( 'ptc_completionist_get_automation' ),
+			'nonce_get_post'          => wp_create_nonce( 'ptc_completionist_get_post' ),
+			'nonce_get_tags'          => wp_create_nonce( 'ptc_completionist_get_tags' ),
+			'nonce_pin_task'          => wp_create_nonce( 'ptc_completionist_pin_task' ),
+			'nonce_unpin_task'        => wp_create_nonce( 'ptc_completionist_unpin_task' ),
+			'nonce_update_automation' => wp_create_nonce( 'ptc_completionist_update_automation' ),
+			'nonce_update_task'       => wp_create_nonce( 'ptc_completionist_update_task' ),
+			'url'                     => rest_url(),
+			'v1'                      => rest_url( REST_API_NAMESPACE_V1 ),
+		);
+
+		static::$frontend_api_data = $api_data;
+		return $api_data;
 	}
 }//end class

@@ -40,6 +40,39 @@ class Util {
 	}
 
 	/**
+	 * Unsets all array keys and object properties that are not
+	 * of the given names.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param array|object $data   An iterable object or array to modify.
+	 * @param string[]     $fields The names of the array keys or
+	 *                             object properties to keep.
+	 */
+	public static function deep_unset_except( &$data, array $fields ) {
+
+		if ( is_array( $data ) ) {
+			foreach ( $data as $key => &$_ ) {
+				if ( is_string( $key ) && ! in_array( $key, $fields, true ) ) {
+					unset( $data[ $key ] );
+				}
+			}
+		} elseif ( is_object( $data ) ) {
+			foreach ( $data as $prop => &$_ ) {
+				if ( ! in_array( $prop, $fields, true ) ) {
+					unset( $data->{$prop} );
+				}
+			}
+		}
+
+		foreach ( $data as &$value ) {
+			if ( is_array( $value ) || is_object( $value ) ) {
+				static::deep_unset_except( $value, $fields );
+			}
+		}
+	}
+
+	/**
 	 * Modifies object properties and array keys with the given name.
 	 *
 	 * @since 3.5.0

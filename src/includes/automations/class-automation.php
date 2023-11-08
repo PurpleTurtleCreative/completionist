@@ -35,22 +35,22 @@ class Automation {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param int $automation_id The ID of the automation to load.
+	 * @param int   $automation_id The ID of the automation to load.
 	 * @param array $translation_objects Merge field translations.
 	 *
 	 * @throws \Exception If the automation does not exist.
 	 */
-	public function __construct( int $automation_id, array $translation_objects = [] ) {
+	public function __construct( int $automation_id, array $translation_objects = array() ) {
 
 		$automation_record = Automations\Data::get_automation( $automation_id );
 		if ( null === $automation_record ) {
-			throw new \Exception( "Automation does not exist with ID: {$automation_id}", 404 );
+			throw new \Exception( 'Automation does not exist with ID ' . intval( $automation_id ) . '.', 404 );
 		}
 
-		$this->ID = $automation_record->ID;
-		$this->title = $automation_record->title;
-		$this->description = $automation_record->description;
-		$this->hook_name = $automation_record->hook_name;
+		$this->ID            = $automation_record->ID;
+		$this->title         = $automation_record->title;
+		$this->description   = $automation_record->description;
+		$this->hook_name     = $automation_record->hook_name;
 		$this->last_modified = $automation_record->last_modified;
 
 		$this->translation_objects = $translation_objects;

@@ -9,6 +9,7 @@
 - New `Admin_Notices` class to handle displaying of admin notices. All notices are respectful in that they are either displayed once or dismissible.
 - New `Errors\No_Authorization` exception type class to fix class name and file inconsistency.
 - New `Autoloader` class to autoload class files.
+- New REST API endpoints to replace all WP Admin AJAX actions.
 
 #### Changed
 
@@ -19,11 +20,25 @@
 
 #### Removed
 
-- The `YahnisElsts/plugin-update-checker` Composer package which facilitated remote updates.
+- The `YahnisElsts/plugin-update-checker` Composer package which facilitated remote updates. Remote updates are now hosted by WordPress.org.
 - The `uninstall.php` file. Data is now uninstalled by using the registered uninstall hook.
 - The deprecated `Request_Tokens` class file, options, and other references.
 - The `Errors\NoAuthorization` class due to inconsistent naming and class file.
 - All `require_once` calls which manually included class files. The new `Autoloader` class now handles this.
+- All WP Admin AJAX actions to instead use the new REST API endpoints.
+- The `HTML_Builder::format_task_row()` function. It was only used by the legacy Tasks metabox within the Classic Editor, which is now replaced by the upgraded ReactJS-based components.
+
+#### Fixed
+
+- Unpinning a task from the post editor would unpin the task across the entire site.
+- Some edge-case oddities with the WP Admin AJAX actions for managing tasks. The new REST API endpoints are now more robust after a thorough code review and refactor.
+- Searching for posts in an Automation Action's "Pin to Post" field would include WordPress's internal types such as `wp_navigation` and `wp_global_styles`.
+
+#### Security
+
+- Various improvements with the new REST API endpoints which replace the original WP Admin AJAX actions.
+- Unique nonces to authorize different requests to the new REST API endpoints which replace the original WP Admin AJAX actions.
+- Searching for posts in an Automation Action's "Pin to Post" field would include posts that the current user did not have permission to read.
 
 ### 3.10.2 - 2023-10-10
 

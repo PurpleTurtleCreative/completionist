@@ -37,13 +37,15 @@ export default class PTCCompletionistAutomations extends Component {
       } else if ( isNaN( parseInt( automationId ) ) || automationId <= 0 ) {
 
         let data = {
-          'action': 'ptc_get_automation_overviews',
-          'nonce': window.ptc_completionist_automations.nonce,
+          '_wpnonce': window.ptc_completionist_automations.api.auth_nonce,
+          'nonce': window.ptc_completionist_automations.api.nonce_get_automation,
+          'order_by': 'title',
+          'return_html': true,
         };
 
-        window.jQuery.post(window.ajaxurl, data, (res) => {
+        window.jQuery.getJSON(`${window.ptc_completionist_automations.api.v1}/automations`, data, (res) => {
 
-          if ( res.status == 'success' && typeof res.data == 'object' ) {
+          if ( res?.status == 'success' && typeof res?.data == 'object' ) {
             let queryParams = new URLSearchParams( location.search );
             queryParams.delete('automation');
             history.pushState(
@@ -53,7 +55,7 @@ export default class PTCCompletionistAutomations extends Component {
             );
             document.title = 'Completionist – Automations';
             this.setState({
-              automations: res.data,
+              automations: res.data?.automation_overviews ?? [],
               isLoading: false
             });
           } else {
@@ -62,7 +64,7 @@ export default class PTCCompletionistAutomations extends Component {
             this.setState({ isLoading: false });
           }
 
-        }, 'json')
+        })
           .fail(() => {
             console.error( 'Failed to load automation overviews.' );
             let queryParams = new URLSearchParams( location.search );
@@ -79,19 +81,18 @@ export default class PTCCompletionistAutomations extends Component {
       } else {
 
         let data = {
-          'action': 'ptc_get_automation',
-          'nonce': window.ptc_completionist_automations.nonce,
-          'ID': automationId
+          '_wpnonce': window.ptc_completionist_automations.api.auth_nonce,
+          'nonce': window.ptc_completionist_automations.api.nonce_get_automation
         };
 
-        window.jQuery.post(window.ajaxurl, data, (res) => {
+        window.jQuery.getJSON(`${window.ptc_completionist_automations.api.v1}/automations/${automationId}`, data, (res) => {
 
-          if ( res.status == 'success' && typeof res.data == 'object' ) {
-            let docTitle = 'Completionist – Automation ' + res.data.ID + ' – ' + res.data.title;
+          if ( res?.status == 'success' && typeof res?.data == 'object' && res?.data?.automation ) {
+            let docTitle = 'Completionist – Automation ' + res.data.automation.ID + ' – ' + res.data.automation.title;
             let queryParams = new URLSearchParams( location.search );
             queryParams.set( 'automation', automationId );
             history.pushState(
-              res.data,
+              res.data.automation,
               docTitle,
               '?' + queryParams.toString()
             );
@@ -102,7 +103,7 @@ export default class PTCCompletionistAutomations extends Component {
             this.goToAutomation();
           }
 
-        }, 'json')
+        })
           .fail(() => {
             console.error( 'Failed to get data for automation ' + automationId );
             this.goToAutomation();
@@ -113,38 +114,43 @@ export default class PTCCompletionistAutomations extends Component {
 
   deleteAutomation( automationId, callback ) {
 
-    let data = {
-      'action': 'ptc_delete_automation',
-      'nonce': window.ptc_completionist_automations.nonce,
-      'ID': automationId
-    };
+    window.jQuery
+      .ajax({
+        'method': 'DELETE',
+        'url': `${window.ptc_completionist_automations.api.v1}/automations/${automationId}`,
+        'headers': {
+          'Content-Type': 'application/json',
+          'X-WP-Nonce': window.ptc_completionist_automations.api.auth_nonce
+        },
+        'contentType': 'application/json',
+        'data': JSON.stringify({
+          'nonce': window.ptc_completionist_automations.api.nonce_delete_automation
+        }),
+        'dataType': 'json',
+      })
+      .done((res) => {
 
-    window.jQuery.post(window.ajaxurl, data, (res) => {
-
-      if (
-        res.status
-        && res.status == 'success'
-        && res.code
-        && res.code == 200
-        && res.data
-      ) {
-        // TODO: display success message in notice section
-        console.log( res.message );
-        this.setState((state) => ({
-          automations: state.automations.filter((automation) => automation.ID !== res.data)
-        }));
-      } else {
-        // TODO: display error messages in notice section
-        if ( res.message && res.code ) {
-          alert( 'Error ' + res.code + '. The automation could not be deleted. ' + res.message);
+        if (
+          'success' == res?.status
+          && 200 == res?.code
+          && res?.data?.automation_id
+        ) {
+          // TODO: display success message in notice section
+          this.setState((state) => ({
+            automations: state.automations.filter((automation) => automation.ID !== res.data.automation_id)
+          }));
         } else {
-          alert( 'Error. The automation could not be deleted.' );
+          // TODO: display error messages in notice section
+          if ( res?.message && res?.code ) {
+            alert( 'Error ' + res.code + '. The automation could not be deleted. ' + res.message);
+          } else {
+            alert( 'Error. The automation could not be deleted.' );
+          }
         }
-      }
 
-      typeof callback === 'function' && callback( res );
+        typeof callback === 'function' && callback( res );
 
-    }, 'json')
+      })
       .fail(() => {
         // TODO: display error messages in notice section
         alert( 'Error 500. The automation could not be deleted.' );

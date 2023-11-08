@@ -31,7 +31,6 @@ class Autoloader {
 	private const CLASS_FILE_MAP = array(
 
 		// Admin.
-		'Admin_Ajax'                       => 'src/admin/class-admin-ajax.php',
 		'Admin_Pages'                      => 'src/admin/class-admin-pages.php',
 		'Admin_Widgets'                    => 'src/admin/class-admin-widgets.php',
 
@@ -75,6 +74,10 @@ class Autoloader {
 		// Public/REST_API.
 		'REST_API\Attachments'             => 'src/public/rest-api/class-attachments.php',
 		'REST_API\Projects'                => 'src/public/rest-api/class-projects.php',
+		'REST_API\Tasks'                   => 'src/public/rest-api/class-tasks.php',
+		'REST_API\Automations'             => 'src/public/rest-api/class-automations.php',
+		'REST_API\Tags'                    => 'src/public/rest-api/class-tags.php',
+		'REST_API\Posts'                   => 'src/public/rest-api/class-posts.php',
 
 	);
 
