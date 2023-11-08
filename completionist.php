@@ -16,7 +16,7 @@
  * Tested up to:      6.3
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
- * License:           GPL v3 or later
+ * License:           GPL-3.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.txt
  */
 

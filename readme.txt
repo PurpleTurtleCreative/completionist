@@ -5,7 +5,7 @@ Requires at least: 5.0.0
 Tested up to: 6.3
 Stable tag: 3.10.1
 Requires PHP: 7.2
-License: GPL v3 or later
+License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
 Integrates Asana project management with WordPress content management.
