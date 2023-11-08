@@ -293,7 +293,7 @@ class Tasks {
 			}
 
 			if (
-				! Asana_Interface::pin_task_to_post(
+				! Asana_Interface::pin_task(
 					$request['task_gid'],
 					$request['post_id']
 				)

@@ -1728,7 +1728,7 @@ class Asana_Interface {
 
 		// Pin the task if desired.
 		if ( isset( $params['post_id'] ) ) {
-			static::pin_task_to_post( $task->gid, $params['post_id'] );
+			static::pin_task( $task->gid, $params['post_id'] );
 		}
 
 		return $task;
@@ -1749,40 +1749,67 @@ class Asana_Interface {
 	 * - The task is already pinned to the post.
 	 * - The task does not belong to the site's assigned workspace.
 	 */
-	public static function pin_task_to_post( string $task_gid, int $post_id ) : bool {
-
-		if (
-			Options::postmeta_exists(
-				Options::PINNED_TASK_GID,
-				$task_gid,
-				$post_id
-			)
-		) {
-			throw new \Exception( 'That task is already pinned to the post.', 409 );
-		}
+	public static function pin_task( string $task_gid, int $post_id = -1 ) : bool {
 
 		$site_tag_gid = Options::get( Options::ASANA_TAG_GID );
 		if ( '' === $site_tag_gid ) {
 			throw new \Exception( 'A site tag is required to pin tasks. Please set a site tag in Completionist\'s settings.', 409 );
 		}
 
-		if ( ! static::is_workspace_task( $task_gid ) ) {
+		$params = static::prepare_task_args(
+			array(
+				'gid'     => $task_gid,
+				'post_id' => $post_id,
+			)
+		);
+
+		if ( ! isset( $params['gid'] ) ) {
+			throw new \Exception( 'Invalid task gid.', 400 );
+		}
+
+		if ( ! static::is_workspace_task( $params['gid'] ) ) {
 			throw new \Exception( 'Task does not belong to this site\'s assigned workspace.', 409 );
 		}
 
-		try {
-			$did_pin_task = Options::save(
-				Options::PINNED_TASK_GID,
-				$task_gid,
-				false,
-				$post_id
-			);
-		} catch ( \Exception $e ) {
-			$did_pin_task = false;
+		$do_tag_task = false;
+		if ( -1 !== $post_id ) {
+			// Pin task to specific post.
+
+			if ( ! isset( $params['post_id'] ) ) {
+				throw new \Exception( 'Invalid post identifier.', 400 );
+			}
+
+			if (
+				Options::postmeta_exists(
+					Options::PINNED_TASK_GID,
+					$params['gid'],
+					$params['post_id']
+				)
+			) {
+				throw new \Exception( 'That task is already pinned to the post.', 409 );
+			}
+
+			try {
+				$did_pin_task = Options::save(
+					Options::PINNED_TASK_GID,
+					$params['gid'],
+					false,
+					$params['post_id']
+				);
+			} catch ( \Exception $e ) {
+				$did_pin_task = false;
+			}
+
+			if ( $did_pin_task ) {
+				$do_tag_task = true;
+			}
+		} else {
+			// Pin task to site, so simply tag it.
+			$do_tag_task = true;
 		}
 
-		// Add tag and comment if successfully pinned.
-		if ( $did_pin_task ) {
+		// Add site tag and comment.
+		if ( $do_tag_task ) {
 			try {
 
 				$referrer = '';
@@ -1807,15 +1834,22 @@ class Asana_Interface {
 				 * @param string $comment_text The comment text. Return
 				 * empty string to not leave a comment.
 				 * @param string $task_gid The Asana task GID.
-				 * @param int $post_id The WordPress post ID.
+				 * @param int $post_id The WordPress post ID, or null if
+				 * pinning to the site generically.
 				 */
-				$comment_text = (string) apply_filters( 'ptc_completionist_pinned_task_comment', $comment_text, $task_gid, $post_id );
+				$comment_text = (string) apply_filters( 'ptc_completionist_pinned_task_comment', $comment_text, $params['gid'], $params['post_id'] ?? null );
 
+				// @TODO - Check if the task was successfully tagged
+				// per the returned batch responses. THEN we actually
+				// know that the task was successfully pinned.
 				static::tag_and_comment(
-					$task_gid,
+					$params['gid'],
 					$site_tag_gid,
 					$comment_text
 				);
+
+				// Successfully pinned the task!
+				return true;
 			} catch ( \Exception $err ) {
 				trigger_error(
 					wp_kses_post( HTML_Builder::format_error_string( $err, 'Failed to tag and/or leave pinned task comment.' ) ),
@@ -1824,7 +1858,8 @@ class Asana_Interface {
 			}//endcatch
 		}
 
-		return $did_pin_task;
+		// Something went wrong.
+		return false;
 	}
 
 	/**
@@ -1842,6 +1877,11 @@ class Asana_Interface {
 	 */
 	public static function unpin_task( string $task_gid, int $post_id = -1 ) : bool {
 
+		$site_tag_gid = Options::get( Options::ASANA_TAG_GID );
+		if ( '' === $site_tag_gid ) {
+			throw new \Exception( 'A site tag is required to unpin tasks. Please set a site tag in Completionist\'s settings.', 409 );
+		}
+
 		$params = static::prepare_task_args(
 			array(
 				'gid'     => $task_gid,
@@ -1851,11 +1891,6 @@ class Asana_Interface {
 
 		if ( ! isset( $params['gid'] ) ) {
 			throw new \Exception( 'Invalid task gid.', 400 );
-		}
-
-		$site_tag_gid = Options::get( Options::ASANA_TAG_GID );
-		if ( '' === $site_tag_gid ) {
-			throw new \Exception( 'A site tag is required to unpin tasks. Please set a site tag in Completionist\'s settings.', 409 );
 		}
 
 		$did_unpin_task = false;
