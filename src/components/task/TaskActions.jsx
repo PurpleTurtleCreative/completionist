@@ -3,26 +3,14 @@ import { getTaskUrl } from './util';
 
 import '../../../assets/styles/scss/components/task/_TaskActions.scss';
 
+import { selectEditorCurrentPostId } from '../generic/selectors.jsx';
 import { useSelect } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
 
 import { useCallback, useContext } from '@wordpress/element';
 
 export default function TaskActions({taskGID, processingStatus}) {
 	const { deleteTask, unpinTask, removeTask, setTaskProcessingStatus } = useContext(TaskContext);
-	const currentPostId = useSelect(
-		select => {
-			let id = select( editorStore ).getCurrentPostId();
-			if ( ! id ) {
-				// Fallback check for Classic Editor.
-				const postIdInput = document.getElementById( 'post_ID' );
-				if ( postIdInput && postIdInput.value ) {
-					id = postIdInput.value;
-				}
-			}
-			return id;
-		}
-	);
+	const currentPostId = useSelect(selectEditorCurrentPostId);
 
 	const handleUnpinTask = useCallback((taskGID) => {
 		if ( processingStatus ) {
