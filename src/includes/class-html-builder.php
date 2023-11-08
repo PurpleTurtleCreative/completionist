@@ -34,10 +34,10 @@ class HTML_Builder {
 	 * @since 1.0.0
 	 *
 	 * @param \Exception $e The exception object data to output.
-	 * @param string $context_message Optional. Text to output before the
-	 * exception's message. Default ''.
-	 * @param bool $show_dismiss_button Optional. If a dismiss button for the
-	 * note box should be displayed. Default true.
+	 * @param string     $context_message Optional. Text to output before the
+	 *     exception's message. Default ''.
+	 * @param bool       $show_dismiss_button Optional. If a dismiss button for the
+	 *       note box should be displayed. Default true.
 	 * @return string The HTML. Default ''.
 	 */
 	public static function format_error_box( \Exception $e, string $context_message = '', bool $show_dismiss_button = true ) : string {
@@ -93,8 +93,8 @@ class HTML_Builder {
 	 * @since 1.0.0
 	 *
 	 * @param \Exception $e The Exception object.
-	 * @param string $context_message Optional. Text to output before the
-	 * exception's message. Default ''.
+	 * @param string     $context_message Optional. Text to output before the
+	 *     exception's message. Default ''.
 	 * @return string The formatted string containing the code and message.
 	 */
 	public static function format_error_string( \Exception $e, string $context_message = '' ) : string {
@@ -187,12 +187,12 @@ class HTML_Builder {
 	 */
 	public static function get_task_action_link( string $task_gid ) : array {
 
-		$task_action_link = [
+		$task_action_link = array(
 			'href' => '',
 			'label' => '',
 			'target' => '_self',
 			'post_id' => 0,
-		];
+		);
 
 		// Get first pinned post, if applicable.
 		$post_id = Options::get_task_pin_post_id( $task_gid );
@@ -219,11 +219,11 @@ class HTML_Builder {
 
 		// Use Asana task link if no pinned post.
 		if ( empty( $task_action_link['href'] ) || empty( $task_action_link['label'] ) ) {
-			$task_action_link = [
+			$task_action_link = array(
 				'href' => self::get_asana_task_url( $task_gid ),
 				'label' => 'View in Asana',
 				'target' => '_asana',
-			];
+			);
 		}
 
 		return $task_action_link;
@@ -294,28 +294,24 @@ class HTML_Builder {
 
 						$relative_due->status = 'past';
 
-					} else {
-
-						if ( 0 === $days_diff ) {
+					} elseif ( 0 === $days_diff ) {
 
 							$dt_string = 'Today';
 							$relative_due->status = 'today';
 
-						} elseif ( $days_diff < 7 ) {
+					} elseif ( $days_diff < 7 ) {
 
-							if ( 1 === $days_diff ) {
-								$dt_string = 'Tomorrow';
-							} else {
-								$dt_string = $dt_due->format( 'l' );
-							}
-							$relative_due->status = 'soon';
-
+						if ( 1 === $days_diff ) {
+							$dt_string = 'Tomorrow';
 						} else {
-
-							$dt_string = $dt->format( 'M j' );
-							$relative_due->status = 'later';
-
+							$dt_string = $dt_due->format( 'l' );
 						}
+						$relative_due->status = 'soon';
+
+					} else {
+
+						$dt_string = $dt->format( 'M j' );
+						$relative_due->status = 'later';
 					}
 
 					$due_date = ( false !== $dt_string ) ? $dt_string : $due_date;
@@ -345,12 +341,12 @@ class HTML_Builder {
 
 		if ( empty( $tasks ) ) {
 			error_log( 'Failed to sort tasks by due date: no tasks provided.' );
-			return [];
+			return array();
 		}
 
 		$success = usort(
 			$tasks,
-			function( $a, $b ) {
+			function ( $a, $b ) {
 
 				$a_unix = PHP_INT_MAX;
 
@@ -387,7 +383,7 @@ class HTML_Builder {
 		}
 
 		error_log( 'Failed to sort tasks by due date.' );
-		return [];
+		return array();
 	}
 
 	/**

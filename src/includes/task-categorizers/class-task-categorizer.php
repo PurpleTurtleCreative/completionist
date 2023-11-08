@@ -24,8 +24,8 @@ defined( 'ABSPATH' ) || die();
 abstract class Task_Categorizer implements \Iterator {
 
 	protected $position = 0;
-	protected $tasks = [];
-	protected $categorized_indices = [];
+	protected $tasks = array();
+	protected $categorized_indices = array();
 
 	protected $completed_count = 0;
 	protected $incomplete_count = 0;
@@ -71,7 +71,7 @@ abstract class Task_Categorizer implements \Iterator {
 	}
 
 	final public function get_tasks_gid_array() : array {
-		$arr = [];
+		$arr = array();
 		foreach ( $this as $task ) {
 			if ( isset( $task->gid ) ) {
 				$arr[] = $task->gid;

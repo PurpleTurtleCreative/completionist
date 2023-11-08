@@ -180,7 +180,7 @@ class Shortcodes {
 
 		// Asana project assets.
 
-		$asset_file = require_once( PLUGIN_PATH . 'build/index_ShortcodeAsanaProject.jsx.asset.php' );
+		$asset_file = require_once PLUGIN_PATH . 'build/index_ShortcodeAsanaProject.jsx.asset.php';
 
 		$dependencies = apply_filters_deprecated(
 			'ptc_completionist_shortcode_asana_project_script_deps',

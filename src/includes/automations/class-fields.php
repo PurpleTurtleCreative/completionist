@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || die();
  */
 class Fields {
 
-	public const USER_OPTIONS = [
+	public const USER_OPTIONS = array(
 		'user.ID' => 'User ID',
 		'user.user_login' => 'Username',
 		'user.user_email' => 'Email',
@@ -27,17 +27,17 @@ class Fields {
 		'user.roles' => 'Roles',
 		'user.first_name' => 'First Name',
 		'user.last_name' => 'Last Name',
-	];
+	);
 
-	public const POST_OPTIONS = [
+	public const POST_OPTIONS = array(
 		'post.ID' => 'Post ID',
 		'post.post_author' => 'Author (User ID)',
 		'post.post_title' => 'Title',
 		'post.post_status' => 'Status',
 		'post.post_type' => 'Type',
-	];
+	);
 
-	public const COMPARISON_METHODS = [
+	public const COMPARISON_METHODS = array(
 		'equals',
 		'does not equal',
 		'less than',
@@ -48,7 +48,7 @@ class Fields {
 		'starts with',
 		'ends with',
 		'contains',
-	];
+	);
 
 	/**
 	 * Evaluates an automation condition entry using the provided objects.
@@ -56,10 +56,10 @@ class Fields {
 	 * @since 1.1.0
 	 *
 	 * @param \stdClass $condition The condition record object for evaluation.
-	 * @param object[] $translation_objects An array of objects to translate
-	 * field values. The object type must match the object key as follows:
-	 * * 'post' => \WP_Post
-	 * * 'user' => \WP_User
+	 * @param object[]  $translation_objects An array of objects to translate
+	 *  field values. The object type must match the object key as follows:
+	 *  * 'post' => \WP_Post
+	 *  * 'user' => \WP_User
 	 * @return bool If the provided object met the condition.
 	 */
 	public static function evaluate_condition( \stdClass $condition, array $translation_objects ) : bool {
@@ -143,7 +143,7 @@ class Fields {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param string $string_with_fields The string containing merge fields.
+	 * @param string   $string_with_fields The string containing merge fields.
 	 * @param object[] $translation_objects An array of objects to translate
 	 * field values. The object type must match the object key as follows:
 	 * * 'post' => \WP_Post
@@ -154,7 +154,7 @@ class Fields {
 
 		$translated_string = preg_replace_callback(
 			'/{([a-zA-Z_]+?\.[a-zA-Z_]+?)}/',
-			function( $matches ) use ( $translation_objects ) {
+			function ( $matches ) use ( $translation_objects ) {
 				return self::get_template_value( $matches[1], $translation_objects );
 			},
 			$string_with_fields
@@ -168,7 +168,7 @@ class Fields {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param string $field_accessor The merge field string to translate.
+	 * @param string   $field_accessor The merge field string to translate.
 	 * @param object[] $translation_objects An array of objects to translate
 	 * field values. The object type must match the object key as follows:
 	 * * 'post' => \WP_Post

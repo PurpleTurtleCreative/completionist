@@ -58,7 +58,7 @@ define( __NAMESPACE__ . '\PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
  *
  * @since 3.0.0
  */
-define( __NAMESPACE__ . '\PLUGIN_VERSION', get_file_data( __FILE__, [ 'Version' => 'Version' ], 'plugin' )['Version'] );
+define( __NAMESPACE__ . '\PLUGIN_VERSION', get_file_data( __FILE__, array( 'Version' => 'Version' ), 'plugin' )['Version'] );
 
 /**
  * This plugin's basename.

@@ -82,7 +82,6 @@ class Data {
 		}
 
 		return $saved_automation;
-
 	}//end save_automation()
 
 	private static function save_new_automation( \stdClass $automation ) : \stdClass {
@@ -162,11 +161,11 @@ class Data {
 
 			self::update_automation(
 				$automation->ID,
-				[
+				array(
 					'title' => $automation->title,
 					'description' => $automation->description,
 					'hook_name' => $automation->hook_name,
-				]
+				)
 			);
 
 			if ( isset( $automation->conditions ) && is_array( $automation->conditions ) ) {
@@ -186,11 +185,11 @@ class Data {
 						$condition->ID = (int) $condition->ID;
 						self::update_condition(
 							$condition->ID,
-							[
+							array(
 								'property' => $condition->property,
 								'comparison_method' => $condition->comparison_method,
 								'value' => $condition->value,
-							]
+							)
 						);
 						foreach ( $old_automation->conditions as $j => $old_condition ) {
 							if ( $condition->ID == $old_condition->ID ) {
@@ -239,9 +238,9 @@ class Data {
 						$action->ID = (int) $action->ID;
 						self::update_action(
 							$action->ID,
-							[ 'action' => $action->action ]
+							array( 'action' => $action->action )
 						);
-						$saved_meta_keys = [];
+						$saved_meta_keys = array();
 						foreach ( $action->meta as $meta_key => $meta_value ) {
 							if ( trim( $meta_value ) == '' ) {
 								continue;
@@ -348,7 +347,7 @@ class Data {
 				$item->value = html_entity_decode( wp_unslash( $item->value ), ENT_QUOTES | ENT_HTML5 );
 			}
 		} else {
-			$res = [];
+			$res = array();
 		}
 
 		return $res;
@@ -382,7 +381,7 @@ class Data {
 				$item->last_triggered = html_entity_decode( wp_unslash( $item->last_triggered ), ENT_QUOTES | ENT_HTML5 );
 			}
 		} else {
-			$res = [];
+			$res = array();
 		}
 
 		return $res;
@@ -423,7 +422,7 @@ class Data {
 				$item->meta_value = html_entity_decode( wp_unslash( $item->meta_value ), ENT_QUOTES | ENT_HTML5 );
 			}
 		} else {
-			$res = [];
+			$res = array();
 		}
 
 		return $res;
@@ -456,7 +455,7 @@ class Data {
 
 	public static function update_automation( int $automation_id, array $params ) : bool {
 
-		$format = [];
+		$format = array();
 
 		foreach ( $params as $col => &$val ) {
 			switch ( $col ) {
@@ -482,9 +481,9 @@ class Data {
 		$res = $wpdb->update(
 			Database_Manager::$automations_table,
 			$params,
-			[ 'ID' => $automation_id ],
+			array( 'ID' => $automation_id ),
 			$format,
-			[ '%d' ]
+			array( '%d' )
 		);
 
 		if ( $res >= 0 ) {
@@ -496,7 +495,7 @@ class Data {
 
 	public static function update_condition( int $condition_id, array $params ) : bool {
 
-		$format = [];
+		$format = array();
 
 		foreach ( $params as $col => &$val ) {
 			switch ( $col ) {
@@ -527,9 +526,9 @@ class Data {
 		$res = $wpdb->update(
 			Database_Manager::$automation_conditions_table,
 			$params,
-			[ 'ID' => $condition_id ],
+			array( 'ID' => $condition_id ),
 			$format,
-			[ '%d' ]
+			array( '%d' )
 		);
 
 		if ( $res >= 0 ) {
@@ -541,7 +540,7 @@ class Data {
 
 	public static function update_action( int $action_id, array $params ) : bool {
 
-		$format = [];
+		$format = array();
 
 		foreach ( $params as $col => &$val ) {
 			switch ( $col ) {
@@ -564,9 +563,9 @@ class Data {
 		$res = $wpdb->update(
 			Database_Manager::$automation_actions_table,
 			$params,
-			[ 'ID' => $action_id ],
+			array( 'ID' => $action_id ),
 			$format,
-			[ '%d' ]
+			array( '%d' )
 		);
 
 		if ( $res >= 0 ) {
@@ -590,16 +589,16 @@ class Data {
 		global $wpdb;
 		$res = $wpdb->update(
 			Database_Manager::$automation_actions_meta_table,
-			[ 'meta_value' => $meta_value ],
-			[
+			array( 'meta_value' => $meta_value ),
+			array(
 				'action_id' => $action_id,
 				'meta_key' => $meta_key,
-			],
-			[ '%s' ],
-			[
+			),
+			array( '%s' ),
+			array(
 				'%d',
 				'%s',
-			]
+			)
 		);
 
 		if ( 0 === $res ) {
@@ -638,16 +637,16 @@ class Data {
 		global $wpdb;
 		$res = $wpdb->insert(
 			Database_Manager::$automations_table,
-			[
+			array(
 				'title' => $title,
 				'description' => $description,
 				'hook_name' => $hook_name,
-			],
-			[
+			),
+			array(
 				'%s',
 				'%s',
 				'%s',
-			]
+			)
 		);
 
 		if ( 1 !== $res ) {
@@ -662,8 +661,8 @@ class Data {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param int $automation_id The automation ID to which this condition
-	 * applies.
+	 * @param int    $automation_id The automation ID to which this condition
+	 *    applies.
 	 * @param string $property The field accessor string.
 	 * @param string $comparison_method The comparison method string.
 	 * @param string $value The value for evaluation.
@@ -689,18 +688,18 @@ class Data {
 		global $wpdb;
 		$res = $wpdb->insert(
 			Database_Manager::$automation_conditions_table,
-			[
+			array(
 				'automation_id' => $automation_id,
 				'property' => $property,
 				'comparison_method' => $comparison_method,
 				'value' => $value,
-			],
-			[
+			),
+			array(
 				'%d',
 				'%s',
 				'%s',
 				'%s',
-			]
+			)
 		);
 
 		if ( 1 !== $res ) {
@@ -715,7 +714,7 @@ class Data {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param int $automation_id The automation ID to which this action applies.
+	 * @param int    $automation_id The automation ID to which this action applies.
 	 * @param string $action_name The action key.
 	 * @return int The action ID. Default 0 on error.
 	 */
@@ -735,14 +734,14 @@ class Data {
 		global $wpdb;
 		$res = $wpdb->insert(
 			Database_Manager::$automation_actions_table,
-			[
+			array(
 				'automation_id' => $automation_id,
 				'action' => $action_name,
-			],
-			[
+			),
+			array(
 				'%d',
 				'%s',
-			]
+			)
 		);
 
 		if ( 1 !== $res ) {
@@ -757,7 +756,7 @@ class Data {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param int $action_id The action ID to which this meta applies.
+	 * @param int    $action_id The action ID to which this meta applies.
 	 * @param string $meta_key The meta key.
 	 * @param string $meta_value The meta value.
 	 * @return int The action meta ID. Default 0 on error.
@@ -781,16 +780,16 @@ class Data {
 		global $wpdb;
 		$res = $wpdb->insert(
 			Database_Manager::$automation_actions_meta_table,
-			[
+			array(
 				'action_id' => $action_id,
 				'meta_key' => $meta_key,
 				'meta_value' => $meta_value,
-			],
-			[
+			),
+			array(
 				'%d',
 				'%s',
 				'%s',
-			]
+			)
 		);
 
 		if ( 1 !== $res ) {
@@ -815,12 +814,12 @@ class Data {
 		global $wpdb;
 		$res = $wpdb->delete(
 			Database_Manager::$automations_table,
-			[
+			array(
 				'ID' => $automation_id,
-			],
-			[
+			),
+			array(
 				'%d',
-			]
+			)
 		);
 
 		return ( false !== $res );
@@ -839,12 +838,12 @@ class Data {
 		global $wpdb;
 		$res = $wpdb->delete(
 			Database_Manager::$automation_conditions_table,
-			[
+			array(
 				'ID' => $condition_id,
-			],
-			[
+			),
+			array(
 				'%d',
-			]
+			)
 		);
 
 		return ( false !== $res );
@@ -863,12 +862,12 @@ class Data {
 		global $wpdb;
 		$res = $wpdb->delete(
 			Database_Manager::$automation_actions_table,
-			[
+			array(
 				'ID' => $action_id,
-			],
-			[
+			),
+			array(
 				'%d',
-			]
+			)
 		);
 
 		return ( false !== $res );
@@ -887,12 +886,12 @@ class Data {
 		global $wpdb;
 		$res = $wpdb->delete(
 			Database_Manager::$automation_actions_meta_table,
-			[
+			array(
 				'ID' => $action_meta_id,
-			],
-			[
+			),
+			array(
 				'%d',
-			]
+			)
 		);
 
 		return ( false !== $res );
@@ -903,14 +902,14 @@ class Data {
 		global $wpdb;
 		$res = $wpdb->delete(
 			Database_Manager::$automation_actions_meta_table,
-			[
+			array(
 				'action_id' => $action_id,
 				'meta_key' => $meta_key,
-			],
-			[
+			),
+			array(
 				'%d',
 				'%s',
-			]
+			)
 		);
 
 		return ( false !== $res );
@@ -990,8 +989,8 @@ class Data {
 	 * - total_actions
 	 * - last_triggered
 	 * - total_triggered
-	 * @param bool $return_html Optional. Convert newlines to <br> tags for
-	 * HTML rendering.
+	 * @param bool   $return_html Optional. Convert newlines to <br> tags for
+	 *   HTML rendering.
 	 * @return \stdClass[] The automation overview records.
 	 */
 	public static function get_automation_overviews( string $order_by = null, bool $return_html = false ) : array {
@@ -1064,7 +1063,7 @@ class Data {
 				$item->total_triggered = (int) $item->total_triggered;
 			}
 		} else {
-			$res = [];
+			$res = array();
 		}
 
 		return $res;

@@ -140,7 +140,7 @@ try {
 						<p class="nothing-to-see">No collaborators were found by email.</p>
 						<?php
 					} else {
-						$displayed_user_ids = [];
+						$displayed_user_ids = array();
 						foreach ( $workspace_users as $user ) {
 							// Ensure users are only displayed once.
 							if ( ! in_array( $user->ID, $displayed_user_ids, true ) ) {
@@ -176,7 +176,7 @@ try {
 		current_user_can( 'manage_options' ) &&
 		! empty( $connected_workspace_users )
 	) :
-	?>
+		?>
 	<section id="ptc-frontend-auth-user">
 		<label for="asana-frontend-user">Frontend Authentication User</label>
 		<form method="POST">
@@ -218,7 +218,7 @@ try {
 		current_user_can( 'edit_posts' )
 	) :
 		$saved_asana_cache_ttl = Options::get( Options::CACHE_TTL_SECONDS );
-	?>
+		?>
 	<section id="ptc-asana-data-cache">
 		<div class="section-title">Asana Data Cache</div>
 		<form id="ptc-asana-cache-duration-ttl" method="POST">

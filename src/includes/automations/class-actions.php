@@ -22,12 +22,12 @@ use PTC_Completionist\Options;
  */
 class Actions {
 
-	public const ACTION_OPTIONS = [
+	public const ACTION_OPTIONS = array(
 		'create_task' => 'Create Asana Task',
-	];
+	);
 
-	public const ACTION_META_OPTIONS = [
-		'create_task' => [
+	public const ACTION_META_OPTIONS = array(
+		'create_task' => array(
 			'task_author' => 'Creator',
 			'name' => 'Title',
 			'post_id' => 'Post Pin',
@@ -35,8 +35,8 @@ class Actions {
 			'due_on' => 'Due Date',
 			'project' => 'Project',
 			'notes' => 'Description',
-		],
-	];
+		),
+	);
 
 	/**
 	 * Evaluates an automation condition entry using the provided objects.
@@ -47,10 +47,10 @@ class Actions {
 	 * action object with meta.
 	 *
 	 * @param \stdClass $action_with_meta The action object to perform.
-	 * @param object[] $translation_objects An array of objects to translate
-	 * field values. The object type must match the object key as follows:
-	 * * 'post' => \WP_Post
-	 * * 'user' => \WP_User
+	 * @param object[]  $translation_objects An array of objects to translate
+	 *  field values. The object type must match the object key as follows:
+	 *  * 'post' => \WP_Post
+	 *  * 'user' => \WP_User
 	 */
 	public static function run_action( \stdClass $action_with_meta, array $translation_objects ) : bool {
 
@@ -82,10 +82,10 @@ class Actions {
 	 * * 'due_on' => (date string) The task due date.
 	 * * 'project' => (gid) The Asana project gid to house the task.
 	 * * 'notes' => (string) The task description.
-	 * @param object[] $translation_objects An array of objects to translate
-	 * field values. The object type must match the object key as follows:
-	 * * 'post' => \WP_Post
-	 * * 'user' => \WP_User
+	 * @param object[]  $translation_objects An array of objects to translate
+	 *  field values. The object type must match the object key as follows:
+	 *  * 'post' => \WP_Post
+	 *  * 'user' => \WP_User
 	 * @return bool If the task was successfully created.
 	 */
 	private static function create_task( \stdClass $action_with_meta, array $translation_objects ) : bool {
@@ -127,7 +127,7 @@ class Actions {
 				 */
 				$comment_text = apply_filters( 'ptc_cmp_create_task_comment', $comment_text, 'automation' );
 				if ( $comment_text ) {
-					$asana->tasks->addComment( $task->gid, [ 'text' => $comment_text ] );
+					$asana->tasks->addComment( $task->gid, array( 'text' => $comment_text ) );
 				}
 			} catch ( \Exception $e ) {
 				error_log( HTML_Builder::format_error_string( $e, 'Failed to add comment to new task.' ) );

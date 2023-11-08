@@ -28,7 +28,7 @@ class Automation {
 	private $actions = null;
 	private $actions_meta = null;
 
-	public $translation_objects = [];
+	public $translation_objects = array();
 
 	/**
 	 * Loads initial automation details.
@@ -151,7 +151,7 @@ class Automation {
 		$actions_with_meta = $this->actions;
 		$working_meta_records = $this->actions_meta;
 		foreach ( $actions_with_meta as &$action ) {
-			$action->meta = [];
+			$action->meta = array();
 			foreach ( $working_meta_records as $i => $meta ) {
 				if ( $meta->action_id == $action->ID ) {
 					$action->meta[ $meta->meta_key ] = $meta->meta_value;
