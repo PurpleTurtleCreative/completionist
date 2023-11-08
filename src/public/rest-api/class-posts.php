@@ -137,7 +137,7 @@ class Posts {
 	 * REST API endpoint since custom post types need to explicitly
 	 * opt in during registration to become available via the REST API.
 	 * Otherwise, you could use the Search Results endpoint like:
-	 * http://localhost/wp-json/wp/v2/search?include=5
+	 * https://example.com/wp-json/wp/v2/search?include=5
 	 */
 	public static function handle_get_post(
 		\WP_REST_Request $request
