@@ -96,10 +96,10 @@ class Actions {
 				! isset( $action_with_meta->meta['task_author'] )
 				|| ! isset( $action_with_meta->meta['name'] )
 			) {
-				throw new \Exception( 'A task author and title are required. Please review Completionist Automation {$action_with_meta->ID}.', 409 );
+				throw new \Exception( "A task author and title are required. Please review Completionist Automation action {$action_with_meta->ID}.", 409 );
 			}
 
-			$action_with_meta->meta['name'] = Fields::translate_templates( $action_with_meta->meta['name'] ?? '', $translation_objects );
+			$action_with_meta->meta['name']  = Fields::translate_templates( $action_with_meta->meta['name'] ?? '', $translation_objects );
 			$action_with_meta->meta['notes'] = Fields::translate_templates( $action_with_meta->meta['notes'] ?? '', $translation_objects );
 
 			$task = Asana_Interface::create_task( $action_with_meta->meta, (string) $action_with_meta->meta['task_author'] );
@@ -119,11 +119,11 @@ class Actions {
 				/**
 				 * Filters the comment added to new Asana tasks.
 				 *
-				 * @since [unreleased] Replaced 'ajax' context with 'rest_api'.
+				 * @since [unreleased] Removed 'ajax' context.
 				 * @since 1.1.0
 				 *
 				 * @param string $comment_text The plain text string to comment on the new task.
-				 * @param string $context The context of this filter, 'automation' or 'rest_api'.
+				 * @param string $context The context of this filter, 'automation'.
 				 */
 				$comment_text = apply_filters( 'ptc_cmp_create_task_comment', $comment_text, 'automation' );
 				if ( $comment_text ) {
