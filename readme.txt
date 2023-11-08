@@ -1,4 +1,4 @@
-=== Completionist – Asana for WordPress ===
+=== Completionist – Asana Integration Suite ===
 Contributors: michelleblanchette
 Tags: asana, project, task, management, manager, integration, api, work, business, collaboration, client, customer, support, portal, dashboard, widget, metabox, shortcodes
 Requires at least: 5.0.0
