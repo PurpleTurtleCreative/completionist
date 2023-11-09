@@ -55,13 +55,6 @@ class Autoloader {
 		// Includes/Errors.
 		'Errors\No_Authorization'          => 'src/includes/errors/class-no-authorization.php',
 
-		// Includes/Task_Categorizers.
-		'Task_Categorizer'                 => 'src/includes/task-categorizers/class-task-categorizer.php',
-		'Task_Categorizer\Critical'        => 'src/includes/task-categorizers/class-critical.php',
-		'Task_Categorizer\General'         => 'src/includes/task-categorizers/class-general.php',
-		'Task_Categorizer\My_Tasks'        => 'src/includes/task-categorizers/class-my-tasks.php',
-		'Task_Categorizer\Pinned'          => 'src/includes/task-categorizers/class-pinned.php',
-
 		// Public.
 		'Admin_Notices'                    => 'src/public/class-admin-notices.php',
 		'Freemius'                         => 'src/public/class-freemius.php',
