@@ -28,6 +28,7 @@
 - All WP Admin AJAX actions to instead use the new REST API endpoints.
 - The `HTML_Builder::format_task_row()` function. It was only used by the legacy Tasks metabox within the Classic Editor, which is now replaced by the upgraded ReactJS-based components.
 - The `Task_Categorizer` class, all child classes, and the `Task_Categorizer` namespace. These PHP classes have not been used since this functionality was moved to ReactJS on the frontend.
+- Non-class files within the `src/admin` directory. All PHP+HTML template code has been moved to methods within the related PHP classes, either `Admin_Pages` or `Admin_Widgets`.
 
 #### Fixed
 

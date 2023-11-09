@@ -185,6 +185,9 @@ class Asana_Batch {
 	 * Processes the current batch of actions.
 	 *
 	 * @since 3.9.0
+	 *
+	 * @throws \Exception If the provided error handler throws
+	 * an exception that occurs from API requests to Asana.
 	 */
 	public function process() {
 

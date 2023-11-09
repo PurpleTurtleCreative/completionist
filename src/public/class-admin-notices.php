@@ -268,7 +268,7 @@ class Admin_Notices {
 			empty( $notice['type'] )
 		) {
 			trigger_error(
-				'Refused to add an admin notice with missing data. The keys id, message, and type are all required: ' . print_r( $notice, true ),
+				'Refused to add an admin notice with missing data. The keys id, message, and type are all required: ' . esc_html( print_r( $notice, true ) ),
 				\E_USER_WARNING
 			);
 			return '';

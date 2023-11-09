@@ -58,6 +58,8 @@ class Tags {
 	 * @param \WP_REST_Request $request The API request.
 	 *
 	 * @return \WP_REST_Response|\WP_Error The API response.
+	 *
+	 * @throws \Exception Handled in try-catch block.
 	 */
 	public static function handle_get_tags(
 		\WP_REST_Request $request
