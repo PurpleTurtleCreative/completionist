@@ -49,7 +49,7 @@ class Data {
 	 *   - action
 	 *   - triggered_count
 	 *   - last_triggered (unused)
-	 *   - meta{} (meta_key properties with meta_value values)
+	 *   - meta{} (meta_key properties with meta_value values).
 	 * @return \stdClass The automation data now in the database for the new
 	 * or updated automation. An empty object is returned on failure to create
 	 * a new automation or when attempting to update an automation that does
@@ -84,6 +84,12 @@ class Data {
 		return $saved_automation;
 	}//end save_automation()
 
+	/**
+	 * Saves a new automation.
+	 *
+	 * @param \stdClass $automation A complete automation object.
+	 * @return \stdClass The saved automation object. Empty on failure.
+	 */
 	private static function save_new_automation( \stdClass $automation ) : \stdClass {
 
 		// TODO: VALIDATE DATA. SOME FIELDS ARE REQUIRED LIKE TITLE AND HOOK.
@@ -142,18 +148,27 @@ class Data {
 		}
 
 		try {
-			$saved_automation = ( new Automation( $new_automation_id ) )->to_stdClass();
+			$saved_automation = ( new Automation( $new_automation_id ) )->to_std_class();
 		} catch ( \Exception $e ) {
 			error_log( HTML_Builder::format_error_string( $e, 'Failed to retrieve newly created automation data.' ) );
+			$saved_automation = new \stdClass();
 		}
 
 		return $saved_automation;
 	}//end save_new_automation()
 
+	/**
+	 * Updates an existing automation.
+	 *
+	 * @param \stdClass $automation A complete automation object.
+	 * @return \stdClass The saved automation object. Empty on failure.
+	 *
+	 * @throws \Exception Handled in try-catch block.
+	 */
 	private static function save_existing_automation( \stdClass $automation ) : \stdClass {
 		try {
 
-			$old_automation = ( new Automation( $automation->ID ) )->to_stdClass();
+			$old_automation = ( new Automation( $automation->ID ) )->to_std_class();
 
 			// TODO: VALIDATE DATA. SOME FIELDS ARE REQUIRED LIKE TITLE AND HOOK.
 
@@ -274,11 +289,11 @@ class Data {
 			}
 
 			self::update_automation_last_modified( $automation->ID );
-			$saved_automation = ( new Automation( $automation->ID ) )->to_stdClass();
+			$saved_automation = ( new Automation( $automation->ID ) )->to_std_class();
 
 		} catch ( \Exception $e ) {
 			error_log( HTML_Builder::format_error_string( $e, 'Failed to update existing automation.' ) );
-			return new \stdClass();
+			$saved_automation = new \stdClass();
 		}
 
 		return $saved_automation;
@@ -301,17 +316,17 @@ class Data {
 		$table = Database_Manager::$automations_table;
 		$res = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM $table
-					WHERE ID = %d LIMIT 1",
+				'SELECT * FROM `' . esc_sql( $table ) . '`
+					WHERE ID = %d LIMIT 1',
 				$automation_id
 			)
 		);
 
 		if ( null !== $res ) {
-			$res->ID = (int) $res->ID;
-			$res->title = html_entity_decode( wp_unslash( $res->title ), ENT_QUOTES | ENT_HTML5 );
-			$res->description = html_entity_decode( wp_unslash( $res->description ), ENT_QUOTES | ENT_HTML5 );
-			$res->hook_name = html_entity_decode( wp_unslash( $res->hook_name ), ENT_QUOTES | ENT_HTML5 );
+			$res->ID            = (int) $res->ID;
+			$res->title         = html_entity_decode( wp_unslash( $res->title ), ENT_QUOTES | ENT_HTML5 );
+			$res->description   = html_entity_decode( wp_unslash( $res->description ), ENT_QUOTES | ENT_HTML5 );
+			$res->hook_name     = html_entity_decode( wp_unslash( $res->hook_name ), ENT_QUOTES | ENT_HTML5 );
 			$res->last_modified = html_entity_decode( wp_unslash( $res->last_modified ), ENT_QUOTES | ENT_HTML5 );
 		}
 
@@ -332,8 +347,8 @@ class Data {
 		$table = Database_Manager::$automation_conditions_table;
 		$res = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM $table
-					WHERE automation_id = %d",
+				'SELECT * FROM `' . esc_sql( $table ) . '`
+					WHERE automation_id = %d',
 				$automation_id
 			)
 		);
@@ -367,8 +382,8 @@ class Data {
 		$table = Database_Manager::$automation_actions_table;
 		$res = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM $table
-					WHERE automation_id = %d",
+				'SELECT * FROM `' . esc_sql( $table ) . '`
+					WHERE automation_id = %d',
 				$automation_id
 			)
 		);
@@ -403,22 +418,22 @@ class Data {
 		$automation_actions_meta_table = Database_Manager::$automation_actions_meta_table;
 		$res = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT actions_meta.*
-					FROM $automations_table automations
-					JOIN $automation_actions_table actions
+				'SELECT actions_meta.*
+					FROM `' . esc_sql( $automations_table ) . '` automations
+					JOIN `' . esc_sql( $automation_actions_table ) . '` actions
 						ON actions.automation_id = automations.ID
 						AND automations.ID = %d
-					JOIN $automation_actions_meta_table actions_meta
-						ON actions_meta.action_id = actions.ID",
+					JOIN `' . esc_sql( $automation_actions_meta_table ) . '` actions_meta
+						ON actions_meta.action_id = actions.ID',
 				$automation_id
 			)
 		);
 
 		if ( $res && is_array( $res ) ) {
 			foreach ( $res as &$item ) {
-				$item->ID = (int) $item->ID;
-				$item->action_id = (int) $item->action_id;
-				$item->meta_key = html_entity_decode( wp_unslash( $item->meta_key ), ENT_QUOTES | ENT_HTML5 );
+				$item->ID         = (int) $item->ID;
+				$item->action_id  = (int) $item->action_id;
+				$item->meta_key   = html_entity_decode( wp_unslash( $item->meta_key ), ENT_QUOTES | ENT_HTML5 );
 				$item->meta_value = html_entity_decode( wp_unslash( $item->meta_value ), ENT_QUOTES | ENT_HTML5 );
 			}
 		} else {
@@ -428,6 +443,14 @@ class Data {
 		return $res;
 	}
 
+	/**
+	 * Gets the action meta values by key.
+	 *
+	 * @param int    $action_id The action ID.
+	 * @param string $meta_key The meta key.
+	 * @param string $default A fallback value if not found.
+	 * @return string The meta value or fallback value.
+	 */
 	public static function get_action_meta_by_key( int $action_id, string $meta_key, string $default = '' ) : string {
 
 		$meta_key = Options::sanitize( 'string', $meta_key );
@@ -436,9 +459,9 @@ class Data {
 		$table = Database_Manager::$automation_actions_meta_table;
 		$res = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT meta_value FROM $table
+				'SELECT meta_value FROM `' . esc_sql( $table ) . '`
 					WHERE action_id = %d AND meta_key = %s
-					LIMIT 1",
+					LIMIT 1',
 				$action_id,
 				$meta_key
 			)
@@ -453,6 +476,13 @@ class Data {
 
 	/* Update */
 
+	/**
+	 * Updates an automation record.
+	 *
+	 * @param int   $automation_id The automation ID.
+	 * @param array $params A map of automation fields to values.
+	 * @return bool If the automation was updated.
+	 */
 	public static function update_automation( int $automation_id, array $params ) : bool {
 
 		$format = array();
@@ -493,6 +523,13 @@ class Data {
 		return false;
 	}
 
+	/**
+	 * Updates a condition record.
+	 *
+	 * @param int   $condition_id The condition ID.
+	 * @param array $params A map of condition fields to values.
+	 * @return bool If the condition was updated.
+	 */
 	public static function update_condition( int $condition_id, array $params ) : bool {
 
 		$format = array();
@@ -538,6 +575,13 @@ class Data {
 		return false;
 	}
 
+	/**
+	 * Updates an action record.
+	 *
+	 * @param int   $action_id The action ID.
+	 * @param array $params A map of action fields to values.
+	 * @return bool If the action was updated.
+	 */
 	public static function update_action( int $action_id, array $params ) : bool {
 
 		$format = array();
@@ -575,14 +619,20 @@ class Data {
 		return false;
 	}
 
-	public static function update_action_meta( int $action_meta_id, array $params ) : bool {}
-
+	/**
+	 * Updates or adds an action meta value.
+	 *
+	 * @param int    $action_id The action ID.
+	 * @param string $meta_key The action meta key.
+	 * @param string $meta_value The action meta value.
+	 * @return bool If the meta was updated or added.
+	 */
 	public static function update_action_meta_by_key( int $action_id, string $meta_key, string $meta_value ) : bool {
 
 		$meta_key = (string) Options::sanitize( 'string', $meta_key );
 		$meta_value = Options::sanitize( 'string', $meta_value );
 
-		if ( $meta_value == self::get_action_meta_by_key( $action_id, $meta_key ) ) {
+		if ( self::get_action_meta_by_key( $action_id, $meta_key ) == $meta_value ) {
 			return true;
 		}
 
@@ -897,6 +947,14 @@ class Data {
 		return ( false !== $res );
 	}
 
+	/**
+	 * Deletes all action meta records with the given key for the
+	 * specified action.
+	 *
+	 * @param int    $action_id The action ID.
+	 * @param string $meta_key The meta key.
+	 * @return bool If deleted successfully.
+	 */
 	public static function delete_action_meta_by_key( int $action_id, string $meta_key ) : bool {
 
 		global $wpdb;
@@ -931,8 +989,8 @@ class Data {
 		$table = Database_Manager::$automations_table;
 		$res = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT ID FROM $table
-					WHERE ID = %d",
+				'SELECT ID FROM `' . esc_sql( $table ) . '`
+					WHERE ID = %d',
 				$automation_id
 			)
 		);
@@ -958,8 +1016,8 @@ class Data {
 		$table = Database_Manager::$automation_actions_table;
 		$res = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT ID FROM $table
-					WHERE ID = %d",
+				'SELECT ID FROM `' . esc_sql( $table ) . '`
+					WHERE ID = %d',
 				$action_id
 			)
 		);
@@ -988,7 +1046,7 @@ class Data {
 	 * - total_conditions
 	 * - total_actions
 	 * - last_triggered
-	 * - total_triggered
+	 * - total_triggered.
 	 * @param bool   $return_html Optional. Convert newlines to <br> tags for
 	 *   HTML rendering.
 	 * @return \stdClass[] The automation overview records.
@@ -1014,7 +1072,7 @@ class Data {
 					SELECT
 						COUNT(ID)
 					FROM
-						$automation_conditions_table
+						`" . esc_sql( $automation_conditions_table ) . "`
 					WHERE
 						automation_id = automations.ID
 				) AS 'total_conditions',
@@ -1022,7 +1080,7 @@ class Data {
 					SELECT
 						COUNT(ID)
 					FROM
-						$automation_actions_table
+						`" . esc_sql( $automation_actions_table ) . "`
 					WHERE
 						automation_id = automations.ID
 				) AS 'total_actions',
@@ -1030,7 +1088,7 @@ class Data {
 					SELECT
 						UNIX_TIMESTAMP(MAX(last_triggered))
 					FROM
-						$automation_actions_table
+						`" . esc_sql( $automation_actions_table ) . "`
 					WHERE
 						automation_id = automations.ID
 				) AS 'last_triggered',
@@ -1038,29 +1096,32 @@ class Data {
 					SELECT
 						SUM(triggered_count)
 					FROM
-						$automation_actions_table
+						`" . esc_sql( $automation_actions_table ) . "`
 					WHERE
 						automation_id = automations.ID
 				) AS 'total_triggered'
 			FROM
-				$automations_table automations
-			ORDER BY $order_by DESC"
+				`" . esc_sql( $automations_table ) . '` automations
+			ORDER BY `' . esc_sql( $order_by ) . '` DESC'
 		);
 
 		if ( $res && is_array( $res ) ) {
 			foreach ( $res as &$item ) {
-				$item->ID = (int) $item->ID;
+
+				$item->ID    = (int) $item->ID;
 				$item->title = html_entity_decode( wp_unslash( $item->title ), ENT_QUOTES | ENT_HTML5 );
+
 				$item->description = html_entity_decode( wp_unslash( $item->description ), ENT_QUOTES | ENT_HTML5 );
 				if ( $return_html ) {
 					$item->description = nl2br( $item->description );
 				}
-				$item->hook_name = html_entity_decode( wp_unslash( $item->hook_name ), ENT_QUOTES | ENT_HTML5 );
-				$item->last_modified = ( 0 == $item->last_modified ) ? 'Never' : human_time_diff( $item->last_modified ) . ' ago';
+
+				$item->hook_name        = html_entity_decode( wp_unslash( $item->hook_name ), ENT_QUOTES | ENT_HTML5 );
+				$item->last_modified    = ( 0 == $item->last_modified ) ? 'Never' : human_time_diff( $item->last_modified ) . ' ago';
 				$item->total_conditions = (int) $item->total_conditions;
-				$item->total_actions = (int) $item->total_actions;
-				$item->last_triggered = ( 0 == $item->last_triggered ) ? 'Never' : human_time_diff( $item->last_triggered ) . ' ago';
-				$item->total_triggered = (int) $item->total_triggered;
+				$item->total_actions    = (int) $item->total_actions;
+				$item->last_triggered   = ( 0 == $item->last_triggered ) ? 'Never' : human_time_diff( $item->last_triggered ) . ' ago';
+				$item->total_triggered  = (int) $item->total_triggered;
 			}
 		} else {
 			$res = array();
@@ -1079,7 +1140,7 @@ class Data {
 	public static function get_all_hook_names() : array {
 		global $wpdb;
 		$automations_table = Database_Manager::$automations_table;
-		return $wpdb->get_col( "SELECT DISTINCT hook_name FROM $automations_table" );
+		return $wpdb->get_col( 'SELECT DISTINCT hook_name FROM `' . esc_sql( $automations_table ) . '`' );
 	}
 
 	/**
@@ -1104,7 +1165,7 @@ class Data {
 		$table = Database_Manager::$automations_table;
 		$res = $wpdb->get_col(
 			$wpdb->prepare(
-				"SELECT DISTINCT ID FROM $table
+				'SELECT DISTINCT ID FROM `' . esc_sql( $table ) . "`
 					WHERE hook_name LIKE %s ESCAPE '\\\\'",
 				$hook_name_like
 			)
@@ -1128,10 +1189,10 @@ class Data {
 		$automation_actions_table = Database_Manager::$automation_actions_table;
 		$count = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(actions.ID) FROM $automation_actions_table actions
+				'SELECT COUNT(actions.ID) FROM `' . esc_sql( $automation_actions_table ) . '` actions
 					JOIN $automations_table automations
 						ON automations.ID = actions.automation_id
-						AND automations.hook_name = %s",
+						AND automations.hook_name = %s',
 				$hook_name
 			)
 		);
@@ -1169,9 +1230,9 @@ class Data {
 		$table = Database_Manager::$automations_table;
 		$rows_affected = $wpdb->query(
 			$wpdb->prepare(
-				"UPDATE $table
+				'UPDATE `' . esc_sql( $table ) . '`
 					SET last_modified = CURRENT_TIMESTAMP
-					WHERE ID = %d",
+					WHERE ID = %d',
 				$automation_id
 			)
 		);
@@ -1194,11 +1255,11 @@ class Data {
 		$table = Database_Manager::$automation_actions_table;
 		$rows_affected = $wpdb->query(
 			$wpdb->prepare(
-				"UPDATE $table
+				'UPDATE `' . esc_sql( $table ) . '`
 					SET
 						last_triggered = CURRENT_TIMESTAMP,
 						triggered_count = ( triggered_count + 1 )
-					WHERE ID = %d",
+					WHERE ID = %d',
 				$action_id
 			)
 		);

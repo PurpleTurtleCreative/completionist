@@ -131,7 +131,7 @@ class Attachments {
 						// For example, if the request times out (cURL error 28).
 
 						trigger_error(
-							"Failed to proxy Asana attachment. Retrieved non-integer response code ({$response_code}) - See the following error logs for more details.",
+							'Failed to proxy Asana attachment. Retrieved non-integer response code (' . esc_html( $response_code ) . ') - See the following error logs for more details.',
 							\E_USER_NOTICE
 						);
 

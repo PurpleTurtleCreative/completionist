@@ -138,6 +138,8 @@ class Posts {
 	 * opt in during registration to become available via the REST API.
 	 * Otherwise, you could use the Search Results endpoint like:
 	 * https://example.com/wp-json/wp/v2/search?include=5
+	 *
+	 * @throws \Exception Handled in try-catch block.
 	 */
 	public static function handle_get_post(
 		\WP_REST_Request $request

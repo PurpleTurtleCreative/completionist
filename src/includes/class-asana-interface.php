@@ -89,7 +89,6 @@ class Asana_Interface {
 	 * or requests could fail due to request limits or server issues.
 	 */
 	public static function get_client( $user_id_or_gid = 0 ) : \Asana\Client {
-
 		/*
 		 * @TODO - This needs to NEVER interpret the user's ID.
 		 * Allowing a default value here can confuse frontend requests
@@ -199,12 +198,10 @@ class Asana_Interface {
 			self::$me = $asana->users->me();
 		} catch ( \Asana\Errors\NoAuthorizationError $e ) {
 			Options::delete( Options::ASANA_PAT );
-			throw new Errors\No_Authorization( 'Asana authorization failed. Please provide a new personal access token in Completionist\'s settings.', $e->getCode() );
+			throw new Errors\No_Authorization( 'Asana authorization failed. Please provide a new personal access token in Completionist\'s settings.', intval( $e->getCode() ) );
 		} catch ( \Exception $e ) {
 			/* Don't delete option here because could be server error or API limit... */
-			$error_code = esc_html( $e->getCode() );
-			$error_msg = esc_html( $e->getMessage() );
-			throw new \Exception( "Asana authorization failure {$error_code}: {$error_msg}", $e->getCode() );
+			throw new \Exception( 'Asana authorization failure ' . esc_html( $e->getCode() ) . ': ' . esc_html( $e->getMessage() ), intval( $e->getCode() ) );
 		}
 
 		return $asana;
@@ -1121,7 +1118,7 @@ class Asana_Interface {
 			},
 			function ( $err ) {
 				trigger_error(
-					'Failed to load subtasks. Error: ' . $err->getMessage(),
+					'Failed to load subtasks. Error: ' . esc_html( $err->getMessage() ),
 					\E_USER_WARNING
 				);
 			}
@@ -1188,9 +1185,9 @@ class Asana_Interface {
 			$task = $asana->tasks->findById( $task_gid, array( 'opt_fields' => self::TASK_OPT_FIELDS ) );
 
 			if (
-				isset( $task->workspace->gid )
-				&& $task->workspace->gid != Options::get( Options::ASANA_WORKSPACE_GID )
-				&& $post_id > 0
+				isset( $task->workspace->gid ) &&
+				Options::get( Options::ASANA_WORKSPACE_GID ) != $task->workspace->gid &&
+				$post_id > 0
 			) {
 				if ( '' != $task_gid && Options::delete( Options::PINNED_TASK_GID, $post_id, $task_gid ) ) {
 					error_log( "Unpinned foreign task from post $post_id." );
@@ -1641,7 +1638,7 @@ class Asana_Interface {
 			}
 		}//end if empty keep_gids
 
-		$res = $wpdb->query( $wpdb->prepare( $sql, $format_vars ) );
+		$res = $wpdb->query( $wpdb->prepare( $sql, $format_vars ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( is_numeric( $res ) && $res > 0 ) {
 			error_log( "Deleted {$unpinned_count} task pins: " . __FUNCTION__ );
@@ -1871,7 +1868,8 @@ class Asana_Interface {
 	 * the entire site.
 	 * @return bool If the task was unpinned.
 	 *
-	 * @throws \Exception
+	 * @throws \Exception Asana API requests may fail or the
+	 * provided arguments are invalid.
 	 */
 	public static function unpin_task( string $task_gid, int $post_id = -1 ) : bool {
 

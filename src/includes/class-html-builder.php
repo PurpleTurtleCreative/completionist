@@ -57,7 +57,7 @@ class HTML_Builder {
 			<p>
 				<strong>Error <?php echo esc_html( $code ); ?>.</strong>
 				<br>
-				<?php echo Options::sanitize( 'html', $context_message . $e->getMessage() ); ?>
+				<?php echo wp_kses_post( $context_message . $e->getMessage() ); ?>
 			</p>
 			<?php if ( true === $show_dismiss_button ) : ?>
 			<div class="note-box-dismiss">
@@ -100,7 +100,7 @@ class HTML_Builder {
 	public static function format_error_string( \Exception $e, string $context_message = '' ) : string {
 
 		$code = self::get_error_code( $e );
-		$msg = self::get_error_message( $e );
+		$msg  = self::get_error_message( $e );
 
 		if ( '' === $context_message ) {
 			return "Error $code: $msg";
@@ -150,7 +150,7 @@ class HTML_Builder {
 			&& is_array( $e->response->body->errors )
 		) {
 			if ( count( $e->response->body->errors ) > 1 ) {
-				$msg = json_encode( $e->response->body->errors );
+				$msg = wp_json_encode( $e->response->body->errors );
 			} elseif ( isset( $e->response->body->errors[0]->message ) ) {
 				$msg = $e->response->body->errors[0]->message;
 			}
@@ -188,9 +188,9 @@ class HTML_Builder {
 	public static function get_task_action_link( string $task_gid ) : array {
 
 		$task_action_link = array(
-			'href' => '',
-			'label' => '',
-			'target' => '_self',
+			'href'    => '',
+			'label'   => '',
+			'target'  => '_self',
 			'post_id' => 0,
 		);
 
@@ -201,7 +201,7 @@ class HTML_Builder {
 			if ( isset( $post->post_type ) ) {
 				$edit_post_link = get_edit_post_link( $post, 'raw' );
 				if ( $edit_post_link ) {
-					$task_action_link['href'] = $edit_post_link;
+					$task_action_link['href']    = $edit_post_link;
 					$task_action_link['post_id'] = $post_id;
 					$post_type_obj = get_post_type_object( $post->post_type );
 					if (
@@ -220,8 +220,8 @@ class HTML_Builder {
 		// Use Asana task link if no pinned post.
 		if ( empty( $task_action_link['href'] ) || empty( $task_action_link['label'] ) ) {
 			$task_action_link = array(
-				'href' => self::get_asana_task_url( $task_gid ),
-				'label' => 'View in Asana',
+				'href'   => self::get_asana_task_url( $task_gid ),
+				'label'  => 'View in Asana',
 				'target' => '_asana',
 			);
 		}
@@ -269,8 +269,8 @@ class HTML_Builder {
 
 		// TODO: just pass a string, don't require using an entire task object...
 
-		$relative_due = new \stdClass();
-		$relative_due->label = '';
+		$relative_due         = new \stdClass();
+		$relative_due->label  = '';
 		$relative_due->status = '';
 
 		if ( isset( $task->due_on ) ) {
@@ -436,7 +436,7 @@ class HTML_Builder {
 					'data-asana-gid'  => '',
 					'data-src-width'  => '',
 					'data-src-height' => '',
-					'alt' => '',
+					'alt'             => '',
 				);
 
 				foreach ( $asana_data_attr_matches as &$capture_group ) {
@@ -487,11 +487,11 @@ class HTML_Builder {
 			function ( $object_tag_matches ) use ( &$replacements ) {
 				// Replace the object with oEmbed HTML.
 				if ( ! empty( $object_tag_matches[1] ) ) {
-					$oembed_url = html_entity_decode( $object_tag_matches[1] );
+					$oembed_url  = html_entity_decode( $object_tag_matches[1] );
 					$oembed_html = wp_oembed_get(
 						$oembed_url,
 						array(
-							'width' => 1280,
+							'width'  => 1280,
 							'height' => 720,
 						)
 					);

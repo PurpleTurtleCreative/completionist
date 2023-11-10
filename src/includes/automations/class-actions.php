@@ -29,12 +29,12 @@ class Actions {
 	public const ACTION_META_OPTIONS = array(
 		'create_task' => array(
 			'task_author' => 'Creator',
-			'name' => 'Title',
-			'post_id' => 'Post Pin',
-			'assignee' => 'Assignee',
-			'due_on' => 'Due Date',
-			'project' => 'Project',
-			'notes' => 'Description',
+			'name'        => 'Title',
+			'post_id'     => 'Post Pin',
+			'assignee'    => 'Assignee',
+			'due_on'      => 'Due Date',
+			'project'     => 'Project',
+			'notes'       => 'Description',
 		),
 	);
 
@@ -47,10 +47,12 @@ class Actions {
 	 * action object with meta.
 	 *
 	 * @param \stdClass $action_with_meta The action object to perform.
-	 * @param object[]  $translation_objects An array of objects to translate
-	 *  field values. The object type must match the object key as follows:
-	 *  * 'post' => \WP_Post
-	 *  * 'user' => \WP_User
+	 * @param object[]  $translation_objects {
+	 *     An array of objects to translate field values.
+	 *
+	 *     @type \WP_Post $post A post object for translation.
+	 *     @type \WP_User $user A user object for translation.
+	 * }
 	 */
 	public static function run_action( \stdClass $action_with_meta, array $translation_objects ) : bool {
 
@@ -72,21 +74,36 @@ class Actions {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param \stdClass $action_with_meta The action object with meta data for
-	 * task creation. Accepted meta keys are:
-	 * * 'task_author' => (int) Required. WordPress user ID that will authorize
-	 * the task to be created in Asana.
-	 * * 'name' => (string) Required. The task title.
-	 * * 'post_id' => (int) The WordPress post ID on which to pin the new task.
-	 * * 'assignee' => (gid) The assignee's Asana gid.
-	 * * 'due_on' => (date string) The task due date.
-	 * * 'project' => (gid) The Asana project gid to house the task.
-	 * * 'notes' => (string) The task description.
-	 * @param object[]  $translation_objects An array of objects to translate
-	 *  field values. The object type must match the object key as follows:
-	 *  * 'post' => \WP_Post
-	 *  * 'user' => \WP_User
+	 * @param \stdClass $action_with_meta {
+	 *     The action object with meta data for task creation.
+	 *
+	 *     @type int $task_author WordPress user ID that will
+	 *                            authorize the task to be created
+	 *                            in Asana.
+	 *
+	 *     @type string $name The task title.
+	 *
+	 *     @type int $post_id Optional. The WordPress post ID on
+	 *                        which to pin the new task.
+	 *
+	 *     @type string $assignee Optional. The assignee's Asana gid.
+	 *
+	 *     @type string $due_on Optional. The task due date.
+	 *
+	 *     @type string $project Optional. The Asana project gid
+	 *                           for the task.
+	 *
+	 *     @type string $notes Optional. The task description.
+	 * }
+	 * @param object[]  $translation_objects {
+	 *     An array of objects to translate field values.
+	 *
+	 *     @type \WP_Post $post A post object for translation.
+	 *     @type \WP_User $user A user object for translation.
+	 * }
 	 * @return bool If the task was successfully created.
+	 *
+	 * @throws \Exception Handled in try-catch block.
 	 */
 	private static function create_task( \stdClass $action_with_meta, array $translation_objects ) : bool {
 

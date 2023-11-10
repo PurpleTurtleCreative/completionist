@@ -19,24 +19,39 @@ defined( 'ABSPATH' ) || die();
  */
 class Fields {
 
+	/**
+	 * A map of user object translations to their readable labels.
+	 *
+	 * @var string[] USER_OPTIONS
+	 */
 	public const USER_OPTIONS = array(
-		'user.ID' => 'User ID',
-		'user.user_login' => 'Username',
-		'user.user_email' => 'Email',
+		'user.ID'           => 'User ID',
+		'user.user_login'   => 'Username',
+		'user.user_email'   => 'Email',
 		'user.display_name' => 'Display Name',
-		'user.roles' => 'Roles',
-		'user.first_name' => 'First Name',
-		'user.last_name' => 'Last Name',
+		'user.roles'        => 'Roles',
+		'user.first_name'   => 'First Name',
+		'user.last_name'    => 'Last Name',
 	);
 
+	/**
+	 * A map of post object translations to their readable labels.
+	 *
+	 * @var string[] POST_OPTIONS
+	 */
 	public const POST_OPTIONS = array(
-		'post.ID' => 'Post ID',
+		'post.ID'          => 'Post ID',
 		'post.post_author' => 'Author (User ID)',
-		'post.post_title' => 'Title',
+		'post.post_title'  => 'Title',
 		'post.post_status' => 'Status',
-		'post.post_type' => 'Type',
+		'post.post_type'   => 'Type',
 	);
 
+	/**
+	 * The comparison method labels.
+	 *
+	 * @var string[] COMPARISON_METHODS
+	 */
 	public const COMPARISON_METHODS = array(
 		'equals',
 		'does not equal',
@@ -56,10 +71,12 @@ class Fields {
 	 * @since 1.1.0
 	 *
 	 * @param \stdClass $condition The condition record object for evaluation.
-	 * @param object[]  $translation_objects An array of objects to translate
-	 *  field values. The object type must match the object key as follows:
-	 *  * 'post' => \WP_Post
-	 *  * 'user' => \WP_User
+	 * @param object[]  $translation_objects {
+	 *     An array of objects to translate field values.
+	 *
+	 *     @type \WP_Post $post A post object for translation.
+	 *     @type \WP_User $user A user object for translation.
+	 * }
 	 * @return bool If the provided object met the condition.
 	 */
 	public static function evaluate_condition( \stdClass $condition, array $translation_objects ) : bool {
@@ -78,58 +95,44 @@ class Fields {
 		switch ( $condition->comparison_method ) {
 			case 'is empty':
 				return ( trim( $property_value ) == '' );
-				break;
 			case 'is filled':
 				return ( trim( $property_value ) != '' );
-				break;
 			case 'is in (csv)':
 				$csv_values = explode( ',', $condition->value );
 				return in_array( $property_value, $csv_values );
-				break;
 			case 'starts with':
 				return ( strpos( $property_value, $condition->value, 0 ) === 0 );
-				break;
 			case 'ends with':
 				$offset = strlen( $property_value ) - strlen( $condition->value );
 				if ( $offset < 0 ) {
 					return false;
 				}
 				return ( strpos( $property_value, $condition->value, $offset ) === $offset );
-				break;
 			case 'contains':
 				return ( strpos( $property_value, $condition->value, 0 ) !== false );
-				break;
 		}
 
 		if ( is_numeric( $property_value ) && is_numeric( $condition->value ) ) {
 			switch ( $condition->comparison_method ) {
 				case 'equals':
 					return ( $property_value == $condition->value );
-					break;
 				case 'does not equal':
 					return ( $property_value != $condition->value );
-					break;
 				case 'less than':
 					return ( $property_value < $condition->value );
-					break;
 				case 'greater than':
 					return ( $property_value > $condition->value );
-					break;
 			}
 		} else {
 			switch ( $condition->comparison_method ) {
 				case 'equals':
 					return ( strcasecmp( $property_value, $condition->value ) === 0 );
-					break;
 				case 'does not equal':
 					return ( strcasecmp( $property_value, $condition->value ) !== 0 );
-					break;
 				case 'less than':
 					return ( strcasecmp( $property_value, $condition->value ) < 0 );
-					break;
 				case 'greater than':
 					return ( strcasecmp( $property_value, $condition->value ) > 0 );
-					break;
 			}
 		}
 
@@ -144,10 +147,12 @@ class Fields {
 	 * @since 1.1.0
 	 *
 	 * @param string   $string_with_fields The string containing merge fields.
-	 * @param object[] $translation_objects An array of objects to translate
-	 * field values. The object type must match the object key as follows:
-	 * * 'post' => \WP_Post
-	 * * 'user' => \WP_User
+	 * @param object[] $translation_objects {
+	 *     An array of objects to translate field values.
+	 *
+	 *     @type \WP_Post $post A post object for translation.
+	 *     @type \WP_User $user A user object for translation.
+	 * }
 	 * @return string The translated string.
 	 */
 	public static function translate_templates( string $string_with_fields, array $translation_objects ) : string {
@@ -169,12 +174,16 @@ class Fields {
 	 * @since 1.1.0
 	 *
 	 * @param string   $field_accessor The merge field string to translate.
-	 * @param object[] $translation_objects An array of objects to translate
-	 * field values. The object type must match the object key as follows:
-	 * * 'post' => \WP_Post
-	 * * 'user' => \WP_User
+	 * @param object[] $translation_objects {
+	 *     An array of objects to translate field values.
+	 *
+	 *     @type \WP_Post $post A post object for translation.
+	 *     @type \WP_User $user A user object for translation.
+	 * }
 	 * @return mixed The translated object property value. If an error occurred,
 	 * the original field accessor string will be returned.
+	 *
+	 * @throws \Exception Handled in try-catch block.
 	 */
 	public static function get_template_value( string $field_accessor, array $translation_objects ) {
 
