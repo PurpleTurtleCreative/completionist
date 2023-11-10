@@ -18,17 +18,71 @@ defined( 'ABSPATH' ) || die();
  */
 class Automation {
 
+	/**
+	 * The automation's ID.
+	 *
+	 * @var int $ID
+	 */
 	public $ID = 0;
+
+	/**
+	 * The automation's title.
+	 *
+	 * @var string $title
+	 */
 	public $title = '';
+
+	/**
+	 * The automation's description.
+	 *
+	 * @var string $description
+	 */
 	public $description = '';
+
+	/**
+	 * The hook for when the automation should run.
+	 *
+	 * @var string $hook_name
+	 */
 	public $hook_name = '';
+
+	/**
+	 * The datetime string for when an automation was last modified.
+	 *
+	 * @var string $last_modified
+	 */
 	public $last_modified = '';
 
+	/**
+	 * The automation's condition records.
+	 *
+	 * @var \stdClass[] $conditions
+	 */
 	private $conditions = null;
+
+	/**
+	 * The automation's action records with meta.
+	 *
+	 * @var \stdClass[] $actions
+	 */
 	private $actions = null;
+
+	/**
+	 * The automation's action meta records.
+	 *
+	 * @var array $actions_meta
+	 */
 	private $actions_meta = null;
 
-	public $translation_objects = [];
+	/**
+	 * An array of objects to translate field values.
+	 *
+	 * @var object[] $translation_objects {
+	 *     @type \WP_Post $post A post object for translation.
+	 *     @type \WP_User $user A user object for translation.
+	 * }
+	 */
+	public $translation_objects = array();
 
 	/**
 	 * Loads initial automation details.
@@ -148,10 +202,10 @@ class Automation {
 			$this->actions_meta = Automations\Data::get_actions_meta( $this->ID );
 		}
 
-		$actions_with_meta = $this->actions;
+		$actions_with_meta    = $this->actions;
 		$working_meta_records = $this->actions_meta;
 		foreach ( $actions_with_meta as &$action ) {
-			$action->meta = [];
+			$action->meta = array();
 			foreach ( $working_meta_records as $i => $meta ) {
 				if ( $meta->action_id == $action->ID ) {
 					$action->meta[ $meta->meta_key ] = $meta->meta_value;
@@ -170,22 +224,23 @@ class Automation {
 	 * @see \PTC_Completionist\Automations\Data::save_automation() For returned
 	 * object structure.
 	 *
+	 * @since [unreleased] Changed from `to_stdClass` to `to_std_class`.
 	 * @since 1.1.0
 	 *
 	 * @return \stdClass The standard object representation of the automation.
 	 */
-	public function to_stdClass() : \stdClass {
+	public function to_std_class() : \stdClass {
 
 		$obj = new \stdClass();
 
-		$obj->ID = $this->ID;
-		$obj->title = $this->title;
-		$obj->description = $this->description;
-		$obj->hook_name = $this->hook_name;
+		$obj->ID            = $this->ID;
+		$obj->title         = $this->title;
+		$obj->description   = $this->description;
+		$obj->hook_name     = $this->hook_name;
 		$obj->last_modified = $this->last_modified;
 
 		$obj->conditions = $this->get_conditions();
-		$obj->actions = $this->get_actions( true );
+		$obj->actions    = $this->get_actions( true );
 
 		return $obj;
 	}

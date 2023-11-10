@@ -673,10 +673,10 @@ class Options {
 				return '';
 
 			case 'string':
-				return trim( sanitize_textarea_field( $value ) );
+				return sanitize_textarea_field( $value );
 
 			case 'html':
-				return trim( wp_kses_post( $value ) );
+				return wp_kses_post( $value );
 		}
 
 		trigger_error(

@@ -136,20 +136,20 @@ class Database_Manager {
 			empty( get_sites( array( 'ID' => $site_id ) ) )
 		) {
 			$err_msg = "Cannot initialize Database Manager for unrecognized site id {$site_id}.";
-			trigger_error( $err_msg, \E_USER_ERROR );
+			trigger_error( esc_html( $err_msg ), \E_USER_ERROR );
 			wp_die( esc_html( $err_msg ) );
 		}
 
 		global $wpdb;
 
 		$wpdb_blog_prefix = $wpdb->get_blog_prefix( $site_id );
-		$table_prefix = $wpdb_blog_prefix . 'ptc_completionist_';
+		$table_prefix     = $wpdb_blog_prefix . 'ptc_completionist_';
 
-		self::$automations_table = $table_prefix . 'automations';
-		self::$automation_conditions_table = $table_prefix . 'automation_conditions';
-		self::$automation_actions_table = $table_prefix . 'automation_actions';
+		self::$automations_table             = $table_prefix . 'automations';
+		self::$automation_conditions_table   = $table_prefix . 'automation_conditions';
+		self::$automation_actions_table      = $table_prefix . 'automation_actions';
 		self::$automation_actions_meta_table = $table_prefix . 'automation_actions_meta';
-		self::$request_tokens_table = $table_prefix . 'request_tokens';
+		self::$request_tokens_table          = $table_prefix . 'request_tokens';
 
 		self::$table_names = array(
 			self::$automations_table,
@@ -159,10 +159,10 @@ class Database_Manager {
 			self::$request_tokens_table,
 		);
 
-		self::$db_version = 3;
+		self::$db_version        = 3;
 		self::$db_version_option = '_ptc_completionist_db_version';
 
-		self::$site_id = $site_id;
+		self::$site_id              = $site_id;
 		self::$has_been_initialized = true;
 	}
 
@@ -299,7 +299,7 @@ class Database_Manager {
 		} else {
 			// Warn if unsuccessful.
 			trigger_error(
-				"Failed to install database tables for Completionist. SQL error encountered: {$wpdb->last_error}",
+				'Failed to install database tables for Completionist. SQL error encountered: ' . esc_html( $wpdb->last_error ),
 				\E_USER_WARNING
 			);
 		}
@@ -454,7 +454,7 @@ class Database_Manager {
 
 		if ( ! in_array( $table_name, self::$table_names, true ) ) {
 			trigger_error(
-				"Table name '{$table_name}' is not in the allowlist:\n" . print_r( self::$table_names, true ),
+				"Table name '" . esc_html( $table_name ) . "' is not in the allowlist:\n" . esc_html( print_r( self::$table_names, true ) ),
 				\E_USER_WARNING
 			);
 			return false;
@@ -511,7 +511,7 @@ class Database_Manager {
 	private static function require_initialiation() {
 		if ( ! self::$has_been_initialized ) {
 			$err_msg = 'The Database Manager must be initialized before usage.';
-			trigger_error( $err_msg, \E_USER_ERROR );
+			trigger_error( esc_html( $err_msg ), \E_USER_ERROR );
 			wp_die( esc_html( $err_msg ) );
 		}
 	}

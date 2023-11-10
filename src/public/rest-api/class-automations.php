@@ -184,6 +184,8 @@ class Automations {
 	 * @param \WP_REST_Request $request The API request.
 	 *
 	 * @return \WP_REST_Response|\WP_Error The API response.
+	 *
+	 * @throws \Exception Handled in try-catch block.
 	 */
 	public static function handle_create_automation(
 		\WP_REST_Request $request
@@ -246,6 +248,8 @@ class Automations {
 	 * @param \WP_REST_Request $request The API request.
 	 *
 	 * @return \WP_REST_Response|\WP_Error The API response.
+	 *
+	 * @throws \Exception Handled in try-catch block.
 	 */
 	public static function handle_update_automation(
 		\WP_REST_Request $request
@@ -329,7 +333,7 @@ class Automations {
 
 		try {
 
-			$automation = ( new Automation( $request['automation_id'] ) )->to_stdClass();
+			$automation = ( new Automation( $request['automation_id'] ) )->to_std_class();
 
 			$res = array(
 				'status'  => 'success',
@@ -357,6 +361,8 @@ class Automations {
 	 * @param \WP_REST_Request $request The API request.
 	 *
 	 * @return \WP_REST_Response|\WP_Error The API response.
+	 *
+	 * @throws \Exception Handled in try-catch block.
 	 */
 	public static function handle_delete_automation(
 		\WP_REST_Request $request

@@ -270,6 +270,8 @@ class Tasks {
 	 * @param \WP_REST_Request $request The API request.
 	 *
 	 * @return \WP_REST_Response|\WP_Error The API response.
+	 *
+	 * @throws \Exception Handled within try-catch block.
 	 */
 	public static function handle_pin_task(
 		\WP_REST_Request $request
@@ -327,6 +329,8 @@ class Tasks {
 	 * @param \WP_REST_Request $request The API request.
 	 *
 	 * @return \WP_REST_Response|\WP_Error The API response.
+	 *
+	 * @throws \Exception Handled within try-catch block.
 	 */
 	public static function handle_unpin_task(
 		\WP_REST_Request $request

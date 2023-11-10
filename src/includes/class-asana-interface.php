@@ -89,7 +89,6 @@ class Asana_Interface {
 	 * or requests could fail due to request limits or server issues.
 	 */
 	public static function get_client( $user_id_or_gid = 0 ) : \Asana\Client {
-
 		/*
 		 * @TODO - This needs to NEVER interpret the user's ID.
 		 * Allowing a default value here can confuse frontend requests
@@ -199,12 +198,10 @@ class Asana_Interface {
 			self::$me = $asana->users->me();
 		} catch ( \Asana\Errors\NoAuthorizationError $e ) {
 			Options::delete( Options::ASANA_PAT );
-			throw new Errors\No_Authorization( 'Asana authorization failed. Please provide a new personal access token in Completionist\'s settings.', $e->getCode() );
+			throw new Errors\No_Authorization( 'Asana authorization failed. Please provide a new personal access token in Completionist\'s settings.', intval( $e->getCode() ) );
 		} catch ( \Exception $e ) {
 			/* Don't delete option here because could be server error or API limit... */
-			$error_code = esc_html( $e->getCode() );
-			$error_msg = esc_html( $e->getMessage() );
-			throw new \Exception( "Asana authorization failure {$error_code}: {$error_msg}", $e->getCode() );
+			throw new \Exception( 'Asana authorization failure ' . esc_html( $e->getCode() ) . ': ' . esc_html( $e->getMessage() ), intval( $e->getCode() ) );
 		}
 
 		return $asana;
@@ -264,13 +261,13 @@ class Asana_Interface {
 		}
 
 		if ( '' === $workspace_gid ) {
-			return [];
+			return array();
 		}
 
-		$params = [ 'opt_fields' => 'email' ];
+		$params = array( 'opt_fields' => 'email' );
 		$asana_users = self::get_client()->users->findByWorkspace( $workspace_gid, $params );
 
-		$wp_users = [];
+		$wp_users = array();
 
 		foreach ( $asana_users as $user ) {
 			$wp_user = get_user_by( 'email', $user->email );
@@ -283,7 +280,6 @@ class Asana_Interface {
 		}
 
 		return $wp_users;
-
 	}
 
 	/**
@@ -307,11 +303,11 @@ class Asana_Interface {
 		}
 
 		if ( '' === $workspace_gid ) {
-			return [];
+			return array();
 		}
 
-		$users_with_pat = get_users( [ 'meta_key' => Options::ASANA_PAT ] );
-		$wp_users = [];
+		$users_with_pat = get_users( array( 'meta_key' => Options::ASANA_PAT ) );
+		$wp_users = array();
 
 		foreach ( $users_with_pat as $wp_user ) {
 
@@ -359,7 +355,7 @@ class Asana_Interface {
 	 */
 	public static function get_workspace_user_options( string $workspace_gid = '' ) : array {
 
-		$wp_users = [];
+		$wp_users = array();
 
 		try {
 			$wp_users = self::find_workspace_users( $workspace_gid );
@@ -369,7 +365,7 @@ class Asana_Interface {
 			$wp_users += self::get_connected_workspace_user_options( $workspace_gid );
 		} catch ( \Exception $e ) {
 			error_log( HTML_Builder::format_error_string( $e, 'Failed to get_workspace_user_options().' ) );
-			$wp_users = [ 'error' => 'ERROR ' . HTML_Builder::get_error_code( $e ) ];
+			$wp_users = array( 'error' => 'ERROR ' . HTML_Builder::get_error_code( $e ) );
 		}
 
 		return $wp_users;
@@ -390,7 +386,7 @@ class Asana_Interface {
 	 */
 	public static function get_connected_workspace_user_options( string $workspace_gid = '' ) : array {
 
-		$wp_users = [];
+		$wp_users = array();
 
 		try {
 			$wp_users = self::get_connected_workspace_users( $workspace_gid );
@@ -399,7 +395,7 @@ class Asana_Interface {
 			}
 		} catch ( \Exception $e ) {
 			error_log( HTML_Builder::format_error_string( $e, 'Failed to get_connected_workspace_user_options().' ) );
-			$wp_users = [ 'error' => 'ERROR ' . HTML_Builder::get_error_code( $e ) ];
+			$wp_users = array( 'error' => 'ERROR ' . HTML_Builder::get_error_code( $e ) );
 		}
 
 		return $wp_users;
@@ -416,21 +412,21 @@ class Asana_Interface {
 	 */
 	public static function get_workspace_project_options( string $workspace_gid = '' ) : array {
 
-		$project_options = [];
+		$project_options = array();
 
 		try {
-			$params = [
+			$params = array(
 				'workspace' => Options::get( Options::ASANA_WORKSPACE_GID ),
 				'archived' => false,
 				'opt_fields' => 'gid,name',
-			];
+			);
 			$projects = self::get_client()->projects->findAll( $params );
 			foreach ( $projects as $project ) {
 				$project_options[ $project->gid ] = $project->name;
 			}
 		} catch ( \Exception $e ) {
 			error_log( HTML_Builder::format_error_string( $e, 'Failed to get_workspace_project_options().' ) );
-			$project_options = [ 'error' => 'ERROR ' . HTML_Builder::get_error_code( $e ) ];
+			$project_options = array( 'error' => 'ERROR ' . HTML_Builder::get_error_code( $e ) );
 		}
 
 		return $project_options;
@@ -533,10 +529,10 @@ class Asana_Interface {
 		try {
 
 			$asana = self::get_client();
-			$params = [
+			$params = array(
 				'workspace' => $workspace_gid,
 				'opt_fields' => 'gid',
-			];
+			);
 
 			$user_task_list = $asana->user_task_lists->findByUser( $user_gid, $params );
 			$user_task_list_gid = Options::sanitize( 'gid', $user_task_list->gid );
@@ -1108,7 +1104,7 @@ class Asana_Interface {
 
 		$asana_subtasks_batcher = new Asana_Batch(
 			$asana,
-			function( &$res, &$task ) {
+			function ( &$res, &$task ) {
 
 				$task->subtasks = array();
 
@@ -1120,9 +1116,9 @@ class Asana_Interface {
 					$task->subtasks = $res->body->data;
 				}
 			},
-			function( $err ) {
+			function ( $err ) {
 				trigger_error(
-					'Failed to load subtasks. Error: ' . $err->getMessage(),
+					'Failed to load subtasks. Error: ' . esc_html( $err->getMessage() ),
 					\E_USER_WARNING
 				);
 			}
@@ -1147,7 +1143,6 @@ class Asana_Interface {
 
 		// Process last (incomplete) batch.
 		$asana_subtasks_batcher->process();
-
 	}//end load_subtasks()
 
 	/**
@@ -1187,12 +1182,12 @@ class Asana_Interface {
 		try {
 
 			$asana = self::get_client();
-			$task = $asana->tasks->findById( $task_gid, [ 'opt_fields' => self::TASK_OPT_FIELDS ] );
+			$task = $asana->tasks->findById( $task_gid, array( 'opt_fields' => self::TASK_OPT_FIELDS ) );
 
 			if (
-				isset( $task->workspace->gid )
-				&& $task->workspace->gid != Options::get( Options::ASANA_WORKSPACE_GID )
-				&& $post_id > 0
+				isset( $task->workspace->gid ) &&
+				Options::get( Options::ASANA_WORKSPACE_GID ) != $task->workspace->gid &&
+				$post_id > 0
 			) {
 				if ( '' != $task_gid && Options::delete( Options::PINNED_TASK_GID, $post_id, $task_gid ) ) {
 					error_log( "Unpinned foreign task from post $post_id." );
@@ -1280,7 +1275,7 @@ class Asana_Interface {
 
 		try {
 			$asana = self::get_client();
-			$task = $asana->tasks->findById( $task_gid, [ 'opt_fields' => 'workspace' ] );
+			$task = $asana->tasks->findById( $task_gid, array( 'opt_fields' => 'workspace' ) );
 			if (
 				isset( $task->workspace->gid )
 				&& $task->workspace->gid === $workspace_gid
@@ -1319,28 +1314,28 @@ class Asana_Interface {
 		// Load client to ensure current user is authenticated and set.
 		$asana = self::get_client();
 
-		$tasks = [];
+		$tasks = array();
 
 		$site_tag_gid = Options::get( Options::ASANA_TAG_GID );
 		if ( '' === $site_tag_gid ) {
 			throw new \Exception( 'Unable to retrieve site tasks when no site tag has been set.', 409 );
 		}
 
-		$params = [
+		$params = array(
 			'opt_fields' => self::TASK_OPT_FIELDS,
-		];
+		);
 
-		$options = [
+		$options = array(
 			'page_size' => 100, // Max page_size = 100.
 			'item_limit' => 15000,
-		];
+		);
 
 		/*
 		 * An Asana Collection (Iterator) is returned. To actually perform the
 		 * API requests to get all the tasks, we must use the Iterator.
 		 */
 		$site_tasks = $asana->tasks->findByTag( $site_tag_gid, $params, $options );
-		$all_tasks = [];
+		$all_tasks = array();
 		foreach ( $site_tasks as $task ) {
 			$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
 			$all_tasks[ $task->gid ] = $task;
@@ -1412,7 +1407,7 @@ class Asana_Interface {
 	 * @since 1.0.0
 	 *
 	 * @param string[] $task_gids The tasks to tag.
-	 * @param string $tag_gid The tag.
+	 * @param string   $tag_gid The tag.
 	 * @return int Count of successfully tagged tasks.
 	 *
 	 * @throws \Exception Authentication may fail when first loading the client
@@ -1422,7 +1417,7 @@ class Asana_Interface {
 
 		$asana = self::get_client();
 
-		$data = [];
+		$data = array();
 		$success_count = 0;
 
 		$tag_gid = Options::sanitize( 'gid', $tag_gid );
@@ -1437,13 +1432,13 @@ class Asana_Interface {
 				continue;
 			}
 
-			$data['actions'][] = [
+			$data['actions'][] = array(
 				'method' => 'POST',
 				'relative_path' => sprintf( '/tasks/%s/addTag', $task_gid ),
-				'data' => [
+				'data' => array(
 					'tag' => $tag_gid,
-				],
-			];
+				),
+			);
 
 			if ( 10 === count( $data['actions'] ) ) {
 
@@ -1460,7 +1455,7 @@ class Asana_Interface {
 					error_log( "Batch request failed, tag_all(). Error {$err_code}: {$err_msg}" );
 				}
 
-				$data = [];
+				$data = array();
 
 			}//end if 10 actions
 		}//end foreach task gid
@@ -1478,7 +1473,7 @@ class Asana_Interface {
 				$err_msg = $e->getMessage();
 				error_log( "Batch request failed, tag_all(). Error {$err_code}: {$err_msg}" );
 			}
-			$data = [];
+			$data = array();
 		}
 
 		return $success_count;
@@ -1490,7 +1485,7 @@ class Asana_Interface {
 	 * @since 1.0.0
 	 *
 	 * @param \stdClass $task The task object.
-	 * @param string $tag_gid The tag gid.
+	 * @param string    $tag_gid The tag gid.
 	 * @return bool If the task has the tag.
 	 */
 	public static function has_tag( \stdClass $task, string $tag_gid ) : bool {
@@ -1527,7 +1522,7 @@ class Asana_Interface {
 		}
 
 		try {
-			$tag = $asana->tags->findById( $saved_tag_gid, [ 'opt_fields' => 'workspace' ] );
+			$tag = $asana->tags->findById( $saved_tag_gid, array( 'opt_fields' => 'workspace' ) );
 			if ( isset( $tag->workspace->gid ) && $tag->workspace->gid !== $saved_workspace_gid ) {
 				throw new \Exception( 'Invalid workspace and tag settings. The site tag is part of a different workspace.', 409 );
 			}
@@ -1572,7 +1567,7 @@ class Asana_Interface {
 	 */
 	public static function get_tasks_gid_array( array $tasks ) : array {
 
-		$arr = [];
+		$arr = array();
 
 		foreach ( $tasks as $task ) {
 			if ( isset( $task->gid ) ) {
@@ -1598,7 +1593,7 @@ class Asana_Interface {
 			return 0;
 		}
 
-		$keep_gids = [];
+		$keep_gids = array();
 		foreach ( $keep_tasks as $task ) {
 			if ( isset( $task->gid ) ) {
 				$sanitized_gid = Options::sanitize( 'gid', $task->gid );
@@ -1643,7 +1638,7 @@ class Asana_Interface {
 			}
 		}//end if empty keep_gids
 
-		$res = $wpdb->query( $wpdb->prepare( $sql, $format_vars ) );
+		$res = $wpdb->query( $wpdb->prepare( $sql, $format_vars ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		if ( is_numeric( $res ) && $res > 0 ) {
 			error_log( "Deleted {$unpinned_count} task pins: " . __FUNCTION__ );
@@ -1873,7 +1868,8 @@ class Asana_Interface {
 	 * the entire site.
 	 * @return bool If the task was unpinned.
 	 *
-	 * @throws \Exception
+	 * @throws \Exception Asana API requests may fail or the
+	 * provided arguments are invalid.
 	 */
 	public static function unpin_task( string $task_gid, int $post_id = -1 ) : bool {
 
