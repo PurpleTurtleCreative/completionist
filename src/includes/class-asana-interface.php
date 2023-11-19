@@ -868,7 +868,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Asana_Interface' ) ) {
 				 * @link https://developers.asana.com/reference/gettask To see
 				 * all available task fields available.
 				 *
-				 * @since [unreleased]
+				 * @since 3.11.0
 				 *
 				 * @param string $task_fields Task fields to retrieve.
 				 * @param string $project_gid The Asana project being processed.

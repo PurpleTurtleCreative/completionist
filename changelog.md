@@ -1,3 +1,9 @@
+### 3.11.0 - 2023-11-19
+
+#### Added
+
+- New PHP filter hook `ptc_completionist_project_task_fields` to edit the task fields that will be retrieved for each task in an Asana project.
+
 ### 3.10.2 - 2023-10-10
 
 #### Changed
