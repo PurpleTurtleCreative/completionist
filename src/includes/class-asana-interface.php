@@ -847,12 +847,32 @@ class Asana_Interface {
 				$task_fields .= ',tags,tags.name,tags.color';
 			}
 
+			/**
+			 * Filters the task fields that will be retrieved for
+			 * each task in an Asana project.
+			 *
+			 * @link https://developers.asana.com/reference/gettask To see
+			 * all available task fields available.
+			 *
+			 * @since 3.11.0
+			 *
+			 * @param string $task_fields Task fields to retrieve.
+			 * @param string $project_gid The Asana project being processed.
+			 * @param array  $args The request arguments.
+			 */
+			$task_fields = apply_filters(
+				'ptc_completionist_project_task_fields',
+				$task_fields,
+				$project_gid,
+				$args
+			);
+
 			$tasks = $asana->tasks->getTasksForProject(
 				$project_gid,
 				$task_request_params,
 				array(
 					'fields' => "{$task_fields},memberships,memberships.section",
-					'limit' => 100,
+					'limit'  => 100,
 				)
 			);
 

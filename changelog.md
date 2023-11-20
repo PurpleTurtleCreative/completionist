@@ -44,6 +44,12 @@
 - Unique nonces to authorize different requests to the new REST API endpoints which replace the original WP Admin AJAX actions.
 - Searching for posts in an Automation Action's "Pin to Post" field would include posts that the current user did not have permission to read.
 
+### 3.11.0 - 2023-11-19
+
+#### Added
+
+- New PHP filter hook `ptc_completionist_project_task_fields` to edit the task fields that will be retrieved for each task in an Asana project.
+
 ### 3.10.2 - 2023-10-10
 
 #### Changed
