@@ -705,7 +705,7 @@ class Admin_Pages {
 					<div class="note-box">
 						<p class="cache-purge-notice">
 							<input class="warning" type="submit" name="purge_asana_cache" value="Clear Cache">
-							This will clear all cached Asana data such as projects, tasks, and media attachments. You can use this to ensure the latest information is fetched from Asana during the next load.
+							This will clear all cached Asana data such as projects, tasks, and media attachments. You can use this to ensure the latest information is fetched from Asana during the next load. <a href="https://docs.purpleturtlecreative.com/completionist/shortcodes/caching/" target="_blank">Learn more.</a>
 						</p>
 					</div>
 				</form>
@@ -933,29 +933,35 @@ class Admin_Pages {
 		if (
 			isset( $_POST['asana_cache_ttl_save'] )
 			&& current_user_can( 'manage_options' )
-			&& ! empty( $_POST['asana_cache_ttl'] )
+			&& isset( $_POST['asana_cache_ttl'] )
 			&& isset( $_POST['asana_cache_ttl_save_nonce'] )
 			&& wp_verify_nonce( $_POST['asana_cache_ttl_save_nonce'], 'asana_cache_ttl_save' ) !== false
 		) {
 
-			// Sanitize submitted value.
-			$submitted_ttl = (int) Options::sanitize( Options::CACHE_TTL_SECONDS, $_POST['asana_cache_ttl'] );
-
-			// Save the value.
-			Options::save(
-				Options::CACHE_TTL_SECONDS,
-				(string) $submitted_ttl,
-				true
-			);
-
-			// Get the saved and validated value.
-			$retrieved_ttl = (int) Options::get( Options::CACHE_TTL_SECONDS );
-
-			// Confirm that it was saved successfully.
-			if ( $retrieved_ttl === $submitted_ttl ) {
-				echo '<p class="notice notice-success">The Asana data cache duration was successfully saved!</p>';
+			// Check if numeric.
+			if ( ! is_numeric( $_POST['asana_cache_ttl'] ) ) {
+				echo '<p class="notice notice-error">Failed to save non-numeric Asana data cache duration. Please provide the number of seconds as an integer value.</p>';
 			} else {
-				echo '<p class="notice notice-error">Failed to save the Asana data cache duration.</p>';
+
+				// Sanitize submitted value.
+				$submitted_ttl = (int) Options::sanitize( Options::CACHE_TTL_SECONDS, $_POST['asana_cache_ttl'] );
+
+				// Save the value.
+				Options::save(
+					Options::CACHE_TTL_SECONDS,
+					(string) $submitted_ttl,
+					true
+				);
+
+				// Get the saved and validated value.
+				$retrieved_ttl = (int) Options::get( Options::CACHE_TTL_SECONDS );
+
+				// Confirm that it was saved successfully.
+				if ( $retrieved_ttl === $submitted_ttl ) {
+					echo '<p class="notice notice-success">The Asana data cache duration was successfully saved!</p>';
+				} else {
+					echo '<p class="notice notice-error">Failed to save the Asana data cache duration.</p>';
+				}
 			}
 		}//end if asana_cache_ttl_save
 
