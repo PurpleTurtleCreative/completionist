@@ -57,7 +57,6 @@ class Autoloader {
 
 		// Public.
 		'Admin_Notices'                    => 'src/public/class-admin-notices.php',
-		'Freemius'                         => 'src/public/class-freemius.php',
 		'Request_Token'                    => 'src/public/class-request-token.php',
 		'REST_Server'                      => 'src/public/class-rest-server.php',
 		'Shortcodes'                       => 'src/public/class-shortcodes.php',

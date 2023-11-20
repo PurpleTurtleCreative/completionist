@@ -24,10 +24,7 @@ class Uninstaller {
 	 * @since 4.0.0
 	 */
 	public static function register() {
-		Freemius::instance()->add_action(
-			'after_uninstall',
-			__CLASS__ . '::uninstall_all'
-		);
+		register_uninstall_hook( PLUGIN_FILE, __CLASS__ . '::uninstall_all' );
 	}
 
 	/**

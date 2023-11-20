@@ -1,7 +1,6 @@
 {
   "require": {
-    "asana/asana": "1.0.6",
-    "freemius/wordpress-sdk": "^2.5"
+    "asana/asana": "1.0.6"
   },
   "require-dev": {
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7",

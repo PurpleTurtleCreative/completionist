@@ -46,8 +46,6 @@ Display Asana project information and tasks on your WordPress site. Automaticall
 
 _Completionist by Purple Turtle Creative is not associated with Asana. Asana is a trademark and service mark of Asana, Inc., registered in the U.S. and in other countries. [Learn more.](https://asana.com/)_
 
-_Premium features are sold and distributed via Freemius. [Learn more.](https://freemius.com/)_
-
 _All source code is available on [GitHub](https://github.com/PurpleTurtleCreative/completionist)._
 
 == Frequently Asked Questions ==
@@ -73,7 +71,6 @@ _Here are the latest changes. You can access the complete changelog history at [
 
 #### Added
 
-- New submenu page to upgrade to Completionist Pro for premium features via [Freemius](https://freemius.com/).
 - New `readme.txt` file for WordPress.org plugins listing.
 - New `Uninstaller` class to handle plugin data removal.
 - New `Upgrader` class to handle plugin version updates. This also offers support assistance when a version rollback is detected, which usually indicates that the user is experiencing issues with a newer version of the plugin.

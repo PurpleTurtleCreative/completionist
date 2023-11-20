@@ -2,7 +2,6 @@
 
 #### Added
 
-- New submenu page to upgrade to Completionist Pro for premium features via [Freemius](https://freemius.com/).
 - New `readme.txt` file for WordPress.org plugins listing.
 - New `Uninstaller` class to handle plugin data removal.
 - New `Upgrader` class to handle plugin version updates. This also offers support assistance when a version rollback is detected, which usually indicates that the user is experiencing issues with a newer version of the plugin.
