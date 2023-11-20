@@ -76,7 +76,7 @@ class Admin_Widgets {
 	/**
 	 * Displays the Tasks admin dashboard widget.
 	 *
-	 * @since [unreleased] Moved to Admin_Widgets class.
+	 * @since 4.0.0 Moved to Admin_Widgets class.
 	 * @since 3.1.0 Now using ReactJS to render.
 	 * @since 1.0.0
 	 *

@@ -2,7 +2,7 @@
 /**
  * REST API: Tags class
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 
 namespace PTC_Completionist\REST_API;
@@ -20,14 +20,14 @@ use PTC_Completionist\REST_Server;
  * Class to register and handle custom REST API endpoints
  * for managing Asana tags.
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 class Tags {
 
 	/**
 	 * Registers the custom REST API endpoints.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	public static function register_routes() {
 
@@ -53,7 +53,7 @@ class Tags {
 	/**
 	 * Handles a request to get Asana tags.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *

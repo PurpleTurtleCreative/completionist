@@ -2,7 +2,7 @@
 /**
  * REST API: Automations class
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 
 namespace PTC_Completionist\REST_API;
@@ -22,14 +22,14 @@ use PTC_Completionist\REST_Server;
  * Class to register and handle custom REST API endpoints
  * for managing Automations.
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 class Automations {
 
 	/**
 	 * Registers the custom REST API endpoints.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	public static function register_routes() {
 
@@ -132,7 +132,7 @@ class Automations {
 	/**
 	 * Handles a request to get Automations.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *
@@ -179,7 +179,7 @@ class Automations {
 	/**
 	 * Handles a request to save a new Automation.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *
@@ -243,7 +243,7 @@ class Automations {
 	/**
 	 * Handles a request to update an existing Automation.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *
@@ -314,7 +314,7 @@ class Automations {
 	/**
 	 * Handles a request to get an Automation.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *
@@ -356,7 +356,7 @@ class Automations {
 	/**
 	 * Handles a request to delete an Automation.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *

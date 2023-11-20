@@ -2,7 +2,7 @@
 /**
  * REST API: Tasks class
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 
 namespace PTC_Completionist\REST_API;
@@ -20,14 +20,14 @@ use PTC_Completionist\REST_Server;
  * Class to register and handle custom REST API endpoints
  * for managing Asana tasks.
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 class Tasks {
 
 	/**
 	 * Registers the custom REST API endpoints.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	public static function register_routes() {
 
@@ -141,7 +141,7 @@ class Tasks {
 	/**
 	 * Handles a request to create an Asana task.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *
@@ -182,7 +182,7 @@ class Tasks {
 	/**
 	 * Handles a request to update an Asana task.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *
@@ -223,7 +223,7 @@ class Tasks {
 	/**
 	 * Handles a request to delete an Asana task.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *
@@ -265,7 +265,7 @@ class Tasks {
 	/**
 	 * Handles a request to pin an Asana task to a WordPress post.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *
@@ -324,7 +324,7 @@ class Tasks {
 	/**
 	 * Handles a request to unpin an Asana task.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *

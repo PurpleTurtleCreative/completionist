@@ -136,7 +136,7 @@ class Actions {
 				/**
 				 * Filters the comment added to new Asana tasks.
 				 *
-				 * @since [unreleased] Removed 'ajax' context.
+				 * @since 4.0.0 Removed 'ajax' context.
 				 * @since 1.1.0
 				 *
 				 * @param string $comment_text The plain text string to comment on the new task.

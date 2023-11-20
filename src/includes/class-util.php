@@ -43,7 +43,7 @@ class Util {
 	 * Unsets all array keys and object properties that are not
 	 * of the given names.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param array|object $data   An iterable object or array to modify.
 	 * @param string[]     $fields The names of the array keys or

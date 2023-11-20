@@ -224,7 +224,7 @@ class Automation {
 	 * @see \PTC_Completionist\Automations\Data::save_automation() For returned
 	 * object structure.
 	 *
-	 * @since [unreleased] Changed from `to_stdClass` to `to_std_class`.
+	 * @since 4.0.0 Changed from `to_stdClass` to `to_std_class`.
 	 * @since 1.1.0
 	 *
 	 * @return \stdClass The standard object representation of the automation.

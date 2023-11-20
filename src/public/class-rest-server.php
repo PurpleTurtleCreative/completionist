@@ -43,7 +43,7 @@ class REST_Server {
 	/**
 	 * Gets the route argument definition for a nonce field.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param string $nonce_action The nonce action to verify.
 	 * @return array The argument definition.
@@ -62,7 +62,7 @@ class REST_Server {
 	/**
 	 * Gets the route argument definition for an Asana GID field.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param bool $required Optional. If the argument is required.
 	 * Default true.
@@ -84,7 +84,7 @@ class REST_Server {
 	/**
 	 * Gets the route argument definition for an integer ID field.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param bool $required Optional. If the argument is required.
 	 * Default true.
@@ -104,7 +104,7 @@ class REST_Server {
 	/**
 	 * Gets the route argument definition for a WordPress post ID field.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param bool $required Optional. If the argument is required.
 	 * Default true.

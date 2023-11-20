@@ -2,7 +2,7 @@
 /**
  * REST API: Posts class
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 
 namespace PTC_Completionist\REST_API;
@@ -21,14 +21,14 @@ use PTC_Completionist\Util;
  * Class to register and handle custom REST API endpoints
  * for managing WordPress posts.
  *
- * @since [unreleased]
+ * @since 4.0.0
  */
 class Posts {
 
 	/**
 	 * Registers the custom REST API endpoints.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 */
 	public static function register_routes() {
 
@@ -127,7 +127,7 @@ class Posts {
 	/**
 	 * Handles a request to get a WordPress post.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *
@@ -185,7 +185,7 @@ class Posts {
 	 * Handles a request to get WordPress posts where the post
 	 * title matches a SQL pattern.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *

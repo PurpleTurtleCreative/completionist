@@ -1367,7 +1367,7 @@ class Asana_Interface {
 	/**
 	 * Sends a batch request to tag and comment on a task in Asana.
 	 *
-	 * @since [unreleased] Removed deprecated $opt_fields param.
+	 * @since 4.0.0 Removed deprecated $opt_fields param.
 	 * @since 3.1.0 Marked $opt_fields param as deprecated.
 	 * @since 1.0.0
 	 *
@@ -1690,7 +1690,7 @@ class Asana_Interface {
 	 *
 	 * @link https://developers.asana.com/reference/createtask
 	 *
-	 * @since [unreleased] Adds a comment on the Asana task if
+	 * @since 4.0.0 Adds a comment on the Asana task if
 	 * a valid 'post_id' is provided.
 	 * @since 1.1.0
 	 *
@@ -1753,7 +1753,7 @@ class Asana_Interface {
 	 * Pins an Asana task to a WordPress post and leaves a comment
 	 * if successful.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param string $task_gid The Asana task GID.
 	 * @param int    $post_id The WordPress post ID.
@@ -1844,7 +1844,7 @@ class Asana_Interface {
 				 * Filters the comment text to add on the Asana task
 				 * after it is pinned to a WordPress post.
 				 *
-				 * @since [unreleased]
+				 * @since 4.0.0
 				 *
 				 * @param string $comment_text The comment text. Return
 				 * empty string to not leave a comment.
@@ -1880,7 +1880,7 @@ class Asana_Interface {
 	/**
 	 * Unpins an Asana task from a WordPress post or the entire site.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param string $task_gid The Asana task GID.
 	 * @param int    $post_id Optional. The WordPress post ID to
@@ -1983,7 +1983,7 @@ class Asana_Interface {
 	 *
 	 * @link https://developers.asana.com/reference/updatetask
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param string $task_gid The task GID to update.
 	 * @param array  $args The unsanitized task params. See
@@ -2022,7 +2022,7 @@ class Asana_Interface {
 	 * Specifies all possible field definitions for reference.
 	 * Note that not all fields may be supported by this function.
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @param array $args An associative array of task fields.
 	 * The following Asana task fields are currently supported:

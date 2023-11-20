@@ -43,7 +43,7 @@ class Admin_Pages {
 	 *
 	 * @see get_frontend_api_data()
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @var array $frontend_api_data
 	 */
@@ -428,7 +428,7 @@ class Admin_Pages {
 	 *
 	 * @see $frontend_task_data
 	 *
-	 * @since [unreleased]
+	 * @since 4.0.0
 	 *
 	 * @return array The data. Remember to JSON encode for use
 	 * on the frontend.
@@ -466,7 +466,7 @@ class Admin_Pages {
 	 * content, including processing any form submissions, if
 	 * the current user is permitted.
 	 *
-	 * @since [unreleased] Moved to Admin_Pages class from raw
+	 * @since 4.0.0 Moved to Admin_Pages class from raw
 	 * PHP+HTML template file inclusion to ensure variables
 	 * are properly encapsulated from the global namespace.
 	 * @since 1.0.0
@@ -788,7 +788,7 @@ class Admin_Pages {
 	 * Outputs a row of Asana workspace collaborator information
 	 * for the provided user.
 	 *
-	 * @since [unreleased] Moved to Admin_Pages class.
+	 * @since 4.0.0 Moved to Admin_Pages class.
 	 * @since 1.0.0
 	 *
 	 * @param \WP_User $user The collaborator to display.
@@ -834,7 +834,7 @@ class Admin_Pages {
 	/**
 	 * Processes settings form submissions and displays process notices.
 	 *
-	 * @since [unreleased] Moved to Admin_Pages class.
+	 * @since 4.0.0 Moved to Admin_Pages class.
 	 * @since 1.0.0
 	 *
 	 * @throws \Exception Handled in try-catch block.
@@ -1078,7 +1078,7 @@ class Admin_Pages {
 	/**
 	 * Displays the Automations admin page.
 	 *
-	 * @since [unreleased] Moved to Admin_Pages class.
+	 * @since 4.0.0 Moved to Admin_Pages class.
 	 * @since 1.0.0
 	 *
 	 * @throws \Exception Handled in try-catch block.
