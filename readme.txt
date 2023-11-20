@@ -2,8 +2,8 @@
 Contributors: michelleblanchette
 Tags: asana, project, task, management, manager, integration, api, work, business, collaboration, client, customer, support, portal, dashboard, widget, metabox, shortcodes
 Requires at least: 5.0.0
-Tested up to: 6.3
-Stable tag: 3.10.1
+Tested up to: 6.4.1
+Stable tag: 4.0.0
 Requires PHP: 7.2
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
@@ -69,21 +69,77 @@ This plugin will now be hosted from the official WordPress.org Plugins directory
 
 _Here are the latest changes. You can access the complete changelog history at [https://purpleturtlecreative.com/completionist/plugin-info/](https://purpleturtlecreative.com/completionist/plugin-info/)_
 
-### 4.0.0 - 2023-09-03
+### 4.0.0 - [unreleased]
 
 #### Added
 
+- New submenu page to upgrade to Completionist Pro for premium features via [Freemius](https://freemius.com/).
 - New `readme.txt` file for WordPress.org plugins listing.
 - New `Uninstaller` class to handle plugin data removal.
+- New `Upgrader` class to handle plugin version updates. This also offers support assistance when a version rollback is detected, which usually indicates that the user is experiencing issues with a newer version of the plugin.
+- New `Admin_Notices` class to handle displaying of admin notices. All notices are respectful in that they are either displayed once or dismissible.
+- New `Errors\No_Authorization` exception type class to fix class name and file inconsistency.
+- New `Autoloader` class to autoload class files.
+- New REST API endpoints to replace all WP Admin AJAX actions.
 
 #### Changed
 
-- Remote updates are now handled through WordPress.org and [Freemius](https://freemius.com/). This change also provides the option to upgrade to Completionist Pro.
+- Remote updates are now handled through WordPress.org.
+- Class declarations are no longer wrapped in `if ( class_exists( ... ) )` checks. All classes are properly namespaced and should not normally cause collisions.
+- Upgraded the legacy Tasks metabox within the Classic Editor. This offers great UX/UI and performance improvements, matching the Pinned Tasks panel in the Block Editor. This also removes script dependencies on jQuery.
+- All admin scripts are now loaded in the document footer.
+- The `global $submenu` is no longer modified in wp-admin to change the main menu page's submenu title to "Settings". Instead, it's now explicitly added as a duplicate submenu page with the overridden title.
+- Refactored `Automation::to_stdClass()` to `Automation::to_std_class()` for proper snake casing per WordPress Coding Standards.
 
 #### Removed
 
-- The `YahnisElsts/plugin-update-checker` Composer package which facilitated remote updates.
+- The `YahnisElsts/plugin-update-checker` Composer package which facilitated remote updates. Remote updates are now hosted by WordPress.org.
 - The `uninstall.php` file. Data is now uninstalled by using the registered uninstall hook.
+- The deprecated `Request_Tokens` class file, options, and other references.
+- The `Errors\NoAuthorization` class due to inconsistent naming and class file.
+- All `require_once` calls which manually included class files. The new `Autoloader` class now handles this.
+- All WP Admin AJAX actions to instead use the new REST API endpoints.
+- The `HTML_Builder::format_task_row()` function. It was only used by the legacy Tasks metabox within the Classic Editor, which is now replaced by the upgraded ReactJS-based components.
+- The `Task_Categorizer` class, all child classes, and the `Task_Categorizer` namespace. These PHP classes have not been used since this functionality was moved to ReactJS on the frontend.
+- Non-class files within the `src/admin` directory. All PHP+HTML template code has been moved to methods within the related PHP classes, either `Admin_Pages` or `Admin_Widgets`.
+
+#### Fixed
+
+- Unpinning a task from the post editor would unpin the task across the entire site.
+- Some edge-case oddities with the WP Admin AJAX actions for managing tasks. The new REST API endpoints are now more robust after a thorough code review and refactor.
+- Searching for posts in an Automation Action's "Pin to Post" field would include WordPress's internal types such as `wp_navigation` and `wp_global_styles`.
+
+#### Security
+
+- Various improvements with the new REST API endpoints which replace the original WP Admin AJAX actions.
+- Unique nonces to authorize different requests to the new REST API endpoints which replace the original WP Admin AJAX actions.
+- Searching for posts in an Automation Action's "Pin to Post" field would include posts that the current user did not have permission to read.
+
+### 3.11.0 - 2023-11-19
+
+#### Added
+
+- New PHP filter hook `ptc_completionist_project_task_fields` to edit the task fields that will be retrieved for each task in an Asana project.
+
+### 3.10.2 - 2023-10-10
+
+#### Changed
+
+- Clearing the Asana Data Cache no longer completely deletes all request tokens, so it's now compatible with frontend page caching.
+
+#### Fixed
+
+- Media attachments with uppercase file suffix, such as `JPG` or `PNG`, would not be displayed in Project Embeds.
+- Style issues on the Settings screen when using Chrome with the Loom browser extension.
+- Error 404 when using the new Asana project URL as the `src` in Project Embeds.
+
+### 3.10.1 - 2023-09-15
+
+#### Fixed
+
+- PHP error when creating or displaying Asana tasks assigned to an Asana user connection that's being used by multiple WordPress users in Completionist.
+- PHP 8.2 compatibility for handling dates which was causing fatal errors when trying to create and display tasks in the Pinned Tasks metabox.
+- Increased minimum version requirement to PHP 7.2 due to Composer dependencies.
 
 ### 3.10.0 - 2023-08-15
 
@@ -101,95 +157,3 @@ _Here are the latest changes. You can access the complete changelog history at [
 - Large images that failed to load would overflow the container in Project Embeds.
 - Special characters would be encoded to HTML entities or completely stripped in automations and Asana tasks created by automations.
 - Minor style fix on the Settings admin page.
-
-### 3.9.1 - 2023-07-28
-
-#### Changed
-
-- FontAwesome assets are now included locally to avoid third-party tracking and hosting.
-
-#### Fixed
-
-- Database compatibility for the Request Tokens database table primary key size. The database table would continuously fail to install due to max key length limits, such as 1000 bytes, making shortcodes unusable on some hosting providers.
-
-### 3.9.0 - 2023-07-10
-
-#### Added
-
-- New filter hooks in JavaScript for adding custom ReactJS components after the task description in the `TaskListItem` component.
-- New filter hooks in PHP for customizing retrieved Asana project data.
-- New PHP class `Asana_Batch` to handle batching Asana API requests.
-
-#### Changed
-
-- Use `wp_remote_get()` instead of PHP's built-in cURL functions to proxy Asana attachments.
-- Proxied attachment responses now include the `X-Robots-Tag: noindex` HTTP header.
-- Task attachments and images now feature a loading animation.
-- Updated Composer PHP dependencies.
-
-#### Fixed
-
-- Failure to detect and localize inline attachments where their HTML tag includes attributes.
-- Failure to detect and insert oEmbeds within Asana tasks on WordPress <5.9.0.
-- Disabled dragging of attachment images via the `draggable="false"` HTML attribute.
-- Content layout shifting (CLS) of attachment images as they are loaded. Inline images now feature their intrinsic `width` and `height` to properly reserve space. Attachments and images with unknown dimensions reserve space for a 2:1 aspect ratio until loaded.
-
-### 3.8.0 - 2023-06-26
-
-#### Added
-
-- New action hook in PHP `'ptc_completionist_deleted_stale_request_tokens'` fires when stale request tokens are deleted from the database.
-- New action hook in PHP `'ptc_completionist_deleted_all_request_tokens'` fires when the request tokens database table is truncated (aka cleared).
-- New filter hook in PHP `'ptc_completionist_shortcodes_meta_init'` filters the metadata definitions array of shortcodes registered and managed by Completionist.
-- `'default_atts'` and `'render_callback'` keys in the metadata definitions array of shortcodes registered and managed by Completionist.
-
-#### Changed
-
-- The main admin page's submenu item is now labeled "Settings".
-- Minor error check improvements when saving some plugin settings.
-- Minor style updates for border-radius consistency.
-
-#### Fixed
-
-- Flash of an empty error message before the `[ptc_asana_project]` shortcode begins loading.
-- Cache data for remote plugin update checks is now removed during uninstallation.
-
-#### Security
-
-- Request tokens could fail to become stale due to public access. Request tokens are now only refreshed when they are saved in a secure context. Note that HTML caching could now cause request tokens to become stale, depending on the interval and frequency that the HTML cache is refreshed. See the newly added action hooks to know when request tokens are deleted.
-- Request tokens would use the Asana connection of WordPress user ID 1 (if available) to authenticate `[ptc_asana_project]` shortcodes when no `auth_user` or default frontend authentication user has been specified.
-
-### 3.7.0 - 2023-04-21
-
-#### Added
-
-- New custom database table for the new request tokens architecture. The rearchitecture drastically improves performance, storage, and reliability for all frontend requests by batching database writes into a single transaction and using an atomic storage strategy.
-- New action hook `ptc_completionist_shortcode_enqueue_assets` for users to easily and efficiently enqueue custom scipts and stylesheets for each rendered shortcode.
-- JavaScript hooks are now available within the new frontend global `window.Completionist.hooks`. Only one filter hook is currently available to demonstrate this new architecture.
-
-#### Changed
-
-- Saving the "Frontend Authentication User" setting no longer forces the Asana request tokens cache entries to be deleted. Request tokens are now properly invalidated automatically.
-- Minor performance improvement when rendering multiple shortcodes on a single page load.
-- Minor performance improvement when `Database_Manager::init()` by preventing redundant initialization.
-
-#### Deprecated
-
-- The original `Request_Tokens` class and most of its methods. Methods related to data removal are still used for a clean migration to the new  `Request_Token` class.
-- The `Options::REQUEST_TOKENS` postmeta key used by the original `Request_Tokens` class.
-- The `$post_id` argument is deprecated and no longer used when localizing Asana attachment URLs. This is due to the request tokens rearchitecture.
-- Filter hook `ptc_completionist_shortcode_asana_project_script_deps` is deprecated and replaced by the new action hook `ptc_completionist_shortcode_enqueue_assets`. Filtering the dependency array of each asset for each shortcode is not a scalable or performant approach. Please instead use the new, generic action hook for enqueueing custom assets. The new action hook also ensures custom assets are enqueued *after* included assets for proper sequencing of script and stylesheet overrides.
-
-#### Fixed
-
-- The `[ptc_asana_project]` shortcode now works in contexts where a post ID is not available, such as in widgets or complex page builders.
-- The `[ptc_asana_project]` shortcode's associated data would be saved across unrelated posts if displayed in a global context, such as a site footer.
-- Race conditions with database reads and writes related to request tokens would cause interruptions in functionality, such as Asana attachments failing to load.
-- WordPress's `dbDelta()` compatibility with `FOREIGN KEY` declarations by ignoring its related `ADD COLUMN` table alter queries.
-- WordPress's `dbDelta()` compatibility with uppercase `UNSIGNED` constraints by using lowercase instead.
-- WordPress's `dbDelta()` compatibility with a zero fractional second precision `datetime` datatype by simply removing it altogether. That is, using `datetime` instead of `datetime(0)`.
-
-#### Security
-
-- An Asana authentication user must now be provided when request tokens are created. This *guarantees* request tokens are properly invalidated if the authentication user ever changes, though there were no known vulnerabilities related to the existing functionality.
-- A unique "cache key" must now be provided when request tokens are created. This *guarantees* cache entries are specific to each request token's usage, though there were no known vulnerabilities related to the existing functionality.
