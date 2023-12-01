@@ -1155,14 +1155,16 @@ class Data {
 	 */
 	public static function get_all_automation_ids_for( string $hook_name ) : array {
 
+		global $wpdb;
+
 		// Ensure quotes and other characters are properly escaped.
 		$hook_name_like = esc_sql( $hook_name );
 		// Ensure underscores and dashes are taken literally.
 		$hook_name_like = str_replace( '_', '\_', $hook_name_like );
 		$hook_name_like = str_replace( '-', '\-', $hook_name_like );
 
-		global $wpdb;
 		$table = Database_Manager::$automations_table;
+
 		$res = $wpdb->get_col(
 			$wpdb->prepare(
 				'SELECT DISTINCT ID FROM `' . esc_sql( $table ) . "`
@@ -1185,12 +1187,14 @@ class Data {
 	public static function count_actions_for( string $hook_name ) : int {
 
 		global $wpdb;
-		$automations_table = Database_Manager::$automations_table;
+
+		$automations_table        = Database_Manager::$automations_table;
 		$automation_actions_table = Database_Manager::$automation_actions_table;
+
 		$count = $wpdb->get_var(
 			$wpdb->prepare(
 				'SELECT COUNT(actions.ID) FROM `' . esc_sql( $automation_actions_table ) . '` actions
-					JOIN $automations_table automations
+					JOIN `' . esc_sql( $automations_table ) . '` automations
 						ON automations.ID = actions.automation_id
 						AND automations.hook_name = %s',
 				$hook_name
@@ -1227,7 +1231,9 @@ class Data {
 	public static function update_automation_last_modified( int $automation_id ) : bool {
 
 		global $wpdb;
+
 		$table = Database_Manager::$automations_table;
+
 		$rows_affected = $wpdb->query(
 			$wpdb->prepare(
 				'UPDATE `' . esc_sql( $table ) . '`
