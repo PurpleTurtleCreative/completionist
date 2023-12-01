@@ -481,11 +481,13 @@ class Admin_Pages {
 
 		try {
 
+			// Process the current submission and display related notices.
+			// Must happen BEFORE checking Asana API authentication
+			// because the user could have just submitted their PAT.
+			static::process_save_settings_submit();
+
 			// Check if user is authenticated for API usage.
 			Asana_Interface::get_client();
-
-			// Process the current submission and display related notices.
-			static::process_save_settings_submit();
 
 			// Get the current user's Asana profile.
 			$me = Asana_Interface::get_me();
