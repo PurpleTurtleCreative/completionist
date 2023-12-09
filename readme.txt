@@ -2,7 +2,7 @@
 Contributors: michelleblanchette
 Tags: asana, project, task, management, manager, integration, api, work, business, collaboration, client, customer, support, portal, dashboard, widget, metabox, shortcodes
 Requires at least: 5.0.0
-Tested up to: 6.4.1
+Tested up to: 6.4.2
 Stable tag: 4.0.0
 Requires PHP: 7.2
 License: GPL-3.0-or-later

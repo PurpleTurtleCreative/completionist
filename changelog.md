@@ -43,6 +43,7 @@
 - Various improvements with the new REST API endpoints which replace the original WP Admin AJAX actions.
 - Unique nonces to authorize different requests to the new REST API endpoints which replace the original WP Admin AJAX actions.
 - Searching for posts in an Automation Action's "Pin to Post" field would include posts that the current user did not have permission to read.
+- Improve sanitization of nonce values before validation.
 
 ### 3.11.0 - 2023-11-19
 

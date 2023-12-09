@@ -13,7 +13,7 @@
  * Version:           4.0.0
  * Requires PHP:      7.2
  * Requires at least: 5.0.0
- * Tested up to:      6.4.1
+ * Tested up to:      6.4.2
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
  * License:           GPL-3.0-or-later

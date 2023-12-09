@@ -272,13 +272,13 @@ class Admin_Pages {
 							'api'                       => array_intersect_key(
 								static::get_frontend_api_data(),
 								array(
-									'auth_nonce'              => true,
+									'auth_nonce'           => true,
 									'nonce_create_automation' => true,
 									'nonce_delete_automation' => true,
-									'nonce_get_automation'    => true,
-									'nonce_get_post'          => true,
+									'nonce_get_automation' => true,
+									'nonce_get_post'       => true,
 									'nonce_update_automation' => true,
-									'v1'                      => true,
+									'v1'                   => true,
 								)
 							),
 							'automations'               => Automations\Data::get_automation_overviews( null, true ),
@@ -521,10 +521,10 @@ class Admin_Pages {
 				<?php
 				try {
 
-					$can_manage_options = current_user_can( 'manage_options' );
+					$can_manage_options   = current_user_can( 'manage_options' );
 					$chosen_workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
-					$is_workspace_member = Asana_Interface::is_workspace_member( $chosen_workspace_gid );
-					$chosen_tag_gid = Options::get( Options::ASANA_TAG_GID );
+					$is_workspace_member  = Asana_Interface::is_workspace_member( $chosen_workspace_gid );
+					$chosen_tag_gid       = Options::get( Options::ASANA_TAG_GID );
 
 					$pinned_tasks_count = Options::count_all_pinned_tasks();
 
@@ -846,7 +846,7 @@ class Admin_Pages {
 		if (
 			isset( $_POST['asana_connect'] )
 			&& isset( $_POST['asana_pat'] )
-			&& wp_verify_nonce( $_POST['asana_connect_nonce'], 'connect_asana' ) !== false
+			&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['asana_connect_nonce'] ) ), 'connect_asana' ) !== false
 		) {
 
 			try {
@@ -882,7 +882,7 @@ class Admin_Pages {
 		if (
 			isset( $_POST['asana_disconnect'] )
 			&& isset( $_POST['asana_disconnect_nonce'] )
-			&& wp_verify_nonce( $_POST['asana_disconnect_nonce'], 'disconnect_asana' ) !== false
+			&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['asana_disconnect_nonce'] ) ), 'disconnect_asana' ) !== false
 		) {
 
 			$user_id = (int) get_current_user_id();
@@ -908,7 +908,7 @@ class Admin_Pages {
 			isset( $_POST['asana_frontend_user_save'] )
 			&& ! empty( $_POST['wp_user_id'] )
 			&& isset( $_POST['asana_frontend_user_save_nonce'] )
-			&& wp_verify_nonce( $_POST['asana_frontend_user_save_nonce'], 'asana_frontend_user_save' ) !== false
+			&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['asana_frontend_user_save_nonce'] ) ), 'asana_frontend_user_save' ) !== false
 			&& current_user_can( 'manage_options' )
 		) {
 
@@ -937,7 +937,7 @@ class Admin_Pages {
 			&& current_user_can( 'manage_options' )
 			&& isset( $_POST['asana_cache_ttl'] )
 			&& isset( $_POST['asana_cache_ttl_save_nonce'] )
-			&& wp_verify_nonce( $_POST['asana_cache_ttl_save_nonce'], 'asana_cache_ttl_save' ) !== false
+			&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['asana_cache_ttl_save_nonce'] ) ), 'asana_cache_ttl_save' ) !== false
 		) {
 
 			// Check if numeric.
@@ -974,7 +974,7 @@ class Admin_Pages {
 				current_user_can( 'edit_posts' )
 			) &&
 			isset( $_POST['purge_asana_cache_nonce'] ) &&
-			wp_verify_nonce( $_POST['purge_asana_cache_nonce'], 'purge_asana_cache' ) !== false
+			wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['purge_asana_cache_nonce'] ) ), 'purge_asana_cache' ) !== false
 		) {
 			$rows_affected = Request_Token::clear_cache_data();
 			printf(
@@ -989,7 +989,7 @@ class Admin_Pages {
 				&& isset( $_POST['asana_workspace'] )
 				&& isset( $_POST['asana_tag'] )
 				&& isset( $_POST['asana_workspace_save_nonce'] )
-				&& wp_verify_nonce( $_POST['asana_workspace_save_nonce'], 'asana_workspace_save' ) !== false//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+				&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['asana_workspace_save_nonce'] ) ), 'asana_workspace_save' ) !== false//phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 				&& current_user_can( 'manage_options' )
 			) {
 
