@@ -19,6 +19,10 @@ jobs:
       run: ./build_install.sh
       shell: bash
 
+    - name: Bundle Package
+      run: ./bundle.sh
+      shell: bash
+
     - name: Build - Cleanup
       run: ./build_cleanup.sh
       shell: bash
@@ -47,6 +51,7 @@ jobs:
         echo "Workspace: ${{ github.workspace }}"
         echo "Repository: ${{ github.repository }}"
         echo "Basename: $( basename "${{ github.repository }}" )"
+        echo "PTC_PLUGIN_ZIP_FILE: $PTC_PLUGIN_ZIP_FILE"
 
     # - name: Publish WordPress Plugin Release
     #   uses: 10up/action-wordpress-plugin-deploy@stable
