@@ -18,29 +18,46 @@ Completionist is an integration WordPress plugin for Asana. It helps you establi
 
 There are many ways to improve your productivity by using Completionist.
 
-### Pinned Tasks
+### Pin and create Asana tasks directly on WordPress content.
 
-Pin an existing Asana task or create a new task right on relevant content in WordPress. You can pin tasks to content of any post type. Reduce frustrating context-switching by having all relevant tasks listed in one place—where the work needs to get done.
+Provide crystal-clear clarity and reduce tiresome context-switching by creating and listing Asana tasks on any type of content within the WordPress editor.
 
-[**Read the Docs**](https://docs.purpleturtlecreative.com/completionist/pinned-tasks/)
+- Pin existing tasks that were created in Asana
+- Add new Asana tasks from within WordPress
+- Pin to any post type such as products or shop orders
 
-### Dashboard Widget
+[**Read about Pinned Tasks →**](https://docs.purpleturtlecreative.com/completionist/pinned-tasks/)
 
-See task progress and quickly access all outstanding tasks on your WordPress dashboard. Upon logging in to your WordPress site, you'll know immediately what work needs to get done. If you have pinned tasks, you'll immediately be able to access the content with outstanding tasks. Filter tasks by *Pinned*, *General*, *Critical*, or *My Tasks*.
+### Track relevant Asana tasks in your WordPress dashboard.
 
-[**Read the Docs**](https://docs.purpleturtlecreative.com/completionist/dashboard-widget/)
+Review progress and access all outstanding Asana tasks associated with WordPress to stay focused on all current content initiatives and website maintenance.
 
-### Automated Tasks
+- Check on productivity with a simple progress overview
+- Prioritize quickly with 4 task category filters
+- Access pinned tasks to get straight to work
 
-Create Asana tasks automatically as events occur on your WordPress site to standardize task workflows. Set your own custom automation conditions, and compose tasks using dynamic merge fields. Standardize your processes, remove busy work, and never miss a beat.
+[**Read about the Dashboard Widget →**](https://docs.purpleturtlecreative.com/completionist/dashboard-widget/)
 
-[**Read the Docs**](https://docs.purpleturtlecreative.com/completionist/automated-tasks/)
+### Automatically create Asana tasks from WordPress activity.
 
-### Project Embeds (Shortcodes)
+Standardize your content management workflow and never miss a beat by automatically creating Asana tasks as changes happen on WordPress.
 
-Display Asana project information and tasks on your WordPress site. Automatically share work progress with stakeholders and followers without on-boarding read-only users into your private workspace in Asana.
+- Choose from 6 common WordPress event triggers
+- Specify any custom action or filter hook event trigger for endless possibilities and integrations
+- Control context with custom conditions
+- Compose Asana tasks with dynamic values from WordPress for effortless clarity
 
-[**Read the Docs**](https://docs.purpleturtlecreative.com/completionist/shortcodes/)
+[**Read about Automations →**](https://docs.purpleturtlecreative.com/completionist/automated-tasks/)
+
+### Display Asana projects on your WordPress website.
+
+Share real-time progress on WordPress posts and pages to boost engagement from clients and stakeholders while emphasizing your own brand.
+
+- Customize project display with 13+ shortcode attributes
+- Keep clients out of your Asana workspace by providing your own branded experience
+- Stop writing tedious emails by providing stakeholders self-serviced, real-time progress updates
+
+[**Read about Shortcodes →**](https://docs.purpleturtlecreative.com/completionist/shortcodes/)
 
 ---
 
@@ -50,24 +67,32 @@ _All source code is available on [GitHub](https://github.com/PurpleTurtleCreativ
 
 == Frequently Asked Questions ==
 
-= Are you affiliated with Asana? =
-
-No, I do not have a business relationship with Asana. I just happened to be looking for an Asana integration for WordPress and failed to find an affordable, specialized solution. That is why I created Completionist!
-
 = Is an Asana account required? =
 
 Yes, an Asana account is required to use Completionist. You can quickly [create an Asana account](https://asana.com/create-account) for **FREE**!
 
+= Are you affiliated with Asana? =
+
+No, I do not have a business relationship with Asana. I just happened to be looking for an Asana integration for WordPress and failed to find an affordable, specialized solution. After noticing many others with the same problem, I decided to create Completionist!
+
+= Is this WordPress multisite (wpmu) compatible? =
+
+Yes! Feel free to activate the plugin at the network level or per blog/subsite. If you decide to uninstall Completionist, all plugin data will be properly removed across your network.
+
+= What languages are supported? =
+
+The Completionist plugin is written in **American English (en-US)** and currently doesn’t support translation. However, your Asana projects and tasks will display their original content which may be in another language. All text labels and messages surrounding the Asana data, though, are in American English.
+
 == Upgrade Notice ==
 
 = 4.0.0 =
-This plugin will now be hosted from the official WordPress.org Plugins directory. Please upgrade immediately so you can continue to receive the latest features, bug fixes, and security updates.
+This plugin is now hosted from the official WordPress.org Plugins directory. Please upgrade immediately so you can continue to receive the latest features, bug fixes, and security updates!
 
 == Changelog ==
 
-_Here are the latest changes. You can access the complete changelog history at [https://purpleturtlecreative.com/completionist/plugin-info/](https://purpleturtlecreative.com/completionist/plugin-info/)_
+_Here's what has changed in the past 3 releases. To access the complete changelog history, please visit [https://purpleturtlecreative.com/completionist/plugin-info/](https://purpleturtlecreative.com/completionist/plugin-info/) or see `changelog.md` in Completionist's files._
 
-### 4.0.0 - [unreleased]
+### 4.0.0 - 2023-12-10
 
 #### Added
 
@@ -81,7 +106,7 @@ _Here are the latest changes. You can access the complete changelog history at [
 
 #### Changed
 
-- Remote updates are now handled through WordPress.org.
+- Remote updates are now handled through WordPress.org. See the official plugin listing at [https://wordpress.org/plugins/completionist/](https://wordpress.org/plugins/completionist/)
 - Class declarations are no longer wrapped in `if ( class_exists( ... ) )` checks. All classes are properly namespaced and should not normally cause collisions.
 - Upgraded the legacy Tasks metabox within the Classic Editor. This offers great UX/UI and performance improvements, matching the Pinned Tasks panel in the Block Editor. This also removes script dependencies on jQuery.
 - All admin scripts are now loaded in the document footer.
@@ -105,12 +130,14 @@ _Here are the latest changes. You can access the complete changelog history at [
 - Unpinning a task from the post editor would unpin the task across the entire site.
 - Some edge-case oddities with the WP Admin AJAX actions for managing tasks. The new REST API endpoints are now more robust after a thorough code review and refactor.
 - Searching for posts in an Automation Action's "Pin to Post" field would include WordPress's internal types such as `wp_navigation` and `wp_global_styles`.
+- The Asana Data Cache Duration (TTL) could not be set to 0 seconds.
 
 #### Security
 
 - Various improvements with the new REST API endpoints which replace the original WP Admin AJAX actions.
 - Unique nonces to authorize different requests to the new REST API endpoints which replace the original WP Admin AJAX actions.
 - Searching for posts in an Automation Action's "Pin to Post" field would include posts that the current user did not have permission to read.
+- Improve sanitization of nonce values before validation.
 
 ### 3.11.0 - 2023-11-19
 
@@ -129,28 +156,3 @@ _Here are the latest changes. You can access the complete changelog history at [
 - Media attachments with uppercase file suffix, such as `JPG` or `PNG`, would not be displayed in Project Embeds.
 - Style issues on the Settings screen when using Chrome with the Loom browser extension.
 - Error 404 when using the new Asana project URL as the `src` in Project Embeds.
-
-### 3.10.1 - 2023-09-15
-
-#### Fixed
-
-- PHP error when creating or displaying Asana tasks assigned to an Asana user connection that's being used by multiple WordPress users in Completionist.
-- PHP 8.2 compatibility for handling dates which was causing fatal errors when trying to create and display tasks in the Pinned Tasks metabox.
-- Increased minimum version requirement to PHP 7.2 due to Composer dependencies.
-
-### 3.10.0 - 2023-08-15
-
-#### Added
-
-- Settings to clear the Asana data cache and set the cache duration (TTL).
-
-#### Changed
-
-- Improved the styling and language clarity of the Asana authorization screen.
-
-#### Fixed
-
-- Automation actions firing multiple times or never at all for the *Post is Created* event. The `'transition_post_status'` action hook is now used instead of `'wp_insert_post'`.
-- Large images that failed to load would overflow the container in Project Embeds.
-- Special characters would be encoded to HTML entities or completely stripped in automations and Asana tasks created by automations.
-- Minor style fix on the Settings admin page.

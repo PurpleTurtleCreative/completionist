@@ -1,4 +1,4 @@
-### 4.0.0 - [unreleased]
+### 4.0.0 - 2023-12-10
 
 #### Added
 
@@ -12,7 +12,7 @@
 
 #### Changed
 
-- Remote updates are now handled through WordPress.org.
+- Remote updates are now handled through WordPress.org. See the official plugin listing at [https://wordpress.org/plugins/completionist/](https://wordpress.org/plugins/completionist/)
 - Class declarations are no longer wrapped in `if ( class_exists( ... ) )` checks. All classes are properly namespaced and should not normally cause collisions.
 - Upgraded the legacy Tasks metabox within the Classic Editor. This offers great UX/UI and performance improvements, matching the Pinned Tasks panel in the Block Editor. This also removes script dependencies on jQuery.
 - All admin scripts are now loaded in the document footer.
