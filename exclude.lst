@@ -4,6 +4,7 @@ completionist/*.map
 completionist/*.sh
 completionist/*.DS_Store
 completionist/.git*
+completionist/.wordpress-org
 completionist/exclude.lst
 completionist/composer.json
 completionist/composer.lock

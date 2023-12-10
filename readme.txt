@@ -88,6 +88,13 @@ The Completionist plugin is written in **American English (en-US)** and currentl
 = 4.0.0 =
 This plugin is now hosted from the official WordPress.org Plugins directory. Please upgrade immediately so you can continue to receive the latest features, bug fixes, and security updates!
 
+== Screenshots ==
+
+1. Pin new or existing Asana tasks to any WordPress content, such as posts and pages or even products and forms.
+2. Track all pinned tasks across your WordPress website and quickly access relevant content—a must-have feature for web agencies, especially!
+3. Automatically create Asana tasks as you work in WordPress, such as notifying editors that a post is ready for final review.
+4. Display Asana projects on your WordPress website to automatically keep everyone in the loop, even those without an Asana account.
+
 == Changelog ==
 
 _Here's what has changed in the past 3 releases. To access the complete changelog history, please visit [https://purpleturtlecreative.com/completionist/plugin-info/](https://purpleturtlecreative.com/completionist/plugin-info/) or see `changelog.md` in Completionist's files._
