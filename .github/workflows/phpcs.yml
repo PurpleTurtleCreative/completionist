@@ -1,6 +1,9 @@
 name: PHPCS Check
 
-on: [pull_request]
+on:
+  pull_request:
+    paths:
+      - '**.php'
 
 jobs:
   phpcs:
