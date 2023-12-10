@@ -4,7 +4,7 @@
 
 PLUGIN_SLUG=$( basename `pwd` )
 
-VERSION=$(grep -Eio 'Version:\s*\d+\.\d+\.\d+(\-rc\.\d+)?' "${PLUGIN_SLUG}.php" | grep -Eo '\d+\.\d+\.\d+(\-rc\.\d+)?')
+VERSION=$(grep -Eio 'Version:\s*[0-9]+\.[0-9]+\.[0-9]+(\-rc\.[0-9]+)?' "${PLUGIN_SLUG}.php" | grep -Eio '[0-9]+\.[0-9]+\.[0-9]+(\-rc\.[0-9]+)?')
 
 # Create the plugin package.
 
@@ -19,8 +19,9 @@ popd
 # Maybe export variables for GitHub Action.
 
 if [ -n "$GITHUB_ENV" ]; then
+  echo "PTC_PLUGIN_ZIP_FILE_BASENAME=$( basename "$PLUGIN_ZIP_FILE" )" >> "$GITHUB_ENV"
   echo "PTC_PLUGIN_ZIP_FILE=${PLUGIN_ZIP_FILE}" >> "$GITHUB_ENV"
-  echo "Exported GitHub ENV variables: PTC_PLUGIN_ZIP_FILE"
+  echo "Exported GitHub ENV variables."
 else
   echo "Did not set \$GITHUB_ENV variables."
 fi

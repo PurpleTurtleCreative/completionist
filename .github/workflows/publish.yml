@@ -27,10 +27,10 @@ jobs:
       run: ./build_cleanup.sh
       shell: bash
 
-    - name: Final Cleanup
-      run: |
-        find . -name '.git*' -exec rm -rf {} + -depth
-        find . -type d -empty -delete
+    # - name: Final Cleanup
+    #   run: |
+    #     find . -name '.git*' -exec rm -rf {} + -depth
+    #     find . -type d -empty -delete
 
     - name: DEBUG - Current Directory
       run: |
@@ -51,7 +51,9 @@ jobs:
         echo "Workspace: ${{ github.workspace }}"
         echo "Repository: ${{ github.repository }}"
         echo "Basename: $( basename "${{ github.repository }}" )"
+        echo "PTC_PLUGIN_ZIP_FILE_BASENAME: $PTC_PLUGIN_ZIP_FILE_BASENAME"
         echo "PTC_PLUGIN_ZIP_FILE: $PTC_PLUGIN_ZIP_FILE"
+        echo "env PTC_PLUGIN_ZIP_FILE: ${{ env.PTC_PLUGIN_ZIP_FILE }}"
 
     # - name: Publish WordPress Plugin Release
     #   uses: 10up/action-wordpress-plugin-deploy@stable
@@ -61,3 +63,9 @@ jobs:
     #   env:
     #     SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME }}
     #     SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
+
+    - name: Upload ZIP File
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PTC_PLUGIN_ZIP_FILE_BASENAME }}
+        path: ${{ env.PTC_PLUGIN_ZIP_FILE }}
