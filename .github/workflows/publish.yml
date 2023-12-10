@@ -1,0 +1,58 @@
+name: Publish Release
+
+on:
+  pull_request:
+  push:
+    tags:
+    - "v*"
+
+jobs:
+  tag:
+    name: New release
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Build - Install
+      run: ./build_install.sh
+      shell: bash
+
+    - name: Build - Cleanup
+      run: ./build_cleanup.sh
+      shell: bash
+
+    - name: Final Cleanup
+      run: |
+        find . -name '.git*' -exec rm -rf {} + -depth
+        find . -type d -empty -delete
+
+    - name: DEBUG - Current Directory
+      run: |
+        pwd
+        ls -la
+
+    - name: DEBUG - Parent Directory
+      run: |
+        cd ..
+        pwd
+        ls -la
+
+    - name: DEBUG - GitHub Variables
+      run: |
+        echo "Ref Type: ${{ github.ref_type }}"
+        echo "Ref Name: ${{ github.ref_name }}"
+        echo "Action Path: ${{ github.action_path }}"
+        echo "Workspace: ${{ github.workspace }}"
+        echo "Repository: ${{ github.repository }}"
+        echo "Basename: $( basename "${{ github.repository }}" )"
+
+    # - name: Publish WordPress Plugin Release
+    #   uses: 10up/action-wordpress-plugin-deploy@stable
+    #   with:
+    #     dry-run: true
+    #     generate-zip: false
+    #   env:
+    #     SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME }}
+    #     SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
