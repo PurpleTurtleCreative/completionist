@@ -7,22 +7,22 @@
  * @license           GPL-3.0-or-later
  *
  * @wordpress-plugin
- * Plugin Name:       Completionist - Asana for WordPress
+ * Plugin Name:       Completionist – Asana for WordPress
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
  * Description:       Manage, pin, automate, and display Asana tasks in relevant areas of your WordPress admin and website frontend.
- * Version:           3.11.0
+ * Version:           4.0.0-rc.5
  * Requires PHP:      7.2
  * Requires at least: 5.0.0
- * Tested up to:      6.3
+ * Tested up to:      6.4.2
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
- * License:           GPL v3 or later
+ * License:           GPL-3.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.txt
  */
 
 /*
-This program is open-source software: you can redistribute it and/or modify
-it UNDER THE TERMS of the GNU General Public License as published by
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
@@ -32,7 +32,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program. If not, see https://www.gnu.org/licenses/gpl-3.0.txt.
+along with this program. If not, see <https://www.gnu.org/licenses/gpl-3.0.txt>.
 */
 
 namespace PTC_Completionist;
@@ -58,7 +58,7 @@ define( __NAMESPACE__ . '\PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
  *
  * @since 3.0.0
  */
-define( __NAMESPACE__ . '\PLUGIN_VERSION', get_file_data( __FILE__, [ 'Version' => 'Version' ], 'plugin' )['Version'] );
+define( __NAMESPACE__ . '\PLUGIN_VERSION', get_file_data( __FILE__, array( 'Version' => 'Version' ), 'plugin' )['Version'] );
 
 /**
  * This plugin's basename.
@@ -92,74 +92,46 @@ define( __NAMESPACE__ . '\REST_API_NAMESPACE_V1', PLUGIN_SLUG . '/v1' );
 
 /* REGISTER PLUGIN FUNCTIONS ---------------------- */
 
-/* Activation Hook */
-register_activation_hook(
-	PLUGIN_FILE,
-	function() {
-		require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
-		Database_Manager::init();
-		Database_Manager::install_all_tables();
-	}
-);
-
-/* Plugins Loaded */
-add_action(
-	'plugins_loaded',
-	function() {
-		/* Ensure Database Tables are Installed */
-		require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
-		Database_Manager::init();
-		Database_Manager::install_all_tables();
-		/* Enqueue Automation Actions */
-		require_once PLUGIN_PATH . 'src/includes/automations/class-events.php';
-		Automations\Events::add_actions();
-	}
-);
-
 /**
- * Registers remote plugin updates.
+ * Initializes the plugin's code.
  *
- * @since 3.5.1
+ * This ensures all variables are contained within the declared
+ * namespace to not contaminate the global namespace.
+ *
+ * @since 4.0.0
  */
-function register_remote_plugin_updates() {
-	/* YahnisElsts/plugin-update-checker */
-	require_once PLUGIN_PATH . 'vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php';
-	if ( class_exists( '\Puc_v4_Factory' ) ) {
-		$plugin_server_endpoint = add_query_arg(
-			array(
-				'wp_version' => $GLOBALS['wp_version'],
-				'site_domain' => rawurlencode( get_site_url( null, '', 'https' ) ),
-			),
-			'https://purpleturtlecreative.com/wp-json/ptc-resources/v1/plugins/completionist/latest'
-		);
-		\Puc_v4_Factory::buildUpdateChecker(
-			$plugin_server_endpoint,
-			PLUGIN_FILE,
-			'completionist',
-			12,
-			'external_updates-completionist'
-		);
+function init() {
+
+	// Register class autoloading.
+	require_once PLUGIN_PATH . 'src/includes/class-autoloader.php';
+	Autoloader::register();
+
+	// Plugins loaded.
+	add_action(
+		'plugins_loaded',
+		function () {
+			// Ensure database tables are installed.
+			Database_Manager::init();
+			Database_Manager::install_all_tables();
+			// Enqueue automation actions.
+			Automations\Events::add_actions();
+		}
+	);
+
+	// Register public functionality.
+	Admin_Notices::register();
+	Request_Token::register();
+	REST_Server::register();
+	Shortcodes::register();
+	Uninstaller::register();
+	Upgrader::register();
+
+	// Register admin functionality.
+	if ( is_admin() ) {
+		Admin_Pages::register();
+		Admin_Widgets::register();
 	}
 }
-add_action( 'plugins_loaded', __NAMESPACE__ . '\register_remote_plugin_updates' );
 
-// Register public functionality.
-foreach ( glob( PLUGIN_PATH . 'src/public/class-*.php' ) as $file ) {
-	require_once $file;
-}
-
-Request_Token::register();
-REST_Server::register();
-Shortcodes::register();
-
-// Register admin functionality.
-if ( is_admin() ) {
-
-	foreach ( glob( PLUGIN_PATH . 'src/admin/class-*.php' ) as $file ) {
-		require_once $file;
-	}
-
-	Admin_Pages::register();
-	Admin_Widgets::register();
-	Admin_Ajax::register();
-}
+// Load the plugin code.
+init();

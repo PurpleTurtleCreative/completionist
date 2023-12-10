@@ -9,8 +9,6 @@ namespace PTC_Completionist;
 
 defined( 'ABSPATH' ) || die();
 
-require_once PLUGIN_PATH . 'src/includes/class-database-manager.php';
-
 /**
  * Class to manage frontend request tokens.
  *
@@ -96,15 +94,15 @@ class Request_Token {
 		global $wpdb;
 		$rows_affected = $wpdb->query(
 			$wpdb->prepare(
-				"DELETE FROM `{$table}`
-					WHERE last_accessed <= %s",
+				'DELETE FROM `' . esc_sql( $table ) . '`
+					WHERE last_accessed <= %s',
 				$staleness_timestamp
 			)
 		);
 
 		if ( false === $rows_affected ) {
 			trigger_error(
-				"Failed to delete stale request tokens. SQL error encountered: {$wpdb->last_error}",
+				'Failed to delete stale request tokens. SQL error encountered: ' . esc_html( $wpdb->last_error ),
 				E_USER_NOTICE
 			);
 		} else {
@@ -164,13 +162,13 @@ class Request_Token {
 
 		global $wpdb;
 		$rows_affected = $wpdb->query(
-			"UPDATE `{$table}`
+			'UPDATE `' . esc_sql( $table ) . "`
 				SET cache_data = '', cached_at = '0000-00-00 00:00:00'"
 		);
 
 		if ( false === $rows_affected ) {
 			trigger_error(
-				"Failed to clear request tokens' cache data. SQL error encountered: {$wpdb->last_error}",
+				'Failed to clear request tokens\' cache data. SQL error encountered:' . esc_html( $wpdb->last_error ),
 				E_USER_NOTICE
 			);
 			$rows_affected = 0;
@@ -278,10 +276,10 @@ class Request_Token {
 
 		// Generate the token.
 		$args_as_json = '';
-		$token        = static::generate_token( $request_args, $args_as_json );
+		$token = static::generate_token( $request_args, $args_as_json );
 		if ( empty( $token ) ) {
 			trigger_error(
-				'Failed to save invalid request token for request arguments: ' . print_r( $request_args, true ),
+				'Failed to save invalid request token for request arguments: ' . esc_html( print_r( $request_args, true ) ),
 				E_USER_WARNING
 			);
 			return '';
@@ -303,8 +301,8 @@ class Request_Token {
 			global $wpdb;
 			$rows_affected = $wpdb->query(
 				$wpdb->prepare(
-					"INSERT INTO `{$table}` (token,args) VALUES (%s,%s)
-						ON DUPLICATE KEY UPDATE last_accessed=CURRENT_TIMESTAMP",
+					'INSERT INTO `' . esc_sql( $table ) . '` (token,args) VALUES (%s,%s)
+						ON DUPLICATE KEY UPDATE last_accessed=CURRENT_TIMESTAMP',
 					$token,
 					$args_as_json
 				)
@@ -312,7 +310,7 @@ class Request_Token {
 
 			if ( false === $rows_affected ) {
 				trigger_error(
-					"Failed to save request token. SQL error encountered: {$wpdb->last_error}",
+					'Failed to save request token. SQL error encountered: ' . esc_html( $wpdb->last_error ),
 					E_USER_WARNING
 				);
 				return '';
@@ -404,7 +402,7 @@ class Request_Token {
 		if ( ! empty( static::$buffer['save'] ) ) {
 
 			// Build database query statement.
-			$insertion_query = "INSERT INTO {$table} (token,args) VALUES ";
+			$insertion_query = 'INSERT INTO `' . esc_sql( $table ) . '` (token,args) VALUES ';
 
 			// Append each VALUES set.
 			foreach ( static::$buffer['save'] as $token => &$args_as_json ) {
@@ -427,7 +425,7 @@ class Request_Token {
 			// Check for errors.
 			if ( false === $rows_affected ) {
 				trigger_error(
-					"Failed to buffer_commit save request tokens. SQL error encountered: {$wpdb->last_error}",
+					'Failed to buffer_commit save request tokens. SQL error encountered: ' . esc_html( $wpdb->last_error ),
 					E_USER_WARNING
 				);
 			}
@@ -582,11 +580,11 @@ class Request_Token {
 		global $wpdb;
 		$res = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM `{$table}`
-					WHERE token = %s LIMIT 1",
+				'SELECT * FROM `' . esc_sql( $table ) . '`
+					WHERE token = %s LIMIT 1',
 				$this->data['token']
 			),
-			ARRAY_A
+			\ARRAY_A
 		);
 
 		// Check if valid.
@@ -598,8 +596,8 @@ class Request_Token {
 
 		if ( $res['token'] !== $this->data['token'] ) {
 			trigger_error(
-				"Retrieved token '{$res['token']}' does not match requested token '{$this->data['token']}'. The request token's data in memory was not updated.",
-				E_USER_WARNING
+				"Retrieved token '" . esc_html( $res['token'] ) . "' does not match requested token '" . esc_html( $this->data['token'] ) . "'. The request token's data in memory was not updated.",
+				\E_USER_WARNING
 			);
 			return;
 		}
@@ -619,7 +617,7 @@ class Request_Token {
 						$decoded = json_decode( $value, true );
 						if ( null === $decoded || ! is_array( $decoded ) ) {
 							trigger_error(
-								"Failed to JSON decode '{$field}' data: " . print_r( $value, true ),
+								"Failed to JSON decode '" . esc_html( $field ) . "' data: " . esc_html( print_r( $value, true ) ),
 								E_USER_WARNING
 							);
 							// Abort loading this dataset since it is invalid.
@@ -697,7 +695,7 @@ class Request_Token {
 			// so this is a backwards-compatible typecheck.
 			$data_type = gettype( $data );
 			trigger_error(
-				"Refused to cache non-array, non-object data of type '{$data_type}':" . print_r( $data, true ),
+				"Refused to cache non-array, non-object data of type '" . esc_html( $data_type ) . "':" . esc_html( print_r( $data, true ) ),
 				E_USER_WARNING
 			);
 			return '';
@@ -706,7 +704,7 @@ class Request_Token {
 		$data_as_json = wp_json_encode( $data );
 		if ( false === $data_as_json ) {
 			trigger_error(
-				'Failed to JSON encode cache data: ' . print_r( $data, true ),
+				'Failed to JSON encode cache data: ' . esc_html( print_r( $data, true ) ),
 				E_USER_WARNING
 			);
 			return '';

@@ -1,5 +1,7 @@
 import { NoticeContext } from '../notice/NoticeContext.jsx';
 
+import { getTaskGIDFromTaskUrl } from './util';
+
 const { createContext, useContext, useEffect, useState } = wp.element;
 
 export const TaskContext = createContext(false);
@@ -39,38 +41,30 @@ export function TaskContextProvider({children}) {
 
 		completeTask: async (taskGID, completed = true) => {
 
-			const task = context.tasks.find(t => taskGID === t.gid);
-
-			let data = {
-				'action': 'ptc_update_task',
-				'nonce': window.PTCCompletionist.api.nonce,
-				'task_gid': taskGID,
-				'completed': completed
-			};
-
 			const init = {
-				'method': 'POST',
+				'method': 'PUT',
 				'credentials': 'same-origin',
-				'body': new URLSearchParams(data)
+				'headers': {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': window.PTCCompletionist.api.auth_nonce
+				},
+				'body': window.JSON.stringify({
+					'nonce': window.PTCCompletionist.api.nonce_update_task,
+					'updates': { completed }
+				})
 			};
 
-			return await window.fetch(window.ajaxurl, init)
+			return await window.fetch( `${window.PTCCompletionist.api.v1}/tasks/${taskGID}`, init )
 				.then( res => res.json() )
 				.then( res => {
 
-					if ( res.status == 'success' && res.data ) {
-						context.updateTask({
-							"gid": task.gid,
-							"completed": completed
-						});
+					if ( res?.status == 'success' && res?.data?.task ) {
+						context.updateTask({ ...res.data.task });
 						return true;
-					} else if ( 'code' in res && 'message' in res ) {
-						addNotice(
-							<><strong>{`Error ${res.code}.`}</strong> {res.message}</>,
-							'error'
-						);
+					} else if ( res?.message ) {
+						addNotice(res.message, 'error');
 					} else {
-						throw 'error';
+						throw 'unknown error';
 					}
 
 					return false;
@@ -87,38 +81,29 @@ export function TaskContextProvider({children}) {
 
 		deleteTask: async (taskGID) => {
 
-			const task = context.tasks.find(t => taskGID === t.gid);
-
-			let data = {
-				'action': 'ptc_delete_task',
-				'nonce': window.PTCCompletionist.api.nonce,
-				'task_gid': taskGID
-			};
-
-			if ( task.action_link.post_id ) {
-				data.post_id = task.action_link.post_id;
-			}
-
 			const init = {
-				'method': 'POST',
+				'method': 'DELETE',
 				'credentials': 'same-origin',
-				'body': new URLSearchParams(data)
+				'headers': {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': window.PTCCompletionist.api.auth_nonce
+				},
+				'body': window.JSON.stringify({
+					'nonce': window.PTCCompletionist.api.nonce_delete_task,
+				})
 			};
 
-			return await window.fetch(window.ajaxurl, init)
+			return await window.fetch( `${window.PTCCompletionist.api.v1}/tasks/${taskGID}`, init )
 				.then( res => res.json() )
 				.then( res => {
 
-					if(res.status == 'success' && res.data) {
-						context.removeTask(res.data);
+					if ( 'success' === res?.status && res?.data?.task_gid ) {
+						context.removeTask(res.data.task_gid);
 						return true;
-					} else if ( 'code' in res && 'message' in res ) {
-						addNotice(
-							<><strong>{`Error ${res.code}.`}</strong> {res.message}</>,
-							'error'
-						);
+					} else if ( res?.message ) {
+						addNotice(res.message, 'error');
 					} else {
-						throw 'error';
+						throw 'unknown error';
 					}
 
 					return false;
@@ -134,38 +119,35 @@ export function TaskContextProvider({children}) {
 		},
 
 		unpinTask: async (taskGID, postID = null) => {
-			const task = context.tasks.find(t => taskGID === t.gid);
-
-			let data = {
-				'action': 'ptc_unpin_task',
-				'nonce': window.PTCCompletionist.api.nonce,
-				'task_gid': taskGID
-			};
-
-			if ( postID ) {
-				data.post_id = postID;
-			}
 
 			const init = {
-				'method': 'POST',
+				'method': 'DELETE',
 				'credentials': 'same-origin',
-				'body': new URLSearchParams(data)
+				'headers': {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': window.PTCCompletionist.api.auth_nonce
+				},
+				'body': window.JSON.stringify({
+					'nonce': window.PTCCompletionist.api.nonce_unpin_task,
+				})
 			};
 
-			return await window.fetch(window.ajaxurl, init)
+			let endpointUrl = `${window.PTCCompletionist.api.v1}/tasks/${taskGID}/pins`;
+			if ( postID ) {
+				endpointUrl += `/${postID}`;
+			}
+
+			return await window.fetch( endpointUrl, init )
 				.then( res => res.json() )
 				.then( res => {
 
-					if(res.status == 'success' && res.data) {
-						context.removeTask(res.data);
+					if ( 'success' === res?.status && res?.data?.task_gid ) {
+						context.removeTask(res.data.task_gid);
 						return true;
-					} else if ( 'code' in res && 'message' in res ) {
-						addNotice(
-							<><strong>{`Error ${res.code}.`}</strong> {res.message}</>,
-							'error'
-						);
+					} else if ( res?.message ) {
+						addNotice(res.message, 'error');
 					} else {
-						throw 'error';
+						throw 'unknown error';
 					}
 
 					return false;
@@ -186,33 +168,39 @@ export function TaskContextProvider({children}) {
 		 */
 		pinTask: async (taskLink, postID) => {
 
-			let data = {
-				'action': 'ptc_pin_task',
-				'nonce': window.PTCCompletionist.api.nonce_pin,
-				'task_link': taskLink,
-				'post_id': postID
-			};
+			const taskGID = getTaskGIDFromTaskUrl( taskLink );
+			if ( ! taskGID ) {
+				addNotice(
+					'Failed to pin task. Invalid task link.',
+					'error'
+				);
+				return false;
+			}
 
 			const init = {
 				'method': 'POST',
 				'credentials': 'same-origin',
-				'body': new URLSearchParams(data)
+				'headers': {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': window.PTCCompletionist.api.auth_nonce
+				},
+				'body': window.JSON.stringify({
+					'nonce': window.PTCCompletionist.api.nonce_pin_task,
+					'post_id': postID
+				})
 			};
 
-			return await window.fetch(window.ajaxurl, init)
+			return await window.fetch( `${window.PTCCompletionist.api.v1}/tasks/${taskGID}/pins`, init )
 				.then( res => res.json() )
 				.then( res => {
 
-					if(res.status == 'success' && res.data) {
-						context.addTask(res.data);
+					if ( 'success' === res?.status && res?.data?.task ) {
+						context.addTask(res.data.task);
 						return true;
-					} else if ( 'code' in res && 'message' in res ) {
-						addNotice(
-							<><strong>{`Error ${res.code}.`}</strong> {res.message}</>,
-							'error'
-						);
+					} else if ( res?.message ) {
+						addNotice(res.message, 'error');
 					} else {
-						throw 'error';
+						throw 'unknown error';
 					}
 
 					return false;
@@ -234,36 +222,34 @@ export function TaskContextProvider({children}) {
 		 */
 		createTask: async (taskData, postID = null) => {
 
-			let data = {
-				'action': 'ptc_create_task',
-				'nonce': window.PTCCompletionist.api.nonce_create,
-				...taskData
-			};
-
 			if ( postID ) {
-				data.post_id = postID;
+				taskData.post_id = postID;
 			}
 
 			const init = {
 				'method': 'POST',
 				'credentials': 'same-origin',
-				'body': new URLSearchParams(data)
+				'headers': {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': window.PTCCompletionist.api.auth_nonce
+				},
+				'body': window.JSON.stringify({
+					'nonce': window.PTCCompletionist.api.nonce_create_task,
+					'task': taskData
+				})
 			};
 
-			return await window.fetch(window.ajaxurl, init)
+			return await window.fetch( `${window.PTCCompletionist.api.v1}/tasks`, init )
 				.then( res => res.json() )
 				.then( res => {
 
-					if(res.status == 'success' && res.data) {
-						context.addTask(res.data);
+					if ( res?.status == 'success' && res?.data?.task ) {
+						context.addTask(res.data.task);
 						return true;
-					} else if ( 'code' in res && 'message' in res ) {
-						addNotice(
-							<><strong>{`Error ${res.code}.`}</strong> {res.message}</>,
-							'error'
-						);
+					} else if ( res?.message ) {
+						addNotice(res.message, 'error');
 					} else {
-						throw 'error';
+						throw 'unknown error';
 					}
 
 					return false;

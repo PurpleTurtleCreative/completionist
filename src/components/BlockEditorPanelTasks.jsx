@@ -5,12 +5,20 @@ import { TaskContext } from './task/TaskContext.jsx';
 
 import '../../assets/styles/scss/components/_BlockEditorPanelTasks.scss';
 
-const { useContext } = wp.element;
+import { selectEditorCurrentPostId } from './generic/selectors.jsx';
+import { useSelect } from '@wordpress/data';
+import { store as editorStore } from '@wordpress/editor';
+
+import { useContext } from '@wordpress/element';
 
 export default function BlockEditorPanelTasks() {
 	const { tasks } = useContext(TaskContext);
+	const currentPostId = useSelect(selectEditorCurrentPostId);
 
-	const currentPostId = wp.data.select('core/editor').getCurrentPostId();
+	// @TODO - Check if currentPostId null due to being a new draft
+	// post and display a notice to first save the post.
+	// I haven't experienced this personally, though, so proper
+	// testing needs to be done to confirm this state possibility.
 
 	return (
 		<div className="ptc-BlockEditorPanelTasks">

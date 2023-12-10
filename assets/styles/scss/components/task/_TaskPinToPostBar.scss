@@ -12,12 +12,12 @@
 	.toolbar {
 		display: flex;
 		align-items: center;
-		justify-content: space-evenly;
+		justify-content: space-between;
+		gap: 5px;
 	}
 
 	.ptc-TaskPinToPostForm {
 		flex: 1;
-		margin-right: 5px;
 	}
 
 	button.creation-form-toggle {

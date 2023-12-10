@@ -1,3 +1,50 @@
+### 4.0.0 - 2023-12-10
+
+#### Added
+
+- New `readme.txt` file for WordPress.org plugins listing.
+- New `Uninstaller` class to handle plugin data removal.
+- New `Upgrader` class to handle plugin version updates. This also offers support assistance when a version rollback is detected, which usually indicates that the user is experiencing issues with a newer version of the plugin.
+- New `Admin_Notices` class to handle displaying of admin notices. All notices are respectful in that they are either displayed once or dismissible.
+- New `Errors\No_Authorization` exception type class to fix class name and file inconsistency.
+- New `Autoloader` class to autoload class files.
+- New REST API endpoints to replace all WP Admin AJAX actions.
+
+#### Changed
+
+- Remote updates are now handled through WordPress.org. See the official plugin listing at [https://wordpress.org/plugins/completionist/](https://wordpress.org/plugins/completionist/)
+- Class declarations are no longer wrapped in `if ( class_exists( ... ) )` checks. All classes are properly namespaced and should not normally cause collisions.
+- Upgraded the legacy Tasks metabox within the Classic Editor. This offers great UX/UI and performance improvements, matching the Pinned Tasks panel in the Block Editor. This also removes script dependencies on jQuery.
+- All admin scripts are now loaded in the document footer.
+- The `global $submenu` is no longer modified in wp-admin to change the main menu page's submenu title to "Settings". Instead, it's now explicitly added as a duplicate submenu page with the overridden title.
+- Refactored `Automation::to_stdClass()` to `Automation::to_std_class()` for proper snake casing per WordPress Coding Standards.
+
+#### Removed
+
+- The `YahnisElsts/plugin-update-checker` Composer package which facilitated remote updates. Remote updates are now hosted by WordPress.org.
+- The `uninstall.php` file. Data is now uninstalled by using the registered uninstall hook.
+- The deprecated `Request_Tokens` class file, options, and other references.
+- The `Errors\NoAuthorization` class due to inconsistent naming and class file.
+- All `require_once` calls which manually included class files. The new `Autoloader` class now handles this.
+- All WP Admin AJAX actions to instead use the new REST API endpoints.
+- The `HTML_Builder::format_task_row()` function. It was only used by the legacy Tasks metabox within the Classic Editor, which is now replaced by the upgraded ReactJS-based components.
+- The `Task_Categorizer` class, all child classes, and the `Task_Categorizer` namespace. These PHP classes have not been used since this functionality was moved to ReactJS on the frontend.
+- Non-class files within the `src/admin` directory. All PHP+HTML template code has been moved to methods within the related PHP classes, either `Admin_Pages` or `Admin_Widgets`.
+
+#### Fixed
+
+- Unpinning a task from the post editor would unpin the task across the entire site.
+- Some edge-case oddities with the WP Admin AJAX actions for managing tasks. The new REST API endpoints are now more robust after a thorough code review and refactor.
+- Searching for posts in an Automation Action's "Pin to Post" field would include WordPress's internal types such as `wp_navigation` and `wp_global_styles`.
+- The Asana Data Cache Duration (TTL) could not be set to 0 seconds.
+
+#### Security
+
+- Various improvements with the new REST API endpoints which replace the original WP Admin AJAX actions.
+- Unique nonces to authorize different requests to the new REST API endpoints which replace the original WP Admin AJAX actions.
+- Searching for posts in an Automation Action's "Pin to Post" field would include posts that the current user did not have permission to read.
+- Improve sanitization of nonce values before validation.
+
 ### 3.11.0 - 2023-11-19
 
 #### Added
