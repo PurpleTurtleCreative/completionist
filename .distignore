@@ -10,7 +10,7 @@ completionist/.git/*
 completionist/.git
 completionist/.wordpress-org/*
 completionist/.wordpress-org
-completionist/exclude.lst
+completionist/.distignore
 completionist/composer.json
 completionist/composer.lock
 completionist/node_modules/*

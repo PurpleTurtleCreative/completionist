@@ -12,7 +12,7 @@ pushd ..
 
 PLUGIN_ZIP_FILE=$( pwd )/"${PLUGIN_SLUG}-${VERSION}.zip"
 
-zip -rT9X "${PLUGIN_ZIP_FILE}" "${PLUGIN_SLUG}" --exclude @"${PLUGIN_SLUG}"/exclude.lst
+zip -rT9X "${PLUGIN_ZIP_FILE}" "${PLUGIN_SLUG}" --exclude @"${PLUGIN_SLUG}"/.distignore
 
 popd
 

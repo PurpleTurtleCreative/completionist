@@ -5,6 +5,7 @@ on:
   push:
     tags:
     - "v*"
+    - "!v**-rc.*"
 
 jobs:
   tag:
@@ -23,9 +24,11 @@ jobs:
       run: ./bundle.sh
       shell: bash
 
-    - name: Build - Cleanup
-      run: ./build_cleanup.sh
-      shell: bash
+    - name: Upload ZIP File
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PTC_PLUGIN_ZIP_FILE_BASENAME }}
+        path: ${{ env.PTC_PLUGIN_ZIP_FILE }}
 
     - name: Publish WordPress Plugin Release
       uses: 10up/action-wordpress-plugin-deploy@stable
@@ -35,9 +38,3 @@ jobs:
       env:
         SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME }}
         SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
-
-    - name: Upload ZIP File
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.PTC_PLUGIN_ZIP_FILE_BASENAME }}
-        path: ${{ env.PTC_PLUGIN_ZIP_FILE }}
