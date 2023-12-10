@@ -19,7 +19,7 @@ popd
 # Maybe export variables for GitHub Action.
 
 if [ -n "$GITHUB_ENV" ]; then
-  echo "PTC_PLUGIN_ZIP_FILE_BASENAME=$( basename "$PLUGIN_ZIP_FILE" )" >> "$GITHUB_ENV"
+  echo "PTC_PLUGIN_ZIP_FILE_BASENAME=$( basename -s '.zip' "$PLUGIN_ZIP_FILE" )" >> "$GITHUB_ENV"
   echo "PTC_PLUGIN_ZIP_FILE=${PLUGIN_ZIP_FILE}" >> "$GITHUB_ENV"
   echo "Exported GitHub ENV variables."
 else
