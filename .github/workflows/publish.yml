@@ -1,0 +1,39 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+    - "v*"
+    - "!v**-rc.*"
+
+jobs:
+  tag:
+    name: New release
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Build - Install
+      run: ./build_install.sh
+      shell: bash
+
+    - name: Bundle Package
+      run: ./bundle.sh
+      shell: bash
+
+    - name: Upload ZIP File
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.PTC_PLUGIN_ZIP_FILE_BASENAME }}
+        path: ${{ env.PTC_PLUGIN_ZIP_FILE }}
+
+    - name: Publish WordPress Plugin Release
+      uses: 10up/action-wordpress-plugin-deploy@stable
+      with:
+        dry-run: true
+        generate-zip: false
+      env:
+        SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME }}
+        SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
