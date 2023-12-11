@@ -19,7 +19,7 @@ export default function ProjectSection({ name, tasks }) {
 	if ( tasks && tasks.length > 0 ) {
 		maybeTasksList = (
 			<ol className="tasks">
-				{tasks.map(( task, index ) => <TaskListItem task={task} rowNumber={index+1} />)}
+				{tasks.map(( task, index ) => <TaskListItem key={JSON.stringify(task)} task={task} rowNumber={index+1} />)}
 			</ol>
 		);
 	} else {

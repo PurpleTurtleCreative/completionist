@@ -5,7 +5,7 @@ import NoticesContainer from './components/notice/NoticesContainer.jsx';
 import { NoticeContextProvider } from './components/notice/NoticeContext.jsx';
 import { TaskContextProvider } from './components/task/TaskContext.jsx';
 
-import { createRoot, render } from '@wordpress/element';
+import { createRoot } from '@wordpress/element';
 
 const PinnedTasksMetabox = () => {
 

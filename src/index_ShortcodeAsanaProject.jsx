@@ -8,7 +8,7 @@ import ProjectTaskList from './components/project/ProjectTaskList.jsx';
 
 import initGlobalNamespace from './components/GlobalNamespace.jsx';
 
-const { render } = wp.element;
+import { createRoot } from '@wordpress/element';
 
 initGlobalNamespace();
 
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					<ProjectTaskList src={rootNode.dataset.src} />,
 					rootNode
 				);
-				render( element, rootNode );
+				createRoot( rootNode ).render( element );
 			}
 		});
 });
