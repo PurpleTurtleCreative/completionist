@@ -37,6 +37,7 @@
 - Some edge-case oddities with the WP Admin AJAX actions for managing tasks. The new REST API endpoints are now more robust after a thorough code review and refactor.
 - Searching for posts in an Automation Action's "Pin to Post" field would include WordPress's internal types such as `wp_navigation` and `wp_global_styles`.
 - The Asana Data Cache Duration (TTL) could not be set to 0 seconds.
+- Resolve console errors and warnings in React scripts logged when `SCRIPT_DEBUG` is enabled.
 
 #### Security
 
