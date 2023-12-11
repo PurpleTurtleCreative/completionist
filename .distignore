@@ -3,6 +3,7 @@
 *.map
 *.sh
 *.DS_Store
+.wp-env.json
 .gitignore
 .github/*
 .github

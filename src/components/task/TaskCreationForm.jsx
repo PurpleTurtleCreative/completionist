@@ -59,7 +59,7 @@ export default function TaskCreationForm({ postId = null }) {
 			<input id="ptc-new-task_name" type="text" placeholder="Write a task name..." value={taskName} onChange={e => setTaskName(e.target.value)} disabled={isProcessing} required />
 
 			<div className="form-group">
-				<label for="ptc-new-task_assignee">Assignee</label>
+				<label htmlFor="ptc-new-task_assignee">Assignee</label>
 				<select id="ptc-new-task_assignee" value={taskAssigneeGID} onChange={e => setTaskAssigneeGID(e.target.value)} disabled={isProcessing}>
 					<option value="">None (Unassigned)</option>
 					{workspaceUserSelectOptions}
@@ -67,12 +67,12 @@ export default function TaskCreationForm({ postId = null }) {
 			</div>
 
 			<div className="form-group">
-				<label for="ptc-new-task_due_on">Due Date</label>
+				<label htmlFor="ptc-new-task_due_on">Due Date</label>
 				<input id="ptc-new-task_due_on" type="date" pattern="\d\d\d\d-\d\d-\d\d" placeholder="yyyy-mm-dd" value={taskDueDate} onChange={e => setTaskDueDate(e.target.value)} disabled={isProcessing} />
 			</div>
 
 			<div className="form-group">
-				<label for="ptc-new-task_project">Project</label>
+				<label htmlFor="ptc-new-task_project">Project</label>
 				<select id="ptc-new-task_project" value={taskProjectGID} onChange={e => setTaskProjectGID(e.target.value)} disabled={isProcessing}>
 					<option value="">None (Private Task)</option>
 					{workspaceProjectSelectOptions}
@@ -80,7 +80,7 @@ export default function TaskCreationForm({ postId = null }) {
 			</div>
 
 			<div className="form-group">
-				<label for="ptc-new-task_notes">Description</label>
+				<label htmlFor="ptc-new-task_notes">Description</label>
 				<textarea id="ptc-new-task_notes" value={taskNotes} onChange={e => setTaskNotes(e.target.value)} disabled={isProcessing}></textarea>
 			</div>
 

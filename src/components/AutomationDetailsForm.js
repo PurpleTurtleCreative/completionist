@@ -315,11 +315,11 @@ class AutomationInfoInputs extends Component {
     return (
       <div className="automation-info">
         <div className="form-group">
-          <label for="automation-title">Title</label>
+          <label htmlFor="automation-title">Title</label>
           <input id="automation-title" type="text" value={this.props.title} onChange={(e) => this.props.changeTitle(e.target.value)} />
         </div>
         <div className="form-group">
-          <label for="automation-description">Description</label>
+          <label htmlFor="automation-description">Description</label>
           <textarea id="automation-description" value={this.props.description} onChange={(e) => this.props.changeDescription(e.target.value)} />
         </div>
       </div>
@@ -507,14 +507,14 @@ class AutomationActionsInputs extends Component {
             />
 
             <div className='form-group'>
-              <label for={"ptc-new-task_task_author_"+index}>Creator</label>
+              <label htmlFor={"ptc-new-task_task_author_"+index}>Creator</label>
               <select id={"ptc-new-task_task_author_"+index} value={action.meta.task_author} onChange={(e) => this.props.changeActionMeta(action.ID, 'task_author', e.target.value)}>
                 {createSelectOptions(window.ptc_completionist_automations.connected_workspace_users)}
               </select>
             </div>
 
             <div className='form-group'>
-              <label for={"ptc-new-task_assignee_"+index}>Assignee</label>
+              <label htmlFor={"ptc-new-task_assignee_"+index}>Assignee</label>
               <select id={"ptc-new-task_assignee_"+index} value={action.meta.assignee} onChange={(e) => this.props.changeActionMeta(action.ID, 'assignee', e.target.value)}>
                 <option value="">None (Unassigned)</option>
                 {createSelectOptions(window.ptc_completionist_automations.workspace_users)}
@@ -522,12 +522,12 @@ class AutomationActionsInputs extends Component {
             </div>
 
             <div className='form-group'>
-              <label for={"ptc-new-task_due_on_"+index}>Due Date</label>
+              <label htmlFor={"ptc-new-task_due_on_"+index}>Due Date</label>
               <input id={"ptc-new-task_due_on_"+index} type="date" pattern="\d\d\d\d-\d\d-\d\d" placeholder="yyyy-mm-dd" value={action.meta.due_on} onChange={(e) => this.props.changeActionMeta(action.ID, 'due_on', e.target.value)} />
             </div>
 
             <div className='form-group'>
-              <label for={"ptc-new-task_project_"+index}>Project</label>
+              <label htmlFor={"ptc-new-task_project_"+index}>Project</label>
               <select id={"ptc-new-task_project_"+index} value={action.meta.project} onChange={(e) => this.props.changeActionMeta(action.ID, 'project', e.target.value)}>
                 <option value="">None (Private Task)</option>
                 {createSelectOptions(window.ptc_completionist_automations.workspace_projects)}
@@ -535,12 +535,12 @@ class AutomationActionsInputs extends Component {
             </div>
 
             <div className='form-group'>
-              <label for={"ptc-new-task_notes_"+index}>Description</label>
+              <label htmlFor={"ptc-new-task_notes_"+index}>Description</label>
               <textarea id={"ptc-new-task_notes_"+index} value={action.meta.notes} onChange={(e) => this.props.changeActionMeta(action.ID, 'notes', e.target.value)} />
             </div>
 
             <div className='form-group'>
-              <label for={"ptc-new-task_post_id_"+index}>Pin to Post</label>
+              <label htmlFor={"ptc-new-task_post_id_"+index}>Pin to Post</label>
               <PostSearchSelectInput
                 id={"ptc-new-task_post_id_"+index}
                 initialValue={action.meta.post_id}

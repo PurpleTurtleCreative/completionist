@@ -78,7 +78,7 @@ export default function TaskRow({task}) {
 				<p className="name" onClick={handleToggleDescription}>{task.name}{!!task.notes && <i className={`${notesIconClassName} fa-sticky-note`}></i>}</p>
 
 				<div className="details">
-					{assigneeDisplayName && <p className="assignee"><i class="fas fa-user"></i> {assigneeDisplayName}</p>}
+					{assigneeDisplayName && <p className="assignee"><i className="fas fa-user"></i> {assigneeDisplayName}</p>}
 					{task.due_on && <p className="due"><i className="fas fa-clock"></i> {dueOnDateString}</p>}
 				</div>
 

@@ -5,24 +5,24 @@ import NoticesContainer from './components/notice/NoticesContainer.jsx';
 import { NoticeContextProvider } from './components/notice/NoticeContext.jsx';
 import { TaskContextProvider } from './components/task/TaskContext.jsx';
 
-const { render } = wp.element;
+import { createRoot } from '@wordpress/element';
 
 document.addEventListener('DOMContentLoaded', () => {
 	const rootNode = document.getElementById('ptc-DashboardWidget');
 	if ( null !== rootNode ) {
 		if ( 'error' in window.PTCCompletionist ) {
-			render(
+			createRoot( rootNode ).render(
 				<NoteBox type="error" message={window.PTCCompletionist.error.message} code={window.PTCCompletionist.error.code} />
-			, rootNode);
+			);
 		} else {
-			render(
+			createRoot( rootNode ).render(
 				<NoticeContextProvider>
 					<TaskContextProvider>
 						<NoticesContainer />
 						<DashboardWidget />
 					</TaskContextProvider>
 				</NoticeContextProvider>
-			, rootNode);
+			);
 		}
 	}
 });

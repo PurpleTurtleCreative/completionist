@@ -28,7 +28,7 @@ export default function TaskListPaginated({limit, tasks}) {
 	const renderedPageButtons = [];
 	for ( let i = 1; i <= totalPages; ++i ) {
 		renderedPageButtons.push(
-			<button className="num" type="button" title={`Page ${i}`} disabled={i === currentPage} onClick={() => goToPage(i)}>{i}</button>
+			<button key={i} className="num" type="button" title={`Page ${i}`} disabled={i === currentPage} onClick={() => goToPage(i)}>{i}</button>
 		);
 	}
 
@@ -55,7 +55,7 @@ export default function TaskListPaginated({limit, tasks}) {
 
 			<a href={window.PTCCompletionist.tag_url} target="_asana" className="view-tag">
 				<button title="View All Site Tasks in Asana" className="view" type="button">
-					<i class="fas fa-link"></i>
+					<i className="fas fa-link"></i>
 				</button>
 			</a>
 

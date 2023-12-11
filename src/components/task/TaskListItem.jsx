@@ -161,9 +161,9 @@ export default function TaskListItem({ task, rowNumber = null }) {
 					<p className="small-label">Tags</p>
 					<ol className="tags-list">
 						{
-							taskTags.map((tag, index) => {
-								return <li className={"--has-asana-palette-color-"+tag.color}>{tag.name}</li>;
-							})
+							taskTags.map((tag, index) => (
+								<li key={JSON.stringify(tag)} className={"--has-asana-palette-color-"+tag.color}>{tag.name}</li>
+							))
 						}
 					</ol>
 				</div>

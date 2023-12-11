@@ -66,7 +66,7 @@ export default function ProjectTaskList({ src }) {
 			if ( sections ) {
 				innerContent = (
 					<div className="sections-of-tasks">
-						{ sections.map(section => <ProjectSection {...section} />) }
+						{ sections.map(section => <ProjectSection key={JSON.stringify(section)} {...section} />) }
 					</div>
 				);
 			}
