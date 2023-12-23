@@ -11,10 +11,12 @@
     "url": "https://github.com/PurpleTurtleCreative/completionist/issues"
   },
   "devDependencies": {
+    "@wordpress/env": "^9.0.0",
     "@wordpress/scripts": "26.1.0",
     "sass": "^1.54.7"
   },
   "scripts": {
+    "wp-env": "wp-env",
     "build": "wp-scripts build src/index_DashboardWidget.jsx src/index_Automations.jsx src/index_BlockEditor.jsx src/index_ShortcodeAsanaProject.jsx src/index_PinnedTasksMetabox.jsx --output-path=build && npm run styles",
     "start": "wp-scripts start src/index_DashboardWidget.jsx src/index_Automations.jsx src/index_BlockEditor.jsx src/index_ShortcodeAsanaProject.jsx src/index_PinnedTasksMetabox.jsx --output-path=build",
     "bundle": "npm run build && bash bundle.sh",

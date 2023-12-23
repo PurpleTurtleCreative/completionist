@@ -6,9 +6,19 @@
         "WP_DEBUG_LOG": true,
         "WP_DEBUG_DISPLAY": false
     },
-    "plugins": [ "." ],
     "port": 80,
+    "plugins": [ "." ],
     "mappings": {
         "wp-content/plugins/completionist": "."
+    },
+    "env": {
+        "tests": {
+            "port": 8000,
+            "plugins": [
+                "https://wordpress.org/plugins/debug-bar/debug-bar.zip",
+                "https://wordpress.org/plugins/query-monitor/query-monitor.zip",
+                "."
+            ]
+        }
     }
 }
