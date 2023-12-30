@@ -51,6 +51,7 @@ class Shortcodes {
 			'render_callback' => __CLASS__ . '::get_ptc_asana_project',
 			'default_atts'    => array(
 				'src'                    => '', // Required.
+				'layout'                 => '',
 				'auth_user'              => '',
 				'exclude_sections'       => '',
 				'show_name'              => 'true',
@@ -311,6 +312,13 @@ class Shortcodes {
 
 		// Render frontend data.
 
+		$layout = 'list';
+		if ( ! empty( $atts['layout'] ) ) {
+			$layout = $atts['layout'];
+		} elseif ( ! empty( $parsed_asana_project['layout'] ) ) {
+			$layout = $parsed_asana_project['layout'];
+		}
+
 		$request_url = add_query_arg(
 			array( 'token' => $token ),
 			rest_url( REST_API_NAMESPACE_V1 . '/projects' )
@@ -320,7 +328,7 @@ class Shortcodes {
 		return sprintf(
 			'<div class="ptc-shortcode ptc-asana-project" data-src="%1$s" data-layout="%2$s"></div>',
 			esc_url( $request_url ),
-			esc_attr( $parsed_asana_project['layout'] ?? 'list' )
+			esc_attr( $layout )
 		);
 	}
 }

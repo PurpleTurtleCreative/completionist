@@ -1,3 +1,9 @@
+### [unreleased]
+
+#### Added
+
+- New shortcode attribute `layout` to specify a custom layout for the `[ptc_asana_project]` shortcode. Note this is only useful for extenders and third-party customizations. Completionist always displays projects in `list` layout by default.
+
 ### 4.0.0 - 2023-12-10
 
 #### Added
