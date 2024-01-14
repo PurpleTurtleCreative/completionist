@@ -32,6 +32,8 @@ export default function AttachmentThumbnail({ attachment }) {
 					<p className="fallback fallback-warning">Download <a href={attachment._ptc_view_url}>{attachment.name}</a> to view</p>
 				</object>
 			);
+		} else if ( '_ptc_oembed_html' in attachment && attachment._ptc_oembed_html ) {
+			content = <div dangerouslySetInnerHTML={{ __html: attachment._ptc_oembed_html }} />;
 		} else {
 			window.console.warn('Could not display AttachmentThumbnail for unsupported attachment:', attachment);
 			content = <p className="fallback fallback-warning">Failed to display unsupported attachment <em>{attachment.name}</em></p>;

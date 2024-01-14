@@ -487,17 +487,11 @@ class HTML_Builder {
 			function ( $object_tag_matches ) use ( &$replacements ) {
 				// Replace the object with oEmbed HTML.
 				if ( ! empty( $object_tag_matches[1] ) ) {
-					$oembed_url  = html_entity_decode( $object_tag_matches[1] );
-					$oembed_html = wp_oembed_get(
-						$oembed_url,
-						array(
-							'width'  => 1280,
-							'height' => 720,
-						)
-					);
-					if ( $oembed_html && is_string( $oembed_html ) ) {
+					$oembed_html = static::get_oembed_for_url( $object_tag_matches[1] );
+					if ( ! empty( $oembed_html ) ) {
+						$oembed_url     = html_entity_decode( $object_tag_matches[1] );
 						$replacements[] = $oembed_url;
-						return '<div class="ptc-responsive-embed">' . $oembed_html . '</div>';
+						return $oembed_html;
 					}
 				}
 
@@ -505,6 +499,34 @@ class HTML_Builder {
 			},
 			$html
 		);
+	}
+
+	/**
+	 * Gets the oEmbed HTML for the given URL.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param string $url The URL.
+	 * @return string The HTML. Empty string on failure.
+	 */
+	public static function get_oembed_for_url( string $url ) : string {
+
+		if ( ! empty( $url ) ) {
+
+			$oembed_html = wp_oembed_get(
+				html_entity_decode( $url ),
+				array(
+					'width'  => 1280,
+					'height' => 720,
+				)
+			);
+
+			if ( $oembed_html && is_string( $oembed_html ) ) {
+				return '<div class="ptc-responsive-embed">' . $oembed_html . '</div>';
+			}
+		}
+
+		return '';
 	}
 
 	/**

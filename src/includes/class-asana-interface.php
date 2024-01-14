@@ -1057,13 +1057,27 @@ class Asana_Interface {
 				);
 			}
 
-			// Keep attachment if not marked for removal.
+			// Skip if attachment is marked for removal.
 			if (
-				false === in_array( $attachment->_ptc_view_url, $removal_urls, true ) &&
-				false === in_array( $attachment->view_url, $removal_urls, true )
+				true === in_array( $attachment->_ptc_view_url, $removal_urls, true ) ||
+				true === in_array( $attachment->view_url, $removal_urls, true )
 			) {
-				$keep_attachments[] = $attachment;
+				continue;
 			}
+
+			if (
+				isset( $attachment->host ) &&
+				'external' === $attachment->host &&
+				! empty( $attachment->view_url )
+			) {
+				// See if we can get the oEmbed HTML to view external media.
+				$oembed_html = HTML_Builder::get_oembed_for_url( $attachment->view_url );
+				if ( ! empty( $oembed_html ) ) {
+					$attachment->_ptc_oembed_html = $oembed_html;
+				}
+			}
+
+			$keep_attachments[] = $attachment;
 		}
 
 		$attachments = $keep_attachments;
