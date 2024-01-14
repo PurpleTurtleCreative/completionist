@@ -2,7 +2,7 @@
  * Utility functions unrelated to application state.
  */
 
-import { isImage, isVideo } from '../attachment/util.jsx';
+import { isImage, isVideo, isFileType } from '../attachment/util.jsx';
 
 export function getTaskUrl(taskGID) {
 	return `https://app.asana.com/0/0/${taskGID}/f`;
@@ -212,13 +212,7 @@ export function getTaskAttachments(task) {
 		Array.isArray( task.attachments ) &&
 		task.attachments.length > 0
 	) {
-		for ( let attachment of task.attachments ) {
-			if ( isImage(attachment) || isVideo(attachment) ) {
-				attachments.push(attachment);
-			} else {
-				window.console.warn('Completionist currently doesn\'t support the following Asana attachment:', attachment);
-			}
-		}
+		attachments = task.attachments;
 	}
 
 	return attachments;

@@ -12,14 +12,6 @@
 	line-height: 1.3;
 	word-break: break-word;
 
-	img.--is-loading {
-		@extend %is-loading-media;
-	}
-
-	img.--is-error {
-		@extend %is-error-media;
-	}
-
 	&.--can-expand {
 
 		> .main {
@@ -71,10 +63,19 @@
 	}
 
 	img,
-	video {
+	video,
+	object {
 		display: block;
 		max-width: 100%;
 		border: 1px solid color(grey-lighter);
+
+		&.--is-loading {
+			@extend %is-loading-media;
+		}
+
+		&.--is-error {
+			@extend %is-error-media;
+		}
 	}
 
 	.ptc-responsive-embed {

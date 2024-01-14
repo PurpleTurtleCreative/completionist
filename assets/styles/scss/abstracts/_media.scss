@@ -58,4 +58,19 @@
 	&[width] {
 		width: fit-content; // max-width doesn't work for broken media.
 	}
+
+	&[height] {
+		height: fit-content; // shrink to fallback content.
+	}
+
+	&:is(object):not(:empty) {
+		// object is displaying specified fallback content.
+		border: none;
+		background: none;
+		width: 100%; // consistent width.
+
+		> * {
+			margin: 0;
+		}
+	}
 }

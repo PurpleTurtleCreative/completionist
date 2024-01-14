@@ -4,43 +4,31 @@
  * @since 3.5.0
  */
 
-export function isImage(attachment) {
-
+export function isFileType(attachment, fileExtensions) {
 	if (
 		attachment &&
 		'name' in attachment &&
 		attachment.name
 	) {
 		const attachmentName = attachment.name.toLowerCase();
-		return (
-			attachmentName.endsWith('.jpg') ||
-			attachmentName.endsWith('.jpeg') ||
-			attachmentName.endsWith('.png') ||
-			attachmentName.endsWith('.bmp') ||
-			attachmentName.endsWith('.gif')
-		);
+		return fileExtensions.some(extension => attachmentName.endsWith(`.${extension.toLowerCase()}`));
 	}
 
 	return false;
+}
+
+export function isImage(attachment) {
+	const imageExtensions = ['jpg', 'jpeg', 'png', 'bmp', 'gif'];
+	return isFileType(attachment, imageExtensions);
 }
 
 export function isVideo(attachment) {
-
-	if (
-		attachment &&
-		'name' in attachment &&
-		attachment.name
-	) {
-		const attachmentName = attachment.name.toLowerCase();
-		return (
-			attachmentName.endsWith('.mp4')
-		);
-	}
-
-	return false;
+	const videoExtensions = ['mp4'];
+	return isFileType(attachment, videoExtensions);
 }
 
 export function findAndMonitorLoadingMedia(rootNode) {
+
 	for ( let img of rootNode.querySelectorAll('img:not(.load-monitoring-disabled)') ) {
 		if ( 'complete' in img && false === img.complete ) {
 			// Image has not yet loaded.
@@ -49,6 +37,28 @@ export function findAndMonitorLoadingMedia(rootNode) {
 			img.addEventListener('load', handleMediaLoad);
 			// Listen for when image fails to load.
 			img.addEventListener('error', handleMediaError);
+		}
+	}
+
+	for ( let video of rootNode.querySelectorAll('video:not(.load-monitoring-disabled)') ) {
+		if ( 'readyState' in video && video.readyState < 2 ) {
+			// Video has not yet loaded data.
+			video.classList.add('--is-loading');
+			// Listen for when video data is loaded.
+			video.addEventListener('loadeddata', handleMediaLoad);
+			// Listen for when video fails to load.
+			video.addEventListener('error', handleMediaError);
+		}
+	}
+
+	for ( let objectFrame of rootNode.querySelectorAll('object:not(.load-monitoring-disabled)') ) {
+		if ( objectFrame ) {
+			// Object has not yet loaded data.
+			objectFrame.classList.add('--is-loading');
+			// Listen for when object data is loaded.
+			objectFrame.addEventListener('load', handleMediaLoad);
+			// Listen for when object fails to load.
+			objectFrame.addEventListener('error', handleMediaError);
 		}
 	}
 }
