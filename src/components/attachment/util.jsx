@@ -51,14 +51,27 @@ export function findAndMonitorLoadingMedia(rootNode) {
 		}
 	}
 
-	for ( let objectFrame of rootNode.querySelectorAll('object:not(.load-monitoring-disabled)') ) {
-		if ( objectFrame ) {
-			// Object has not yet loaded data.
-			objectFrame.classList.add('--is-loading');
-			// Listen for when object data is loaded.
-			objectFrame.addEventListener('load', handleMediaLoad);
-			// Listen for when object fails to load.
-			objectFrame.addEventListener('error', handleMediaError);
+	for ( let pdfFrame of rootNode.querySelectorAll('object[type="application/pdf"]:not(.load-monitoring-disabled)') ) {
+		if (
+			!! navigator?.mimeTypes['application/pdf']?.enabledPlugin ||
+			navigator.pdfViewerEnabled
+		) {
+			// Browser can display PDFs inline.
+			if (
+				'contentDocument' in pdfFrame &&
+				null !== pdfFrame.contentDocument
+			) {
+				// Object has not yet loaded the document.
+				pdfFrame.classList.add('--is-loading');
+				// Listen for when object document is loaded.
+				pdfFrame.addEventListener('load', handleMediaLoad);
+				// Listen for when object fails to load.
+				pdfFrame.addEventListener('error', handleMediaError);
+			}
+		} else {
+			// Browser won't load or trigger error event,
+			// so mark it as failed to load.
+			pdfFrame.classList.add('--is-error');
 		}
 	}
 }

@@ -29,7 +29,7 @@ export default function AttachmentThumbnail({ attachment }) {
 		} else if ( isFileType(attachment, ['pdf']) ) {
 			content = (
 				<object data={attachment._ptc_view_url} type="application/pdf" width="100%" height="600px">
-					<p className="fallback fallback-warning">Download <a href={attachment._ptc_view_url}>{attachment.name}</a> to view</p>
+					<p className="fallback fallback-warning">Download <a href={attachment._ptc_view_url} download={attachment.name}>{attachment.name}</a> to view</p>
 				</object>
 			);
 		} else if ( '_ptc_oembed_html' in attachment && attachment._ptc_oembed_html ) {
