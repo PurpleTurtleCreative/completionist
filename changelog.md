@@ -3,6 +3,7 @@
 #### Added
 
 - New shortcode attribute `layout` to specify a custom layout for the `[ptc_asana_project]` shortcode. Note this is only useful for extenders and third-party customizations. Completionist always displays projects in `list` layout by default.
+- New shortcode attribute `sort_tasks_by` to sort tasks by the specified field. Common values are `due_on`, `assignee`, `completed_at`, and `name`. Unlike Asana, subtasks are also sorted.
 - `.pdf` video attachments on tasks are now supported.
 - External attachments (eg. Vimeo and YouTube embeds) are now displayed as their oEmbed HTML representations when available.
 

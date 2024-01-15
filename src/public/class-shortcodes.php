@@ -66,6 +66,7 @@ class Shortcodes {
 				'show_tasks_due'         => 'true',
 				'show_tasks_attachments' => 'true',
 				'show_tasks_tags'        => 'true',
+				'sort_tasks_by'          => '',
 			),
 			'script_handles'  => array(
 				'ptc-completionist-shortcode-asana-project',

@@ -670,6 +670,7 @@ class Asana_Interface {
 				'show_tasks_due'         => true,
 				'show_tasks_attachments' => true,
 				'show_tasks_tags'        => true,
+				'sort_tasks_by'          => '',
 			)
 		);
 
@@ -835,7 +836,7 @@ class Asana_Interface {
 				$task_fields .= ',html_notes';
 			}
 			if ( $args['show_tasks_assignee'] ) {
-				$task_fields .= ',assignee,this.assignee.name,this.assignee.photo.image_36x36';
+				$task_fields .= ',assignee,assignee.name,assignee.photo.image_36x36';
 			}
 			if ( $args['show_tasks_due'] ) {
 				$task_fields .= ',due_on';
@@ -867,6 +868,20 @@ class Asana_Interface {
 				$args
 			);
 
+			$do_remove_tasks_sort_field = false;
+			if (
+				$args['sort_tasks_by'] &&
+				false === in_array(
+					$args['sort_tasks_by'],
+					explode( ',', $task_fields )
+				)
+			) {
+				// Ensure sorting field is returned.
+				// Always add "name" subfield in case its an object.
+				$task_fields .= ",{$args['sort_tasks_by']},{$args['sort_tasks_by']}.name";
+				$do_remove_tasks_sort_field = true;
+			}
+
 			$tasks = $asana->tasks->getTasksForProject(
 				$project_gid,
 				$task_request_params,
@@ -887,6 +902,10 @@ class Asana_Interface {
 					$subtask_fields .= ',completed';
 				}
 				self::load_subtasks( $tasks, $subtask_fields );
+			}
+
+			if ( $args['sort_tasks_by'] ) {
+				static::sort_tasks_by( $tasks, $args['sort_tasks_by'] );
 			}
 
 			// Clean data and map tasks to project sections.
@@ -931,6 +950,12 @@ class Asana_Interface {
 							if ( ! $args['show_tasks_completed'] ) {
 								$task->subtasks = array_values( $task->subtasks );
 							}
+
+							// Asana doesn't currently sort subtasks when the
+							// view's sort is changed, but we will.
+							if ( $args['sort_tasks_by'] ) {
+								static::sort_tasks_by( $task->subtasks, $args['sort_tasks_by'] );
+							}
 						}
 
 						// Clone in case the task appears in another membership.
@@ -941,6 +966,14 @@ class Asana_Interface {
 						$project->sections[ $sections_map[ $membership->section->gid ] ]->tasks[] = $task_clone;
 					}
 				}
+			}
+
+			if (
+				$args['sort_tasks_by'] &&
+				true === $do_remove_tasks_sort_field
+			) {
+				// Remove extra field only used for sorting, not for display.
+				Util::deep_unset_prop( $project, $args['sort_tasks_by'] );
 			}
 		}
 
@@ -970,6 +1003,77 @@ class Asana_Interface {
 		}
 
 		return $project;
+	}
+
+	/**
+	 * Sorts tasks by the given field.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param \stdClass[] $tasks The tasks to be sorted.
+	 * @param string      $sort_field The task attribute to sort tasks by.
+	 */
+	public static function sort_tasks_by( array &$tasks, string $sort_field ) {
+		usort(
+			$tasks,
+			function ( $task1, $task2 ) use ( $sort_field ) {
+
+				// Ensure the specified field exists in both tasks.
+				if (
+					isset( $task1->{$sort_field} ) &&
+					isset( $task2->{$sort_field} )
+				) {
+
+					$value1 = &$task1->{$sort_field};
+					$value2 = &$task2->{$sort_field};
+
+					if ( is_bool( $value1 ) && is_bool( $value2 ) ) {
+						if (
+							true === $value1 &&
+							true === $value2 &&
+							isset( $task1->name ) &&
+							isset( $task2->name )
+						) {
+							// If both true, sort alphabetically by task name.
+							return strcmp( $task1->name, $task2->name );
+						}
+						// Sort true values first.
+						return $value2 - $value1;
+					} elseif ( is_object( $value1 ) && is_object( $value2 ) ) {
+						if (
+							isset( $value1->name ) &&
+							isset( $value2->name )
+						) {
+							// Sort by the objects' name fields, such as "assignee".
+							return strcmp( $value1->name, $value2->name );
+						}
+						// Don't know how to sort by object.
+						return 0;
+					} elseif ( is_numeric( $value1 ) && is_numeric( $value2 ) ) {
+						return $value1 - $value2; // Numeric comparison.
+					} elseif ( is_string( $value1 ) && is_string( $value2 ) ) {
+						return strcmp( $value1, $value2 ); // String comparison.
+					} else {
+						return 0; // Not sure how to sort.
+					}
+				} elseif (
+					isset( $task1->{$sort_field} ) &&
+					! isset( $task2->{$sort_field} )
+				) {
+					// If the first task has the field, then put it first.
+					return -1;
+				} elseif (
+					! isset( $task1->{$sort_field} ) &&
+					isset( $task2->{$sort_field} )
+				) {
+					// If the second task has the field, then put it first.
+					return 1;
+				}
+
+				// No opinion when both tasks are missing the specified field.
+				return 0;
+			}
+		);
 	}
 
 	/**
