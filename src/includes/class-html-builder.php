@@ -504,7 +504,7 @@ class HTML_Builder {
 	/**
 	 * Gets the oEmbed HTML for the given URL.
 	 *
-	 * @since [unreleased]
+	 * @since 4.1.0
 	 *
 	 * @param string $url The URL.
 	 * @return string The HTML. Empty string on failure.

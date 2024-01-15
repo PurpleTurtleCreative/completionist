@@ -1008,7 +1008,7 @@ class Asana_Interface {
 	/**
 	 * Sorts tasks by the given field.
 	 *
-	 * @since [unreleased]
+	 * @since 4.1.0
 	 *
 	 * @param \stdClass[] $tasks The tasks to be sorted.
 	 * @param string      $sort_field The task attribute to sort tasks by.

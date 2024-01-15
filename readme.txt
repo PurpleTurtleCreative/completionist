@@ -3,7 +3,7 @@ Contributors: michelleblanchette
 Tags: asana, project, task, management, manager, integration, api, work, business, collaboration, client, customer, support, portal, dashboard, widget, metabox, shortcodes
 Requires at least: 5.0.0
 Tested up to: 6.4.2
-Stable tag: 4.0.0
+Stable tag: 4.1.0
 Requires PHP: 7.2
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
@@ -97,7 +97,20 @@ This plugin is now hosted from the official WordPress.org Plugins directory. Ple
 
 == Changelog ==
 
-_Here's what has changed in the past 3 releases. To access the complete changelog history, please visit [https://purpleturtlecreative.com/completionist/plugin-info/](https://purpleturtlecreative.com/completionist/plugin-info/) or see `changelog.md` in Completionist's files._
+_Here's what changed in the past 3 releases. To access the complete changelog history, please visit [https://purpleturtlecreative.com/completionist/plugin-info/](https://purpleturtlecreative.com/completionist/plugin-info/) or see `changelog.md` in Completionist's files._
+
+### 4.1.0 - 2024-01-14
+
+#### Added
+
+- New shortcode attribute `layout` to specify a custom layout for the `[ptc_asana_project]` shortcode. Note this is only useful for extenders and third-party customizations. Completionist always displays projects in `list` layout by default.
+- New shortcode attribute `sort_tasks_by` to sort tasks by the specified field. Common values are `due_on`, `assignee`, `completed_at`, and `name`. Unlike Asana, subtasks are also sorted.
+- `.pdf` video attachments on tasks are now supported.
+- External attachments (eg. Vimeo and YouTube embeds) are now displayed as their oEmbed HTML representations when available.
+
+#### Changed
+
+- Unsupported or otherwise non-displayable task attachments are now listed as error or warning notices for clarity. Previously, such attachments would simply be logged to the browser console and ignored.
 
 ### 4.0.0 - 2023-12-10
 
@@ -152,15 +165,3 @@ _Here's what has changed in the past 3 releases. To access the complete changelo
 #### Added
 
 - New PHP filter hook `ptc_completionist_project_task_fields` to edit the task fields that will be retrieved for each task in an Asana project.
-
-### 3.10.2 - 2023-10-10
-
-#### Changed
-
-- Clearing the Asana Data Cache no longer completely deletes all request tokens, so it's now compatible with frontend page caching.
-
-#### Fixed
-
-- Media attachments with uppercase file suffix, such as `JPG` or `PNG`, would not be displayed in Project Embeds.
-- Style issues on the Settings screen when using Chrome with the Loom browser extension.
-- Error 404 when using the new Asana project URL as the `src` in Project Embeds.
