@@ -936,6 +936,12 @@ class Asana_Interface {
 							if ( ! $args['show_tasks_completed'] ) {
 								$task->subtasks = array_values( $task->subtasks );
 							}
+
+							// Asana doesn't currently sort subtasks when the
+							// view's sort is changed, but we will.
+							if ( $args['sort_tasks_by'] ) {
+								static::sort_tasks_by( $task->subtasks, $args['sort_tasks_by'] );
+							}
 						}
 
 						// Clone in case the task appears in another membership.
