@@ -836,7 +836,7 @@ class Asana_Interface {
 				$task_fields .= ',html_notes';
 			}
 			if ( $args['show_tasks_assignee'] ) {
-				$task_fields .= ',assignee,this.assignee.name,this.assignee.photo.image_36x36';
+				$task_fields .= ',assignee,assignee.name,assignee.photo.image_36x36';
 			}
 			if ( $args['show_tasks_due'] ) {
 				$task_fields .= ',due_on';
@@ -867,6 +867,20 @@ class Asana_Interface {
 				$project_gid,
 				$args
 			);
+
+			$do_remove_tasks_sort_field = false;
+			if (
+				$args['sort_tasks_by'] &&
+				false === in_array(
+					$args['sort_tasks_by'],
+					explode( ',', $task_fields )
+				)
+			) {
+				// Ensure sorting field is returned.
+				// Always add "name" subfield in case its an object.
+				$task_fields .= ",{$args['sort_tasks_by']},{$args['sort_tasks_by']}.name";
+				$do_remove_tasks_sort_field = true;
+			}
 
 			$tasks = $asana->tasks->getTasksForProject(
 				$project_gid,
@@ -952,6 +966,14 @@ class Asana_Interface {
 						$project->sections[ $sections_map[ $membership->section->gid ] ]->tasks[] = $task_clone;
 					}
 				}
+			}
+
+			if (
+				$args['sort_tasks_by'] &&
+				true === $do_remove_tasks_sort_field
+			) {
+				// Remove extra field only used for sorting, not for display.
+				Util::deep_unset_prop( $project, $args['sort_tasks_by'] );
 			}
 		}
 
