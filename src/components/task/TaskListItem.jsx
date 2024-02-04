@@ -250,6 +250,27 @@ export default function TaskListItem({ task, rowNumber = null }) {
 		);
 	}
 
+	/**
+	 * Filters content to display in the main row
+	 * of a TaskListItem.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @param {Object[]} content An array of React
+	 * components or JSX elements to be rendered.
+	 * @param {Object}   task The represented task.
+	 */
+	const mainRowContent = window.Completionist.hooks.applyFilters(
+		'TaskListItem_main_row_content',
+		[
+			maybeName,
+			maybeSubtaskCount,
+			maybeAssignee,
+			maybeDueDate,
+		],
+		task
+	);
+
 	return (
 		<li className={"ptc-TaskListItem"+extraClassNames} ref={rootRef}>
 			<div
@@ -264,10 +285,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 				{maybeToggle}
 				{maybeCompleted}
 				<div className="body">
-					{maybeName}
-					{maybeSubtaskCount}
-					{maybeAssignee}
-					{maybeDueDate}
+					{mainRowContent}
 				</div>
 			</div>
 			{maybeExpandedDetails}

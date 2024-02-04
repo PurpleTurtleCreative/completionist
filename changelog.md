@@ -1,3 +1,9 @@
+### 4.2.0 - 2024-02-03
+
+#### Added
+
+- New JavaScript filter hook `TaskListItem_main_row_content` to modify the main header row of tasks listed in a project list. Helpful for injecting additional task data, such as custom fields.
+
 ### 4.1.1 - 2024-01-14
 
 #### Fixed

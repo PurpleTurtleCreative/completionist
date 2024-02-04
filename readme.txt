@@ -2,8 +2,8 @@
 Contributors: michelleblanchette
 Tags: asana, project, task, management, manager, integration, api, work, business, collaboration, client, customer, support, portal, dashboard, widget, metabox, shortcodes
 Requires at least: 5.0.0
-Tested up to: 6.4.2
-Stable tag: 4.1.1
+Tested up to: 6.4.3
+Stable tag: 4.2.0
 Requires PHP: 7.2
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
@@ -97,77 +97,10 @@ This plugin is now hosted from the official WordPress.org Plugins directory. Ple
 
 == Changelog ==
 
-_Here's what changed in the past 3 releases. To access the complete changelog history, please visit [https://purpleturtlecreative.com/completionist/plugin-info/](https://purpleturtlecreative.com/completionist/plugin-info/) or see `changelog.md` in Completionist's files._
+_Here's what changed in the current release. To access the complete changelog history, please visit [https://purpleturtlecreative.com/completionist/plugin-info/](https://purpleturtlecreative.com/completionist/plugin-info/) or see `changelog.md` in Completionist's files._
 
-### 4.1.1 - 2024-01-14
-
-#### Fixed
-
-- Typo in readme.
-
-### 4.1.0 - 2024-01-14
+### 4.2.0 - 2024-02-03
 
 #### Added
 
-- New shortcode attribute `layout` to specify a custom layout for the `[ptc_asana_project]` shortcode. Note this is only useful for extenders and third-party customizations. Completionist always displays projects in `list` layout by default.
-- New shortcode attribute `sort_tasks_by` to sort tasks by the specified field. Common values are `due_on`, `assignee`, `completed_at`, and `name`. Unlike Asana, subtasks are also sorted.
-- `.pdf` attachments on tasks are now supported.
-- External attachments (eg. Vimeo and YouTube embeds) are now displayed as their oEmbed HTML representations when available.
-
-#### Changed
-
-- Unsupported or otherwise non-displayable task attachments are now listed as error or warning notices for clarity. Previously, such attachments would simply be logged to the browser console and ignored.
-
-### 4.0.0 - 2023-12-10
-
-#### Added
-
-- New `readme.txt` file for WordPress.org plugins listing.
-- New `Uninstaller` class to handle plugin data removal.
-- New `Upgrader` class to handle plugin version updates. This also offers support assistance when a version rollback is detected, which usually indicates that the user is experiencing issues with a newer version of the plugin.
-- New `Admin_Notices` class to handle displaying of admin notices. All notices are respectful in that they are either displayed once or dismissible.
-- New `Errors\No_Authorization` exception type class to fix class name and file inconsistency.
-- New `Autoloader` class to autoload class files.
-- New REST API endpoints to replace all WP Admin AJAX actions.
-
-#### Changed
-
-- Remote updates are now handled through WordPress.org. See the official plugin listing at [https://wordpress.org/plugins/completionist/](https://wordpress.org/plugins/completionist/)
-- Class declarations are no longer wrapped in `if ( class_exists( ... ) )` checks. All classes are properly namespaced and should not normally cause collisions.
-- Upgraded the legacy Tasks metabox within the Classic Editor. This offers great UX/UI and performance improvements, matching the Pinned Tasks panel in the Block Editor. This also removes script dependencies on jQuery.
-- All admin scripts are now loaded in the document footer.
-- The `global $submenu` is no longer modified in wp-admin to change the main menu page's submenu title to "Settings". Instead, it's now explicitly added as a duplicate submenu page with the overridden title.
-- Refactored `Automation::to_stdClass()` to `Automation::to_std_class()` for proper snake casing per WordPress Coding Standards.
-
-#### Removed
-
-- The `YahnisElsts/plugin-update-checker` Composer package which facilitated remote updates. Remote updates are now hosted by WordPress.org.
-- The `uninstall.php` file. Data is now uninstalled by using the registered uninstall hook.
-- The deprecated `Request_Tokens` class file, options, and other references.
-- The `Errors\NoAuthorization` class due to inconsistent naming and class file.
-- All `require_once` calls which manually included class files. The new `Autoloader` class now handles this.
-- All WP Admin AJAX actions to instead use the new REST API endpoints.
-- The `HTML_Builder::format_task_row()` function. It was only used by the legacy Tasks metabox within the Classic Editor, which is now replaced by the upgraded ReactJS-based components.
-- The `Task_Categorizer` class, all child classes, and the `Task_Categorizer` namespace. These PHP classes have not been used since this functionality was moved to ReactJS on the frontend.
-- Non-class files within the `src/admin` directory. All PHP+HTML template code has been moved to methods within the related PHP classes, either `Admin_Pages` or `Admin_Widgets`.
-
-#### Fixed
-
-- Unpinning a task from the post editor would unpin the task across the entire site.
-- Some edge-case oddities with the WP Admin AJAX actions for managing tasks. The new REST API endpoints are now more robust after a thorough code review and refactor.
-- Searching for posts in an Automation Action's "Pin to Post" field would include WordPress's internal types such as `wp_navigation` and `wp_global_styles`.
-- The Asana Data Cache Duration (TTL) could not be set to 0 seconds.
-- Resolve console errors and warnings in React scripts logged when `SCRIPT_DEBUG` is enabled.
-
-#### Security
-
-- Various improvements with the new REST API endpoints which replace the original WP Admin AJAX actions.
-- Unique nonces to authorize different requests to the new REST API endpoints which replace the original WP Admin AJAX actions.
-- Searching for posts in an Automation Action's "Pin to Post" field would include posts that the current user did not have permission to read.
-- Improve sanitization of nonce values before validation.
-
-### 3.11.0 - 2023-11-19
-
-#### Added
-
-- New PHP filter hook `ptc_completionist_project_task_fields` to edit the task fields that will be retrieved for each task in an Asana project.
+- New JavaScript filter hook `TaskListItem_main_row_content` to modify the main header row of tasks listed in a project list. Helpful for injecting additional task data, such as custom fields.
