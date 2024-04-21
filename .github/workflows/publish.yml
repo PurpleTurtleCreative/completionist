@@ -6,9 +6,16 @@ on:
     - "v*"
 
 jobs:
+
   tag:
+
     name: Publish Release
     runs-on: ubuntu-latest
+
+    environment:
+      name: production
+      url: https://purpleturtlecreative.com/completionist/plugin-info/
+
     steps:
 
     - name: Checkout
@@ -23,12 +30,13 @@ jobs:
       shell: bash
 
     - name: Upload ZIP File
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ env.PTC_PLUGIN_ZIP_FILE_BASENAME }}
         path: ${{ env.PTC_PLUGIN_ZIP_FILE }}
 
     - name: Publish WordPress Plugin Release
+      id: wporg_release
       uses: 10up/action-wordpress-plugin-deploy@stable
       with:
         dry-run: ${{ contains(github.ref_name, '-rc.') }}
@@ -36,3 +44,15 @@ jobs:
       env:
         SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME }}
         SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
+
+    - name: Upload to Server
+      if: steps.wporg_release.outcome == 'success' && ${{ contains(github.ref_name, '-rc.') }} != true
+      env:
+        remote: "github@${{ secrets.PTC_PROD_HOSTNAME }}"
+        destination: "/var/www/html/wp-content/plugins/ptc-resources-server/resources/plugins/completionist/${{ env.PTC_PLUGIN_ZIP_FILE_BASENAME }}.zip"
+      run: |
+        echo "${{ secrets.PTC_GITHUB_SSH_KEY }}" > deploy_key
+        chmod 600 ./deploy_key
+        scp -i ./deploy_key ${{ env.PTC_PLUGIN_ZIP_FILE }} ${{ env.remote }}:${{ env.destination }}
+        ssh -i ./deploy_key -o StrictHostKeyChecking=no ${{ env.remote }} 'chmod 775 ${{ env.destination }}; chgrp www-data ${{ env.destination }}' || true
+      
