@@ -8,7 +8,12 @@
 - Added "Support" to Helpful Links to direct feedback to the plugin support forum rather than personal email address. This promotes building a knowledgebase in public so users can quickly find answers.
 
 #### Removed
+
 - Removed latest version changes from being noted in the WordPress.org readme. To access the complete changelog history, please visit [https://purpleturtlecreative.com/completionist/plugin-info/](https://purpleturtlecreative.com/completionist/plugin-info/) or see `changelog.md` in Completionist's files.
+
+#### Fixed
+
+- Assignee name would be displayed as `(Not Connected)` in the admin widgets, even when the assignee's name is accessible from Asana. In the admin widgets, the WordPress user's display name is still prioritized if the assignee as connected their Asana account to their WordPress user profile.
 
 ### 4.2.0 - 2024-02-03
 
