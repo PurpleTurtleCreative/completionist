@@ -30,7 +30,7 @@ class Asana_Interface {
 	 *
 	 * @var string TASK_OPT_FIELDS
 	 */
-	public const TASK_OPT_FIELDS = 'name,completed,notes,due_on,assignee,workspace,tags';
+	public const TASK_OPT_FIELDS = 'name,completed,notes,due_on,assignee,assignee.name,workspace,tags';
 
 	/**
 	 * The $options array for \Asana\Client instantiation.

@@ -78,9 +78,11 @@ export function filterPinnedTasks(tasks) {
 
 export function getAssigneeDisplayName(task) {
 	let assigneeDisplayName = null;
-	if ( task.assignee ) {
+	if ( task?.assignee ) {
 		if ( window.PTCCompletionist.users[ task.assignee.gid ] ) {
 			assigneeDisplayName = window.PTCCompletionist.users[ task.assignee.gid ].data.display_name;
+		} else if ( task.assignee?.name ) {
+			assigneeDisplayName = task.assignee.name;
 		} else {
 			assigneeDisplayName = '(Not Connected)';
 		}
