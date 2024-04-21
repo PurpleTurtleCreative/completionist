@@ -2,8 +2,8 @@
 Contributors: michelleblanchette
 Tags: asana, project, task, management, manager, integration, api, work, business, collaboration, client, customer, support, portal, dashboard, widget, metabox, shortcodes
 Requires at least: 5.0.0
-Tested up to: 6.4.3
-Stable tag: 4.2.0
+Tested up to: 6.5.2
+Stable tag: 4.2.1
 Requires PHP: 7.2
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
@@ -97,10 +97,4 @@ This plugin is now hosted from the official WordPress.org Plugins directory. Ple
 
 == Changelog ==
 
-_Here's what changed in the current release. To access the complete changelog history, please visit [https://purpleturtlecreative.com/completionist/plugin-info/](https://purpleturtlecreative.com/completionist/plugin-info/) or see `changelog.md` in Completionist's files._
-
-### 4.2.0 - 2024-02-03
-
-#### Added
-
-- New JavaScript filter hook `TaskListItem_main_row_content` to modify the main header row of tasks listed in a project list. Helpful for injecting additional task data, such as custom fields.
+To access the complete changelog history, please visit [https://purpleturtlecreative.com/completionist/plugin-info/](https://purpleturtlecreative.com/completionist/plugin-info/) or see `changelog.md` in Completionist's files.
