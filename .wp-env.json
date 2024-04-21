@@ -10,7 +10,7 @@
     "plugins": [ "." ],
     "mappings": {
         "wp-content/plugins/completionist": ".",
-        "wp-content/plugins/completionist-custom-fields": "/Users/michelle/web/github/purple-turtle-creative/completionist-custom-fields"
+        "wp-content/plugins/completionist-custom-fields": "PurpleTurtleCreative/completionist-custom-fields"
     },
     "env": {
         "tests": {
