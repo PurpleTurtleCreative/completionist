@@ -5,6 +5,9 @@
 - Tested up to WordPress 6.5.2.
 - Updated Asana color palette values.
 - Updated build script package versions.
+- Added "Support" to Helpful Links to direct feedback to the plugin support forum rather than personal email address. This promotes building a knowledgebase in public so users can quickly find answers.
+
+#### Removed
 - Removed latest version changes from being noted in the WordPress.org readme. To access the complete changelog history, please visit [https://purpleturtlecreative.com/completionist/plugin-info/](https://purpleturtlecreative.com/completionist/plugin-info/) or see `changelog.md` in Completionist's files.
 
 ### 4.2.0 - 2024-02-03
