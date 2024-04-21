@@ -13,7 +13,7 @@
 
 #### Fixed
 
-- Assignee name would be displayed as `(Not Connected)` in the admin widgets, even when the assignee's name is accessible from Asana. In the admin widgets, the WordPress user's display name is still prioritized if the assignee as connected their Asana account to their WordPress user profile.
+- Assignee name would be displayed as `(Not Connected)` in the admin widgets, even when the assignee's name is accessible from Asana. In the admin widgets, the WordPress user's display name is still prioritized if the assignee has connected their Asana account to their WordPress user profile.
 
 ### 4.2.0 - 2024-02-03
 
