@@ -507,14 +507,17 @@ class Admin_Pages {
 					</a>
 					<a class="ptc-icon-button" href="https://docs.purpleturtlecreative.com/completionist/" target="_blank">
 						<i class="fas fa-book"></i>
-						Documentation
+						Readme
+					</a>
+					<a class="ptc-icon-button" href="https://wordpress.org/support/plugin/completionist/" target="_blank">
+						<i class="fas fa-comments"></i>
+						Support
 					</a>
 					<a class="ptc-icon-button" href="https://purpleturtlecreative.com/completionist/plugin-info/#changelog" target="_blank">
 						<i class="fas fa-file-code"></i>
 						Changelog
 					</a>
 				</div>
-				<p>Please send feedback to <a href="mailto:michelle@purpleturtlecreative.com" target="_blank">michelle@purpleturtlecreative.com</a></p>
 			</section><!--close section#ptc-asana-user-->
 
 			<section id="ptc-asana-workspace">
