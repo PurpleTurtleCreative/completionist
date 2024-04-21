@@ -534,7 +534,7 @@ class Asana_Interface {
 				'opt_fields' => 'gid',
 			);
 
-			$user_task_list = $asana->user_task_lists->findByUser( $user_gid, $params );
+			$user_task_list = $asana->usertasklists->findByUser( $user_gid, $params );
 			$user_task_list_gid = Options::sanitize( 'gid', $user_task_list->gid );
 			if ( empty( $user_task_list_gid ) ) {
 				return '';
