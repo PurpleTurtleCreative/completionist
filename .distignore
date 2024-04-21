@@ -25,3 +25,4 @@ src/components/*
 src/components
 src/*.js
 src/*.jsx
+tools/*

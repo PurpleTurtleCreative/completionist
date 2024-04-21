@@ -55,28 +55,22 @@ $colors: (
 );
 
 $asana-palette: (
-
-	// Asana API color value -> UI color name.
-	none: rgb(199, 196, 196), // None.
-	dark-brown: rgb(248, 223, 114), // Yellow.
-	dark-green: rgb(93, 162, 131), // Green.
-	dark-orange: rgb(236, 141, 113), // Orange.
-	dark-pink: rgb(242, 111, 178), // HotPink.
-	dark-purple: rgb(141, 132, 232), // Indigo.
-	dark-red: rgb(240, 106, 106), // Red.
-	dark-teal: rgb(158, 231, 227), // Aqua.
-	light-blue: rgb(69, 115, 210), // Blue.
-	light-green: rgb(174, 207, 85), // YellowGreen.
-	light-orange: rgb(241, 189, 108), // YellowOrange.
-	light-pink: rgb(249, 170, 239), // Magenta.
-	light-purple: rgb(179, 107, 212), // Purple.
-	light-red: rgb(252, 151, 154), // Pink.
-	light-teal: rgb(78, 203, 196), // BlueGreen.
-	light-warm-gray: rgb(109, 110, 111), // CoolGray.
-
-	// "dark-blue",
-	// "dark-warm-gray",
-	// "light-brown",
+	dark-brown: #f8df72,
+	dark-green: #83c9a9,
+	dark-orange: #ec8d71,
+	dark-pink: #f26fb2,
+	dark-purple: #a69ff3,
+	dark-red: #f06a6a,
+	dark-teal: #9ee7e3,
+	light-blue: #4573d2,
+	light-green: #b3df97,
+	light-orange: #f1bd6c,
+	light-pink: #f9aaef,
+	light-purple: #cd95ea,
+	light-red: #fc979a,
+	light-teal: #4ecbc4,
+	light-warm-gray: #6d6e6f,
+	none: #e8e5e4
 );
 
 // Functions.
@@ -112,21 +106,7 @@ $asana-palette: (
 			background-color: $color;
 			@if "light-blue" == $name {
 				color: color(white);
-			} @else if "dark-pink" == $name {
-				color: color(black);
-			} @else if "dark-red" == $name {
-				color: color(black);
-			} @else if "dark-teal" == $name {
-				color: color(black);
 			} @else if "light-warm-gray" == $name {
-				color: color(white);
-			} @else if "dark-orange" == $name {
-				color: color(black);
-			} @else if "dark-brown" == $name {
-				color: color(black);
-			} @else if "light-purple" == $name {
-				color: color(white);
-			} @else if string.index(""+$name, "dark") {
 				color: color(white);
 			} @else {
 				color: color(black);
