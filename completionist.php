@@ -2,8 +2,8 @@
 /**
  * Completionist
  *
- * @author            Michelle Blanchette
- * @copyright         2023 Purple Turtle Creative, LLC
+ * @author            Michelle Blanchette <michelle@purpleturtlecreative.com>
+ * @copyright         2024 Purple Turtle Creative, LLC
  * @license           GPL-3.0-or-later
  *
  * @wordpress-plugin
