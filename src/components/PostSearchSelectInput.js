@@ -10,6 +10,7 @@ export class PostSearchSelectInput extends Component {
     Optional Props:
     - (string) initialValue
     - (string) initialLabel
+    - (object[]) suggestedOptions [ { "value": string, "label": string } ]
     */
 
     super(props);
@@ -29,6 +30,10 @@ export class PostSearchSelectInput extends Component {
 
     if ( 'initialLabel' in props && props.initialLabel ) {
       this.state.currentLabel = props.initialLabel;
+    }
+
+    if ( 'suggestedOptions' in props && props.suggestedOptions ) {
+      this.state.suggestedOptions = props.suggestedOptions;
     }
 
     this.handleSearchChange = this.handleSearchChange.bind(this);
@@ -120,7 +125,18 @@ export class PostSearchSelectInput extends Component {
       if ( this.state.isLoading === true ) {
         return <li><i className="fas fa-spinner fa-pulse"></i> Searching for posts...</li>;
       } else if ( this.state.currentLabel.trim().length >= 3 ) {
-        return <li>No post results.</li>;
+        return <li>No post results. { ( this.state?.suggestedOptions?.length > 0 ) && "Clear your search to see suggested options." }</li>;
+      } else if ( this.state?.suggestedOptions?.length > 0 ) {
+        return (
+          <>
+            <li>Choose an option below or enter at least 3 characters to search...</li>
+            {
+              this.state.suggestedOptions.map((option) => (
+                <li className='post-option' data-value={option.value} key={option.value} onMouseDown={() => this.handleOptionChange(option.value, option.label)}>{option.label}</li>
+              ))
+            }
+          </>
+        );
       } else {
         return <li>Enter at least 3 characters to search...</li>;
       }
@@ -134,6 +150,15 @@ export class PostSearchSelectInput extends Component {
     if ( this.state.currentValue.trim() !== '' && this.state.currentLabel.trim() === '' ) {
       this.setState({ currentLabel: '(Loading...)' }, () => {
 
+        if (
+          Number.isNaN( parseFloat( this.state.currentValue ) ) ||
+          ! Number.isFinite( this.state.currentValue )
+        ) {
+          // Not a numeric post ID value, so just display the value itself.
+          this.setState({ currentLabel: this.state.currentValue });
+          return;
+        }
+
         let data = {
           '_wpnonce': window.ptc_completionist_automations.api.auth_nonce,
           'nonce': window.ptc_completionist_automations.api.nonce_get_post,
@@ -146,12 +171,12 @@ export class PostSearchSelectInput extends Component {
           } else {
             console.error( 'Failed to load initial PostSearchSelectInput label for initial value.' );
             console.error( res );
-            this.setState({ currentLabel: '(Error: Failed to load post title)' });
+            this.setState({ currentLabel: `${this.state.currentValue} - [Error] Failed to load post title` });
           }
         })
           .fail(() => {
             console.error( 'Failed to load initial PostSearchSelectInput label for initial value.' );
-            this.setState({ currentLabel: '(Error: Failed to load post title)' });
+            this.setState({ currentLabel: `${this.state.currentValue} - [Error] Failed to load post title` });
           });
 
       });

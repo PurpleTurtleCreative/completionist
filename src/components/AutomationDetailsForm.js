@@ -539,10 +539,27 @@ class AutomationActionsInputs extends Component {
               <textarea id={"ptc-new-task_notes_"+index} value={action.meta.notes} onChange={(e) => this.props.changeActionMeta(action.ID, 'notes', e.target.value)} />
             </div>
 
-            <div className='form-group'>
-              <label htmlFor={"ptc-new-task_post_id_"+index}>Pin to Post</label>
+            <div className='form-group' style={{ alignItems: 'flex-start' }}>
+              <label htmlFor={"ptc-new-task_post_id_"+index} style={{ marginTop: '0.33em' }}>Pin to Post</label>
               <PostSearchSelectInput
                 id={"ptc-new-task_post_id_"+index}
+                suggestedOptions={[
+                  {
+                    "value": "{post.ID}",
+                    "label": "{post.ID} - Dynamically pin to associated post"
+                  },
+                  {
+                    /*
+                    Note that Classic Editor creates the draft post after the post title
+                    has been provided, which is often before the user has selected a
+                    Parent post value. This makes it where using the "Post is Created"
+                    trigger for posts created in Classic Editor has unexpected behavior.
+                    So I say to you... Switch to the Block Editor already! Hahaha!
+                    */
+                    "value": "{post.post_parent}",
+                    "label": "{post.post_parent} - Dynamically pin to associated post's parent post"
+                  }
+                ]}
                 initialValue={action.meta.post_id}
                 onSelectOption={(value) => this.props.changeActionMeta(action.ID, 'post_id', value)}
               />

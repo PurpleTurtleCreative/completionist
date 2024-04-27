@@ -118,6 +118,7 @@ class Actions {
 
 			$action_with_meta->meta['name']  = Fields::translate_templates( $action_with_meta->meta['name'] ?? '', $translation_objects );
 			$action_with_meta->meta['notes'] = Fields::translate_templates( $action_with_meta->meta['notes'] ?? '', $translation_objects );
+			$action_with_meta->meta['post_id'] = Fields::translate_templates( $action_with_meta->meta['post_id'] ?? '', $translation_objects );
 
 			$task = Asana_Interface::create_task( $action_with_meta->meta, (string) $action_with_meta->meta['task_author'] );
 
