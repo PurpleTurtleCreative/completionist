@@ -1,3 +1,14 @@
+### [unreleased]
+
+#### Added
+
+- Automation Actions now support dynamically pinning the newly created Asana task to the WordPress post which triggered its creation. Clear the "Pin to Post" input field value to see both available options, `{post.ID}` and `{post.post_parent}`.
+
+#### Changed
+
+- The "Pin to Post" field label in Automation Actions no longer shifts due to centered positioning.
+- Improved error messaging when the "Pin to Post" field's post title could not be retrieved from the REST API.
+
 ### 4.2.1 - 2024-04-21
 
 #### Changed
