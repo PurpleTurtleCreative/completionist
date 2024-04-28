@@ -3,8 +3,8 @@
     "asana/asana": "1.0.6"
   },
   "require-dev": {
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
-    "phpcompatibility/phpcompatibility-wp": "*",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
     "sirbrillig/phpcs-variable-analysis": "^2.11",
     "squizlabs/php_codesniffer": "^3.7",
     "wp-coding-standards/wpcs": "^3.0"
