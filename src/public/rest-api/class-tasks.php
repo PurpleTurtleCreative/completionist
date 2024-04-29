@@ -214,7 +214,6 @@ class Tasks {
 	) {
 
 		$request_token = new Request_Token( $request['token'] );
-		trigger_error( print_r( $request_token, true ) );
 
 		// Abort if token is invalid.
 		if ( ! $request_token->exists() ) {
@@ -237,7 +236,6 @@ class Tasks {
 			// Get Asana authentication.
 
 			$args = $request_token->get_args();
-			trigger_error( print_r( $args, true ) );
 			if ( empty( $args['auth_user'] ) ) {
 				// There is no user for Asana authentication.
 				return new \WP_Error(
