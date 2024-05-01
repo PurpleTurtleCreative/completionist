@@ -91,10 +91,10 @@ class Shortcodes {
 				'sort_subtasks_by' => '',
 			),
 			'script_handles'  => array(
-				'ptc-completionist-shortcode-asana-project',
+				'ptc-completionist-shortcode-asana-task',
 			),
 			'style_handles'   => array(
-				'ptc-completionist-shortcode-asana-project',
+				'ptc-completionist-shortcode-asana-task',
 			),
 		),
 	);
@@ -225,6 +225,25 @@ class Shortcodes {
 		wp_register_style(
 			'ptc-completionist-shortcode-asana-project',
 			PLUGIN_URL . '/build/index_ShortcodeAsanaProject.jsx.css',
+			array(),
+			$asset_file['version']
+		);
+
+		// Asana task assets.
+
+		$asset_file = require_once PLUGIN_PATH . 'build/index_ShortcodeAsanaTask.jsx.asset.php';
+
+		wp_register_script(
+			'ptc-completionist-shortcode-asana-task',
+			PLUGIN_URL . '/build/index_ShortcodeAsanaTask.jsx.js',
+			$dependencies,
+			$asset_file['version'],
+			true
+		);
+
+		wp_register_style(
+			'ptc-completionist-shortcode-asana-task',
+			PLUGIN_URL . '/build/index_ShortcodeAsanaTask.jsx.css',
 			array(),
 			$asset_file['version']
 		);
