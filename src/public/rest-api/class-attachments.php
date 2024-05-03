@@ -198,8 +198,7 @@ class Attachments {
 			// Add request token for retrieving the attachment again.
 			$attachment->_ptc_refresh_url = HTML_Builder::get_local_attachment_url(
 				$attachment->gid,
-				-1,
-				$args['auth_user']
+				array( 'auth_user' => $args['auth_user'] )
 			);
 
 			// Ensure GID is stripped.

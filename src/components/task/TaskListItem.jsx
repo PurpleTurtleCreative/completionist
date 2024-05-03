@@ -28,7 +28,7 @@ import '../../../assets/styles/scss/components/task/_TaskListItem.scss';
 
 const { useState, useEffect, useRef } = wp.element;
 
-export default function TaskListItem({ task, rowNumber = null }) {
+export default function TaskListItem({ task, rowNumber = null, tagName: Element = 'li' }) {
 	const [ isExpanded, setIsExpanded ] = useState(false);
 	const rootRef = useRef(null);
 
@@ -272,7 +272,7 @@ export default function TaskListItem({ task, rowNumber = null }) {
 	);
 
 	return (
-		<li className={"ptc-TaskListItem"+extraClassNames} ref={rootRef}>
+		<Element className={"ptc-TaskListItem"+extraClassNames} ref={rootRef}>
 			<div
 				className="main"
 				onClick={
@@ -289,6 +289,6 @@ export default function TaskListItem({ task, rowNumber = null }) {
 				</div>
 			</div>
 			{maybeExpandedDetails}
-		</li>
+		</Element>
 	);
 }

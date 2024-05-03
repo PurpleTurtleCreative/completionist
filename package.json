@@ -17,8 +17,8 @@
   },
   "scripts": {
     "wp-env": "wp-env",
-    "build": "wp-scripts build src/index_DashboardWidget.jsx src/index_Automations.jsx src/index_BlockEditor.jsx src/index_ShortcodeAsanaProject.jsx src/index_PinnedTasksMetabox.jsx --output-path=build && npm run styles",
-    "start": "wp-scripts start src/index_DashboardWidget.jsx src/index_Automations.jsx src/index_BlockEditor.jsx src/index_ShortcodeAsanaProject.jsx src/index_PinnedTasksMetabox.jsx --output-path=build",
+    "build": "wp-scripts build src/index_DashboardWidget.jsx src/index_Automations.jsx src/index_BlockEditor.jsx src/index_ShortcodeAsanaProject.jsx src/index_ShortcodeAsanaTask.jsx src/index_PinnedTasksMetabox.jsx --output-path=build && npm run styles",
+    "start": "wp-scripts start src/index_DashboardWidget.jsx src/index_Automations.jsx src/index_BlockEditor.jsx src/index_ShortcodeAsanaProject.jsx src/index_ShortcodeAsanaTask.jsx src/index_PinnedTasksMetabox.jsx --output-path=build",
     "bundle": "npm run build && bash bundle.sh",
     "styles": "sass --style=compressed assets/styles/scss:assets/styles",
     "watch:styles": "sass --style=expanded --watch assets/styles/scss:assets/styles"

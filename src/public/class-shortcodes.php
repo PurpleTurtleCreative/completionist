@@ -50,7 +50,7 @@ class Shortcodes {
 			'render_count'    => 0,
 			'render_callback' => __CLASS__ . '::get_ptc_asana_project',
 			'default_atts'    => array(
-				'src'                    => '', // Required.
+				'src'                    => '',       // Required.
 				'layout'                 => '',
 				'auth_user'              => '',
 				'exclude_sections'       => '',
@@ -73,6 +73,28 @@ class Shortcodes {
 			),
 			'style_handles'   => array(
 				'ptc-completionist-shortcode-asana-project',
+			),
+		),
+		'ptc_asana_task' => array(
+			'render_count'    => 0,
+			'render_callback' => __CLASS__ . '::get_ptc_asana_task',
+			'default_atts'    => array(
+				'src'              => '',       // Required.
+				'auth_user'        => '',
+				'show_description' => 'true',
+				'show_assignee'    => 'true',
+				'show_subtasks'    => 'true',
+				'show_completed'   => 'true',
+				'show_due'         => 'true',
+				'show_attachments' => 'true',
+				'show_tags'        => 'true',
+				'sort_subtasks_by' => '',
+			),
+			'script_handles'  => array(
+				'ptc-completionist-shortcode-asana-task',
+			),
+			'style_handles'   => array(
+				'ptc-completionist-shortcode-asana-task',
 			),
 		),
 	);
@@ -206,6 +228,25 @@ class Shortcodes {
 			array(),
 			$asset_file['version']
 		);
+
+		// Asana task assets.
+
+		$asset_file = require_once PLUGIN_PATH . 'build/index_ShortcodeAsanaTask.jsx.asset.php';
+
+		wp_register_script(
+			'ptc-completionist-shortcode-asana-task',
+			PLUGIN_URL . '/build/index_ShortcodeAsanaTask.jsx.js',
+			$dependencies,
+			$asset_file['version'],
+			true
+		);
+
+		wp_register_style(
+			'ptc-completionist-shortcode-asana-task',
+			PLUGIN_URL . '/build/index_ShortcodeAsanaTask.jsx.css',
+			array(),
+			$asset_file['version']
+		);
 	}
 
 	// **************************** //
@@ -330,6 +371,117 @@ class Shortcodes {
 			'<div class="ptc-shortcode ptc-asana-project" data-src="%1$s" data-layout="%2$s"></div>',
 			esc_url( $request_url ),
 			esc_attr( $layout )
+		);
+	}
+
+	/**
+	 * Gets the [ptc_asana_task] shortcode content.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @see \add_shortcode()
+	 *
+	 * @param array       $atts Optional. The shortcode attribute values.
+	 * Default empty array.
+	 * @param string|null $content Optional. The shortcode contents.
+	 * Default null.
+	 * @param string      $shortcode_tag Optional. The shortcode tag for
+	 * processing default attributes. Default empty string.
+	 *
+	 * @return string The resulting HTML.
+	 */
+	public static function get_ptc_asana_task(
+		$atts = array(),
+		$content = null,
+		$shortcode_tag = ''
+	) : string {
+
+		// Collect shortcode attributes.
+
+		$atts = shortcode_atts(
+			static::$shortcodes_meta[ $shortcode_tag ]['default_atts'],
+			$atts,
+			$shortcode_tag
+		);
+
+		// Validate shortcode attributes.
+
+		if (
+			empty( $atts['auth_user'] ) &&
+			Options::get( Options::FRONTEND_AUTH_USER_ID ) <= 0
+		) {
+			return '
+				<div class="ptc-shortcode ptc-asana-task ptc-error">
+					<p>Failed to load Asana task. Please specify <a href="https://docs.purpleturtlecreative.com/completionist/shortcodes/#ptc_asana_project" target="_blank">the auth_user ID</a> or <a href="https://docs.purpleturtlecreative.com/completionist/getting-started/#set-a-frontend-authentication-user" target="_blank">set a default authentication user</a>.</p>
+				</div>
+			';
+		}
+
+		// Sanitize shortcode attributes.
+
+		$atts['src']              = (string) esc_url_raw( $atts['src'] );
+		$atts['auth_user']        = (int) $atts['auth_user'];
+		$atts['sort_subtasks_by'] = (string) sanitize_text_field( $atts['sort_subtasks_by'] );
+
+		foreach ( $atts as $key => &$value ) {
+			if ( 0 === strpos( $key, 'show_', 0 ) ) {
+				// Cast "show" flags to boolean value.
+				$value = (bool) rest_sanitize_boolean( $value );
+			}
+		}
+
+		// Prepare shortcode.
+
+		$task_gid = Asana_Interface::get_task_gid_from_task_link( $atts['src'] );
+		if ( empty( $task_gid ) ) {
+			return '
+				<div class="ptc-shortcode ptc-asana-task ptc-error">
+					<p>Failed to load Asana task. Could not determine task GID from source URL.</p>
+				</div>
+			';
+		}
+
+		// Convert shortcode attributes into Asana opt_fields.
+		$atts['opt_fields'] = 'name';
+		if ( $atts['show_completed'] ) {
+			$atts['opt_fields'] .= ',completed';
+		}
+		if ( $atts['show_description'] ) {
+			$atts['opt_fields'] .= ',html_notes';
+		}
+		if ( $atts['show_assignee'] ) {
+			$atts['opt_fields'] .= ',assignee,assignee.name,assignee.photo.image_36x36';
+		}
+		if ( $atts['show_due'] ) {
+			$atts['opt_fields'] .= ',due_on';
+		}
+		if ( $atts['show_attachments'] ) {
+			$atts['opt_fields'] .= ',attachments.name,attachments.host,attachments.download_url,attachments.view_url';
+		}
+		if ( $atts['show_tags'] ) {
+			$atts['opt_fields'] .= ',tags,tags.name,tags.color';
+		}
+
+		// Always remove Asana object GIDs.
+		$atts['show_gids'] = 'false';
+
+		// Specify request token key.
+		$atts['_cache_key'] = 'shortcode_ptc_asana_task';
+
+		// Generate request token for the frontend.
+		$token = Request_Token::save( $atts );
+
+		// Render frontend data.
+
+		$request_url = add_query_arg(
+			array( 'token' => $token ),
+			rest_url( REST_API_NAMESPACE_V1 . '/tasks/' . $task_gid )
+		);
+
+		static::count_render( $shortcode_tag );
+		return sprintf(
+			'<div class="ptc-shortcode ptc-asana-task" data-src="%1$s"></div>',
+			esc_url( $request_url )
 		);
 	}
 }

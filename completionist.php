@@ -44,42 +44,42 @@ defined( 'ABSPATH' ) || die();
  *
  * @since 3.0.0
  */
-define( __NAMESPACE__ . '\PLUGIN_FILE', __FILE__ );
+define( 'PTC_Completionist\PLUGIN_FILE', __FILE__ );
 
 /**
  * The full file path to this plugin's directory ending with a slash.
  *
  * @since 3.0.0
  */
-define( __NAMESPACE__ . '\PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'PTC_Completionist\PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 
 /**
  * This plugin's current version.
  *
  * @since 3.0.0
  */
-define( __NAMESPACE__ . '\PLUGIN_VERSION', get_file_data( __FILE__, array( 'Version' => 'Version' ), 'plugin' )['Version'] );
+define( 'PTC_Completionist\PLUGIN_VERSION', get_file_data( __FILE__, array( 'Version' => 'Version' ), 'plugin' )['Version'] );
 
 /**
  * This plugin's basename.
  *
  * @since 3.0.0
  */
-define( __NAMESPACE__ . '\PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+define( 'PTC_Completionist\PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
 /**
  * This plugin's directory basename.
  *
  * @since 3.2.0
  */
-define( __NAMESPACE__ . '\PLUGIN_SLUG', dirname( PLUGIN_BASENAME ) );
+define( 'PTC_Completionist\PLUGIN_SLUG', dirname( PLUGIN_BASENAME ) );
 
 /**
  * The full url to this plugin's directory, NOT ending with a slash.
  *
  * @since 3.0.0
  */
-define( __NAMESPACE__ . '\PLUGIN_URL', plugins_url( '', __FILE__ ) );
+define( 'PTC_Completionist\PLUGIN_URL', plugins_url( '', __FILE__ ) );
 
 /**
  * The namespace for all v1 REST API routes registered by this plugin.
@@ -88,7 +88,7 @@ define( __NAMESPACE__ . '\PLUGIN_URL', plugins_url( '', __FILE__ ) );
  *
  * @var string REST_API_NAMESPACE_V1
  */
-define( __NAMESPACE__ . '\REST_API_NAMESPACE_V1', PLUGIN_SLUG . '/v1' );
+define( 'PTC_Completionist\REST_API_NAMESPACE_V1', PLUGIN_SLUG . '/v1' );
 
 /* REGISTER PLUGIN FUNCTIONS ---------------------- */
 

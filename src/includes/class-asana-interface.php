@@ -877,7 +877,7 @@ class Asana_Interface {
 				)
 			) {
 				// Ensure sorting field is returned.
-				// Always add "name" subfield in case its an object.
+				// Always add "name" subfield in case its an object like "assignee".
 				$task_fields .= ",{$args['sort_tasks_by']},{$args['sort_tasks_by']}.name";
 				$do_remove_tasks_sort_field = true;
 			}
@@ -1287,11 +1287,13 @@ class Asana_Interface {
 	 * Attempts to retrieve task data. Providing the post id of the provided
 	 * pinned task gid will also attempt data self-healing.
 	 *
+	 * @since [unreleased] Revived $opt_fields param.
 	 * @since 3.1.0 Marked $opt_fields param as deprecated.
 	 * @since 1.0.0
 	 *
 	 * @param string $task_gid The gid of the task to retrieve.
-	 * @param string $opt_fields_deprecated Deprecated.
+	 * @param string $opt_fields Optional. The task fields to be retrieved.
+	 * Default '' to use Asana_Interface::TASK_OPT_FIELDS.
 	 * @param int    $post_id Optional. The post ID on which
 	 * the task belongs to attempt self-healing on certain error
 	 * responses. Default 0 to take no action on failure.
@@ -1302,14 +1304,10 @@ class Asana_Interface {
 	 * * 400: Invalid task gid - The provided task gid is invalid.
 	 * * 410: Invalid task - The task is no longer available or relevent.
 	 */
-	public static function maybe_get_task_data( string $task_gid, string $opt_fields_deprecated = '', int $post_id = 0 ) : \stdClass {
+	public static function maybe_get_task_data( string $task_gid, string $opt_fields = '', int $post_id = 0 ) : \stdClass {
 
-		if ( ! empty( $opt_fields_deprecated ) ) {
-			_deprecated_argument(
-				__FUNCTION__,
-				'3.1.0',
-				'$opt_fields is now a member constant, ' . __CLASS__ . '::TASK_OPT_FIELDS'
-			);
+		if ( empty( $opt_fields ) ) {
+			$opt_fields = self::TASK_OPT_FIELDS;
 		}
 
 		$task_gid = Options::sanitize( 'gid', $task_gid );
@@ -1319,8 +1317,17 @@ class Asana_Interface {
 
 		try {
 
-			$asana = self::get_client();
-			$task = $asana->tasks->findById( $task_gid, array( 'opt_fields' => self::TASK_OPT_FIELDS ) );
+			// Load Asana client.
+			$asana = null;
+			if ( ! isset( self::$asana ) ) {
+				// Might throw exception.
+				$asana = self::get_client();
+			} else {
+				$asana = self::$asana;
+			}
+
+			// Fetch the task data.
+			$task = $asana->tasks->findById( $task_gid, array( 'opt_fields' => $opt_fields ) );
 
 			if (
 				isset( $task->workspace->gid ) &&

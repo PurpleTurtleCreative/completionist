@@ -310,7 +310,7 @@ class HTML_Builder {
 
 					} else {
 
-						$dt_string = $dt->format( 'M j' );
+						$dt_string = $dt_due->format( 'M j' );
 						$relative_due->status = 'later';
 					}
 
@@ -530,7 +530,8 @@ class HTML_Builder {
 	}
 
 	/**
-	 * Gets the local API endpoint for retrieving an attachment.
+	 * Gets the local API endpoint for retrieving an attachment's content
+	 * for viewing.
 	 *
 	 * @since 3.7.0 Deprecated $post_id parameter.
 	 * @since 3.5.0
@@ -563,6 +564,35 @@ class HTML_Builder {
 		);
 
 		$token = Request_Token::save( $request_args );
+
+		return add_query_arg(
+			array( 'token' => $token ),
+			rest_url( REST_API_NAMESPACE_V1 . '/attachments' )
+		);
+	}
+
+	/**
+	 * Gets the local API endpoint for retrieving an attachment with
+	 * the provided arguments.
+	 *
+	 * @see PTC_Completionist\REST_API\Attachments::handle_get_attachment()
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param string $attachment_gid The Asana attachment's GID.
+	 * @param array  $args Optional. Additional arguments for the
+	 * API endpoint which retrieves the attachment's data.
+	 * @return string The local API endpoint URL.
+	 */
+	public static function get_local_attachment_url(
+		string $attachment_gid,
+		array $args = array()
+	) : string {
+
+		$args['_cache_key']     = 'get_local_attachment_url';
+		$args['attachment_gid'] = $attachment_gid;
+
+		$token = Request_Token::save( $args );
 
 		return add_query_arg(
 			array( 'token' => $token ),

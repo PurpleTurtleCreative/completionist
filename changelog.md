@@ -2,6 +2,7 @@
 
 #### Added
 
+- New shortcode `[ptc_asana_task]` to display an individual Asana task.
 - Automation Actions now support dynamically pinning the newly created Asana task to the WordPress post which triggered its creation. Clear the "Pin to Post" input field value to see both available options, `{post.ID}` and `{post.post_parent}`.
 
 #### Changed

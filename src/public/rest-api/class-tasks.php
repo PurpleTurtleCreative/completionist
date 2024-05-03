@@ -15,6 +15,8 @@ use PTC_Completionist\Asana_Interface;
 use PTC_Completionist\Options;
 use PTC_Completionist\HTML_Builder;
 use PTC_Completionist\REST_Server;
+use PTC_Completionist\Request_Token;
+use PTC_Completionist\Util;
 
 /**
  * Class to register and handle custom REST API endpoints
@@ -47,6 +49,25 @@ class Tasks {
 							'type'              => 'object',
 							'required'          => true,
 							'sanitize_callback' => array( Asana_Interface::class, 'prepare_task_args' ),
+						),
+					),
+				),
+			)
+		);
+
+		register_rest_route(
+			REST_API_NAMESPACE_V1,
+			'/tasks/(?P<task_gid>[0-9]+)',
+			array(
+				array(
+					'methods'             => 'GET',
+					'callback'            => array( __CLASS__, 'handle_get_task' ),
+					'permission_callback' => '__return_true',
+					'args'                => array(
+						'token' => array(
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
 						),
 					),
 				),
@@ -177,6 +198,179 @@ class Tasks {
 		}
 
 		return new \WP_REST_Response( $res, $res['code'] );
+	}
+
+	/**
+	 * Handles a GET request to retrieve Asana task data.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param \WP_REST_Request $request The API request.
+	 *
+	 * @return \WP_REST_Response|\WP_Error The API response.
+	 */
+	public static function handle_get_task(
+		\WP_REST_Request $request
+	) {
+
+		$request_token = new Request_Token( $request['token'] );
+
+		// Abort if token is invalid.
+		if ( ! $request_token->exists() ) {
+			return new \WP_Error(
+				'bad_token',
+				'Failed to get Asana task. Invalid request.',
+				array( 'status' => 400 )
+			);
+		}
+
+		// Check the cached response.
+		$cached_response = $request_token->get_cache_data();
+		if ( ! empty( $cached_response ) ) {
+			// Return cached data if available.
+			return new \WP_REST_Response( $cached_response, 200 );
+		}
+
+		try {
+
+			// Get Asana authentication.
+
+			$args = $request_token->get_args();
+			if ( empty( $args['auth_user'] ) ) {
+				// There is no user for Asana authentication.
+				return new \WP_Error(
+					'no_auth',
+					'Failed to get Asana task. Authentication user was not specified.',
+					array( 'status' => 401 )
+				);
+			}
+
+			// Perform request.
+
+			Asana_Interface::get_client( (int) $args['auth_user'] );
+			$task = Asana_Interface::maybe_get_task_data(
+				$request['task_gid'],
+				$args['opt_fields']
+			);
+
+			if ( empty( $task ) ) {
+				// An empty response is unexpected. Do not cache this.
+				return new \WP_Error(
+					'empty_content',
+					'Failed to get Asana task. There is no task data.',
+					array( 'status' => 409 )
+				);
+			}
+
+			// Localize task.
+			Asana_Interface::localize_task( $task, false );
+
+			// Load subtasks if desired.
+			if ( $args['show_subtasks'] ) {
+
+				$subtask_fields = $args['opt_fields'];
+
+				$do_remove_subtasks_sort_field = false;
+				if (
+					$args['sort_subtasks_by'] &&
+					false === in_array(
+						$args['sort_subtasks_by'],
+						explode( ',', $subtask_fields )
+					)
+				) {
+					// Ensure sorting field is returned for sorting purposes.
+					// Always add "name" subfield in case its an object like "assignee".
+					$subtask_fields .= ",{$args['sort_subtasks_by']},{$args['sort_subtasks_by']}.name";
+					$do_remove_subtasks_sort_field = true;
+				}
+
+				if ( ! $args['show_completed'] ) {
+					// Loading subtasks doesn't support requesting
+					// incomplete tasks only, so must request the
+					// 'completed' field for filtering later.
+					$subtask_fields .= ',completed';
+				}
+
+				$tasks_arr = array( $task );
+				Asana_Interface::load_subtasks( $tasks_arr, $subtask_fields );
+				$task = $tasks_arr[0];
+
+				// Process subtasks.
+				if ( isset( $task->subtasks ) ) {
+
+					foreach ( $task->subtasks as $subtasks_i => &$subtask ) {
+
+						if ( isset( $subtask->completed ) ) {
+							if ( ! $args['show_completed'] ) {
+								if ( $subtask->completed ) {
+									// Don't show completed tasks.
+									unset( $task->subtasks[ $subtasks_i ] );
+									continue;
+								} else {
+									// Don't show completed status
+									// for incomplete tasks.
+									unset( $subtask->completed );
+								}
+							}
+						}
+
+						// Now recursively localize tasks since
+						// no further subtasks will be removed.
+						//
+						// Though note that recursion isn't actually
+						// needed here since only one level of subtasks
+						// was loaded, anyways.
+						Asana_Interface::localize_task( $subtask, true );
+					}//end foreach.
+
+					// Fix index gaps from possible removals.
+					if ( ! $args['show_tasks_completed'] ) {
+						$task->subtasks = array_values( $task->subtasks );
+					}
+
+					// Asana doesn't currently sort subtasks when the
+					// view's sort is changed, but we will.
+					if ( $args['sort_subtasks_by'] ) {
+						Asana_Interface::sort_tasks_by( $task->subtasks, $args['sort_subtasks_by'] );
+					}
+				}
+			}//endif subtasks.
+
+			if (
+				$args['sort_subtasks_by'] &&
+				true === $do_remove_subtasks_sort_field
+			) {
+				// Remove extra field only used for sorting, not for display.
+				Util::deep_unset_prop( $task, $args['sort_subtasks_by'] );
+			}
+
+			// Remove all GIDs if desired.
+			if ( ! $args['show_gids'] ) {
+				Util::deep_unset_prop( $task, 'gid' );
+			}
+
+			// Cache response and return.
+			$request_token->update_cache_data( $task );
+			return new \WP_REST_Response( $task, 200 );
+		} catch ( \Exception $e ) {
+			$error_code = HTML_Builder::get_error_code( $e );
+			if ( $error_code < 400 ) {
+				// Prevent code 0 for odd errors like "could not resolve host name".
+				$error_code = 400;
+			}
+			return new \WP_Error(
+				'asana_error',
+				'Failed to get Asana task. ' . HTML_Builder::get_error_message( $e ),
+				array( 'status' => $error_code )
+			);
+		}
+
+		// This shouldn't be reachable.
+		return new \WP_Error(
+			'unknown_error',
+			'Failed to get Asana task. Unknown error.',
+			array( 'status' => 500 )
+		);
 	}
 
 	/**
