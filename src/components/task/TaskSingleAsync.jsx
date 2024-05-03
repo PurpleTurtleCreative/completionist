@@ -6,7 +6,7 @@
 
 import TaskListItem from './TaskListItem.jsx';
 
-// import '../../../assets/styles/scss/components/task/_ProjectTaskList.scss';
+import '../../../assets/styles/scss/components/task/_TaskSingleAsync.scss';
 
 import { useEffect, useState } from '@wordpress/element';
 
@@ -61,7 +61,7 @@ export default function TaskSingleAsync({ src }) {
 
 		case 'success':
 			if ( task ) {
-				innerContent = <TaskListItem task={task} />;
+				innerContent = <TaskListItem tagName="div" task={task} />;
 			}
 			break;
 
