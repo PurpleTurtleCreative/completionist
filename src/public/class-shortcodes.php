@@ -463,7 +463,7 @@ class Shortcodes {
 		}
 
 		// Always remove Asana object GIDs.
-		$atts['show_gids'] = 'false';
+		$atts['show_gids'] = false;
 
 		// Specify request token key.
 		$atts['_cache_key'] = 'shortcode_ptc_asana_task';
