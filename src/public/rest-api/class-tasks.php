@@ -71,13 +71,6 @@ class Tasks {
 						),
 					),
 				),
-			)
-		);
-
-		register_rest_route(
-			REST_API_NAMESPACE_V1,
-			'/tasks/(?P<task_gid>[0-9]+)',
-			array(
 				array(
 					'methods'             => 'PUT',
 					'callback'            => array( __CLASS__, 'handle_update_task' ),
