@@ -41,20 +41,19 @@ jobs:
       id: wporg_release
       uses: 10up/action-wordpress-plugin-deploy@stable
       with:
-        dry-run: ${{ contains(github.ref_name, '-rc.') }}
+        dry-run: ${{ contains(github.ref_name, '-rc') }}
         generate-zip: false
       env:
         SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME }}
         SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
 
     - name: Upload to Server
-      if: steps.wporg_release.outcome == 'success' && ${{ contains(github.ref_name, '-rc.') }} != true
+      if: steps.wporg_release.outcome == 'success' && ${{ contains(github.ref_name, '-rc') }} != true
       env:
         remote: "github@${{ secrets.PTC_PROD_HOSTNAME }}"
-        destination: "/var/www/html/wp-content/plugins/ptc-resources-server/resources/plugins/completionist/${{ env.PTC_PLUGIN_ZIP_FILE_BASENAME }}.zip"
+        destination: "${{ secrets.PTC_RESOURCES_SERVER_PATH }}/${{ env.PTC_PLUGIN_ZIP_FILE_BASENAME }}.zip"
       run: |
         echo "${{ secrets.PTC_GITHUB_SSH_KEY }}" > deploy_key
         chmod 600 ./deploy_key
-        ssh-keyscan ${{ secrets.PTC_PROD_HOSTNAME }} >> ~/.ssh/known_hosts
-        scp -i ./deploy_key ${{ env.PTC_PLUGIN_ZIP_FILE }} ${{ env.remote }}:${{ env.destination }}
-        ssh -i ./deploy_key ${{ env.remote }} 'chmod 775 ${{ env.destination }}; chgrp www-data ${{ env.destination }}' || true
+        scp -i ./deploy_key -o StrictHostKeyChecking=no' ${{ env.PTC_PLUGIN_ZIP_FILE }} ${{ env.remote }}:${{ env.destination }}
+        ssh -i ./deploy_key -o StrictHostKeyChecking=no' ${{ env.remote }} 'chmod 775 ${{ env.destination }}; chgrp www-data ${{ env.destination }}' || true
