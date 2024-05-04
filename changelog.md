@@ -12,7 +12,8 @@
 
 #### Fixed
 
-- Resolved log messages for PHP 8.2 by updating Asana's PHP SDK dependency packages.
+- Resolved log messages for PHP 8.1 by updating Asana's PHP SDK dependency packages.
+- Resolved log messages for PHP 8.2 by forking Asana's PHP SDK and declaring missing class properties.
 
 ### 4.2.1 - 2024-04-21
 
