@@ -577,7 +577,7 @@ class HTML_Builder {
 	 *
 	 * @see PTC_Completionist\REST_API\Attachments::handle_get_attachment()
 	 *
-	 * @since [unreleased]
+	 * @since 4.3.0
 	 *
 	 * @param string $attachment_gid The Asana attachment's GID.
 	 * @param array  $args Optional. Additional arguments for the

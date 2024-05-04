@@ -377,7 +377,7 @@ class Shortcodes {
 	/**
 	 * Gets the [ptc_asana_task] shortcode content.
 	 *
-	 * @since [unreleased]
+	 * @since 4.3.0
 	 *
 	 * @see \add_shortcode()
 	 *

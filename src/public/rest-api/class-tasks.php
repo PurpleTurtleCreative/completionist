@@ -203,7 +203,7 @@ class Tasks {
 	/**
 	 * Handles a GET request to retrieve Asana task data.
 	 *
-	 * @since [unreleased]
+	 * @since 4.3.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *

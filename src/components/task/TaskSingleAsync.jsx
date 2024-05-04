@@ -1,7 +1,7 @@
 /**
  * TaskSingleAsync component
  *
- * @since [unreleased]
+ * @since 4.3.0
  */
 
 import TaskListItem from './TaskListItem.jsx';
