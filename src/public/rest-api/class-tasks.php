@@ -324,7 +324,7 @@ class Tasks {
 					}//end foreach.
 
 					// Fix index gaps from possible removals.
-					if ( ! $args['show_tasks_completed'] ) {
+					if ( ! $args['show_completed'] ) {
 						$task->subtasks = array_values( $task->subtasks );
 					}
 
