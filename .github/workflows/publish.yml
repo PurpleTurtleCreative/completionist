@@ -49,5 +49,5 @@ jobs:
       run: |
         echo "${{ secrets.PTC_GITHUB_SSH_KEY }}" > deploy_key
         chmod 600 ./deploy_key
-        scp -i ./deploy_key -o StrictHostKeyChecking=no' ${{ env.PTC_PLUGIN_ZIP_FILE }} ${{ env.remote }}:${{ env.destination }}
-        ssh -i ./deploy_key -o StrictHostKeyChecking=no' ${{ env.remote }} 'chmod 775 ${{ env.destination }}; chgrp www-data ${{ env.destination }}' || true
+        scp -i "./deploy_key" -o "StrictHostKeyChecking=no" "${{ env.PTC_PLUGIN_ZIP_FILE }}" "${{ env.remote }}:${{ env.destination }}"
+        ssh -i "./deploy_key" -o "StrictHostKeyChecking=no" "${{ env.remote }}" 'chmod 775 "${{ env.destination }}"; chgrp www-data "${{ env.destination }}"' || true
