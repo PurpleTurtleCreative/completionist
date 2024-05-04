@@ -31,16 +31,6 @@ jobs:
       shell: bash
       run: ./bundle.sh
 
-    - name: Build - Cleanup
-      shell: bash
-      run: ./build_cleanup.sh
-
-    - name: Upload ZIP File
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.PTC_PLUGIN_ZIP_FILE_BASENAME }}
-        path: ./
-
     - name: Publish WordPress Plugin Release
       id: wporg_release
       uses: 10up/action-wordpress-plugin-deploy@stable
