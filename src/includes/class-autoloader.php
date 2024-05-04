@@ -80,7 +80,7 @@ class Autoloader {
 	 */
 	public static function register() {
 		// Autoload third-party dependencies.
-		require_once PLUGIN_PATH . '/vendor/autoload.php';
+		require_once PLUGIN_PATH . '/php-asana/vendor/autoload.php';
 		// Autoload our own class files.
 		spl_autoload_register( __CLASS__ . '::load_class_file' );
 	}

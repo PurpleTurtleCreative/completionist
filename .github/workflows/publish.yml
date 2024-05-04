@@ -20,6 +20,8 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     - name: Build - Install
       run: ./build_install.sh
@@ -56,4 +58,3 @@ jobs:
         ssh-keyscan ${{ secrets.PTC_PROD_HOSTNAME }} >> ~/.ssh/known_hosts
         scp -i ./deploy_key ${{ env.PTC_PLUGIN_ZIP_FILE }} ${{ env.remote }}:${{ env.destination }}
         ssh -i ./deploy_key ${{ env.remote }} 'chmod 775 ${{ env.destination }}; chgrp www-data ${{ env.destination }}' || true
-      
