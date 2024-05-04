@@ -23,15 +23,17 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Build
+    - name: Build - Install
       shell: bash
-      run: |
-        ./build_install.sh
-        ./build_cleanup.sh
+      run: ./build_install.sh
 
     - name: Bundle Package
       shell: bash
       run: ./bundle.sh
+
+    - name: Build - Cleanup
+      shell: bash
+      run: ./build_cleanup.sh
 
     - name: Upload ZIP File
       uses: actions/upload-artifact@v4
