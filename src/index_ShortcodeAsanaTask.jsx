@@ -1,7 +1,7 @@
 /**
  * Renders the [ptc_asana_task] shortcode.
  *
- * @since [unreleased]
+ * @since 4.3.0
  */
 
 import TaskSingleAsync from './components/task/TaskSingleAsync.jsx';
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				 * Filters the element to be rendered for displaying the
 				 * [ptc_asana_task] shortcode.
 				 *
-				 * @since [unreleased]
+				 * @since 4.3.0
 				 *
 				 * @param {Object} element - The element to render.
 				 * Default <TaskSingleAsync />.

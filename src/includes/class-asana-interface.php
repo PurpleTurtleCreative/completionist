@@ -1287,7 +1287,7 @@ class Asana_Interface {
 	 * Attempts to retrieve task data. Providing the post id of the provided
 	 * pinned task gid will also attempt data self-healing.
 	 *
-	 * @since [unreleased] Revived $opt_fields param.
+	 * @since 4.3.0 Revived $opt_fields param.
 	 * @since 3.1.0 Marked $opt_fields param as deprecated.
 	 * @since 1.0.0
 	 *
