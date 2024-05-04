@@ -10,6 +10,10 @@
 - The "Pin to Post" field label in Automation Actions no longer shifts due to centered positioning.
 - Improved error messaging when the "Pin to Post" field's post title could not be retrieved from the REST API.
 
+#### Fixed
+
+- Resolved log messages for PHP 8.2 by updating Asana's PHP SDK dependency packages.
+
 ### 4.2.1 - 2024-04-21
 
 #### Changed
