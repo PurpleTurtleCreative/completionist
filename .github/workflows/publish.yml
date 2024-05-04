@@ -23,19 +23,21 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Build - Install
-      run: ./build_install.sh
+    - name: Build
       shell: bash
+      run: |
+        ./build_install.sh
+        ./build_cleanup.sh
 
     - name: Bundle Package
-      run: ./bundle.sh
       shell: bash
+      run: ./bundle.sh
 
     - name: Upload ZIP File
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.PTC_PLUGIN_ZIP_FILE_BASENAME }}
-        path: ${{ env.PTC_PLUGIN_ZIP_FILE }}
+        path: ./
 
     - name: Publish WordPress Plugin Release
       id: wporg_release
@@ -47,7 +49,7 @@ jobs:
         SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME }}
         SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
 
-    - name: Upload to Server
+    - name: Upload to PTC Resources Server
       if: steps.wporg_release.outcome == 'success' && ${{ contains(github.ref_name, '-rc') }} != true
       env:
         remote: "github@${{ secrets.PTC_PROD_HOSTNAME }}"
