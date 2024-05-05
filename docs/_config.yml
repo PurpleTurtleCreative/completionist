@@ -1,5 +1,5 @@
 # https://github.com/just-the-docs/just-the-docs
-remote_theme: just-the-docs/just-the-docs@v0.6.0
+remote_theme: just-the-docs/just-the-docs@v0.8.1
 # For options, see https://github.com/just-the-docs/just-the-docs/blob/main/docs/configuration.md
 title: "Completionist Documentation"
 # The subpath of your site, e.g. /blog
