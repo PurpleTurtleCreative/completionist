@@ -494,12 +494,11 @@ class Asana_Interface {
 			return false;
 		}
 
-		$asana = \Asana\Client::accessToken(
-			$asana_personal_access_token,
-			self::ASANA_CLIENT_OPTIONS
-		);
-
 		try {
+			$asana = \Asana\Client::accessToken(
+				$asana_personal_access_token,
+				self::ASANA_CLIENT_OPTIONS
+			);
 			$asana->users->me();
 		} catch ( \Exception $e ) {
 			return false;

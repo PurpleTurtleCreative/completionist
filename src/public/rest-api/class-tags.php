@@ -38,9 +38,7 @@ class Tags {
 				array(
 					'methods'             => 'GET',
 					'callback'            => array( __CLASS__, 'handle_get_tags' ),
-					'permission_callback' => function () {
-						return Asana_Interface::has_connected_asana();
-					},
+					'permission_callback' => 'is_user_logged_in',
 					'args'                => array(
 						'nonce'         => REST_Server::get_arg_def_nonce( 'ptc_completionist_get_tags' ),
 						'workspace_gid' => REST_Server::get_arg_def_gid( true ),
