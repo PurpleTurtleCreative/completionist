@@ -1,0 +1,100 @@
+// Defaults https://github.com/just-the-docs/just-the-docs/blob/main/_sass/support/_variables.scss
+
+// Font size
+// `-sm` suffix is the size at the small (and above) media query
+
+$font-size-2: 12px; // h4 - uppercased!, h6 not uppercased, text-small
+$font-size-3: 14px; // h5
+$font-size-4: 16px; // html root mobile
+$font-size-5: 18px; // html root desktop, h3
+$font-size-6: 20px; // h2
+$font-size-7: 24px;
+$font-size-8: 32px; // h1
+$font-size-9: 36px;
+$font-size-10: 42px;
+$font-size-10-sm: 48px;
+
+//
+// Colors
+//
+
+$purple-000: #7285f8;// ptc primary-light
+$purple-100: #3c56f5;// ptc primary
+$purple-200: darken($purple-100, 3%);
+$purple-300: #1123b0;// ptc primary-dark
+
+$grey-lt-000: #f6f7fd;// ptc off-white
+$grey-lt-100: #e4e6fd;// ptc grey-lightest
+$grey-lt-200: #dee0ed;// ptc grey-light
+$grey-lt-300: darken($grey-lt-200, 3%);
+
+$grey-dk-000: #8c92b1;// ptc grey
+$grey-dk-100: #6a6e8d;
+$grey-dk-200: #4f516f;
+$grey-dk-250: #202367;
+$grey-dk-300: #08082b;// ptc black
+
+$blue-000: #e6f6ff;// ptc info-light
+$blue-100: #7cc4fa;// ptc info
+$blue-200: darken($blue-100, 3%);
+$blue-300: #2680c2;// ptc info-dark
+
+$green-000: #f2fde0;// ptc success-light
+$green-100: #6cd410;// ptc success
+$green-200: darken($green-100, 3%);
+$green-300: #399709;// ptc success-dark
+
+$yellow-000: #fff3c4;// ptc warning-light
+$yellow-100: #f7c948;// ptc warning
+$yellow-200: darken($yellow-100, 3%);
+$yellow-300: #cb6e17;// ptc warning-dark
+
+$red-000: #ffeeee;// ptc danger-light
+$red-100: #f86a6a;// ptc danger
+$red-200: darken($red-100, 3%);
+$red-300: #cf1124;// ptc danger-dark
+
+//
+// Component Colors
+//
+
+$body-background-color: $white;//default
+$sidebar-color: $grey-lt-000;//default
+$search-background-color: $white;//default
+$table-background-color: $white;//default
+$code-background-color: $grey-lt-000;//default
+$feedback-color: darken($sidebar-color, 3%);//default
+
+$body-text-color: $grey-dk-300;
+$body-heading-color: $grey-dk-300;//default
+$search-result-preview-color: $grey-dk-000;//default
+$nav-child-link-color: $grey-dk-100;//default
+$link-color: $purple-100;
+$btn-primary-color: $link-color;
+$base-button-color: $grey-lt-000;
+
+//
+// Borders
+//
+
+$border: 1px solid;//default
+$border-radius: 5px;
+$border-color: $grey-lt-100;//default
+
+//
+// Grid system
+//
+
+$search-results-width: $content-width;
+
+//
+// Media queries in pixels
+//
+
+$media-queries: (
+  xs: 320px,
+  sm: 500px,
+  md: $content-width,
+  lg: $content-width + ( $nav-width * 2 ),
+  xl: 1400px,
+);

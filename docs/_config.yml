@@ -1,0 +1,78 @@
+# https://github.com/just-the-docs/just-the-docs
+remote_theme: just-the-docs/just-the-docs@v0.6.0
+# For options, see https://github.com/just-the-docs/just-the-docs/blob/main/docs/configuration.md
+title: "Purple Turtle Creative: Docs"
+# The subpath of your site, e.g. /blog
+baseurl: ""
+# The base hostname & protocol for your site, e.g. http://example.com
+url: "https://docs.purpleturtlecreative.com"
+# Files to exclude from processing
+exclude: [ "README.md", "CNAME", "Gemfile", "*.lock", ".git*" ]
+# Set a path/url to a logo that will be displayed instead of the title
+logo: "/assets/images/type-duo-opacity.svg"
+
+# Color scheme supports "light" (default) and "dark"
+color_scheme: "purple-turtle"
+
+# Enable or disable the site search
+search_enabled: true
+
+# Aux links for the upper right navigation
+aux_links:
+  "View on GitHub":
+    - "https://github.com/PurpleTurtleCreative/completionist"
+  "Visit Website":
+    - "https://purpleturtlecreative.com/completionist/"
+# Makes Aux links open in a new tab. Default is false
+aux_links_new_tab: false
+
+# Heading anchor links appear on hover over h1-h6 tags in page content
+# allowing users to deep link to a particular heading on a page.
+heading_anchors: true
+
+# Footer last edited timestamp
+last_edit_timestamp: true # show or hide edit time - page must have `last_modified_date` defined in the frontmatter
+last_edit_time_format: "%b %e %Y" # uses ruby's time format: https://ruby-doc.org/stdlib-2.7.0/libdoc/time/rdoc/Time.html
+
+# Footer "Edit this page on GitHub" link text
+gh_edit_link: true # show or hide edit this page link
+gh_edit_link_text: "Edit this page on GitHub"
+gh_edit_repository: "https://github.com/PurpleTurtleCreative/purpleturtlecreative.github.io" # the github URL for your repo
+gh_edit_branch: "main" # the branch that your docs is served from
+# gh_edit_source: docs # the source that your files originate from
+gh_edit_view_mode: "edit" # "tree" or "edit" if you want the user to jump into the editor immediately
+
+# Google Analytics Tracking (optional)
+# e.g, UA-1234567-89
+ga_tracking: "G-2EB267PFG4"
+ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings (true by default)
+
+# Define Jekyll collections
+collections:
+  docs:
+    permalink: "/:path/"
+    output: true
+# Define which collections are used in just-the-docs
+just_the_docs:
+  collections:
+    docs:
+      name: Docs
+
+# Enable plugins
+plugins:
+  - jekyll-remote-theme # allows this to be run locally by loading the remote theme
+
+# Front Matter defaults: https://jekyllrb.com/docs/configuration/front-matter-defaults/
+defaults:
+  -
+    scope:
+      path: "" # an empty string here means all files in the project
+      type: "" # only _docs collection members
+    values:
+      layout: null
+  -
+    scope:
+      path: "" # an empty string here means all files in the project
+      type: "docs" # only _docs collection members
+    values:
+      layout: "default"

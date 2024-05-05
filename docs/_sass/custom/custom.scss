@@ -1,0 +1,273 @@
+// see https://github.com/pmarsceill/just-the-docs/blob/master/_sass/layout.scss
+
+//
+// Full-width Layout
+//
+
+.side-bar {
+
+  @include mq(md) {
+    width: 0;
+    min-width: $nav-width;
+  }
+}
+
+.main {
+
+  @include mq(md) {
+    width: 100%;
+    max-width: calc(100% - #{$nav-width});
+    margin-left: $nav-width;
+  }
+
+  .main-content-wrap {
+    max-width: $content-width;
+
+    @include mq(lg) {
+      margin-left: max(#{calc( ( 100% - #{$nav-width} - #{$content-width} ) / 2 )}, 0px);
+    }
+
+    .main-content {
+
+      ul,
+      ol {
+
+        li {
+          margin: 0.5em 0;
+        }
+      }
+
+      .language-plaintext {
+        pre {
+          white-space: normal;
+        }
+      }
+
+      code {
+        padding: 0.2em 0.4em;
+      }
+
+      pre {
+        code {
+          padding: 0;
+        }
+      }
+
+      div.highlighter-rouge {
+        border: $border $grey-lt-100;
+      }
+    }
+  }
+}
+
+
+//
+// Style Overrides
+//
+
+.site-title {
+
+  @include mq(lg) {
+    padding: .6rem;
+  }
+
+  .site-logo {
+    background-position: center;
+  }
+}
+
+// Nav hovers
+.nav-list .nav-list-item .nav-list-link:hover,
+.nav-list .nav-list-item .nav-list-link.active {
+  background: $feedback-color;
+}
+
+.search-result:hover,
+.search-result.active {
+  background-color: $sidebar-color;
+}
+
+// Nav child link color
+.nav-list .nav-list-item > .nav-list .nav-list-item .nav-list-link {
+  color: $grey-dk-250;
+}
+
+// Full width nav links
+.nav-list .nav-list-item > .nav-list {
+  padding-left: 0;
+}
+
+.nav-list .nav-list a.nav-list-link:before {
+  content: '';
+  display: inline-block;
+  padding-left: $sp-3;
+}
+
+.nav-list .nav-list .nav-list a.nav-list-link:before {
+  content: '';
+  display: inline-block;
+  padding-left: #{$sp-3 * 2};
+}
+
+// Auxiliary nav
+.aux-nav {
+
+  @include mq(lg) {
+    padding-right: 0;
+  }
+}
+
+// Labels
+.label {
+  padding: .25em .97em .25em 1em;
+  letter-spacing: .03em;
+}
+
+// Tables
+.table-wrapper {
+  box-shadow: none;
+}
+
+table {
+  border-collapse: collapse;
+  border: 1px solid $grey-lt-300;
+
+  th,
+  td {
+    vertical-align: baseline;
+    border: 1px solid $grey-lt-300;
+  }
+
+  thead tr th {
+    background-color: $grey-lt-100;
+  }
+
+  tbody tr:nth-child(even) td {
+    background-color: $grey-lt-000;
+  }
+}
+
+//
+// Typography
+//
+
+.anchor-heading {
+
+  h1 &,
+  #table-of-contents & {
+    display: none !important;
+  }
+}
+
+h1, .text-alpha,
+h2, .text-beta,
+h3, .text-gamma,
+h4, .text-delta,
+h5, .text-epsilon,
+h6, .text-zeta {
+  font-weight: 800;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: 0.03em;
+  margin: 2em 0 1rem !important;
+}
+
+h2:not(#table-of-contents) {
+  margin-top: 3em;
+
+  &::after {
+    content: "";
+    display: block;
+    height: 1px;
+    width: 2em;
+    margin: 0.8em 0 1em;
+    background: $grey-lt-200;
+  }
+
+  .anchor-heading {
+    height: calc(100% - 0.8em);
+  }
+}
+
+.ws-normal,
+.ws-normal * {
+  white-space: normal;
+}
+
+//
+// Custom Banner Components
+//
+
+.banner {
+  padding: 1em;
+  margin: 1.25em 0;
+  border-radius: $border-radius;
+  position: relative;
+  background-color: $grey-lt-000;
+  border: $border $grey-lt-300;
+  color: $grey-dk-100;
+
+  &-info {
+    background-color: $blue-000;
+    border-color: $blue-100;
+    color: $blue-300;
+  }
+
+  &-success {
+    background-color: $green-000;
+    border-color: $green-100;
+    color: $green-300;
+  }
+
+  &-warning {
+    background-color: $yellow-000;
+    border-color: $yellow-100;
+    color: $yellow-300;
+  }
+
+  &-danger {
+    background-color: $red-000;
+    border-color: $red-100;
+    color: $red-300;
+  }
+
+  @include mq(md) {
+    padding: 1.25em;
+  }
+
+  * {
+    color: inherit !important;
+  }
+
+  a {
+    text-decoration-color: currentColor !important;
+  }
+
+  > p:first-of-type {
+    margin-top: .75em;
+  }
+
+  > :first-child {
+    margin-top: 0 !important;
+  }
+
+  > :last-child {
+    margin-bottom: 0 !important;
+  }
+
+  h1, .text-alpha,
+  h2, .text-beta,
+  h3, .text-gamma,
+  h4, .text-delta,
+  h5, .text-epsilon,
+  h6, .text-zeta {
+    text-transform: none;
+    margin-bottom: 0.8em;
+    letter-spacing: normal;
+  }
+}
