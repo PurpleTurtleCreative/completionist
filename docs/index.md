@@ -12,3 +12,10 @@ Manage, pin, automate, and display Asana tasks in relevant areas of your WordPre
 
 [Download Now](https://purpleturtlecreative.com/completionist/){: .btn .btn-purple .mr-1 }
 [Get Started]({{ site.baseurl }}/getting-started/){: .btn }
+
+## Support
+
+Happily taking your feature requests, bug reports, and general feedback in the official Completionist plugin support forum.
+
+[Submit a Request](https://wordpress.org/support/plugin/completionist/){: .btn .btn-purple }
+[Leave a Review](https://wordpress.org/support/plugin/completionist/reviews/){: .btn }
