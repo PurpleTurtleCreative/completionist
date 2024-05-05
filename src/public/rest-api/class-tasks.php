@@ -247,11 +247,11 @@ class Tasks {
 			Asana_Interface::localize_task( $task, false );
 
 			// Load subtasks if desired.
+			$do_remove_subtasks_sort_field = false;
 			if ( $args['show_subtasks'] ) {
 
 				$subtask_fields = $args['opt_fields'];
 
-				$do_remove_subtasks_sort_field = false;
 				if (
 					$args['sort_subtasks_by'] &&
 					false === in_array(
