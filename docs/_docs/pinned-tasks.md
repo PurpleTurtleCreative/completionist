@@ -21,7 +21,7 @@ Reduce context-switching and increase productivity by pinning Asana tasks direct
 
 Pinned tasks are displayed in the Tasks metabox on the edit screen of the WordPress content to which they've been pinned.
 
-To quickly review and access pinned tasks, check out the [Dashboard Widget](/dashboard-widget/).
+To quickly review and access pinned tasks, check out the [Dashboard Widget]({{ site.baseurl }}/dashboard-widget/).
 
 ###  Task Visibility
 

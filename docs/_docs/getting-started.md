@@ -70,7 +70,7 @@ If you'd like to use Completionist's shortcodes on your WordPress website, you s
 
 1. From the dropdown options, select a WordPress user. Only users that have connected their Asana account with Completionist will be listed.
 2. Click *Save* to confirm your chosen user.
-3. In a post or page on your WordPress website (can be any status, such as *Draft*), enter [a Completionist shortcode](/completionist/shortcodes/) in the content area. Save the post.
+3. In a post or page on your WordPress website (can be any status, such as *Draft*), enter [a Completionist shortcode]({{ site.baseurl }}/shortcodes/) in the content area. Save the post.
 4. Preview the post or page to confirm that the shortcode works as expected.
 
 ### Who should I choose?

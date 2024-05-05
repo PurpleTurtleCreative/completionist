@@ -28,7 +28,7 @@ In the `'wp_footer'` action hook of WordPress, Completionist enqueues the script
 
 Note that this action hook only runs for shortcodes that have been executed. This ensures assets are enqueued only once per page load and only when they are needed.
 
-This sample code enqueues a custom JavaScript file and CSS stylesheet whenever [the `[ptc_asana_project]` shortcode](/completionist/shortcodes/#ptc_asana_project) has been rendered at least once for the current page load:
+This sample code enqueues a custom JavaScript file and CSS stylesheet whenever [the `[ptc_asana_project]` shortcode]({{ site.baseurl }}/shortcodes/#ptc_asana_project) has been rendered at least once for the current page load:
 
 ```php
 add_action(
@@ -106,7 +106,7 @@ window.console.log( window.Completionist.hooks.filters );
 
 Note that these global variables only contain hooks that have executed at least once before you log their contents. This means you should interact with Completionist's elements until a behavior happens or a view is displayed that you want to hook into.
 
-If you need me to add more action or filter hooks, please [let me know](/#support)!
+If you need me to add more action or filter hooks, please [let me know]({{ site.baseurl }}/#support)!
 
 ## Untitled Project Sections
 
@@ -146,4 +146,4 @@ A common request from users of Completionist is to add support for Asana Busines
 
 You can access a free add-on plugin on GitHub to get started at [https://github.com/PurpleTurtleCreative/completionist-custom-fields](https://github.com/PurpleTurtleCreative/completionist-custom-fields)
 
-Downloading this plugin from GitHub and installing it alongside Completionist on your WordPress website will cause custom fields to be displayed on tasks in [Project Embeds](/completionist/shortcodes/).
+Downloading this plugin from GitHub and installing it alongside Completionist on your WordPress website will cause custom fields to be displayed on tasks in [Project Embeds]({{ site.baseurl }}/shortcodes/).

@@ -58,7 +58,7 @@ In the very bottom-right of the Completionist dashboard widget, there’s a chai
 
 ## Manage Tasks
 
-The dashboard widget uses the same format as the *Pinned Tasks* metabox. See [managing pinned tasks](/pinned-tasks/#manage-pinned-tasks) to understand features of the task list.
+The dashboard widget uses the same format as the *Pinned Tasks* metabox. See [managing pinned tasks]({{ site.baseurl }}/pinned-tasks/#manage-pinned-tasks) to understand features of the task list.
 
 <div class="banner banner-info">
   <h3>

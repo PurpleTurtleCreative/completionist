@@ -59,7 +59,7 @@ Only "list" layout is displayed in the free version of Completionist. Additional
 
 | Attribute   | Value Type        | Required?                                                    | Description                                                  |
 | ----------- | ----------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `auth_user` | WordPress user ID | *Optional.* Defaults to the *[Frontend Authentication User](/completionist/getting-started/#set-a-frontend-authentication-user)* saved in Completionist's settings. | A WordPress user's ID to authenticate the Asana API requests.<br /><br />The WordPress user must be connected to Asana via Completionist in wp-admin, or you may see a `401 Unauthorized` error on your website. |
+| `auth_user` | WordPress user ID | *Optional.* Defaults to the *[Frontend Authentication User]({{ site.baseurl }}/getting-started/#set-a-frontend-authentication-user)* saved in Completionist's settings. | A WordPress user's ID to authenticate the Asana API requests.<br /><br />The WordPress user must be connected to Asana via Completionist in wp-admin, or you may see a `401 Unauthorized` error on your website. |
 
 ### Quick Copy (with default values)
 
@@ -74,7 +74,7 @@ _**\*\*Remember** to change the `src` attribute value to the URL of the Asana pr
 
 Displays a WordPress user's associated Asana projects' information and tasks.
 
-To select which Asana projects to display, navigate to *Users* and click "Edit" to edit a WordPress user's profile information. You can then find the "Asana Projects" setting to select which Asana projects the WordPress user is allowed to view. Note that you must have the `edit_posts` capability and [connected your Asana account](/completionist/getting-started/#connect-your-asana-account) to update this setting.
+To select which Asana projects to display, navigate to *Users* and click "Edit" to edit a WordPress user's profile information. You can then find the "Asana Projects" setting to select which Asana projects the WordPress user is allowed to view. Note that you must have the `edit_posts` capability and [connected your Asana account]({{ site.baseurl }}/getting-started/#connect-your-asana-account) to update this setting.
 
 <div class="banner banner-info">
   <p>⭐️ This shortcode is available to <strong><a href="https://purpleturtlecreative.com/completionist-pro/">Completionist Pro</a></strong> users only.</p>
