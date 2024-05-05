@@ -40,9 +40,7 @@ class Automations {
 				array(
 					'methods'             => 'GET',
 					'callback'            => array( __CLASS__, 'handle_get_automations' ),
-					'permission_callback' => function () {
-						return Asana_Interface::has_connected_asana();
-					},
+					'permission_callback' => 'is_user_logged_in',
 					'args'                => array(
 						'nonce'       => REST_Server::get_arg_def_nonce( 'ptc_completionist_get_automation' ),
 						'return_html' => array(
@@ -70,9 +68,7 @@ class Automations {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( __CLASS__, 'handle_create_automation' ),
-					'permission_callback' => function () {
-						return Asana_Interface::has_connected_asana();
-					},
+					'permission_callback' => 'is_user_logged_in',
 					'args'                => array(
 						'nonce'      => REST_Server::get_arg_def_nonce( 'ptc_completionist_create_automation' ),
 						'automation' => array(
@@ -91,9 +87,7 @@ class Automations {
 				array(
 					'methods'             => 'GET',
 					'callback'            => array( __CLASS__, 'handle_get_automation' ),
-					'permission_callback' => function () {
-						return Asana_Interface::has_connected_asana();
-					},
+					'permission_callback' => 'is_user_logged_in',
 					'args'                => array(
 						'nonce'         => REST_Server::get_arg_def_nonce( 'ptc_completionist_get_automation' ),
 						'automation_id' => REST_Server::get_arg_def_id( true ),
@@ -102,9 +96,7 @@ class Automations {
 				array(
 					'methods'             => 'PUT',
 					'callback'            => array( __CLASS__, 'handle_update_automation' ),
-					'permission_callback' => function () {
-						return Asana_Interface::has_connected_asana();
-					},
+					'permission_callback' => 'is_user_logged_in',
 					'args'                => array(
 						'nonce'         => REST_Server::get_arg_def_nonce( 'ptc_completionist_update_automation' ),
 						'automation_id' => REST_Server::get_arg_def_id( true ),
@@ -117,9 +109,7 @@ class Automations {
 				array(
 					'methods'             => 'DELETE',
 					'callback'            => array( __CLASS__, 'handle_delete_automation' ),
-					'permission_callback' => function () {
-						return Asana_Interface::has_connected_asana();
-					},
+					'permission_callback' => 'is_user_logged_in',
 					'args'                => array(
 						'nonce'         => REST_Server::get_arg_def_nonce( 'ptc_completionist_delete_automation' ),
 						'automation_id' => REST_Server::get_arg_def_id( true ),

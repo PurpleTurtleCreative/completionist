@@ -9,11 +9,13 @@
 
 - The "Pin to Post" field label in Automation Actions no longer shifts due to centered positioning.
 - Improved error messaging when the "Pin to Post" field's post title could not be retrieved from the REST API.
+- Prevent unnecessary Asana API calls when WordPress checks REST API route permissions.
 
 #### Fixed
 
 - Resolved log messages for PHP 8.1 by updating Asana's PHP SDK dependency packages.
 - Resolved log messages for PHP 8.2 by forking Asana's PHP SDK and declaring missing class properties.
+- REST API routes which require a logged in WordPress user would fail if no user is logged in and PHP `display_errors` is enabled.
 
 ### 4.2.1 - 2024-04-21
 

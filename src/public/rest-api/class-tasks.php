@@ -40,9 +40,7 @@ class Tasks {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( __CLASS__, 'handle_create_task' ),
-					'permission_callback' => function () {
-						return Asana_Interface::has_connected_asana();
-					},
+					'permission_callback' => 'is_user_logged_in',
 					'args'                => array(
 						'nonce' => REST_Server::get_arg_def_nonce( 'ptc_completionist_create_task' ),
 						'task'  => array(
@@ -74,9 +72,7 @@ class Tasks {
 				array(
 					'methods'             => 'PUT',
 					'callback'            => array( __CLASS__, 'handle_update_task' ),
-					'permission_callback' => function () {
-						return Asana_Interface::has_connected_asana();
-					},
+					'permission_callback' => 'is_user_logged_in',
 					'args'                => array(
 						'nonce'    => REST_Server::get_arg_def_nonce( 'ptc_completionist_update_task' ),
 						'task_gid' => REST_Server::get_arg_def_gid( true ),
@@ -90,9 +86,7 @@ class Tasks {
 				array(
 					'methods'             => 'DELETE',
 					'callback'            => array( __CLASS__, 'handle_delete_task' ),
-					'permission_callback' => function () {
-						return Asana_Interface::has_connected_asana();
-					},
+					'permission_callback' => 'is_user_logged_in',
 					'args'                => array(
 						'nonce'    => REST_Server::get_arg_def_nonce( 'ptc_completionist_delete_task' ),
 						'task_gid' => REST_Server::get_arg_def_gid( true ),
@@ -108,9 +102,7 @@ class Tasks {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( __CLASS__, 'handle_pin_task' ),
-					'permission_callback' => function () {
-						return Asana_Interface::has_connected_asana();
-					},
+					'permission_callback' => 'is_user_logged_in',
 					'args'                => array(
 						'nonce'    => REST_Server::get_arg_def_nonce( 'ptc_completionist_pin_task' ),
 						'task_gid' => REST_Server::get_arg_def_gid( true ),
@@ -120,9 +112,7 @@ class Tasks {
 				array(
 					'methods'             => 'DELETE',
 					'callback'            => array( __CLASS__, 'handle_unpin_task' ),
-					'permission_callback' => function () {
-						return Asana_Interface::has_connected_asana();
-					},
+					'permission_callback' => 'is_user_logged_in',
 					'args'                => array(
 						'nonce'    => REST_Server::get_arg_def_nonce( 'ptc_completionist_unpin_task' ),
 						'task_gid' => REST_Server::get_arg_def_gid( true ),
@@ -139,9 +129,7 @@ class Tasks {
 				array(
 					'methods'             => 'DELETE',
 					'callback'            => array( __CLASS__, 'handle_unpin_task' ),
-					'permission_callback' => function () {
-						return Asana_Interface::has_connected_asana();
-					},
+					'permission_callback' => 'is_user_logged_in',
 					'args'                => array(
 						'nonce'    => REST_Server::get_arg_def_nonce( 'ptc_completionist_unpin_task' ),
 						'task_gid' => REST_Server::get_arg_def_gid( true ),
@@ -268,12 +256,13 @@ class Tasks {
 					$args['sort_subtasks_by'] &&
 					false === in_array(
 						$args['sort_subtasks_by'],
-						explode( ',', $subtask_fields )
+						explode( ',', $subtask_fields ),
+						true
 					)
 				) {
 					// Ensure sorting field is returned for sorting purposes.
 					// Always add "name" subfield in case its an object like "assignee".
-					$subtask_fields .= ",{$args['sort_subtasks_by']},{$args['sort_subtasks_by']}.name";
+					$subtask_fields               .= ",{$args['sort_subtasks_by']},{$args['sort_subtasks_by']}.name";
 					$do_remove_subtasks_sort_field = true;
 				}
 
