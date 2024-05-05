@@ -9,9 +9,12 @@
 .github
 .git/*
 .git
+.gitmodules
 .wordpress-org/*
 .wordpress-org
 .distignore
+docs/*
+docs
 composer.json
 composer.lock
 node_modules/*
