@@ -1,9 +1,9 @@
 # https://github.com/just-the-docs/just-the-docs
 remote_theme: just-the-docs/just-the-docs@v0.6.0
 # For options, see https://github.com/just-the-docs/just-the-docs/blob/main/docs/configuration.md
-title: "Purple Turtle Creative: Docs"
+title: "Completionist Documentation"
 # The subpath of your site, e.g. /blog
-baseurl: ""
+baseurl: "/completionist"
 # The base hostname & protocol for your site, e.g. http://example.com
 url: "https://docs.purpleturtlecreative.com"
 # Files to exclude from processing

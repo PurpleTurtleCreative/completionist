@@ -1,6 +1,5 @@
 ---
 title: Getting Started
-parent: Completionist
 nav_order: 1
 ---
 

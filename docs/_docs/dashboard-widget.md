@@ -1,6 +1,5 @@
 ---
 title: Dashboard Widget
-parent: Completionist
 nav_order: 2
 ---
 
@@ -59,7 +58,7 @@ In the very bottom-right of the Completionist dashboard widget, there’s a chai
 
 ## Manage Tasks
 
-The dashboard widget uses the same format as the *Pinned Tasks* metabox. See [managing pinned tasks](https://docs.purpleturtlecreative.com/completionist/pinned-tasks/#manage-pinned-tasks) to understand features of the task list.
+The dashboard widget uses the same format as the *Pinned Tasks* metabox. See [managing pinned tasks](/pinned-tasks/#manage-pinned-tasks) to understand features of the task list.
 
 <div class="banner banner-info">
   <h3>

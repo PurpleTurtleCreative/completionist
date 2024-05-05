@@ -1,6 +1,5 @@
 ---
 title: Automated Tasks
-parent: Completionist
 nav_order: 4
 ---
 
@@ -82,52 +81,52 @@ Here are two use-case examples to demonstrate:
 
 1. An Automation is triggered by the *User is Created* event.
    - The Asana task title in the Automation is:
-   
+
       ```
       Welcome new user: {user.first_name} {user.last_name}
       ```
       {: .ws-normal}
-   
+
    - The Asana task description in the Automation is:
-   
+
       ```
       Send a personalized welcome email to {user.user_email} and review their profile at https://purpleturtlecreative.com/wp-admin/user-edit.php?user_id={user.ID}
       ```
       {: .ws-normal}
-   
+
    - The new task in Asana would then be created with the following information, for example:
       ```
       Welcome new user: Michelle Blanchette
       ```
       {: .ws-normal}
-      
+
       ```
       Send a personalized welcome email to michelle@purpleturtlecreative.com and review their profile at https://purpleturtlecreative.com/wp-admin/user-edit.php?user_id=123
       ```
       {: .ws-normal}
-   
+
 2. An Automation is triggered by the *Post is Updated* event.
    - The Asana task title in the Automation is:
-   
+
       ```
       Review and publish {post.post_type} #{post.ID}
       ```
       {: .ws-normal}
-   
+
    - The Asana task description in the Automation is:
-   
+
       ```
       Author {post.post_author} is ready for "{post.post_title}" to be reviewed as of {post.post_modified}.
       ```
       {: .ws-normal}
-   
+
    - The new task in Asana would then be created with the following information, for example:
-     
+
       ```
       Review and publish post #23
       ```
       {: .ws-normal}
-      
+
       ```
       Author 1 is ready for "How to Replace the WordPress Cron with a Linux Cron Job" to be reviewed as of 2021-12-11 10:28:32.
       ```
@@ -165,4 +164,3 @@ If you'd instead like to keep the Automation but temporarily prevent it from exe
 ## Disable an Existing Automation
 
 There is no official user interface for temporarily disabling an Automation; however, you can add a Condition to the Automation that you know will always be false. If you do this, it's also a good idea to note this on the Automation so that it is visible in the main listing, such as adding `[DISABLED]` somewhere in the title or description.
-

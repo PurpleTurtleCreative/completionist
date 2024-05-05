@@ -1,7 +1,6 @@
 ---
 title: Caching
 parent: Shortcodes
-grand_parent: Completionist
 nav_order: 1
 ---
 
@@ -88,4 +87,3 @@ if (
     }
 }
 ```
-

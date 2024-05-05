@@ -1,7 +1,6 @@
 ---
 title: Customizations
 parent: Shortcodes
-grand_parent: Completionist
 nav_order: 1
 ---
 
@@ -41,7 +40,7 @@ add_action(
 
 function custom_completionist_shortcode_enqueue_assets( string $shortcode_tag ) {
   if ( 'ptc_asana_project' === $shortcode_tag ) {
-    
+
     wp_enqueue_script(
       'custom-asana-project-script',
       plugins_url( '/assets/js/script.js' , __FILE__ ),
@@ -49,7 +48,7 @@ function custom_completionist_shortcode_enqueue_assets( string $shortcode_tag ) 
       '1.0.0',
       true
     );
-    
+
     wp_enqueue_style(
       'custom-asana-project-styles',
       plugins_url( '/assets/css/styles.css' , __FILE__ ),
@@ -83,7 +82,7 @@ window.Completionist.hooks.addFilter(
       'Needs Review',
       'Done',
     ];
-    
+
     if ( statuses.includes( task.project_section_name ) ) {
       // Label the project section as a "Status".
       label = 'Status';
