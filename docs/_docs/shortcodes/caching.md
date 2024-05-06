@@ -32,9 +32,11 @@ But what if you want your Asana changes to be reflected more often than just eve
 
 ## Changing the Cache TTL
 
-**Frontend requests are cached by default for 15 minutes (900 seconds).** This immensely improves website performance by reducing how often data is requested from Asana.
+In Completionist's *Settings* screen, you can manage the Asana data cache records. **Frontend requests are cached by default for 15 minutes (900 seconds).** This immensely improves website performance by reducing how often data is requested from Asana.
 
 If you find that Asana data is not updated often enough, you can decrease the *Cache Duration (TTL)* setting in Completionist's settings. For example, to reflect new changes from Asana on your WordPress website every **5 minutes**, set the *Cache Duration (TTL)* setting to **300 seconds**. Note that you must be an administrator (have the `manage_options` capability) in WordPress to update this setting.
+
+[![Settings section to manage the Asana data cache records]({{ site.baseurl }}/assets/images/settings-asana-data-cache.png)]({{ site.baseurl }}/assets/images/settings-asana-data-cache.png){:target="_blank"}
 
 ### Overriding in PHP
 

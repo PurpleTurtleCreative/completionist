@@ -60,7 +60,6 @@
   }
 }
 
-
 //
 // Style Overrides
 //
@@ -197,6 +196,27 @@ h2:not(#table-of-contents) {
 .ws-normal,
 .ws-normal * {
   white-space: normal;
+}
+
+//
+// Rich Content
+//
+
+#main-content {
+
+  a:has(> img) {
+    cursor: zoom-in;
+    display: block;
+    line-height: 1;
+    overflow: visible;
+    text-align: center;
+  }
+
+  img {
+    border-radius: .8rem;
+    box-shadow: 0 .1875rem .8rem 0 $grey-lt-100;
+    border: $border $grey-lt-100;
+  }
 }
 
 //

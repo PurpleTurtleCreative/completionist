@@ -147,3 +147,7 @@ A common request from users of Completionist is to add support for Asana Busines
 You can access a free add-on plugin on GitHub to get started at [https://github.com/PurpleTurtleCreative/completionist-custom-fields](https://github.com/PurpleTurtleCreative/completionist-custom-fields)
 
 Downloading this plugin from GitHub and installing it alongside Completionist on your WordPress website will cause custom fields to be displayed on tasks in [Project Embeds]({{ site.baseurl }}/shortcodes/).
+
+[![Tasks with inline custom fields and full custom fields table]({{ site.baseurl }}/assets/images/completionist-custom-fields.png)]({{ site.baseurl }}/assets/images/completionist-custom-fields.png){:target="_blank"}
+
+This simple add-on plugin currently adds a *Custom Fields* section to the task's expanded details. By editing the JavaScript file, you can also [specify key custom fields](https://github.com/PurpleTurtleCreative/completionist-custom-fields/blob/main/script.js#L38-L42) to feature in the task's main row.

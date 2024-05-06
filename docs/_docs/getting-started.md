@@ -31,12 +31,11 @@ Completionist may be installed by extracting the zip file contents into your `wp
 
 Completionist is fully compatible with WordPress multisite networks. Feel free to activate the plugin at the network level or per blog/subsite. If you decide to uninstall Completionist, all plugin data will be properly removed across your network.
 
-
 ## Connect Your Asana Account
 
 <div class="banner banner-danger">
   <h3>Asana Account Required</h3>
-  <p>Completionist depends on an Asana account connection to function. <a href="https://asana.com/create-account" target="_blank">Create an Asana account</a> for free before continuing this setup guide.</p>
+  <p>Completionist depends on an Asana account connection to function.<br /><a href="https://asana.com/create-account" target="_blank"><strong>Create an Asana account for free</strong></a> before continuing this setup guide.</p>
 </div>
 
 1. Navigate to the Completionist settings screen by clicking *Completionist* toward the bottom of your WordPress admin menu.
@@ -44,6 +43,10 @@ Completionist is fully compatible with WordPress multisite networks. Feel free t
 3. Click to generate a new access token at the bottom of your Asana developer console and follow the prompts.
 4. Back in Completionist, paste your Personal Access Token into the Asana Connect form, agree to let Completionist perform actions in your Asana account on your behalf, and click *Authorize*.
 5. Once successfully connected, you'll now be able to access Completionist's settings.
+
+[![Connect your Asana account to the Completionist WordPress plugin by entering your account's Personal Access Token]({{ site.baseurl }}/assets/images/settings-connect-asana.png)]({{ site.baseurl }}/assets/images/settings-connect-asana.png){:target="_blank"}
+
+[![Completionist displays a green checkmark and helpful links once your Asana account is successfully connected]({{ site.baseurl }}/assets/images/settings-connection-success-helpful-links.png)]({{ site.baseurl }}/assets/images/settings-connection-success-helpful-links.png){:target="_blank"}
 
 ## Set a Site Tag
 
@@ -53,6 +56,8 @@ The final step to get started using Completionist's admin features is to set a *
 2. Choose an Asana workspace. After making your selection, the tag options will be retrieved for selection.
 3. Once the tag options for your chosen workspace have loaded, choose the tag that Completionist will use to associate Asana tasks to your WordPress site.
 4. Click *Save* to confirm your chosen workspace and site tag.
+
+[![Settings section to set the Asana workspace and tag, plus see all collaborators on the WordPress site and if they've connected their Asana account]({{ site.baseurl }}/assets/images/settings-workspace-tag-collaborators.png)]({{ site.baseurl }}/assets/images/settings-workspace-tag-collaborators.png){:target="_blank"}
 
 ### What does this do?
 
@@ -65,13 +70,14 @@ Pulling Asana tasks into WordPress by a specific tag has many benefits, such as:
 
 ## Set a Frontend Authentication User
 
-
-If you'd like to use Completionist's shortcodes on your WordPress website, you should specify a default "frontend authentication user".
+If you'd like to [use Completionist's shortcodes]({{ site.baseurl }}/shortcodes/) on your WordPress website, you should specify a default "frontend authentication user".
 
 1. From the dropdown options, select a WordPress user. Only users that have connected their Asana account with Completionist will be listed.
 2. Click *Save* to confirm your chosen user.
 3. In a post or page on your WordPress website (can be any status, such as *Draft*), enter [a Completionist shortcode]({{ site.baseurl }}/shortcodes/) in the content area. Save the post.
 4. Preview the post or page to confirm that the shortcode works as expected.
+
+[![Settings section to choose which Asana user will authenticate frontend requests]({{ site.baseurl }}/assets/images/settings-frontend-authentication-user.png)]({{ site.baseurl }}/assets/images/settings-frontend-authentication-user.png){:target="_blank"}
 
 ### Who should I choose?
 

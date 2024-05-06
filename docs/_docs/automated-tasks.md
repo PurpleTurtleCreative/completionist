@@ -132,6 +132,12 @@ Here are two use-case examples to demonstrate:
       ```
       {: .ws-normal}
 
+### Dynamic Pin to Post
+
+To automatically pin the created Asana task to the WordPress post that triggered the Automation, focus the *Pin to Post* input field and select the revealed option. The input field must be blank for the available dynamic options to be revealed.
+
+[![Automation action with dynamic merge fields]({{ site.baseurl }}/assets/images/automation-action-dynamic-pin.png)]({{ site.baseurl }}/assets/images/automation-action-dynamic-pin.png){:target="_blank"}
+
 ## Review Automation Statistics
 
 In the main Automations screen, all Automations are listed with useful information:
