@@ -82,15 +82,49 @@ To select which Asana projects to display, navigate to *Users* and click "Edit" 
 
 ### Attributes
 
-This shortcode shares the same attributes as the singular `[ptc_asana_project]` shortcode, plus the following:
+This shortcode shares the same attributes as the singular `[ptc_asana_project]` shortcode, **plus** the following:
 
-| Attribute | Value Type                               | Required?                                                    | Description                                                  |
-| --------- | ---------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `layout`  | Choice of `list`, `calendar`, or `board` | *Optional.* Default "list".                                  | The Asana project layout for all listed projects.<br /><br />Normally, the `src` attribute determines which project is displayed. However, a project source URL is not relevant for this shortcode since all projects are instead determined by the selected "Asana Projects" in the WordPress user's profile. |
-| `user`    | WordPress user ID                        | *Optional.* Default "" (empty) to use the currently logged-in user for dynamic, personalized display. | A WordPress user's ID to determine which Asana projects to list.<br /><br />See the "Asana Projects" setting in the WordPress user's profile to select which Asana projects the WordPress user is allowed to view. |
+| Attribute | Value Type        | Required?                                                    | Description                                                  |
+| --------- | ----------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `user`    | WordPress user ID | *Optional.* Default "" (empty) to use the currently logged-in user for dynamic, personalized display. | A WordPress user's ID to determine which Asana projects to list.<br /><br />See the "Asana Projects" setting in the WordPress user's profile to select which Asana projects the WordPress user is allowed to view. |
 
 ### Quick Copy (with default values)
 
 ```
 [ptc_asana_project_list layout="list" user="" auth_user="" exclude_sections="" show_name="true" show_description="true" show_status="true" show_modified="true" show_due="true" show_tasks_description="true" show_tasks_assignee="true" show_tasks_subtasks="true" show_tasks_completed="true" show_tasks_due="true" show_tasks_attachments="true" show_tasks_tags="true" show_tasks_comments="false" sort_tasks_by="" /]
 ```
+
+## [ptc_asana_task]
+
+Displays an Asana task.
+
+### Attributes
+
+#### Display
+
+| Attribute          | Value Type                                                   | Required?                                                 | Description                                                  |
+| ------------------ | ------------------------------------------------------------ | --------------------------------------------------------- | ------------------------------------------------------------ |
+| `src`              | URL                                                          | **Required**                                              | The Asana task link.<br /><br />When viewing a project in Asana, right-click the task and select "Copy task link" from the context menu. When viewing a task, click the chainlink in the top bar which says "Copy task link" on hover. |
+| `show_description` | Boolean (true/false)                                         | *Optional.* Default "true".                               | Set to "false" to hide tasks' descriptions.                  |
+| `show_assignee`    | Boolean (true/false)                                         | *Optional.* Default "true".                               | Set to "false" to hide tasks' assignee.                      |
+| `show_subtasks`    | Boolean (true/false)                                         | *Optional.* Default "true".                               | Set to "false" to hide tasks' subtasks.<br /><br />Note that only the immediate subtasks are ever displayed. Subtasks of subtasks are never displayed. |
+| `show_completed`   | Boolean (true/false)                                         | *Optional.* Default "true".                               | Set to "false" to hide completed tasks. If enabled, completed tasks will be shown (if any) and all "checkmark bubbles" will be displayed. |
+| `show_due`         | Boolean (true/false)                                         | *Optional.* Default "true".                               | Set to "false" to hide tasks' due dates.                     |
+| `show_attachments` | Boolean (true/false)                                         | *Optional.* Default "true".                               | Set to "false" to hide tasks' additional attachments. Inline attachments and embeds in the tasks' descriptions are always displayed if `show_tasks_description="true"`.<br /><br />The following **image** file extensions are supported: `jpg`, `jpeg`, `png`, `bmp`, `gif`<br />The following **video** file extensions are supported: `mp4`<br />The following **document** file extensions are supported: `pdf` |
+| `show_tags`        | Boolean (true/false)                                         | *Optional.* Default "true".                               | Set to "false" to hide tasks' tags.                          |
+| `sort_subtasks_by` | Any top-level string, number, or object [Asana task field](https://developers.asana.com/reference/tasks). | *Optional.* Default "" to use unsorted (manual) ordering. | Common sorting examples include:<br />`assignee` - Sort subtasks by their assignee's name<br />`completed` - Sort subtasks by "completed" status and then alphabetically by their title<br />`completed_at` - Sort subtasks by when they were marked "completed"<br />`due_on` - Sort subtasks by their due date<br />`name` - Sort subtasks by their title |
+
+
+#### Configuration
+
+| Attribute   | Value Type        | Required?                                                    | Description                                                  |
+| ----------- | ----------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `auth_user` | WordPress user ID | *Optional.* Defaults to the *[Frontend Authentication User]({{ site.baseurl }}/getting-started/#set-a-frontend-authentication-user)* saved in Completionist's settings. | A WordPress user's ID to authenticate the Asana API requests.<br /><br />The WordPress user must be connected to Asana via Completionist in wp-admin, or you may see a `401 Unauthorized` error on your website. |
+
+### Quick Copy (with default values)
+
+```
+[ptc_asana_task src="<ASANA_TASK_LINK>" auth_user="" show_description="true" show_assignee="true" show_subtasks="true" show_completed="true" show_due="true" show_attachments="true" show_tags="true" sort_subtasks_by="" /]
+```
+
+_**\*\*Remember** to change the `src` attribute value to the URL of the Asana task that you'd like to display!_
