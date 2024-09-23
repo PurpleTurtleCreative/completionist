@@ -1,5 +1,5 @@
 {
-    "core": "WordPress/WordPress#6.5.2",
+    "core": "WordPress/WordPress#6.6.2",
     "phpVersion": "8.2",
     "config": {
         "WP_DEBUG": true,
