@@ -7,6 +7,7 @@
         "WP_DEBUG_DISPLAY": true
     },
     "port": 80,
+    "mysqlPort": 3306,
     "plugins": [ "." ],
     "mappings": {
         "wp-content/plugins/completionist": ".",
@@ -21,6 +22,7 @@
                 "SCRIPT_DEBUG": true
             },
             "port": 8000,
+            "mysqlPort": 3307,
             "plugins": [
                 "https://downloads.wordpress.org/plugin/debug-bar.zip",
                 "https://downloads.wordpress.org/plugin/query-monitor.zip",
