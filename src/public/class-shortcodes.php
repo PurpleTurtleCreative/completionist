@@ -50,7 +50,7 @@ class Shortcodes {
 			'render_count'    => 0,
 			'render_callback' => __CLASS__ . '::get_ptc_asana_project',
 			'default_atts'    => array(
-				'src'                    => '',       // Required.
+				'src'                    => '',     // Required.
 				'layout'                 => '',
 				'auth_user'              => '',
 				'include_sections'       => '',
@@ -76,11 +76,11 @@ class Shortcodes {
 				'ptc-completionist-shortcode-asana-project',
 			),
 		),
-		'ptc_asana_task' => array(
+		'ptc_asana_task'    => array(
 			'render_count'    => 0,
 			'render_callback' => __CLASS__ . '::get_ptc_asana_task',
 			'default_atts'    => array(
-				'src'              => '',       // Required.
+				'src'              => '',     // Required.
 				'auth_user'        => '',
 				'show_description' => 'true',
 				'show_assignee'    => 'true',
