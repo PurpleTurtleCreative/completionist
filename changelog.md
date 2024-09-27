@@ -4,6 +4,11 @@
 
 - New `include_sections` attribute for the `[ptc_asana_project]` shortcode to specify which project sections should be displayed like `include_sections="First Section,Another Section"`. When using this attribute, all non-specified sections will be automatically excluded.
 
+#### Changed
+
+- Tested up to WordPress 6.6.2.
+- Updated build script package versions.
+
 ### 4.3.0 - 2024-05-04
 
 #### Added
