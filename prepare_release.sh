@@ -16,17 +16,17 @@ fi
 #######################################
 
 # Replace [unreleased] placeholders throughout src files
-grep -FRl --exclude='*/node_modules/*' --exclude='*/vendor/*' '[unreleased]' completionist.php src assets | xargs sed -i -e "s/\[unreleased\]/$NEW_VERSION/g"
+grep -FRl --exclude='*/node_modules/*' --exclude='*/vendor/*' '[unreleased]' completionist.php src assets | xargs sed -i '' -e "s/\[unreleased\]/$NEW_VERSION/g"
 
 # Replace header value in main plugin file.
-sed -Ei "s/(Version:\s+)[^\s]+/\1$NEW_VERSION/" completionist.php
+sed -Ei '' "s/(Version:\s+)[^\s]+/\1$NEW_VERSION/" completionist.php
 
 # Replace header value in readme.txt for WordPress.org plugin page
-sed -i "s/Stable tag: .*/Stable tag: $NEW_VERSION/" readme.txt
+sed -i '' "s/Stable tag: .*/Stable tag: $NEW_VERSION/" readme.txt
 
 # Replace release heading in changelog.md with specified new version and current date
 readonly TODAY=$(date +'%Y-%m-%d')
-sed -i "s/### \[unreleased\]/### $NEW_VERSION - $TODAY/" changelog.md
+sed -i '' "s/### \[unreleased\]/### $NEW_VERSION - $TODAY/" changelog.md
 
 #######################################
 
