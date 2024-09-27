@@ -655,6 +655,7 @@ class Asana_Interface {
 		$default_args = apply_filters(
 			'ptc_completionist_project_default_args',
 			array(
+				'include_sections'       => '',
 				'exclude_sections'       => '',
 				'show_gids'              => true,
 				'show_name'              => true,
@@ -778,8 +779,26 @@ class Asana_Interface {
 			$args
 		);
 
+		// Parse included project section names.
+		if ( ! empty( $args['include_sections'] ) ) {
+			$include_section_names = explode( ',', $args['include_sections'] );
+			if (
+				! empty( $include_section_names ) &&
+				is_array( $include_section_names )
+			) {
+				$include_section_names = array_map( 'trim', $include_section_names );
+				$keep_sections         = array();
+				foreach ( $project->sections as $i => &$section ) {
+					if ( in_array( trim( $section->name ), $include_section_names, true ) ) {
+						// Keep section if name is in include list.
+						$keep_sections[] = $section;
+					}
+				}
+				$project->sections = $keep_sections;
+			}
+		}
+
 		// Parse excluded project section names.
-		$exclude_section_names = array();
 		if ( ! empty( $args['exclude_sections'] ) ) {
 			$exclude_section_names = explode( ',', $args['exclude_sections'] );
 			if (
@@ -787,7 +806,7 @@ class Asana_Interface {
 				is_array( $exclude_section_names )
 			) {
 				$exclude_section_names = array_map( 'trim', $exclude_section_names );
-				$keep_sections = array();
+				$keep_sections         = array();
 				foreach ( $project->sections as $i => &$section ) {
 					if ( ! in_array( trim( $section->name ), $exclude_section_names, true ) ) {
 						// Keep section if name is not in exclude list.
