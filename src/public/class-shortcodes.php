@@ -50,9 +50,10 @@ class Shortcodes {
 			'render_count'    => 0,
 			'render_callback' => __CLASS__ . '::get_ptc_asana_project',
 			'default_atts'    => array(
-				'src'                    => '',       // Required.
+				'src'                    => '',     // Required.
 				'layout'                 => '',
 				'auth_user'              => '',
+				'include_sections'       => '',
 				'exclude_sections'       => '',
 				'show_name'              => 'true',
 				'show_description'       => 'true',
@@ -75,11 +76,11 @@ class Shortcodes {
 				'ptc-completionist-shortcode-asana-project',
 			),
 		),
-		'ptc_asana_task' => array(
+		'ptc_asana_task'    => array(
 			'render_count'    => 0,
 			'render_callback' => __CLASS__ . '::get_ptc_asana_task',
 			'default_atts'    => array(
-				'src'              => '',       // Required.
+				'src'              => '',     // Required.
 				'auth_user'        => '',
 				'show_description' => 'true',
 				'show_assignee'    => 'true',
@@ -328,6 +329,7 @@ class Shortcodes {
 
 		$atts['src']              = (string) esc_url_raw( $atts['src'] );
 		$atts['auth_user']        = (int) $atts['auth_user'];
+		$atts['include_sections'] = html_entity_decode( $atts['include_sections'], ENT_QUOTES | ENT_HTML5 );
 		$atts['exclude_sections'] = html_entity_decode( $atts['exclude_sections'], ENT_QUOTES | ENT_HTML5 );
 
 		// Prepare shortcode.
