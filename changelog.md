@@ -1,3 +1,9 @@
+### [unreleased]
+
+#### Fixed
+
+- Updated minimum required PHP version to `8.1` to prevent plugin installation on incompatible systems. An unrecoverable fatal error would occur, caused by Composer dependencies in the Asana PHP SDK updated in Completionist v4.3.0.
+
 ### 4.4.0 - 2024-09-27
 
 #### Added

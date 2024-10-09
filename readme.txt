@@ -3,8 +3,8 @@ Contributors: michelleblanchette
 Tags: asana, project, task, management, integration
 Requires at least: 5.0.0
 Tested up to: 6.6.2
-Stable tag: 4.4.0
-Requires PHP: 7.2
+Stable tag: 4.4.1
+Requires PHP: 8.1
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
