@@ -100,6 +100,16 @@ class Admin_Pages {
 
 		add_submenu_page(
 			static::PARENT_PAGE_SLUG,
+			'Completionist &ndash; Settings (NEW)',
+			'Settings (NEW)', // work in progress.
+			'edit_posts',
+			static::PARENT_PAGE_SLUG . '-new',
+			array( __CLASS__, 'display_settings_screen' ),
+			null
+		);
+
+		add_submenu_page(
+			static::PARENT_PAGE_SLUG,
 			'Completionist &ndash; Automations',
 			'Automations',
 			'edit_posts',
@@ -246,6 +256,18 @@ class Admin_Pages {
 						),
 					)
 				);
+				break;
+
+			case 'completionist_page_ptc-completionist-new':
+				$asset_file = require_once PLUGIN_PATH . 'build/index_AdminSettings.jsx.asset.php';
+				wp_enqueue_script(
+					'ptc-completionist_AdminSettings',
+					PLUGIN_URL . '/build/index_AdminSettings.jsx.js',
+					$asset_file['dependencies'],
+					PLUGIN_VERSION,
+					true
+				);
+				wp_enqueue_style( 'wp-components' );
 				break;
 
 			case 'completionist_page_ptc-completionist-automations':
@@ -1124,5 +1146,18 @@ class Admin_Pages {
 			</div>
 			<?php
 		}
+	}
+
+	/**
+	 * Displays the new Settings admin page.
+	 *
+	 * @since [unreleased]
+	 */
+	public static function display_settings_screen() {
+		?>
+		<div id="ptc-AdminSettingsScreen">
+			<p class="ptc-loading"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>Loading...</p>
+		</div>
+		<?php
 	}
 }//end class
