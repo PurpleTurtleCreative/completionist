@@ -1,66 +1,95 @@
 import { useState } from '@wordpress/element';
-import { Button, Card, CardBody, CardDivider, CardHeader, Flex, FlexBlock, FlexItem, MenuGroup, MenuItem, TextControl } from '@wordpress/components';
+import { Button, Card, CardBody, CardDivider, CardHeader, ExternalLink, Flex, FlexBlock, FlexItem, MenuGroup, MenuItem, TextControl } from '@wordpress/components';
 
 export default function AdminSettingsScreen() {
-	const [currentScreen, setCurrentScreen] = useState('dashboard');
+	const [currentScreen, setCurrentScreen] = useState('account');
 
 	const menuItems = [
-		{ value: 'dashboard', label: 'Dashboard' },
+		{ value: 'account', label: 'Asana Account' },
 		{ value: 'workspace', label: 'Workspace' },
 		{ value: 'frontend', label: 'Frontend' },
 	];
 
 	const renderScreenContent = () => {
 		switch (currentScreen) {
-			case 'dashboard':
+			case 'account':
 				return (
 					<>
 						<CardBody>
-							<Flex justify='start' align='center'>
-								<img
-									src='https://www.gravatar.com/avatar/?d=mp'
-									alt='Profile Image'
-									height={40}
-									width={40}
-									style={{ borderRadius: '50%', border: '1px solid rgba(0, 0, 0, 0.1)' }}
-								/>
-								<div>
-									<h3>You're connected, Michelle!</h3>
-								</div>
+							<Flex gap={4} justify='start' align='center'>
+								<FlexItem>
+									<img
+										src='https://s3.us-east-1.amazonaws.com/asana-user-private-us-east-1/assets/1154845361267017/profile_photos/1204227982288580/866566539988991.1154845361267018.dbGL5HVoVEVPaQsC0LHX_128x128.png'
+										alt='Profile Image'
+										height={80}
+										width={80}
+										style={{ borderRadius: '50%', border: '1px solid rgba(0, 0, 0, 0.1)' }}
+									/>
+								</FlexItem>
+								<FlexBlock>
+									<h3 style={{ margin: '8px 0' }}>You're connected, Michelle Blanchette!</h3>
+									<p style={{ color: 'rgb(117, 117, 117)', margin: '8px 0' }}>Your Asana account is successfully connected. Completionist is able to help you get stuff done on this WordPress website as long as you are a member of this site's assigned workspace.</p>
+								</FlexBlock>
 							</Flex>
 						</CardBody>
 						<CardBody>
-							<TextControl
-								__next40pxDefaultSize
-								__nextHasNoMarginBottom
-								type='password'
-								label='Asana PAT'
-								help='Connect your Asana account by entering your Personal Access Token (PAT).'
-							/>
+							<Flex justify='start' align='top'>
+								<FlexBlock>
+									<TextControl
+										__next40pxDefaultSize
+										__nextHasNoMarginBottom
+										type='password'
+										label='Asana PAT'
+										help='Connect your Asana account by entering your Personal Access Token (PAT).'
+									/>
+									<ExternalLink href='https://app.asana.com/0/developer-console'>Visit your Asana developer console</ExternalLink>
+								</FlexBlock>
+								<FlexItem>
+									<Button
+										__next40pxDefaultSize
+										variant='primary'
+										text='Update'
+										style={{ marginTop: '23.39px', paddingLeft: '2em', paddingRight: '2em' }}
+									/>
+								</FlexItem>
+							</Flex>
 						</CardBody>
 						<CardBody>
-							<Button
-								__next40pxDefaultSize
-								variant='primary'
-								isDestructive={true}
-								text='Disconnect'
-							/>
+								<Button
+									__next40pxDefaultSize
+									variant='secondary'
+									isDestructive={true}
+									text='Disconnect'
+								/>
+								<p style={{ color: 'rgb(117, 117, 117)' }}>This will remove your encrypted Personal Access Token and Asana user id from this site, thus deauthorizing access to your Asana account. Until connecting your Asana account again, you will not have access to use Completionist's features.</p>
 						</CardBody>
 					</>
 				);
 			case 'workspace':
-				return <p>Adjust your plugin settings on this screen.</p>;
+				return (
+					<CardBody>
+						<p>This is where you'll set the Asana workspace and Site Tag for this website.</p>
+					</CardBody>
+				);
 			case 'frontend':
-				return <p>View reports and statistics for your plugin here.</p>;
+				return (
+					<CardBody>
+						<p>This is where settings for frontend displays are set.</p>
+					</CardBody>
+				);
 			default:
-				return <p>Select an option from the menu.</p>;
+				return (
+					<CardBody>
+						<p>Select an option from the menu.</p>
+					</CardBody>
+				);
 		}
 	};
 
 	return (
 		<div className='ptc-AdminSettingsScreen'>
 			<Flex gap={6} align='top'>
-				<FlexItem>
+				<FlexItem style={{ flexBasis: '230px' }}>
 					<MenuGroup>
 						{menuItems.map(item => (
 							<MenuItem
@@ -90,7 +119,13 @@ export default function AdminSettingsScreen() {
 						</CardHeader>
 						{renderScreenContent()}
 					</Card>
+					<Card isBorderless={true} style={{ margin: '8px 0' }}>
+						<CardBody>
+							<p style={{ color: 'rgb(117, 117, 117)', margin: 0, fontSize: '0.8em' }}>**Completionist by Purple Turtle Creative is not associated with Asana. Asana is a trademark and service mark of Asana, Inc., registered in the U.S. and in other countries.</p>
+						</CardBody>
+					</Card>
 				</FlexBlock>
+				<FlexItem style={{ flexBasis: '230px' }}></FlexItem>
 			</Flex>
 		</div>
 	);
