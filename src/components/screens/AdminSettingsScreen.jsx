@@ -1,5 +1,5 @@
 import { useState } from '@wordpress/element';
-import { Button, Card, CardBody, Flex, FlexBlock, FlexItem, MenuGroup, MenuItem } from '@wordpress/components';
+import { Button, Card, CardBody, CardDivider, CardHeader, Flex, FlexBlock, FlexItem, MenuGroup, MenuItem, TextControl } from '@wordpress/components';
 
 export default function AdminSettingsScreen() {
 	const [currentScreen, setCurrentScreen] = useState('dashboard');
@@ -13,7 +13,41 @@ export default function AdminSettingsScreen() {
 	const renderScreenContent = () => {
 		switch (currentScreen) {
 			case 'dashboard':
-				return <p>Welcome to the Dashboard. Overview of the plugin functionality goes here.</p>;
+				return (
+					<>
+						<CardBody>
+							<Flex justify='start' align='center'>
+								<img
+									src='https://www.gravatar.com/avatar/?d=mp'
+									alt='Profile Image'
+									height={40}
+									width={40}
+									style={{ borderRadius: '50%', border: '1px solid rgba(0, 0, 0, 0.1)' }}
+								/>
+								<div>
+									<h3>You're connected, Michelle!</h3>
+								</div>
+							</Flex>
+						</CardBody>
+						<CardBody>
+							<TextControl
+								__next40pxDefaultSize
+								__nextHasNoMarginBottom
+								type='password'
+								label='Asana PAT'
+								help='Connect your Asana account by entering your Personal Access Token (PAT).'
+							/>
+						</CardBody>
+						<CardBody>
+							<Button
+								__next40pxDefaultSize
+								variant='primary'
+								isDestructive={true}
+								text='Disconnect'
+							/>
+						</CardBody>
+					</>
+				);
 			case 'workspace':
 				return <p>Adjust your plugin settings on this screen.</p>;
 			case 'frontend':
@@ -51,10 +85,10 @@ export default function AdminSettingsScreen() {
 				</FlexItem>
 				<FlexBlock>
 					<Card>
-						<CardBody>
-							<h2>{menuItems.find((item) => item.value === currentScreen)?.label}</h2>
-							<div>{renderScreenContent()}</div>
-						</CardBody>
+						<CardHeader>
+							<h2 style={{ margin: 0 }}>{menuItems.find((item) => item.value === currentScreen)?.label}</h2>
+						</CardHeader>
+						{renderScreenContent()}
 					</Card>
 				</FlexBlock>
 			</Flex>
