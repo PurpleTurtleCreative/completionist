@@ -1,109 +1,63 @@
 import { useState } from '@wordpress/element';
-import { Card, CardBody, PanelRow } from '@wordpress/components';
+import { Button, Card, CardBody, Flex, FlexBlock, FlexItem, MenuGroup, MenuItem } from '@wordpress/components';
 
 export default function AdminSettingsScreen() {
-    const [currentScreen, setCurrentScreen] = useState('dashboard');
+	const [currentScreen, setCurrentScreen] = useState('dashboard');
 
-    const menuItems = [
-        { key: 'dashboard', label: 'Dashboard' },
-        { key: 'settings', label: 'Settings' },
-        { key: 'reports', label: 'Reports' },
-    ];
+	const menuItems = [
+		{ value: 'dashboard', label: 'Dashboard' },
+		{ value: 'workspace', label: 'Workspace' },
+		{ value: 'frontend', label: 'Frontend' },
+	];
 
-    const renderScreenContent = () => {
-        switch (currentScreen) {
-            case 'dashboard':
-                return <p>Welcome to the Dashboard. Overview of the plugin functionality goes here.</p>;
-            case 'settings':
-                return <p>Adjust your plugin settings on this screen.</p>;
-            case 'reports':
-                return <p>View reports and statistics for your plugin here.</p>;
-            default:
-                return <p>Select an option from the menu.</p>;
-        }
-    };
+	const renderScreenContent = () => {
+		switch (currentScreen) {
+			case 'dashboard':
+				return <p>Welcome to the Dashboard. Overview of the plugin functionality goes here.</p>;
+			case 'workspace':
+				return <p>Adjust your plugin settings on this screen.</p>;
+			case 'frontend':
+				return <p>View reports and statistics for your plugin here.</p>;
+			default:
+				return <p>Select an option from the menu.</p>;
+		}
+	};
 
-    return (
-        <div className='ptc-AdminSettingsScreen'>
-
-						<h1>Completionist &ndash; Settings</h1>
-
-						<div style={styles.container}>
-							{/* Floating Sidebar */}
-							<Card style={styles.sidebar}>
-									<CardBody>
-											{menuItems.map((item, index) => (
-													<div key={item.key}>
-															<PanelRow>
-																	<button
-																			onClick={() => setCurrentScreen(item.key)}
-																			style={{
-																					...styles.menuItem,
-																					...(currentScreen === item.key
-																							? styles.activeMenuItem
-																							: {}),
-																			}}
-																	>
-																			{item.label}
-																	</button>
-															</PanelRow>
-													</div>
-											))}
-									</CardBody>
-							</Card>
-
-							{/* Main Content Area */}
-							<div style={styles.content}>
-									<h2>{menuItems.find((item) => item.key === currentScreen)?.label}</h2>
-									<div>{renderScreenContent()}</div>
-							</div>
-						</div>
-        </div>
-    );
+	return (
+		<div className='ptc-AdminSettingsScreen'>
+			<Flex gap={6} align='top'>
+				<FlexItem>
+					<MenuGroup>
+						{menuItems.map(item => (
+							<MenuItem
+								role='menuitemradio'
+								isSelected={currentScreen === item.value}
+								onClick={() => setCurrentScreen(item.value)}
+								style={{
+									display: 'block',
+									borderColor: 'transparent',
+									borderLeft: '4px solid transparent',
+									...( currentScreen === item.value ? {
+										fontWeight: 'bold',
+										color: 'var(--wp-admin-theme-color)',
+										borderLeft: '4px solid var(--wp-admin-theme-color)',
+									} : {})
+								}}
+							>
+								{item.label}
+							</MenuItem>
+						))}
+					</MenuGroup>
+				</FlexItem>
+				<FlexBlock>
+					<Card>
+						<CardBody>
+							<h2>{menuItems.find((item) => item.value === currentScreen)?.label}</h2>
+							<div>{renderScreenContent()}</div>
+						</CardBody>
+					</Card>
+				</FlexBlock>
+			</Flex>
+		</div>
+	);
 }
-
-// Inline styles
-const styles = {
-    container: {
-        display: 'flex',
-        alignItems: 'flex-start',
-        padding: '20px',
-        gap: '20px',
-    },
-    sidebar: {
-        width: '200px',
-        position: 'sticky',
-        top: '20px',
-        alignSelf: 'flex-start',
-        boxShadow: 'none',
-        backgroundColor: 'none',
-    },
-    menuItem: {
-        display: 'block',
-        width: '100%',
-        padding: '10px 0',
-        textAlign: 'left',
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        color: '#333',
-        fontSize: '16px',
-    },
-    activeMenuItem: {
-        fontWeight: 'bold',
-        color: 'var(--wp-admin-theme-color)',
-    },
-    separator: {
-        border: 'none',
-        borderBottom: '1px solid #ddd',
-        margin: '0',
-    },
-    content: {
-        flex: 1,
-        maxWidth: '800px',
-        backgroundColor: '#fff',
-        padding: '20px',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    },
-};

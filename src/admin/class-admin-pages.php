@@ -1155,6 +1155,10 @@ class Admin_Pages {
 	 */
 	public static function display_settings_screen() {
 		?>
+		<style>
+			body { background: #fff; }
+			#wpcontent { padding-left: 0; }
+		</style>
 		<div id="ptc-AdminSettingsScreen">
 			<p class="ptc-loading"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>Loading...</p>
 		</div>
