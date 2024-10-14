@@ -1,5 +1,5 @@
 import { useState } from '@wordpress/element';
-import { Button, Card, CardBody, CardHeader, CardMedia, ComboboxControl, ExternalLink, Flex, FlexBlock, FlexItem, MenuGroup, MenuItem, SelectControl, TextControl } from '@wordpress/components';
+import { Button, Card, CardBody, CardDivider, CardHeader, CardMedia, ComboboxControl, ExternalLink, Flex, FlexBlock, FlexItem, MenuGroup, MenuItem, SelectControl, TextControl, Tip } from '@wordpress/components';
 
 export default function AdminSettingsScreen() {
 	const [currentScreen, setCurrentScreen] = useState('account');
@@ -54,13 +54,14 @@ export default function AdminSettingsScreen() {
 							</Flex>
 						</CardBody>
 						<CardBody>
-								<Button
-									__next40pxDefaultSize
-									variant='secondary'
-									isDestructive={true}
-									text='Disconnect'
-								/>
-								<p style={{ color: 'rgb(117, 117, 117)' }}>This will remove your encrypted Personal Access Token and Asana user id from this site, thus deauthorizing access to your Asana account. Until connecting your Asana account again, you will not have access to use Completionist's features.</p>
+							<Button
+								__next40pxDefaultSize
+								variant='secondary'
+								isDestructive={true}
+								text='Disconnect'
+								style={{ paddingLeft: '2em', paddingRight: '2em' }}
+							/>
+							<p style={{ color: 'rgb(117, 117, 117)' }}>This will remove your encrypted Personal Access Token and Asana user id from this site, thus deauthorizing access to your Asana account. Until connecting your Asana account again, you will not have access to use Completionist's features.</p>
 						</CardBody>
 					</>
 				);
@@ -102,13 +103,14 @@ export default function AdminSettingsScreen() {
 								style={{ paddingLeft: '2em', paddingRight: '2em' }}
 							/>
 						</CardBody>
-						<CardHeader style={{ display: 'block' }}>
+						<CardDivider style={{ marginTop: '16px' }} />
+						<CardBody style={{ display: 'block' }}>
 							<h3 style={{ marginBottom: 0 }}>Collaborators</h3>
 							<p style={{ color: 'rgb(117, 117, 117)' }}>The table below shows WordPress users found with the same email address in the Asana Workspace.</p>
-						</CardHeader>
+						</CardBody>
 						<CardMedia>
 							<table style={{ width: '100%', borderCollapse: 'collapse' }}>
-								<thead style={{ borderBottom: '1px solid rgb(229 229 229)' }}>
+								<thead style={{ borderTop: '1px solid rgb(229 229 229)' }}>
 									<tr>
 										<th style={styleCollaboratorTH}>User</th>
 										<th style={styleCollaboratorTH}>Email</th>
@@ -116,7 +118,7 @@ export default function AdminSettingsScreen() {
 									</tr>
 								</thead>
 								<tbody>
-									<tr style={{ borderBottom: '1px solid rgb(229 229 229)' }}>
+									<tr style={{ borderTop: '1px solid rgb(229 229 229)' }}>
 										<td style={styleCollaboratorTD}>
 											<Flex>
 												<FlexItem>
@@ -140,7 +142,7 @@ export default function AdminSettingsScreen() {
 											<p style={{ color: '#4ab866', fontWeight: 'bold' }}>Connected Asana</p>
 										</td>
 									</tr>
-									<tr>
+									<tr style={{ borderTop: '1px solid rgb(229 229 229)' }}>
 										<td style={styleCollaboratorTD}>
 											<Flex>
 												<FlexItem>
@@ -171,9 +173,50 @@ export default function AdminSettingsScreen() {
 				);
 			case 'frontend':
 				return (
-					<CardBody>
-						<p>This is where settings for frontend displays are set.</p>
-					</CardBody>
+					<>
+						<CardBody>
+							<SelectControl
+								__next40pxDefaultSize
+								__nextHasNoMarginBottom
+								label='Frontend Authentication User'
+								help="The connected Asana user which will be used to display projects and tasks on this website's frontend."
+								options={[
+									{
+										label: 'Michelle Blanchette (michelle@purpleturtlecreative.com)',
+										value: '123abc456xyz789',
+									},
+								]}
+							/>
+						</CardBody>
+						<CardBody style={{ paddingTop: 0 }}>
+							<Tip>The user should have access to all tasks and projects in Asana that you wish to display on your website, so it's best to set this to someone such as your project manager. <ExternalLink href='https://docs.purpleturtlecreative.com/completionist/getting-started/#set-a-frontend-authentication-user'>Learn more</ExternalLink></Tip>
+						</CardBody>
+						<CardDivider style={{ marginTop: '16px' }} />
+						<CardBody style={{ display: 'block' }}>
+							<h3 style={{ marginBottom: 0 }}>Asana Data Cache</h3>
+							<p style={{ color: 'rgb(117, 117, 117)', marginBottom: 0 }}>Completionist efficiently loads Asana projects and tasks on your website's frontend by caching the associated data for a period of time.</p>
+						</CardBody>
+						<CardBody>
+							<TextControl
+								__next40pxDefaultSize
+								__nextHasNoMarginBottom
+								type='number'
+								label='Cache Duration (TTL)'
+								help='The number of seconds until new data is fetched from Asana for display on this website.'
+								value={900}
+							/>
+						</CardBody>
+						<CardBody>
+							<Button
+								__next40pxDefaultSize
+								variant='primary'
+								isDestructive={true}
+								text='Clear Cache'
+								style={{ paddingLeft: '2em', paddingRight: '2em' }}
+							/>
+							<p style={{ color: 'rgb(117, 117, 117)' }}>This will clear all cached Asana data such as projects, tasks, and media attachments. You can use this to ensure the latest information is fetched from Asana during the next load. <ExternalLink href='https://docs.purpleturtlecreative.com/completionist/shortcodes/caching/'>Learn more</ExternalLink></p>
+						</CardBody>
+					</>
 				);
 			default:
 				return (
@@ -213,7 +256,7 @@ export default function AdminSettingsScreen() {
 				</FlexItem>
 				<FlexBlock>
 					<Card>
-						<CardHeader>
+						<CardHeader style={{ marginBottom: '16px' }}>
 							<h2 style={{ margin: 0 }}>{menuItems.find((item) => item.value === currentScreen)?.label}</h2>
 						</CardHeader>
 						{renderScreenContent()}
