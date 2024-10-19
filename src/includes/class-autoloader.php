@@ -70,6 +70,7 @@ class Autoloader {
 		'REST_API\Automations'             => 'src/public/rest-api/class-automations.php',
 		'REST_API\Tags'                    => 'src/public/rest-api/class-tags.php',
 		'REST_API\Posts'                   => 'src/public/rest-api/class-posts.php',
+		'REST_API\Settings'                => 'src/public/rest-api/class-settings.php',
 
 	);
 

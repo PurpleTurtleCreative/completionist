@@ -1,5 +1,7 @@
-import { Button, Card, CardBody, CardHeader, ExternalLink, Flex, FlexItem } from '@wordpress/components';
-import AdminSettingsScreen from './components/screens/AdminSettingsScreen.jsx';
+import AdminSettingsScreen from './components/AdminSettingsScreen.jsx';
+import { SettingsContextProvider } from './components/settings/SettingsContext.jsx';
+
+import { Card, CardBody, CardHeader, ExternalLink, Flex } from '@wordpress/components';
 
 import { createRoot } from '@wordpress/element';
 
@@ -21,7 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
 				</Card>
 				<Card isBorderless={true}>
 					<CardBody>
-						<AdminSettingsScreen />
+						<SettingsContextProvider>
+							<AdminSettingsScreen />
+						</SettingsContextProvider>
 					</CardBody>
 				</Card>
 			</div>

@@ -882,4 +882,68 @@ class Options {
 			)
 		);
 	}
+
+	/**
+	 * Gets all plugin settings for the specified user.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param int $user_id The WordPress user's ID.
+	 */
+	public static function get_settings_for_user( $user_id ) {
+
+		// Basic settings.
+		$chosen_workspace_gid = self::get( self::ASANA_WORKSPACE_GID );
+
+		// Assume user hasn't authenticated Asana.
+		$asana_profile             = null;
+		$is_asana_workspace_member = false;
+		$found_workspace_users     = null;
+		$connected_workspace_users = null;
+
+		try {
+
+			Asana_Interface::get_client( $user_id );
+
+			$asana_profile             = Asana_Interface::get_me();
+			$is_asana_workspace_member = Asana_Interface::is_workspace_member( $chosen_workspace_gid );
+			$found_workspace_users     = Asana_Interface::find_workspace_users();
+			$connected_workspace_users = Asana_Interface::get_connected_workspace_users();
+
+		} catch ( Errors\No_Authorization $e ) {
+			// User is NOT authenticated for API usage.
+			$asana_profile = null;
+		} catch ( \Exception $e ) {
+			// Unknown error.
+			$asana_profile = array(
+				'status'  => 'error',
+				'code'    => $e->getCode(),
+				'message' => $e->getMessage(),
+			);
+		}
+
+		return array(
+			'user'      => array(
+				'id'                          => $user_id,
+				'capabilities'                => array(
+					'can_manage_options' => user_can( $user_id, 'manage_options' ),
+					'can_edit_posts'     => user_can( $user_id, 'edit_posts' ),
+				),
+				'is_asana_workspace_member'   => $is_asana_workspace_member,
+				'asana_personal_access_token' => self::get( self::ASANA_PAT, $user_id ),
+				'asana_profile'               => $asana_profile,
+			),
+			'frontend'  => array(
+				'auth_user_id' => self::get( self::FRONTEND_AUTH_USER_ID ),
+				'cache_ttl'    => self::get( self::CACHE_TTL_SECONDS ),
+			),
+			'workspace' => array(
+				'gid'                       => $chosen_workspace_gid,
+				'site_tag_gid'              => self::get( self::ASANA_TAG_GID ),
+				'total_pinned_tasks'        => self::count_all_pinned_tasks(),
+				'found_workspace_users'     => $found_workspace_users,
+				'connected_workspace_users' => $connected_workspace_users,
+			),
+		);
+	}
 }//end class
