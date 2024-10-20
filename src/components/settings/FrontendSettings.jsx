@@ -1,10 +1,32 @@
 import { Button, Card, CardBody, CardDivider, CardHeader, ExternalLink, SelectControl, TextControl, Tip } from '@wordpress/components';
 
+import { SettingsContext } from './SettingsContext';
+import { useContext } from '@wordpress/element';
+
 export default function FrontendSettings() {
+	const { settings } = useContext(SettingsContext);
+
+	const frontendAuthenticationUserSelectOptions = [
+		{
+			label: 'Choose a user...',
+			value: '',
+		},
+	];
+	if ( settings?.workspace?.connected_workspace_users ) {
+		for ( const gid in settings.workspace.connected_workspace_users ) {
+			const wp_user = settings.workspace.connected_workspace_users[ gid ];
+			frontendAuthenticationUserSelectOptions.push({
+				label: `${wp_user.display_name} (${wp_user.user_email})`,
+				value: wp_user.ID,
+				selected: ( wp_user.ID === settings?.frontend?.auth_user_id ),
+			});
+		}
+	}
+
 	return (
 		<Card>
 			<CardHeader style={{ marginBottom: '16px' }}>
-				<h2 style={{ margin: 0 }}>Asana Account</h2>
+				<h2 style={{ margin: 0 }}>Frontend</h2>
 			</CardHeader>
 			<CardBody>
 				<SelectControl
@@ -12,12 +34,7 @@ export default function FrontendSettings() {
 					__nextHasNoMarginBottom
 					label='Frontend Authentication User'
 					help="The connected Asana user which will be used to display projects and tasks on this website's frontend."
-					options={[
-						{
-							label: 'Michelle Blanchette (michelle@purpleturtlecreative.com)',
-							value: '123abc456xyz789',
-						},
-					]}
+					options={ frontendAuthenticationUserSelectOptions }
 				/>
 			</CardBody>
 			<CardBody style={{ paddingTop: 0 }}>
@@ -35,13 +52,13 @@ export default function FrontendSettings() {
 					type='number'
 					label='Cache Duration (TTL)'
 					help='The number of seconds until new data is fetched from Asana for display on this website.'
-					value={900}
+					value={ settings?.frontend?.cache_ttl || 900 }
 				/>
 			</CardBody>
 			<CardBody>
 				<Button
 					__next40pxDefaultSize
-					variant='primary'
+					variant='secondary'
 					isDestructive={true}
 					text='Clear Cache'
 					style={{ paddingLeft: '2em', paddingRight: '2em' }}

@@ -55,6 +55,19 @@ class Settings {
 	public static function handle_get_settings(
 		\WP_REST_Request $request
 	) {
-		return Options::get_settings_for_user( get_current_user_id() );
+
+		$settings_for_user = Options::get_settings_for_user( get_current_user_id() );
+
+		if ( ! empty( $settings_for_user['workspace']['connected_workspace_users'] ) ) {
+			foreach ( $settings_for_user['workspace']['connected_workspace_users'] as $asana_gid => &$wp_user ) {
+				$settings_for_user['workspace']['connected_workspace_users'][ $asana_gid ] = array(
+					'ID'           => $wp_user->ID,
+					'display_name' => $wp_user->display_name,
+					'user_email'   => $wp_user->user_email,
+				);
+			}
+		}
+
+		return new \WP_REST_Response( $settings_for_user, 200 );
 	}
 }
