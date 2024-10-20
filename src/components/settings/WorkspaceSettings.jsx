@@ -1,7 +1,9 @@
 import { Button, Card, CardBody, CardDivider, CardHeader, CardMedia, ComboboxControl, Flex, FlexBlock, FlexItem, SelectControl } from '@wordpress/components';
 
 import { SettingsContext } from './SettingsContext';
-import { useContext, useState } from '@wordpress/element';
+import { useContext, useRef, useState } from '@wordpress/element';
+
+import apiFetch from '@wordpress/api-fetch';
 
 export default function WorkspaceSettings() {
 	const { settings } = useContext(SettingsContext);
@@ -17,10 +19,52 @@ export default function WorkspaceSettings() {
 		}
 		return options;
 	});
+	const tagTypeaheadAbortControllerRef = useRef(null);
 
 	function handleAsanaTagFilterValueChange(value) {
-		// @TODO setAsanaTagOptions() using Asana Typeahead search for tags.
-		window.console.log(value);
+
+		if ( 'function' === typeof tagTypeaheadAbortControllerRef.current?.abort ) {
+			// Abort the previous request.
+			tagTypeaheadAbortControllerRef.current.abort();
+		}
+
+		// Create new AbortController for this request.
+		tagTypeaheadAbortControllerRef.current = new AbortController();
+
+		// Perform the request.
+		apiFetch({
+			path: `/completionist/v1/tags/typeahead?workspace_gid=${asanaWorkspaceValue}&query=${value}&count=100`,
+			method: 'GET',
+			signal: tagTypeaheadAbortControllerRef.current?.signal,
+		}).then( res => {
+			window.console.log(res);
+			if ( res?.data?.tags ) {
+				setAsanaTagOptions( prevState => {
+					const seenTags = new Set();
+					const newState = [];
+					for ( const tagOption of prevState ) {
+						if ( ! seenTags.has( tagOption?.value ) ) {
+							newState.push(tagOption);
+							seenTags.add(tagOption?.value);
+						}
+					}
+					for ( const tag of res.data.tags ) {
+						if ( ! seenTags.has( tag?.gid ) ) {
+							newState.push({
+								label: tag?.name,
+								value: tag?.gid,
+							});
+							seenTags.add(tag?.gid);
+						}
+					}
+					return newState;
+				});
+			}
+		}).catch( error => {
+			if ( 'AbortError' !== error?.name ) {
+				window.console.error(error);
+			}
+		});
 	}
 
 	const styleCollaboratorTH = { background: 'rgb(245, 245, 245)', padding: '8px 24px' };
@@ -68,6 +112,7 @@ export default function WorkspaceSettings() {
 					options={asanaTagOptions}
 					value={asanaTagValue}
 					required={true}
+					disabled={ ! asanaWorkspaceValue || ! settings?.user?.asana_personal_access_token }
 					onChange={setAsanaTagValue}
 					onFilterValueChange={handleAsanaTagFilterValueChange}
 				/>

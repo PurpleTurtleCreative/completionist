@@ -46,6 +46,32 @@ class Tags {
 				),
 			)
 		);
+
+		register_rest_route(
+			REST_API_NAMESPACE_V1,
+			'/tags/typeahead',
+			array(
+				array(
+					'methods'             => 'GET',
+					'callback'            => array( __CLASS__, 'handle_get_tags_typeahead' ),
+					'permission_callback' => 'is_user_logged_in',
+					'args'                => array(
+						'workspace_gid' => REST_Server::get_arg_def_gid( true ),
+						'query'         => array(
+							'type'              => 'string',
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'count' => array(
+							'type'              => 'integer',
+							'required'          => false,
+							'default'           => 100,
+							'sanitize_callback' => 'absint',
+						),
+					),
+				),
+			)
+		);
 	}//end register_routes()
 
 	/**
@@ -161,7 +187,81 @@ class Tags {
 			$res = array(
 				'status'  => 'error',
 				'code'    => HTML_Builder::get_error_code( $err ),
-				'message' => HTML_Builder::format_error_string( $err, 'Failed to create task.' ),
+				'message' => HTML_Builder::format_error_string( $err, 'Failed to get tags.' ),
+				'data'    => null,
+			);
+		}
+
+		return new \WP_REST_Response( $res, $res['code'] );
+	}
+
+	/**
+	 * Handles a request to get Asana tags via typeahead search.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @link https://developers.asana.com/reference/typeaheadforworkspace
+	 *
+	 * @param \WP_REST_Request $request The API request.
+	 *
+	 * @return \WP_REST_Response|\WP_Error The API response.
+	 *
+	 * @throws \Exception Handled in try-catch block.
+	 */
+	public static function handle_get_tags_typeahead(
+		\WP_REST_Request $request
+	) {
+
+		$res = array(
+			'status'  => 'error',
+			'code'    => 500,
+			'message' => 'An unknown error occurred.',
+			'data'    => null,
+		);
+
+		try {
+
+			$asana = Asana_Interface::get_client(); // Use current user.
+
+			try {
+
+				// Retrieve data.
+				$tags_iterator = $asana->typeahead->typeaheadForWorkspace(
+					$request['workspace_gid'],
+					array(
+						'opt_fields'    => 'gid,name,resource_type',
+						'resource_type' => 'tag',
+						'count'         => $request['count'] ?? 100,
+						'query'         => $request['query'],
+					)
+				);
+
+				// Convert to array.
+				$tags = array();
+				foreach ( $tags_iterator as $tag ) {
+					if ( ! empty( $tag->gid ) ) {
+						$tags[] = $tag;
+					}
+				}
+			} catch ( \Asana\Errors\NotFoundError $e ) {
+				throw new \Exception( 'Workspace not found.', 404 );
+			} catch ( \Asana\Errors\InvalidRequestError $e ) {
+				throw new \Exception( 'Workspace invalid.', 400 );
+			}
+
+			$res = array(
+				'status'  => 'success',
+				'code'    => 200,
+				'message' => 'Successfully retrieved tags in the workspace.',
+				'data'    => array(
+					'tags' => $tags,
+				),
+			);
+		} catch ( \Exception $err ) {
+			$res = array(
+				'status'  => 'error',
+				'code'    => HTML_Builder::get_error_code( $err ),
+				'message' => HTML_Builder::format_error_string( $err, 'Failed to find tags.' ),
 				'data'    => null,
 			);
 		}
