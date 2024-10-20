@@ -893,23 +893,57 @@ class Options {
 	public static function get_settings_for_user( $user_id ) {
 
 		// Basic settings.
-		$chosen_workspace_gid = self::get( self::ASANA_WORKSPACE_GID );
+		$site_workspace_gid = self::get( self::ASANA_WORKSPACE_GID );
+		$site_tag_gid       = self::get( self::ASANA_TAG_GID );
 
 		// Assume user hasn't authenticated Asana.
 		$asana_profile             = null;
-		$is_asana_workspace_member = false;
 		$found_workspace_users     = null;
 		$connected_workspace_users = null;
+		$site_workspace            = null;
+		$site_tag                  = null;
+		$is_site_workspace_member  = false;
 
 		try {
 
-			Asana_Interface::get_client( $user_id );
+			// Authenticate Asana API client.
+			$asana = Asana_Interface::get_client( $user_id );
 
+			// Get Asana user data.
 			$asana_profile             = Asana_Interface::get_me();
-			$is_asana_workspace_member = Asana_Interface::is_workspace_member( $chosen_workspace_gid );
 			$found_workspace_users     = Asana_Interface::find_workspace_users();
 			$connected_workspace_users = Asana_Interface::get_connected_workspace_users();
 
+			// Get workspace information.
+			foreach ( $asana_profile->workspaces as $workspace ) {
+				if ( $site_workspace_gid === $workspace->gid ) {
+					$site_workspace           = $workspace;
+					$is_site_workspace_member = true;
+				}
+			}
+
+			if ( $site_workspace_gid && ! $is_site_workspace_member ) {
+				$site_workspace       = new \stdClass();
+				$site_workspace->name = '(Unauthorized)';
+			}
+
+			// Get tag information.
+			if ( $site_tag_gid ) {
+				if ( $is_site_workspace_member ) {
+					try {
+						$site_tag = $asana->tags->getTag(
+							$site_tag_gid,
+							array( 'opt_fields' => 'gid,name,resource_type' )
+						);
+					} catch ( \Exception $error ) {
+						$site_tag       = new \stdClass();
+						$site_tag->name = '(Error: ' . $error->getMessage() . ')';
+					}
+				} else {
+					$site_tag       = new \stdClass();
+					$site_tag->name = '(Unauthorized)';
+				}
+			}
 		} catch ( Errors\No_Authorization $e ) {
 			// User is NOT authenticated for API usage.
 			$asana_profile = null;
@@ -929,7 +963,7 @@ class Options {
 					'can_manage_options' => user_can( $user_id, 'manage_options' ),
 					'can_edit_posts'     => user_can( $user_id, 'edit_posts' ),
 				),
-				'is_asana_workspace_member'   => $is_asana_workspace_member,
+				'is_site_workspace_member'    => $is_site_workspace_member,
 				'asana_personal_access_token' => self::get( self::ASANA_PAT, $user_id ),
 				'asana_profile'               => $asana_profile,
 			),
@@ -938,8 +972,8 @@ class Options {
 				'cache_ttl'    => self::get( self::CACHE_TTL_SECONDS ),
 			),
 			'workspace' => array(
-				'gid'                       => $chosen_workspace_gid,
-				'site_tag_gid'              => self::get( self::ASANA_TAG_GID ),
+				'asana_site_workspace'      => $site_workspace,
+				'asana_site_tag'            => $site_tag,
 				'total_pinned_tasks'        => self::count_all_pinned_tasks(),
 				'found_workspace_users'     => $found_workspace_users,
 				'connected_workspace_users' => $connected_workspace_users,

@@ -1,9 +1,46 @@
 import { Button, Card, CardBody, CardDivider, CardHeader, CardMedia, ComboboxControl, Flex, FlexBlock, FlexItem, SelectControl } from '@wordpress/components';
 
+import { SettingsContext } from './SettingsContext';
+import { useContext, useState } from '@wordpress/element';
+
 export default function WorkspaceSettings() {
+	const { settings } = useContext(SettingsContext);
+	const [ asanaWorkspaceValue, setAsanaWorkspaceValue ] = useState(settings?.workspace?.asana_site_workspace?.gid || '');
+	const [ asanaTagValue, setAsanaTagValue ] = useState(settings?.workspace?.asana_site_tag?.gid || '');
+	const [ asanaTagOptions, setAsanaTagOptions ] = useState(() => {
+		const options = [];
+		if ( settings?.workspace?.asana_site_tag?.gid ) {
+			options.push({
+				label: settings?.workspace?.asana_site_tag?.name || '(Unknown)',
+				value: settings?.workspace?.asana_site_tag?.gid || '',
+			});
+		}
+		return options;
+	});
+
+	function handleAsanaTagFilterValueChange(value) {
+		// @TODO setAsanaTagOptions() using Asana Typeahead search for tags.
+		window.console.log(value);
+	}
 
 	const styleCollaboratorTH = { background: 'rgb(245, 245, 245)', padding: '8px 24px' };
 	const styleCollaboratorTD = { verticalAlign: 'middle', padding: '16px 24px' };
+
+	const asanaWorkspaceOptions = [];
+	if ( ! settings?.workspace?.asana_site_workspace?.gid || ! settings?.user?.is_site_workspace_member ) {
+		asanaWorkspaceOptions.push({
+			label: settings?.workspace?.asana_site_workspace?.name || 'Choose a workspace...',
+			value: settings?.workspace?.asana_site_workspace?.gid || '',
+		});
+	}
+	if ( settings?.user?.asana_profile?.workspaces?.length > 0 ) {
+		for ( const workspace of settings?.user?.asana_profile?.workspaces ) {
+			asanaWorkspaceOptions.push({
+				label: workspace?.name || '(Unknown)',
+				value: workspace?.gid || '',
+			});
+		}
+	}
 
 	return (
 		<Card>
@@ -16,12 +53,9 @@ export default function WorkspaceSettings() {
 					__nextHasNoMarginBottom
 					label='Asana Workspace'
 					help='The workspace associated with this WordPress website.'
-					options={[
-						{
-							label: 'purpleturtlecreative.com',
-							value: '123abc456xyz789',
-						},
-					]}
+					options={asanaWorkspaceOptions}
+					value={asanaWorkspaceValue}
+					required={true}
 				/>
 			</CardBody>
 			<CardBody>
@@ -30,9 +64,12 @@ export default function WorkspaceSettings() {
 					__nextHasNoMarginBottom
 					label='Asana Tag'
 					help='The tag applied to Asana tasks which are managed on this WordPress website.'
-					placeholder='Please choose a Workspace first...'
-					options={[]}
-					value={null}
+					placeholder='Choose a tag or type to search...'
+					options={asanaTagOptions}
+					value={asanaTagValue}
+					required={true}
+					onChange={setAsanaTagValue}
+					onFilterValueChange={handleAsanaTagFilterValueChange}
 				/>
 			</CardBody>
 			<CardBody>
