@@ -100,6 +100,7 @@ export default function WorkspaceSettings() {
 					options={asanaWorkspaceOptions}
 					value={asanaWorkspaceValue}
 					required={true}
+					onChange={setAsanaWorkspaceValue}
 				/>
 			</CardBody>
 			<CardBody>

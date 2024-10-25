@@ -55,8 +55,8 @@ export default function AdminSettingsScreen() {
 
 	return (
 		<div className='ptc-AdminSettingsScreen'>
-			<Flex gap={6} align='top'>
-				<FlexItem style={{ flexBasis: '230px' }}>
+			<Flex gap={6} justify='space-between' align='top'>
+				<FlexItem style={{ flexBasis: '200px' }}>
 					<MenuGroup>
 						{menuItems.map(item => (
 							<MenuItem
@@ -80,7 +80,7 @@ export default function AdminSettingsScreen() {
 						))}
 					</MenuGroup>
 				</FlexItem>
-				<FlexBlock>
+				<FlexBlock style={{ maxWidth: '850px' }}>
 					{renderScreenContent()}
 					<Card isBorderless={true} style={{ margin: '8px 0' }}>
 						<CardBody>
