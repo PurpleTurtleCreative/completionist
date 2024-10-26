@@ -275,7 +275,8 @@ class Admin_Pages {
 						'auth' => array_intersect_key(
 							static::get_frontend_api_data(),
 							array(
-								'nonce_connect_asana' => true,
+								'nonce_connect_asana'    => true,
+								'nonce_disconnect_asana' => true,
 							)
 						),
 					)
@@ -491,6 +492,7 @@ class Admin_Pages {
 			'nonce_update_task'       => wp_create_nonce( 'ptc_completionist_update_task' ),
 			// Settings - nonce format MUST be "nonce_{action}" => "ptc_completionist_{action}".
 			'nonce_connect_asana'     => wp_create_nonce( 'ptc_completionist_connect_asana' ),
+			'nonce_disconnect_asana'  => wp_create_nonce( 'ptc_completionist_disconnect_asana' ),
 			// REST API.
 			'url'                     => rest_url(),
 			'v1'                      => rest_url( REST_API_NAMESPACE_V1 ),

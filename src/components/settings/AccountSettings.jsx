@@ -1,14 +1,24 @@
-import { Button, Card, CardBody, CardHeader, ExternalLink, Flex, FlexBlock, FlexItem, TextControl } from '@wordpress/components';
+import { Button, Card, CardBody, CardHeader, ExternalLink, Flex, FlexBlock, FlexItem, Modal, Notice, TextControl } from '@wordpress/components';
 
 import { SettingsContext } from './SettingsContext';
 import { useContext, useState } from '@wordpress/element';
 
 export default function AccountSettings() {
-	const { settings, updateSettings } = useContext(SettingsContext);
+	const { settings, updateSettings, isFrontendAuthUser } = useContext(SettingsContext);
 	const [ asanaPAT, setAsanaPAT ] = useState(settings?.user?.asana_personal_access_token || '');
+	const [ disconnectModalIsOpen, setDisconnectModalIsOpen ] = useState(false);
 
 	function handleUpdateAsanaPAT() {
 		updateSettings('connect_asana', { asana_pat: asanaPAT });
+	}
+
+	function handleRequestDisconnectAsana() {
+		setDisconnectModalIsOpen(true);
+	}
+
+	function handleDisconnectAsana() {
+		updateSettings('disconnect_asana');
+		setDisconnectModalIsOpen(false);
 	}
 
 	const hasConnectedAsana = ( !! settings?.user?.asana_profile?.gid );
@@ -98,9 +108,49 @@ export default function AccountSettings() {
 						isDestructive={true}
 						text='Disconnect'
 						style={{ paddingLeft: '2em', paddingRight: '2em' }}
+						onClick={handleRequestDisconnectAsana}
 					/>
-					<p style={{ color: 'rgb(117, 117, 117)' }}>This will remove your encrypted Personal Access Token and Asana user id from this site, thus deauthorizing access to your Asana account. Until connecting your Asana account again, you will not have access to use Completionist's features. <ExternalLink href="https://docs.purpleturtlecreative.com/completionist/disconnect-asana/">Learn more</ExternalLink></p>
+					<p style={{ color: 'rgb(117, 117, 117)' }}>This will remove your encrypted Personal Access Token and Asana user ID from this site, cancelling access to your Asana account. Please understand the consequences before disconnecting your account. <ExternalLink href="https://docs.purpleturtlecreative.com/completionist/disconnect-asana/">Learn more</ExternalLink></p>
 				</>)
+			}
+			{
+				( disconnectModalIsOpen ) && (
+					<Modal
+						title='Are you sure?'
+						size='large'
+						onRequestClose={() => setDisconnectModalIsOpen(false)}
+					>
+						<p>Disconnecting your Asana account means you will lose access to Completionist's collaborative features and no longer appear in Asana-related options.</p>
+						{/* @TODO - Make the following warning dynamic by checking Automation Actions, etc. */}
+						<p>Automations which reference your Asana account may also stop working.</p>
+						{
+							isFrontendAuthUser() && (
+								<Notice status='warning' isDismissible={false}>
+									<h2>Warning: Shortcodes may stop working!</h2>
+									<p><strong>You are currently the default frontend authentication user,</strong> so Completionist's shortcodes may not work if you disconnect your Asana account!</p>
+									<p>Please consider updating the frontend authentication user for this WordPress website before disconnecting your Asana account to prevent interruptions.</p>
+								</Notice>
+							)
+						}
+						<Flex style={{ marginTop: '24px' }} gap={4} align='center' justify='center'>
+							<Button
+								__next40pxDefaultSize
+								variant='secondary'
+								text='Cancel'
+								style={{ paddingLeft: '2em', paddingRight: '2em' }}
+								onClick={() => setDisconnectModalIsOpen(false)}
+							/>
+							<Button
+								__next40pxDefaultSize
+								variant='primary'
+								isDestructive={true}
+								text='Yes, Disconnect'
+								style={{ paddingLeft: '2em', paddingRight: '2em' }}
+								onClick={handleDisconnectAsana}
+							/>
+						</Flex>
+					</Modal>
+				)
 			}
 			</CardBody>
 		</Card>

@@ -118,6 +118,7 @@ class Settings {
 
 		try {
 			switch ( $request['action'] ) {
+				// . ////////////////////////////////////////////////// .
 				case 'connect_asana':
 					$asana_pat = Options::sanitize( Options::ASANA_PAT, $request['asana_pat'] );
 					if ( empty( $asana_pat ) ) {
@@ -164,7 +165,28 @@ class Settings {
 							'data'    => null,
 						);
 					}
-					break;
+					break; // end connect_asana.
+				// . ////////////////////////////////////////////////// .
+				case 'disconnect_asana':
+					if ( Options::delete( Options::ASANA_PAT ) ) {
+
+						Options::delete( Options::ASANA_USER_GID );
+
+						if ( get_current_user_id() === intval( Options::get( Options::FRONTEND_AUTH_USER_ID ) ) ) {
+							Options::delete( Options::FRONTEND_AUTH_USER_ID );
+						}
+
+						$res = array(
+							'status'  => 'success',
+							'code'    => 200,
+							'message' => 'Your Asana account was successfully disconnected.',
+							'data'    => null,
+						);
+					} else {
+						throw new \Exception( 'Your Asana account could not be disconnected.', 500 );
+					}
+					break; // end disconnect_asana.
+				// . ////////////////////////////////////////////////// .
 				default:
 					throw new \Exception( 'Unsupported action.', 400 );
 			}
