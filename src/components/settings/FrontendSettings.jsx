@@ -1,10 +1,13 @@
 import { Button, Card, CardBody, CardDivider, CardHeader, ExternalLink, Flex, FlexBlock, FlexItem, SelectControl, TextControl, Tip } from '@wordpress/components';
 
+import { humanReadableDuration } from '../generic/util';
+
 import { SettingsContext } from './SettingsContext';
-import { useContext } from '@wordpress/element';
+import { useContext, useState } from '@wordpress/element';
 
 export default function FrontendSettings() {
 	const { settings } = useContext(SettingsContext);
+	const [ asanaCacheTTL, setAsanaCacheTTL ] = useState(settings?.frontend?.cache_ttl || 900);
 
 	const frontendAuthenticationUserSelectOptions = [
 		{
@@ -64,10 +67,13 @@ export default function FrontendSettings() {
 							__next40pxDefaultSize
 							__nextHasNoMarginBottom
 							type='number'
+							min={0}
 							label='Cache Duration (TTL)'
 							help='The number of seconds until new data is fetched from Asana for display on this website.'
-							value={ settings?.frontend?.cache_ttl || 900 }
+							value={asanaCacheTTL || 0}
+							onChange={setAsanaCacheTTL}
 						/>
+						<p><strong>Duration:</strong> {humanReadableDuration(asanaCacheTTL)}</p>
 					</FlexBlock>
 					<FlexItem>
 						<Button
