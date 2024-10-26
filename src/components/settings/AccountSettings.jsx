@@ -1,10 +1,15 @@
 import { Button, Card, CardBody, CardHeader, ExternalLink, Flex, FlexBlock, FlexItem, TextControl } from '@wordpress/components';
 
 import { SettingsContext } from './SettingsContext';
-import { useContext } from '@wordpress/element';
+import { useContext, useState } from '@wordpress/element';
 
 export default function AccountSettings() {
-	const { settings } = useContext(SettingsContext);
+	const { settings, updateSettings } = useContext(SettingsContext);
+	const [ asanaPAT, setAsanaPAT ] = useState(settings?.user?.asana_personal_access_token || '');
+
+	function handleUpdateAsanaPAT() {
+		updateSettings('connect_asana', { asana_pat: asanaPAT });
+	}
 
 	const hasConnectedAsana = ( !! settings?.user?.asana_profile?.gid );
 
@@ -56,27 +61,32 @@ export default function AccountSettings() {
 				</Flex>
 			</CardBody>
 			<CardBody>
-				<Flex justify='start' align='top'>
-					<FlexBlock>
-						<TextControl
-							__next40pxDefaultSize
-							__nextHasNoMarginBottom
-							type='password'
-							label='Personal Access Token'
-							help='Connect your Asana account by entering your Personal Access Token (PAT).'
-							value={ settings?.user?.asana_personal_access_token || '' }
-						/>
-						<ExternalLink href='https://app.asana.com/0/developer-console'>Visit your Asana developer console</ExternalLink>
-					</FlexBlock>
-					<FlexItem>
-						<Button
-							__next40pxDefaultSize
-							variant='primary'
-							text={ ( hasConnectedAsana ) ? 'Update' : 'Authorize' }
-							style={{ marginTop: '23.39px', paddingLeft: '2em', paddingRight: '2em' }}
-						/>
-					</FlexItem>
-				</Flex>
+				<form onSubmit={handleUpdateAsanaPAT}>
+					<Flex justify='start' align='top'>
+						<FlexBlock>
+							<TextControl
+								__next40pxDefaultSize
+								__nextHasNoMarginBottom
+								type='password'
+								label='Personal Access Token'
+								help='Connect your Asana account by entering your Personal Access Token (PAT).'
+								value={asanaPAT}
+								onChange={setAsanaPAT}
+								required={true}
+							/>
+							<ExternalLink href='https://app.asana.com/0/developer-console'>Visit your Asana developer console</ExternalLink>
+						</FlexBlock>
+						<FlexItem>
+							<Button
+								__next40pxDefaultSize
+								type='submit'
+								variant='primary'
+								text={ ( hasConnectedAsana ) ? 'Update' : 'Authorize' }
+								style={{ marginTop: '23.39px', paddingLeft: '2em', paddingRight: '2em' }}
+							/>
+						</FlexItem>
+					</Flex>
+				</form>
 			</CardBody>
 			<CardBody>
 			{

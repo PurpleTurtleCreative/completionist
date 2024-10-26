@@ -4,11 +4,11 @@ import AccountSettings from './settings/AccountSettings';
 import FrontendSettings from './settings/FrontendSettings';
 import WorkspaceSettings from './settings/WorkspaceSettings';
 
-import { Card, CardBody, Flex, FlexBlock, FlexItem, MenuGroup, MenuItem, Spinner } from '@wordpress/components';
+import { Button, Card, CardBody, CardFooter, CardHeader, Flex, FlexBlock, FlexItem, MenuGroup, MenuItem, Spinner } from '@wordpress/components';
 import { useContext, useEffect, useState } from '@wordpress/element';
 
 export default function AdminSettingsScreen() {
-	const { loadSettings, status } = useContext(SettingsContext);
+	const { loadSettings, status, settings } = useContext(SettingsContext);
 	const [currentScreen, setCurrentScreen] = useState('account');
 
 	useEffect(() => {
@@ -22,18 +22,7 @@ export default function AdminSettingsScreen() {
 	];
 
 	const renderScreenContent = () => {
-		if ( 'success' !== status ) {
-			return (
-				<Card size='large'>
-					<CardBody>
-						<Flex gap={0} align='center' justify='center'>
-							<Spinner />
-							<p style={{ margin: '5px 0 0' }}>Loading your settings...</p>
-						</Flex>
-					</CardBody>
-				</Card>
-			);
-		} else {
+		if ( 'success' === status ) {
 			switch (currentScreen) {
 				case 'account':
 					return <AccountSettings />;
@@ -50,6 +39,33 @@ export default function AdminSettingsScreen() {
 						</Card>
 					);
 			}
+		} else if ( 'error' === status ) {
+			return (
+				<Card size='large'>
+					<CardBody>
+						<h2 style={{ margin: 0 }}>Failed to load your settings.</h2>
+						<p style={{ marginBottom: '24px' }}>{settings}</p>
+						<Button
+							__next40pxDefaultSize
+							variant='primary'
+							icon='update'
+							text='Try Again'
+							onClick={loadSettings}
+						/>
+					</CardBody>
+				</Card>
+			);
+		} else {
+			return (
+				<Card size='large'>
+					<CardBody>
+						<Flex gap={0} align='center' justify='center'>
+							<Spinner />
+							<p style={{ margin: '5px 0 0' }}>Loading your settings...</p>
+						</Flex>
+					</CardBody>
+				</Card>
+			);
 		}
 	};
 

@@ -17,17 +17,40 @@ export function SettingsContextProvider({children}) {
 			apiFetch({
 				path: '/completionist/v1/settings',
 				method: 'GET',
-			})
-				.then((data) => {
-					setSettings(data);
-					setStatus('success');
-				})
-				.catch((error) => {
-					window.console.error('Error:', error);
-					setStatus('error');
-					setSettings(error);
-				});
+			}).then((data) => {
+				setSettings(data);
+				setStatus('success');
+			}).catch((error) => {
+				window.console.error('Error:', error);
+				setStatus('error');
+				setSettings(error);
+			});
 		},
+
+		updateSettings: async ( action = '', args = {} ) => {
+			setStatus('loading');
+			apiFetch({
+				path: '/completionist/v1/settings',
+				method: 'PUT',
+				data: {
+					action,
+					action_nonce: window?.ptc_completionist_settings?.auth?.[`nonce_${action}`],
+					...args,
+				},
+			}).then((data) => {
+				if ( 'success' === data?.status ) {
+					window.console.log('Success', data);
+					context.loadSettings(); // Reload settings with updates.
+				} else {
+					window.console.error('Error', data);
+					throw data?.message;
+				}
+			}).catch((error) => {
+				window.console.error('Fail', error);
+				setStatus('error');
+				setSettings(error);
+			});
+		}
 	};
 
 	return (

@@ -268,6 +268,18 @@ class Admin_Pages {
 					true
 				);
 				wp_enqueue_style( 'wp-components' );
+				wp_localize_script(
+					'ptc-completionist_AdminSettings',
+					'ptc_completionist_settings',
+					array(
+						'auth' => array_intersect_key(
+							static::get_frontend_api_data(),
+							array(
+								'nonce_connect_asana' => true,
+							)
+						),
+					)
+				);
 				break;
 
 			case 'completionist_page_ptc-completionist-automations':
@@ -462,8 +474,10 @@ class Admin_Pages {
 		}
 
 		$api_data = array(
+			// Generic.
 			'auth_nonce'              => wp_create_nonce( 'wp_rest' ),
 			'nonce'                   => wp_create_nonce( 'ptc_completionist' ),
+			// Automations.
 			'nonce_create_automation' => wp_create_nonce( 'ptc_completionist_create_automation' ),
 			'nonce_create_task'       => wp_create_nonce( 'ptc_completionist_create_task' ),
 			'nonce_delete_automation' => wp_create_nonce( 'ptc_completionist_delete_automation' ),
@@ -475,6 +489,9 @@ class Admin_Pages {
 			'nonce_unpin_task'        => wp_create_nonce( 'ptc_completionist_unpin_task' ),
 			'nonce_update_automation' => wp_create_nonce( 'ptc_completionist_update_automation' ),
 			'nonce_update_task'       => wp_create_nonce( 'ptc_completionist_update_task' ),
+			// Settings - nonce format MUST be "nonce_{action}" => "ptc_completionist_{action}".
+			'nonce_connect_asana'     => wp_create_nonce( 'ptc_completionist_connect_asana' ),
+			// REST API.
 			'url'                     => rest_url(),
 			'v1'                      => rest_url( REST_API_NAMESPACE_V1 ),
 		);
