@@ -219,6 +219,44 @@ class Settings {
 					}
 					break;
 				// . ////////////////////////////////////////////////// .
+				case 'update_asana_cache_ttl':
+					if ( ! current_user_can( 'manage_options' ) ) {
+						throw new \Exception( 'You do not have permission to manage this option.', 403 );
+					} elseif ( empty( $request['asana_cache_ttl'] ) ) {
+						throw new \Exception( 'Missing required parameter: asana_cache_ttl', 400 );
+					} else {
+
+						if ( ! is_numeric( $request['asana_cache_ttl'] ) ) {
+							throw new \Exception( 'Invalid value for parameter: asana_cache_ttl', 400 );
+						}
+
+						// Sanitize submitted value.
+						$submitted_ttl = (int) Options::sanitize( Options::CACHE_TTL_SECONDS, $request['asana_cache_ttl'] );
+
+						// Save the value.
+						Options::save(
+							Options::CACHE_TTL_SECONDS,
+							(string) $submitted_ttl,
+							true
+						);
+
+						// Get the saved and validated value.
+						$retrieved_ttl = (int) Options::get( Options::CACHE_TTL_SECONDS );
+
+						// Confirm that it was saved successfully.
+						if ( $retrieved_ttl === $submitted_ttl ) {
+							$res = array(
+								'status'  => 'success',
+								'code'    => 200,
+								'message' => 'The Asana data cache duration was successfully saved!',
+								'data'    => null,
+							);
+						} else {
+							throw new \Exception( 'Failed to save the Asana data cache duration.', 500 );
+						}
+					}
+					break;
+				// . ////////////////////////////////////////////////// .
 				default:
 					throw new \Exception( 'Unsupported action.', 400 );
 			}

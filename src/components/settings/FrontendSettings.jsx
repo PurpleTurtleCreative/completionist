@@ -15,6 +15,11 @@ export default function FrontendSettings() {
 		updateSettings('update_frontend_auth_user', { user_id: asanaFrontendAuthUserID });
 	}
 
+	function handleUpdateAsanaCacheTTL(submitEvent) {
+		submitEvent.preventDefault();
+		updateSettings('update_asana_cache_ttl', { asana_cache_ttl: asanaCacheTTL });
+	}
+
 	const frontendAuthenticationUserSelectOptions = [
 		{
 			label: 'Choose a user...',
@@ -78,29 +83,34 @@ export default function FrontendSettings() {
 				<p style={{ color: 'rgb(117, 117, 117)', marginBottom: 0 }}>Completionist efficiently loads Asana projects and tasks on your website's frontend by caching the associated data for a period of time.</p>
 			</CardBody>
 			<CardBody>
-				<Flex justify='start' align='top'>
-					<FlexBlock>
-						<TextControl
-							__next40pxDefaultSize
-							__nextHasNoMarginBottom
-							type='number'
-							min={0}
-							label='Cache Duration (TTL)'
-							help='The number of seconds until new data is fetched from Asana for display on this website.'
-							value={asanaCacheTTL || 0}
-							onChange={setAsanaCacheTTL}
-						/>
-						<p><strong>Duration:</strong> {humanReadableDuration(asanaCacheTTL)}</p>
-					</FlexBlock>
-					<FlexItem>
-						<Button
-							__next40pxDefaultSize
-							variant='primary'
-							text='Update'
-							style={{ marginTop: '23.39px', paddingLeft: '2em', paddingRight: '2em' }}
-						/>
-					</FlexItem>
-				</Flex>
+				<form onSubmit={handleUpdateAsanaCacheTTL}>
+					<Flex justify='start' align='top'>
+						<FlexBlock>
+							<TextControl
+								__next40pxDefaultSize
+								__nextHasNoMarginBottom
+								type='number'
+								min={0}
+								label='Cache Duration (TTL)'
+								help='The number of seconds until new data is fetched from Asana for display on this website.'
+								value={asanaCacheTTL || 0}
+								onChange={setAsanaCacheTTL}
+								disabled={!userCan('manage_options')}
+							/>
+							<p><strong>Duration:</strong> {humanReadableDuration(asanaCacheTTL)}</p>
+						</FlexBlock>
+						<FlexItem>
+							<Button
+								__next40pxDefaultSize
+								type='submit'
+								variant='primary'
+								text='Update'
+								style={{ marginTop: '23.39px', paddingLeft: '2em', paddingRight: '2em' }}
+								disabled={!userCan('manage_options')}
+							/>
+						</FlexItem>
+					</Flex>
+				</form>
 			</CardBody>
 			<CardBody>
 				<Button

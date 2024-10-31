@@ -278,6 +278,7 @@ class Admin_Pages {
 								'nonce_connect_asana'    => true,
 								'nonce_disconnect_asana' => true,
 								'nonce_update_frontend_auth_user' => true,
+								'nonce_update_asana_cache_ttl' => true,
 							)
 						),
 					)
@@ -495,6 +496,7 @@ class Admin_Pages {
 			'nonce_connect_asana'     => wp_create_nonce( 'ptc_completionist_connect_asana' ),
 			'nonce_disconnect_asana'  => wp_create_nonce( 'ptc_completionist_disconnect_asana' ),
 			'nonce_update_frontend_auth_user' => wp_create_nonce( 'ptc_completionist_update_frontend_auth_user' ),
+			'nonce_update_asana_cache_ttl' => wp_create_nonce( 'ptc_completionist_update_asana_cache_ttl' ),
 			// REST API.
 			'url'                     => rest_url(),
 			'v1'                      => rest_url( REST_API_NAMESPACE_V1 ),
