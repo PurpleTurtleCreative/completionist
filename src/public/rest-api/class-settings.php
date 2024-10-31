@@ -14,6 +14,7 @@ use const PTC_Completionist\REST_API_NAMESPACE_V1;
 use PTC_Completionist\Asana_Interface;
 use PTC_Completionist\HTML_Builder;
 use PTC_Completionist\Options;
+use PTC_Completionist\Request_Token;
 
 /**
  * Class to register and handle custom REST API endpoints which manage this plugin's settings.
@@ -255,6 +256,19 @@ class Settings {
 							throw new \Exception( 'Failed to save the Asana data cache duration.', 500 );
 						}
 					}
+					break;
+				// . ////////////////////////////////////////////////// .
+				case 'clear_asana_cache':
+						$rows_affected = Request_Token::clear_cache_data();
+						$res = array(
+							'status'  => 'success',
+							'code'    => 200,
+							'message' => sprintf(
+								'Cleared %s cache record(s). The latest data will be fetched from Asana the next time it\'s needed.',
+								intval( $rows_affected )
+							),
+							'data'    => null,
+						);
 					break;
 				// . ////////////////////////////////////////////////// .
 				default:

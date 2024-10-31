@@ -20,6 +20,10 @@ export default function FrontendSettings() {
 		updateSettings('update_asana_cache_ttl', { asana_cache_ttl: asanaCacheTTL });
 	}
 
+	function handleClearAsanaCache() {
+		updateSettings('clear_asana_cache');
+	}
+
 	const frontendAuthenticationUserSelectOptions = [
 		{
 			label: 'Choose a user...',
@@ -119,6 +123,7 @@ export default function FrontendSettings() {
 					isDestructive={true}
 					text='Clear Cache'
 					style={{ paddingLeft: '2em', paddingRight: '2em' }}
+					onClick={handleClearAsanaCache}
 				/>
 				<p style={{ color: 'rgb(117, 117, 117)' }}>This will clear all cached Asana data such as projects, tasks, and media attachments. You can use this to ensure the latest information is fetched from Asana during the next load. <ExternalLink href='https://docs.purpleturtlecreative.com/completionist/shortcodes/caching/'>Learn more</ExternalLink></p>
 			</CardBody>
