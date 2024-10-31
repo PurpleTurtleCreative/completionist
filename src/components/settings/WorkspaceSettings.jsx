@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardDivider, CardHeader, CardMedia, ComboboxControl, Flex, FlexBlock, FlexItem, SelectControl } from '@wordpress/components';
+import { Button, Card, CardBody, CardDivider, CardHeader, CardMedia, ComboboxControl, Flex, FlexBlock, FlexItem, SelectControl, TextControl, ToggleControl } from '@wordpress/components';
 
 import { SettingsContext } from './SettingsContext';
 import { useContext, useRef, useState } from '@wordpress/element';
@@ -6,9 +6,11 @@ import { useContext, useRef, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
 export default function WorkspaceSettings() {
-	const { settings } = useContext(SettingsContext);
+	const { settings, hasConnectedAsana } = useContext(SettingsContext);
 	const [ asanaWorkspaceValue, setAsanaWorkspaceValue ] = useState(settings?.workspace?.asana_site_workspace?.gid || '');
+	const [ isNewAsanaTag, setIsNewAsanaTag ] = useState(false);
 	const [ asanaTagValue, setAsanaTagValue ] = useState(settings?.workspace?.asana_site_tag?.gid || '');
+	const [ newAsanaTagName, setNewAsanaTagName ] = useState('');
 	const [ asanaTagOptions, setAsanaTagOptions ] = useState(() => {
 		const options = [];
 		if ( settings?.workspace?.asana_site_tag?.gid ) {
@@ -26,6 +28,10 @@ export default function WorkspaceSettings() {
 		if ( 'function' === typeof tagTypeaheadAbortControllerRef.current?.abort ) {
 			// Abort the previous request.
 			tagTypeaheadAbortControllerRef.current.abort();
+		}
+
+		if ( ! value ) {
+			return; // Avoid useless requests.
 		}
 
 		// Create new AbortController for this request.
@@ -104,19 +110,47 @@ export default function WorkspaceSettings() {
 				/>
 			</CardBody>
 			<CardBody>
-				<ComboboxControl
+				<ToggleControl
 					__next40pxDefaultSize
 					__nextHasNoMarginBottom
-					label='Asana Tag'
-					help='The tag applied to Asana tasks which are managed on this WordPress website.'
-					placeholder='Choose a tag or type to search...'
-					options={asanaTagOptions}
-					value={asanaTagValue}
-					required={true}
-					disabled={ ! asanaWorkspaceValue || ! settings?.user?.asana_personal_access_token }
-					onChange={setAsanaTagValue}
-					onFilterValueChange={handleAsanaTagFilterValueChange}
+					label='Create a new tag'
+					checked={isNewAsanaTag}
+					onChange={() => setIsNewAsanaTag( state => ! state )}
 				/>
+			</CardBody>
+			<CardBody>
+				{
+					isNewAsanaTag ?
+					(
+						<TextControl
+							__next40pxDefaultSize
+							__nextHasNoMarginBottom
+							type='text'
+							label='Asana Tag Name'
+							help='The tag applied to Asana tasks which are managed on this WordPress website.'
+							placeholder='Enter a tag name...'
+							value={newAsanaTagName}
+							onChange={setNewAsanaTagName}
+							required={true}
+							disabled={ ! asanaWorkspaceValue || ! hasConnectedAsana() }
+						/>
+					) :
+					(
+						<ComboboxControl
+							__next40pxDefaultSize
+							__nextHasNoMarginBottom
+							label='Asana Tag'
+							help='The tag applied to Asana tasks which are managed on this WordPress website.'
+							placeholder='Choose a tag or type to search...'
+							options={asanaTagOptions}
+							value={asanaTagValue}
+							onChange={setAsanaTagValue}
+							onFilterValueChange={handleAsanaTagFilterValueChange}
+							required={true}
+							disabled={ ! asanaWorkspaceValue || ! hasConnectedAsana() }
+						/>
+					)
+				}
 			</CardBody>
 			<CardBody>
 				<Button
