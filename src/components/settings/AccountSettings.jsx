@@ -4,11 +4,12 @@ import { SettingsContext } from './SettingsContext';
 import { useContext, useState } from '@wordpress/element';
 
 export default function AccountSettings() {
-	const { settings, updateSettings, isFrontendAuthUser } = useContext(SettingsContext);
+	const { settings, updateSettings, isFrontendAuthUser, hasConnectedAsana } = useContext(SettingsContext);
 	const [ asanaPAT, setAsanaPAT ] = useState(settings?.user?.asana_personal_access_token || '');
 	const [ disconnectModalIsOpen, setDisconnectModalIsOpen ] = useState(false);
 
-	function handleUpdateAsanaPAT() {
+	function handleUpdateAsanaPAT(submitEvent) {
+		submitEvent.preventDefault();
 		updateSettings('connect_asana', { asana_pat: asanaPAT });
 	}
 
@@ -21,8 +22,6 @@ export default function AccountSettings() {
 		setDisconnectModalIsOpen(false);
 	}
 
-	const hasConnectedAsana = ( !! settings?.user?.asana_profile?.gid );
-
 	return (
 		<Card>
 			<CardHeader style={{ marginBottom: '16px' }}>
@@ -31,7 +30,7 @@ export default function AccountSettings() {
 			<CardBody>
 				<Flex gap={4} justify='start' align='center'>
 					{
-						( hasConnectedAsana ) &&
+						( hasConnectedAsana() ) &&
 						(
 							<FlexItem>
 								<img
@@ -45,7 +44,7 @@ export default function AccountSettings() {
 					}
 					<FlexBlock>
 						{
-							( hasConnectedAsana ) ?
+							( hasConnectedAsana() ) ?
 							(<>
 								<h3 style={{ margin: '8px 0' }}>
 									{
@@ -91,7 +90,7 @@ export default function AccountSettings() {
 								__next40pxDefaultSize
 								type='submit'
 								variant='primary'
-								text={ ( hasConnectedAsana ) ? 'Update' : 'Authorize' }
+								text={ ( hasConnectedAsana() ) ? 'Update' : 'Authorize' }
 								style={{ marginTop: '23.39px', paddingLeft: '2em', paddingRight: '2em' }}
 							/>
 						</FlexItem>
@@ -100,7 +99,7 @@ export default function AccountSettings() {
 			</CardBody>
 			<CardBody>
 			{
-				( hasConnectedAsana ) &&
+				( hasConnectedAsana() ) &&
 				(<>
 					<Button
 						__next40pxDefaultSize

@@ -960,8 +960,8 @@ class Options {
 			'user'      => array(
 				'id'                          => $user_id,
 				'capabilities'                => array(
-					'can_manage_options' => user_can( $user_id, 'manage_options' ),
-					'can_edit_posts'     => user_can( $user_id, 'edit_posts' ),
+					'manage_options' => user_can( $user_id, 'manage_options' ),
+					'edit_posts'     => user_can( $user_id, 'edit_posts' ),
 				),
 				'is_site_workspace_member'    => $is_site_workspace_member,
 				'asana_personal_access_token' => self::get( self::ASANA_PAT, $user_id ),

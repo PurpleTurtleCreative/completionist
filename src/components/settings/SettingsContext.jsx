@@ -51,12 +51,22 @@ export function SettingsContextProvider({children}) {
 		return ( settings?.frontend?.auth_user_id === settings?.user?.id );
 	};
 
+	function userCan( capability ) {
+		return ( !! settings?.user?.capabilities?.[capability] );
+	};
+
+	function hasConnectedAsana() {
+		return ( !! settings?.user?.asana_profile?.gid );
+	};
+
 	const context = {
 		status,
 		settings,
 		loadSettings,
 		updateSettings,
 		isFrontendAuthUser,
+		userCan,
+		hasConnectedAsana,
 	};
 
 	return (

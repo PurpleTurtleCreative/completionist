@@ -187,6 +187,38 @@ class Settings {
 					}
 					break; // end disconnect_asana.
 				// . ////////////////////////////////////////////////// .
+				case 'update_frontend_auth_user':
+					if ( ! current_user_can( 'manage_options' ) ) {
+						throw new \Exception( 'You do not have permission to manage this option.', 403 );
+					} elseif ( empty( $request['user_id'] ) ) {
+						throw new \Exception( 'Missing required parameter: user_id', 400 );
+					} else {
+						$submitted_wp_user_id = (int) Options::sanitize( Options::FRONTEND_AUTH_USER_ID, $request['user_id'] );
+
+						// Save the frontend authentication user ID.
+						Options::save(
+							Options::FRONTEND_AUTH_USER_ID,
+							(string) $submitted_wp_user_id,
+							true
+						);
+
+						// Get the saved and validated user ID.
+						$retrieved_wp_user_id = (int) Options::get( Options::FRONTEND_AUTH_USER_ID );
+
+						// Confirm that it was saved successfully.
+						if ( $retrieved_wp_user_id === $submitted_wp_user_id ) {
+							$res = array(
+								'status'  => 'success',
+								'code'    => 200,
+								'message' => 'The frontend authentication user was successfully saved!',
+								'data'    => null,
+							);
+						} else {
+							throw new \Exception( 'Failed to save the frontend authentication user.', 500 );
+						}
+					}
+					break;
+				// . ////////////////////////////////////////////////// .
 				default:
 					throw new \Exception( 'Unsupported action.', 400 );
 			}

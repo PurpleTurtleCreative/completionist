@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardDivider, CardHeader, ExternalLink, Flex, FlexBlock, FlexItem, SelectControl, TextControl, Tip } from '@wordpress/components';
+import { Button, Card, CardBody, CardDivider, CardHeader, ExternalLink, Flex, FlexBlock, FlexItem, Notice, SelectControl, TextControl, Tip } from '@wordpress/components';
 
 import { humanReadableDuration } from '../generic/util';
 
@@ -6,8 +6,14 @@ import { SettingsContext } from './SettingsContext';
 import { useContext, useState } from '@wordpress/element';
 
 export default function FrontendSettings() {
-	const { settings } = useContext(SettingsContext);
+	const { settings, updateSettings, userCan } = useContext(SettingsContext);
+	const [ asanaFrontendAuthUserID, setAsanaFrontendAuthUserID ] = useState(settings?.frontend?.auth_user_id || '');
 	const [ asanaCacheTTL, setAsanaCacheTTL ] = useState(settings?.frontend?.cache_ttl || 900);
+
+	function handleUpdateAsanaFrontendAuthUserID(submitEvent) {
+		submitEvent.preventDefault();
+		updateSettings('update_frontend_auth_user', { user_id: asanaFrontendAuthUserID });
+	}
 
 	const frontendAuthenticationUserSelectOptions = [
 		{
@@ -31,29 +37,40 @@ export default function FrontendSettings() {
 				<h2 style={{ margin: 0 }}>Frontend</h2>
 			</CardHeader>
 			<CardBody>
-				<Flex justify='start' align='top'>
-					<FlexBlock>
-						<SelectControl
-							__next40pxDefaultSize
-							__nextHasNoMarginBottom
-							label='Frontend Authentication User'
-							help="The connected Asana user which will be used to display projects and tasks on this website's frontend."
-							options={ frontendAuthenticationUserSelectOptions }
-							defaultValue={ settings?.frontend?.auth_user_id || '' }
-						/>
-					</FlexBlock>
-					<FlexItem>
-						<Button
-							__next40pxDefaultSize
-							variant='primary'
-							text='Update'
-							style={{ marginTop: '23.39px', paddingLeft: '2em', paddingRight: '2em' }}
-						/>
-					</FlexItem>
-				</Flex>
-			</CardBody>
-			<CardBody style={{ paddingTop: 0 }}>
-				<Tip>The user should have access to all tasks and projects in Asana that you wish to display on your website, so it's best to set this to someone such as your project manager. <ExternalLink href='https://docs.purpleturtlecreative.com/completionist/getting-started/#set-a-frontend-authentication-user'>Learn more</ExternalLink></Tip>
+				<form onSubmit={handleUpdateAsanaFrontendAuthUserID}>
+					<Flex justify='start' align='top'>
+						<FlexBlock>
+							<SelectControl
+								__next40pxDefaultSize
+								__nextHasNoMarginBottom
+								label='Frontend Authentication User'
+								help="The connected Asana user which will be used to display projects and tasks on this website's frontend."
+								options={frontendAuthenticationUserSelectOptions}
+								value={asanaFrontendAuthUserID}
+								onChange={setAsanaFrontendAuthUserID}
+								required={true}
+								disabled={!userCan('manage_options')}
+							/>
+						</FlexBlock>
+						<FlexItem>
+							<Button
+								__next40pxDefaultSize
+								type='submit'
+								variant='primary'
+								text='Update'
+								style={{ marginTop: '23.39px', paddingLeft: '2em', paddingRight: '2em' }}
+								disabled={!userCan('manage_options')}
+							/>
+						</FlexItem>
+					</Flex>
+					<div style={{ marginTop: '16px' }}>
+					{
+						( ! userCan('manage_options') ) ?
+						<Notice status='warning' isDismissible={false}>You do not have permission to update this setting.</Notice> :
+						<Tip>The user should have access to all tasks and projects in Asana that you wish to display on your website, so it's best to set this to someone such as your project manager. <ExternalLink href='https://docs.purpleturtlecreative.com/completionist/getting-started/#set-a-frontend-authentication-user'>Learn more</ExternalLink></Tip>
+					}
+					</div>
+				</form>
 			</CardBody>
 			<CardDivider style={{ marginTop: '16px' }} />
 			<CardBody style={{ display: 'block' }}>
