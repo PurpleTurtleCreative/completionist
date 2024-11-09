@@ -165,6 +165,8 @@ class Settings {
 							'message' => 'Your Asana account was successfully connected!',
 							'data'    => null,
 						);
+					} else {
+						throw new \Exception( 'Failed to save your Asana Personal Access Token.', 500 );
 					}
 					break; // end connect_asana.
 				// . ////////////////////////////////////////////////// .
@@ -285,7 +287,6 @@ class Settings {
 							throw new \Exception( 'Invalid workspace identifier.', 400 );
 						}
 
-						error_log( print_r( $workspace_gid, true ) );
 						if ( Options::save( Options::ASANA_WORKSPACE_GID, $workspace_gid ) ) {
 							// Delete all pinned tasks since the workspace has changed.
 							Options::delete( Options::PINNED_TASK_GID, -1 );

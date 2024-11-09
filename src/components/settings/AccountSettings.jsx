@@ -10,6 +10,12 @@ export default function AccountSettings() {
 
 	function handleUpdateAsanaPAT(submitEvent) {
 		submitEvent.preventDefault();
+
+		if ( asanaPAT === settings?.user?.asana_personal_access_token ) {
+			window.console.warning( 'Failed to update identical Asana PAT.' );
+			return;
+		}
+
 		updateSettings('connect_asana', { asana_pat: asanaPAT });
 	}
 
@@ -92,6 +98,7 @@ export default function AccountSettings() {
 								variant='primary'
 								text={ ( hasConnectedAsana() ) ? 'Update' : 'Authorize' }
 								style={{ marginTop: '23.39px', paddingLeft: '2em', paddingRight: '2em' }}
+								disabled={asanaPAT === settings?.user?.asana_personal_access_token}
 							/>
 						</FlexItem>
 					</Flex>
