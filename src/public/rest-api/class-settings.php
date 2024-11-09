@@ -121,53 +121,65 @@ class Settings {
 			switch ( $request['action'] ) {
 				// . ////////////////////////////////////////////////// .
 				case 'connect_asana':
+					if ( empty( $request['asana_pat'] ) ) {
+						throw new \Exception( 'Missing required parameter: asana_pat', 400 );
+					}
+
 					$asana_pat = Options::sanitize( Options::ASANA_PAT, $request['asana_pat'] );
 					if ( empty( $asana_pat ) ) {
 						throw new \Exception( 'Invalid Asana Personal Access Token.', 400 );
-					} elseif ( Options::save( Options::ASANA_PAT, $asana_pat ) ) {
-
-						$maybe_exception = null;
-
-						try {
-							// Test saved Asana PAT to get user's GID.
-							Asana_Interface::get_client();
-							$me           = Asana_Interface::get_me();
-							$did_save_gid = Options::save( Options::ASANA_USER_GID, $me->gid );
-						} catch ( \Exception $e ) {
-							$did_save_gid    = false;
-							$maybe_exception = $e; // Remember actual error that occurred.
-						}
-
-						if ( ! $did_save_gid ) {
-
-							// Ensure no bad data is saved.
-							Options::delete( Options::ASANA_PAT );
-							Options::delete( Options::ASANA_USER_GID );
-
-							/*
-							This is incorrect if the user is already authenticated and
-							simply trying to update their Asana PAT with a new one and
-							an unrelated Asana error is encountered, like a 429...
-							They could be an automation user or frontend authentication
-							user and we just nuked their credentials and identity...
-							*/
-
-							// Notify of error.
-							if ( ! empty( $maybe_exception ) ) {
-								throw $maybe_exception;
-							}
-							throw new \Exception( 'An unknown error occurred, so your Asana account could not be connected.', 500 );
-						}
-
-						$res = array(
-							'status'  => 'success',
-							'code'    => 200,
-							'message' => 'Your Asana account was successfully connected!',
-							'data'    => null,
-						);
-					} else {
-						throw new \Exception( 'Failed to save your Asana Personal Access Token.', 500 );
 					}
+
+					if ( Options::get( Options::ASANA_PAT ) !== $asana_pat ) {
+						// Only save if different to prevent "save failure" error.
+						if ( ! Options::save( Options::ASANA_PAT, $asana_pat ) ) {
+							throw new \Exception( 'Failed to update your Asana Personal Access Token.', 500 );
+						}
+					}
+
+					$maybe_exception = null;
+					try {
+						// Test saved Asana PAT to get user's GID.
+						Asana_Interface::get_client();
+						$me           = Asana_Interface::get_me();
+						if ( Options::get( Options::ASANA_USER_GID ) !== $me->gid ) {
+							// Only save if different to prevent "save failure" error.
+							$did_save_gid = Options::save( Options::ASANA_USER_GID, $me->gid );
+						} else {
+							$did_save_gid = true;
+						}
+					} catch ( \Exception $e ) {
+						$did_save_gid    = false;
+						$maybe_exception = $e; // Remember actual error that occurred.
+					}
+
+					if ( ! $did_save_gid ) {
+
+						// Ensure no bad data is saved.
+						Options::delete( Options::ASANA_PAT );
+						Options::delete( Options::ASANA_USER_GID );
+
+						/*
+						This is incorrect if the user is already authenticated and
+						simply trying to update their Asana PAT with a new one and
+						an unrelated Asana error is encountered, like a 429...
+						They could be an automation user or frontend authentication
+						user and we just nuked their credentials and identity...
+						*/
+
+						// Notify of error.
+						if ( ! empty( $maybe_exception ) ) {
+							throw $maybe_exception;
+						}
+						throw new \Exception( 'An unknown error occurred, so your Asana account could not be connected.', 500 );
+					}
+
+					$res = array(
+						'status'  => 'success',
+						'code'    => 200,
+						'message' => 'Your Asana account is successfully connected!',
+						'data'    => null,
+					);
 					break; // end connect_asana.
 				// . ////////////////////////////////////////////////// .
 				case 'disconnect_asana':
@@ -287,17 +299,20 @@ class Settings {
 							throw new \Exception( 'Invalid workspace identifier.', 400 );
 						}
 
-						if ( Options::save( Options::ASANA_WORKSPACE_GID, $workspace_gid ) ) {
-							// Delete all pinned tasks since the workspace has changed.
-							Options::delete( Options::PINNED_TASK_GID, -1 );
-						} else {
-							throw new \Exception( 'Failed to update workspace.', 500 );
+						if ( Options::get( Options::ASANA_WORKSPACE_GID ) !== $workspace_gid ) {
+							// Only save if different to prevent "save failure" error.
+							if ( Options::save( Options::ASANA_WORKSPACE_GID, $workspace_gid ) ) {
+								// Delete all pinned tasks since the workspace has changed.
+								Options::delete( Options::PINNED_TASK_GID, -1 );
+								$workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
+							} else {
+								throw new \Exception( 'Failed to update workspace.', 500 );
+							}
 						}
-
-						$workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
 
 						// Save site tag.
 
+						$current_tag_gid = Options::get( Options::ASANA_TAG_GID );
 						if ( ! empty( $request['tag_name'] ) ) {
 							// Create new tag.
 
@@ -320,22 +335,23 @@ class Settings {
 								throw new \Exception( 'The specified workspace does not exist.', 404 );
 							}
 						} elseif ( ! empty( $request['tag_gid'] ) ) {
-							// Save existing tag.
+							// Validate existing tag.
 
 							$tag_gid = Options::sanitize( Options::ASANA_TAG_GID, $request['tag_gid'] );
-
-							try {
-								$asana   = Asana_Interface::get_client( get_current_user_id() );
-								$the_tag = $asana->tags->getTag( $tag_gid, array( 'opt_fields' => 'gid,workspace,workspace.gid' ) );
-								$tag_gid = $the_tag->gid;
-								if (
-									isset( $the_tag->workspace->gid )
-									&& $workspace_gid !== $the_tag->workspace->gid
-								) {
-									throw new \Exception( 'Tag does not belong to the saved workspace.', 409 );
+							if ( $current_tag_gid !== $tag_gid ) {
+								try {
+									$asana   = Asana_Interface::get_client( get_current_user_id() );
+									$the_tag = $asana->tags->getTag( $tag_gid, array( 'opt_fields' => 'gid,workspace,workspace.gid' ) );
+									$tag_gid = $the_tag->gid;
+									if (
+										isset( $the_tag->workspace->gid )
+										&& $workspace_gid !== $the_tag->workspace->gid
+									) {
+										throw new \Exception( 'Tag does not belong to the saved workspace.', 409 );
+									}
+								} catch ( \Asana\Errors\NotFoundError $e ) {
+									throw new \Exception( 'Tag does not exist.', 404 );
 								}
-							} catch ( \Asana\Errors\NotFoundError $e ) {
-								throw new \Exception( 'Tag does not exist.', 404 );
 							}
 						} else {
 							// Tag could not be determined.
@@ -348,18 +364,18 @@ class Settings {
 							throw new \Exception( 'Invalid tag identifier.', 400 );
 						}
 
-						if ( ! Options::save( Options::ASANA_TAG_GID, $tag_gid ) ) {
-							throw new \Exception( 'Failed to save the Asana workspace and site tag.', 500 );
+						if ( $current_tag_gid !== $tag_gid ) {
+							// Only save if different to prevent "save failure" error.
+							if ( ! Options::save( Options::ASANA_TAG_GID, $tag_gid ) ) {
+								throw new \Exception( 'Failed to save the Asana workspace and site tag.', 500 );
+							}
 						}
 
 						$res = array(
 							'status'  => 'success',
 							'code'    => 200,
 							'message' => 'The Asana workspace and site tag were successfully saved!',
-							'data'    => array(
-								'workspace_gid' => $workspace_gid,
-								'tag_gid'       => $tag_gid,
-							),
+							'data'    => null,
 						);
 					}//end if asana_workspace_save
 					break;
