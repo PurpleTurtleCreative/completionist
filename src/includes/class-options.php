@@ -129,6 +129,7 @@ class Options {
 					'd'
 				);
 				$sanitized_asana_pat = self::sanitize( $key, $asana_pat );
+				error_log( $asana_pat . ' :: ' . $sanitized_asana_pat );
 				if ( $asana_pat !== $sanitized_asana_pat ) {
 					trigger_error( 'Sanitization occurred. Saved meta is corrupt for: ' . esc_html( $key ), \E_USER_WARNING );
 				}
@@ -699,6 +700,8 @@ class Options {
 	 */
 	public static function crypt( string $value, string $mode = 'e' ) : string {
 
+		error_reporting(E_ALL);
+
 		$key    = \AUTH_SALT;
 		$method = 'aes-256-ctr';
 		$iv     = substr( \NONCE_SALT, 0, openssl_cipher_iv_length( $method ) );
@@ -712,10 +715,14 @@ class Options {
 			return base64_encode( $encrypted );// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 		} elseif ( 'd' === $mode ) {
 			$decrypted = openssl_decrypt( base64_decode( $value ), $method, $key, 0, $iv );// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
-			if ( false === $decrypted ) {
+			if ( false === $decrypted || ! mb_check_encoding( $decrypted, 'UTF-8' ) ) {
 				trigger_error( 'OpenSSL decryption failed.', \E_USER_WARNING );
+				error_log( print_r( array( base64_decode( $value ), $method, $key, 0, $iv ), true ) );
+				error_log( print_r( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 20 ), true ) );
 				return '';
 			}
+			error_log( print_r( array( base64_decode( $value ), $method, $key, 0, $iv ), true ) );
+			error_log( print_r( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 20 ), true ) );
 			return $decrypted;
 		}
 

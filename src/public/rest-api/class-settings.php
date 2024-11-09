@@ -47,7 +47,7 @@ class Settings {
 						return current_user_can( 'edit_posts' );
 					},
 					'args'                => array(
-						'action' => array(
+						'action'       => array(
 							'type'              => 'string',
 							'required'          => true,
 							'sanitize_callback' => 'sanitize_text_field',
@@ -260,7 +260,7 @@ class Settings {
 				// . ////////////////////////////////////////////////// .
 				case 'clear_asana_cache':
 						$rows_affected = Request_Token::clear_cache_data();
-						$res = array(
+						$res           = array(
 							'status'  => 'success',
 							'code'    => 200,
 							'message' => sprintf(
@@ -269,6 +269,98 @@ class Settings {
 							),
 							'data'    => null,
 						);
+					break;
+				// . ////////////////////////////////////////////////// .
+				case 'update_asana_workspace_tag':
+					if ( ! current_user_can( 'manage_options' ) ) {
+						throw new \Exception( 'You do not have permission to manage this option.', 403 );
+					} elseif ( empty( $request['workspace_gid'] ) ) {
+						throw new \Exception( 'Missing required parameter(s): workspace_gid', 400 );
+					} else {
+
+						// Save workspace.
+
+						$workspace_gid = Options::sanitize( Options::ASANA_WORKSPACE_GID, $request['workspace_gid'] );
+						if ( '' === $workspace_gid ) {
+							throw new \Exception( 'Invalid workspace identifier.', 400 );
+						}
+
+						error_log( print_r( $workspace_gid, true ) );
+						if ( Options::save( Options::ASANA_WORKSPACE_GID, $workspace_gid ) ) {
+							// Delete all pinned tasks since the workspace has changed.
+							Options::delete( Options::PINNED_TASK_GID, -1 );
+						} else {
+							throw new \Exception( 'Failed to update workspace.', 500 );
+						}
+
+						$workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
+
+						// Save site tag.
+
+						if ( ! empty( $request['tag_name'] ) ) {
+							// Create new tag.
+
+							$tag_name = sanitize_text_field( $request['tag_name'] );
+							if ( empty( $tag_name ) ) {
+								throw new \Exception( 'Invalid name for new tag.', 400 );
+							}
+
+							try {
+								$asana   = Asana_Interface::get_client( get_current_user_id() );
+								$new_tag = $asana->tags->createTag(
+									array(
+										'name'      => $tag_name,
+										'workspace' => $workspace_gid,
+									)
+								);
+								$tag_gid = $new_tag->gid;
+							} catch ( \Asana\Errors\NotFoundError $e ) {
+								Options::delete( Options::ASANA_WORKSPACE_GID );
+								throw new \Exception( 'The specified workspace does not exist.', 404 );
+							}
+						} elseif ( ! empty( $request['tag_gid'] ) ) {
+							// Save existing tag.
+
+							$tag_gid = Options::sanitize( Options::ASANA_TAG_GID, $request['tag_gid'] );
+
+							try {
+								$asana   = Asana_Interface::get_client( get_current_user_id() );
+								$the_tag = $asana->tags->getTag( $tag_gid, array( 'opt_fields' => 'gid,workspace,workspace.gid' ) );
+								$tag_gid = $the_tag->gid;
+								if (
+									isset( $the_tag->workspace->gid )
+									&& $workspace_gid !== $the_tag->workspace->gid
+								) {
+									throw new \Exception( 'Tag does not belong to the saved workspace.', 409 );
+								}
+							} catch ( \Asana\Errors\NotFoundError $e ) {
+								throw new \Exception( 'Tag does not exist.', 404 );
+							}
+						} else {
+							// Tag could not be determined.
+							throw new \Exception( 'Missing required parameter: tag_gid or tag_name', 400 );
+						}
+
+						// Save the determined tag.
+
+						if ( empty( $tag_gid ) ) {
+							throw new \Exception( 'Invalid tag identifier.', 400 );
+						}
+
+						if ( ! Options::save( Options::ASANA_TAG_GID, $tag_gid ) ) {
+							throw new \Exception( 'Failed to save the Asana workspace and site tag.', 500 );
+						}
+
+						$res = array(
+							'status'  => 'success',
+							'code'    => 200,
+							'message' => 'The Asana workspace and site tag were successfully saved!',
+							'data'    => array(
+								'workspace_gid' => $workspace_gid,
+								'tag_gid'       => $tag_gid,
+							),
+						);
+					}//end if asana_workspace_save
 					break;
 				// . ////////////////////////////////////////////////// .
 				default:

@@ -312,6 +312,7 @@ class Asana_Interface {
 		foreach ( $users_with_pat as $wp_user ) {
 
 			$asana_personal_access_token = Options::get( Options::ASANA_PAT, $wp_user->ID );
+			error_log( '>>>>>>>>>>>>>>>>>> !! Checking Asana connection for WordPress user - ' . $wp_user->ID );
 			if (
 				false === $asana_personal_access_token
 				|| '' === $asana_personal_access_token

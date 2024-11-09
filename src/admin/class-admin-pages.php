@@ -275,11 +275,12 @@ class Admin_Pages {
 						'auth' => array_intersect_key(
 							static::get_frontend_api_data(),
 							array(
-								'nonce_connect_asana'    => true,
-								'nonce_disconnect_asana' => true,
+								'nonce_connect_asana'     => true,
+								'nonce_disconnect_asana'  => true,
 								'nonce_update_frontend_auth_user' => true,
 								'nonce_update_asana_cache_ttl' => true,
 								'nonce_clear_asana_cache' => true,
+								'nonce_update_asana_workspace_tag' => true,
 							)
 						),
 					)
@@ -479,29 +480,30 @@ class Admin_Pages {
 
 		$api_data = array(
 			// Generic.
-			'auth_nonce'              => wp_create_nonce( 'wp_rest' ),
-			'nonce'                   => wp_create_nonce( 'ptc_completionist' ),
+			'auth_nonce'                       => wp_create_nonce( 'wp_rest' ),
+			'nonce'                            => wp_create_nonce( 'ptc_completionist' ),
 			// Automations.
-			'nonce_create_automation' => wp_create_nonce( 'ptc_completionist_create_automation' ),
-			'nonce_create_task'       => wp_create_nonce( 'ptc_completionist_create_task' ),
-			'nonce_delete_automation' => wp_create_nonce( 'ptc_completionist_delete_automation' ),
-			'nonce_delete_task'       => wp_create_nonce( 'ptc_completionist_delete_task' ),
-			'nonce_get_automation'    => wp_create_nonce( 'ptc_completionist_get_automation' ),
-			'nonce_get_post'          => wp_create_nonce( 'ptc_completionist_get_post' ),
-			'nonce_get_tags'          => wp_create_nonce( 'ptc_completionist_get_tags' ),
-			'nonce_pin_task'          => wp_create_nonce( 'ptc_completionist_pin_task' ),
-			'nonce_unpin_task'        => wp_create_nonce( 'ptc_completionist_unpin_task' ),
-			'nonce_update_automation' => wp_create_nonce( 'ptc_completionist_update_automation' ),
-			'nonce_update_task'       => wp_create_nonce( 'ptc_completionist_update_task' ),
+			'nonce_create_automation'          => wp_create_nonce( 'ptc_completionist_create_automation' ),
+			'nonce_create_task'                => wp_create_nonce( 'ptc_completionist_create_task' ),
+			'nonce_delete_automation'          => wp_create_nonce( 'ptc_completionist_delete_automation' ),
+			'nonce_delete_task'                => wp_create_nonce( 'ptc_completionist_delete_task' ),
+			'nonce_get_automation'             => wp_create_nonce( 'ptc_completionist_get_automation' ),
+			'nonce_get_post'                   => wp_create_nonce( 'ptc_completionist_get_post' ),
+			'nonce_get_tags'                   => wp_create_nonce( 'ptc_completionist_get_tags' ),
+			'nonce_pin_task'                   => wp_create_nonce( 'ptc_completionist_pin_task' ),
+			'nonce_unpin_task'                 => wp_create_nonce( 'ptc_completionist_unpin_task' ),
+			'nonce_update_automation'          => wp_create_nonce( 'ptc_completionist_update_automation' ),
+			'nonce_update_task'                => wp_create_nonce( 'ptc_completionist_update_task' ),
 			// Settings - nonce format MUST be "nonce_{action}" => "ptc_completionist_{action}".
-			'nonce_connect_asana'     => wp_create_nonce( 'ptc_completionist_connect_asana' ),
-			'nonce_disconnect_asana'  => wp_create_nonce( 'ptc_completionist_disconnect_asana' ),
-			'nonce_update_frontend_auth_user' => wp_create_nonce( 'ptc_completionist_update_frontend_auth_user' ),
-			'nonce_update_asana_cache_ttl' => wp_create_nonce( 'ptc_completionist_update_asana_cache_ttl' ),
-			'nonce_clear_asana_cache' => wp_create_nonce( 'ptc_completionist_clear_asana_cache' ),
+			'nonce_connect_asana'              => wp_create_nonce( 'ptc_completionist_connect_asana' ),
+			'nonce_disconnect_asana'           => wp_create_nonce( 'ptc_completionist_disconnect_asana' ),
+			'nonce_update_frontend_auth_user'  => wp_create_nonce( 'ptc_completionist_update_frontend_auth_user' ),
+			'nonce_update_asana_cache_ttl'     => wp_create_nonce( 'ptc_completionist_update_asana_cache_ttl' ),
+			'nonce_clear_asana_cache'          => wp_create_nonce( 'ptc_completionist_clear_asana_cache' ),
+			'nonce_update_asana_workspace_tag' => wp_create_nonce( 'ptc_completionist_update_asana_workspace_tag' ),
 			// REST API.
-			'url'                     => rest_url(),
-			'v1'                      => rest_url( REST_API_NAMESPACE_V1 ),
+			'url'                              => rest_url(),
+			'v1'                               => rest_url( REST_API_NAMESPACE_V1 ),
 		);
 
 		static::$frontend_api_data = $api_data;

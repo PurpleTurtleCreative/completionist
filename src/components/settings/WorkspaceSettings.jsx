@@ -6,11 +6,9 @@ import { useContext, useRef, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
 export default function WorkspaceSettings() {
-	const { settings, hasConnectedAsana } = useContext(SettingsContext);
+	const { settings, hasConnectedAsana, updateSettings } = useContext(SettingsContext);
 	const [ asanaWorkspaceValue, setAsanaWorkspaceValue ] = useState(settings?.workspace?.asana_site_workspace?.gid || '');
-	const [ isNewAsanaTag, setIsNewAsanaTag ] = useState(false);
 	const [ asanaTagValue, setAsanaTagValue ] = useState(settings?.workspace?.asana_site_tag?.gid || '');
-	const [ newAsanaTagName, setNewAsanaTagName ] = useState('');
 	const [ asanaTagOptions, setAsanaTagOptions ] = useState(() => {
 		const options = [];
 		if ( settings?.workspace?.asana_site_tag?.gid ) {
@@ -22,6 +20,7 @@ export default function WorkspaceSettings() {
 		return options;
 	});
 	const tagTypeaheadAbortControllerRef = useRef(null);
+	const PREFIX_CREATE_TAG = '__create__';
 
 	function handleAsanaTagFilterValueChange(value) {
 
@@ -47,9 +46,14 @@ export default function WorkspaceSettings() {
 			if ( res?.data?.tags ) {
 				setAsanaTagOptions( prevState => {
 					const seenTags = new Set();
-					const newState = [];
+					const newState = [
+						{
+							label: `${value} (Create new tag)`,
+							value: `${PREFIX_CREATE_TAG}${value}`,
+						}
+					];
 					for ( const tagOption of prevState ) {
-						if ( ! seenTags.has( tagOption?.value ) ) {
+						if ( ! seenTags.has( tagOption?.value ) && ! tagOption.value.startsWith(PREFIX_CREATE_TAG) ) {
 							newState.push(tagOption);
 							seenTags.add(tagOption?.value);
 						}
@@ -71,6 +75,20 @@ export default function WorkspaceSettings() {
 				window.console.error(error);
 			}
 		});
+	}
+
+	function handleUpdateWorkspaceTagSubmit(submitEvent) {
+		submitEvent?.preventDefault();
+		window.console.log(asanaWorkspaceValue, asanaTagValue);
+
+		const data = { workspace_gid: asanaWorkspaceValue };
+		if ( asanaTagValue.startsWith(PREFIX_CREATE_TAG) ) {
+			data.tag_name = asanaTagValue.substr(PREFIX_CREATE_TAG.length);
+		} else {
+			data.tag_gid = asanaTagValue;
+		}
+
+		updateSettings('update_asana_workspace_tag', data);
 	}
 
 	const styleCollaboratorTH = { background: 'rgb(245, 245, 245)', padding: '8px 24px' };
@@ -97,69 +115,44 @@ export default function WorkspaceSettings() {
 			<CardHeader style={{ marginBottom: '16px' }}>
 				<h2 style={{ margin: 0 }}>Workspace</h2>
 			</CardHeader>
-			<CardBody>
-				<SelectControl
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-					label='Asana Workspace'
-					help='The workspace associated with this WordPress website.'
-					options={asanaWorkspaceOptions}
-					value={asanaWorkspaceValue}
-					required={true}
-					onChange={setAsanaWorkspaceValue}
-				/>
-			</CardBody>
-			<CardBody>
-				<ToggleControl
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-					label='Create a new tag'
-					checked={isNewAsanaTag}
-					onChange={() => setIsNewAsanaTag( state => ! state )}
-				/>
-			</CardBody>
-			<CardBody>
-				{
-					isNewAsanaTag ?
-					(
-						<TextControl
+			<form onSubmit={handleUpdateWorkspaceTagSubmit}>
+				<CardBody>
+						<SelectControl
 							__next40pxDefaultSize
 							__nextHasNoMarginBottom
-							type='text'
-							label='Asana Tag Name'
-							help='The tag applied to Asana tasks which are managed on this WordPress website.'
-							placeholder='Enter a tag name...'
-							value={newAsanaTagName}
-							onChange={setNewAsanaTagName}
+							label='Asana Workspace'
+							help='The workspace associated with this WordPress website.'
+							options={asanaWorkspaceOptions}
+							value={asanaWorkspaceValue}
 							required={true}
-							disabled={ ! asanaWorkspaceValue || ! hasConnectedAsana() }
+							onChange={setAsanaWorkspaceValue}
 						/>
-					) :
-					(
-						<ComboboxControl
-							__next40pxDefaultSize
-							__nextHasNoMarginBottom
-							label='Asana Tag'
-							help='The tag applied to Asana tasks which are managed on this WordPress website.'
-							placeholder='Choose a tag or type to search...'
-							options={asanaTagOptions}
-							value={asanaTagValue}
-							onChange={setAsanaTagValue}
-							onFilterValueChange={handleAsanaTagFilterValueChange}
-							required={true}
-							disabled={ ! asanaWorkspaceValue || ! hasConnectedAsana() }
-						/>
-					)
-				}
-			</CardBody>
-			<CardBody>
-				<Button
-					__next40pxDefaultSize
-					variant='primary'
-					text='Update'
-					style={{ paddingLeft: '2em', paddingRight: '2em' }}
-				/>
-			</CardBody>
+				</CardBody>
+				<CardBody>
+					<ComboboxControl
+						__next40pxDefaultSize
+						__nextHasNoMarginBottom
+						label='Asana Tag'
+						help='The tag applied to Asana tasks which are managed on this WordPress website.'
+						placeholder='Choose a tag or type to search...'
+						options={asanaTagOptions}
+						value={asanaTagValue}
+						onChange={setAsanaTagValue}
+						onFilterValueChange={handleAsanaTagFilterValueChange}
+						required={true}
+						disabled={ ! asanaWorkspaceValue || ! hasConnectedAsana() }
+					/>
+				</CardBody>
+				<CardBody>
+					<Button
+						__next40pxDefaultSize
+						type='submit'
+						variant='primary'
+						text='Update'
+						style={{ paddingLeft: '2em', paddingRight: '2em' }}
+					/>
+				</CardBody>
+			</form>
 			<CardDivider style={{ marginTop: '16px' }} />
 			<CardBody style={{ display: 'block' }}>
 				<h3 style={{ marginBottom: 0 }}>Collaborators</h3>
