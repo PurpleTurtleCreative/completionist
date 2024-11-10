@@ -290,7 +290,7 @@ class Admin_Pages {
 					'ptc_completionist_settings',
 					array(
 						'deprecated_url' => admin_url( 'admin.php?page=ptc-completionist-deprecated' ),
-						'auth'                    => array_intersect_key(
+						'auth'           => array_intersect_key(
 							static::get_frontend_api_data(),
 							array(
 								'nonce_connect_asana'     => true,
