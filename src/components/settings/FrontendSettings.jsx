@@ -2,8 +2,8 @@ import { Button, Card, CardBody, CardDivider, CardHeader, ExternalLink, Flex, Fl
 
 import { humanReadableDuration } from '../generic/util';
 
-import { SettingsContext } from './SettingsContext';
 import { useContext, useState } from '@wordpress/element';
+import { SettingsContext } from './SettingsContext';
 
 export default function FrontendSettings() {
 	const { settings, updateSettings, userCan } = useContext(SettingsContext);

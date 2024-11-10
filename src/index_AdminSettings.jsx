@@ -6,7 +6,7 @@ import { Card, CardBody, CardHeader, ExternalLink, Flex } from '@wordpress/compo
 import { createRoot } from '@wordpress/element';
 
 document.addEventListener('DOMContentLoaded', () => {
-	const rootNode = document.getElementById('ptc-AdminSettingsScreen');
+	const rootNode = document.getElementById('ptc-AdminSettings-root');
 	if ( null !== rootNode ) {
 		createRoot( rootNode ).render(
 			<div className='ptc-AdminSettings'>

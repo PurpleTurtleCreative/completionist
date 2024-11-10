@@ -80,19 +80,43 @@ class Settings {
 		\WP_REST_Request $request
 	) {
 
-		$settings_for_user = Options::get_settings_for_user( get_current_user_id() );
+		$res = array(
+			'status'  => 'error',
+			'code'    => 500,
+			'message' => 'An unknown error occurred.',
+			'data'    => null,
+		);
 
-		if ( ! empty( $settings_for_user['workspace']['connected_workspace_users'] ) ) {
-			foreach ( $settings_for_user['workspace']['connected_workspace_users'] as $asana_gid => &$wp_user ) {
-				$settings_for_user['workspace']['connected_workspace_users'][ $asana_gid ] = array(
-					'ID'           => $wp_user->ID,
-					'display_name' => $wp_user->display_name,
-					'user_email'   => $wp_user->user_email,
-				);
+		try {
+
+			$settings_for_user = Options::get_settings_for_user( get_current_user_id() );
+
+			if ( ! empty( $settings_for_user['workspace']['connected_workspace_users'] ) ) {
+				foreach ( $settings_for_user['workspace']['connected_workspace_users'] as $asana_gid => &$wp_user ) {
+					$settings_for_user['workspace']['connected_workspace_users'][ $asana_gid ] = array(
+						'ID'           => $wp_user->ID,
+						'display_name' => $wp_user->display_name,
+						'user_email'   => $wp_user->user_email,
+					);
+				}
 			}
+
+			$res = array(
+				'status'  => 'success',
+				'code'    => 200,
+				'message' => 'Settings loaded successfully!',
+				'data'    => $settings_for_user,
+			);
+		} catch ( \Exception $err ) {
+			$res = array(
+				'status'  => 'error',
+				'code'    => HTML_Builder::get_error_code( $err ),
+				'message' => HTML_Builder::format_error_string( $err ),
+				'data'    => null,
+			);
 		}
 
-		return new \WP_REST_Response( $settings_for_user, 200 );
+		return new \WP_REST_Response( $res, $res['code'] );
 	}
 
 	/**
@@ -141,7 +165,7 @@ class Settings {
 					try {
 						// Test saved Asana PAT to get user's GID.
 						Asana_Interface::get_client();
-						$me           = Asana_Interface::get_me();
+						$me = Asana_Interface::get_me();
 						if ( Options::get( Options::ASANA_USER_GID ) !== $me->gid ) {
 							// Only save if different to prevent "save failure" error.
 							$did_save_gid = Options::save( Options::ASANA_USER_GID, $me->gid );
@@ -204,7 +228,7 @@ class Settings {
 				// . ////////////////////////////////////////////////// .
 				case 'update_frontend_auth_user':
 					if ( ! current_user_can( 'manage_options' ) ) {
-						throw new \Exception( 'You do not have permission to manage this option.', 403 );
+						throw new \Exception( 'You do not have permission to change the frontend Asana user.', 403 );
 					} elseif ( empty( $request['user_id'] ) ) {
 						throw new \Exception( 'Missing required parameter: user_id', 400 );
 					} else {
@@ -236,7 +260,7 @@ class Settings {
 				// . ////////////////////////////////////////////////// .
 				case 'update_asana_cache_ttl':
 					if ( ! current_user_can( 'manage_options' ) ) {
-						throw new \Exception( 'You do not have permission to manage this option.', 403 );
+						throw new \Exception( 'You do not have permission to change the Asana cache duration.', 403 );
 					} elseif ( empty( $request['asana_cache_ttl'] ) ) {
 						throw new \Exception( 'Missing required parameter: asana_cache_ttl', 400 );
 					} else {
@@ -287,7 +311,7 @@ class Settings {
 				// . ////////////////////////////////////////////////// .
 				case 'update_asana_workspace_tag':
 					if ( ! current_user_can( 'manage_options' ) ) {
-						throw new \Exception( 'You do not have permission to manage this option.', 403 );
+						throw new \Exception( 'You do not have permission to change the Asana workspace or site tag.', 403 );
 					} elseif ( empty( $request['workspace_gid'] ) ) {
 						throw new \Exception( 'Missing required parameter(s): workspace_gid', 400 );
 					} else {

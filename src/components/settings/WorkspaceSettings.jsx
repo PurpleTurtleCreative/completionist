@@ -1,7 +1,7 @@
-import { Button, Card, CardBody, CardDivider, CardHeader, CardMedia, ComboboxControl, Flex, FlexBlock, FlexItem, SelectControl, TextControl, ToggleControl } from '@wordpress/components';
+import { Button, Card, CardBody, CardDivider, CardHeader, CardMedia, ComboboxControl, Flex, FlexBlock, FlexItem, SelectControl } from '@wordpress/components';
 
-import { SettingsContext } from './SettingsContext';
 import { useContext, useRef, useState } from '@wordpress/element';
+import { SettingsContext } from './SettingsContext';
 
 import apiFetch from '@wordpress/api-fetch';
 

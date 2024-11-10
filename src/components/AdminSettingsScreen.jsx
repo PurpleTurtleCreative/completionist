@@ -4,11 +4,11 @@ import AccountSettings from './settings/AccountSettings';
 import FrontendSettings from './settings/FrontendSettings';
 import WorkspaceSettings from './settings/WorkspaceSettings';
 
-import { Button, Card, CardBody, CardFooter, CardHeader, Flex, FlexBlock, FlexItem, MenuGroup, MenuItem, Spinner } from '@wordpress/components';
+import { Button, Card, CardBody, Flex, FlexBlock, FlexItem, MenuGroup, MenuItem, SnackbarList, Spinner } from '@wordpress/components';
 import { useContext, useEffect, useState } from '@wordpress/element';
 
 export default function AdminSettingsScreen() {
-	const { loadSettings, status, settings } = useContext(SettingsContext);
+	const { loadSettings, status, settings, notices, removeNotice } = useContext(SettingsContext);
 	const [currentScreen, setCurrentScreen] = useState('account');
 
 	useEffect(() => {
@@ -70,7 +70,7 @@ export default function AdminSettingsScreen() {
 	};
 
 	return (
-		<div className='ptc-AdminSettingsScreen'>
+		<div className='ptc-AdminSettingsScreen' style={{ position: 'relative' }}>
 			<Flex gap={6} justify='space-between' align='top'>
 				<FlexItem style={{ flexBasis: '200px' }}>
 					<MenuGroup>
@@ -106,6 +106,7 @@ export default function AdminSettingsScreen() {
 				</FlexBlock>
 				<FlexItem style={{ flexBasis: '230px' }}></FlexItem>
 			</Flex>
+			<SnackbarList notices={notices} onRemove={removeNotice}></SnackbarList>
 		</div>
 	);
 }

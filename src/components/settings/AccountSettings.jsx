@@ -1,7 +1,7 @@
 import { Button, Card, CardBody, CardHeader, ExternalLink, Flex, FlexBlock, FlexItem, Modal, Notice, TextControl } from '@wordpress/components';
 
-import { SettingsContext } from './SettingsContext';
 import { useContext, useState } from '@wordpress/element';
+import { SettingsContext } from './SettingsContext';
 
 export default function AccountSettings() {
 	const { settings, updateSettings, isFrontendAuthUser, hasConnectedAsana } = useContext(SettingsContext);
