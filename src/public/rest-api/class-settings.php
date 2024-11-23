@@ -339,6 +339,9 @@ class Settings {
 						throw new \Exception( 'Missing required parameter(s): workspace_gid', 400 );
 					} else {
 
+						// @TODO - Validate tag and workspace via API calls before trying to save the site options.
+						// This will help avoid updating the workspace option without updating the site tag that is later deemed invalid.
+
 						// Save workspace.
 
 						$workspace_gid = Options::sanitize( Options::ASANA_WORKSPACE_GID, $request['workspace_gid'] );

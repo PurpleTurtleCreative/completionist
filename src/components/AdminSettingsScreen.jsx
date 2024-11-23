@@ -49,7 +49,7 @@ export default function AdminSettingsScreen() {
 							__next40pxDefaultSize
 							variant='primary'
 							icon='update'
-							text='Try Again'
+							text='Reload Settings'
 							onClick={loadSettings}
 						/>
 					</CardBody>

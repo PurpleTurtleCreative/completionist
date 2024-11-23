@@ -10,15 +10,19 @@ export default function WorkspaceSettings() {
 	const { settings, hasConnectedAsana, updateSettings, getWorkspaceCollaborators } = useContext(SettingsContext);
 	const [ asanaWorkspaceValue, setAsanaWorkspaceValue ] = useState(settings?.workspace?.asana_site_workspace?.gid || '');
 	const [ asanaTagValue, setAsanaTagValue ] = useState(settings?.workspace?.asana_site_tag?.gid || '');
-	const [ asanaTagOptions, setAsanaTagOptions ] = useState(() => {
-		const options = [];
-		if ( settings?.workspace?.asana_site_tag?.gid ) {
-			options.push({
-				label: settings?.workspace?.asana_site_tag?.name || '(Unknown)',
-				value: settings?.workspace?.asana_site_tag?.gid || '',
-			});
+	const [ asanaTagOptionsByWorkspace, setAsanaTagOptionsByWorkspace ] = useState(() => {
+		const optionsByWorkspace = {};
+		if ( settings?.workspace?.asana_site_workspace?.gid ) {
+			const options = [];
+			if ( settings?.workspace?.asana_site_tag?.gid ) {
+				options.push({
+					label: settings.workspace.asana_site_tag?.name || '(Unknown)',
+					value: settings.workspace.asana_site_tag.gid,
+				});
+			}
+			optionsByWorkspace[ settings.workspace.asana_site_workspace.gid ] = options;
 		}
-		return options;
+		return optionsByWorkspace;
 	});
 	const tagTypeaheadAbortControllerRef = useRef(null);
 	const PREFIX_CREATE_TAG = '__create__';
@@ -43,32 +47,36 @@ export default function WorkspaceSettings() {
 			method: 'GET',
 			signal: tagTypeaheadAbortControllerRef.current?.signal,
 		}).then( res => {
-			window.console.log(res);
 			if ( res?.data?.tags ) {
-				setAsanaTagOptions( prevState => {
+				setAsanaTagOptionsByWorkspace( prevState => {
 					const seenTags = new Set();
-					const newState = [
+					const newTagOptions = [
 						{
 							label: `${value} (Create new tag)`,
 							value: `${PREFIX_CREATE_TAG}${value}`,
 						}
 					];
-					for ( const tagOption of prevState ) {
-						if ( ! seenTags.has( tagOption?.value ) && ! tagOption.value.startsWith(PREFIX_CREATE_TAG) ) {
-							newState.push(tagOption);
-							seenTags.add(tagOption?.value);
+					if ( prevState?.[ asanaWorkspaceValue ]?.length ) {
+						for ( const tagOption of prevState[ asanaWorkspaceValue ] ) {
+							if ( ! seenTags.has( tagOption?.value ) && ! tagOption.value.startsWith(PREFIX_CREATE_TAG) ) {
+								newTagOptions.push(tagOption);
+								seenTags.add(tagOption?.value);
+							}
 						}
 					}
 					for ( const tag of res.data.tags ) {
 						if ( ! seenTags.has( tag?.gid ) ) {
-							newState.push({
+							newTagOptions.push({
 								label: tag?.name,
 								value: tag?.gid,
 							});
 							seenTags.add(tag?.gid);
 						}
 					}
-					return newState;
+					return {
+						...prevState,
+						[ asanaWorkspaceValue ]: newTagOptions,
+					};
 				});
 			}
 		}).catch( error => {
@@ -80,7 +88,6 @@ export default function WorkspaceSettings() {
 
 	function handleUpdateWorkspaceTagSubmit(submitEvent) {
 		submitEvent?.preventDefault();
-		window.console.log(asanaWorkspaceValue, asanaTagValue);
 
 		const data = { workspace_gid: asanaWorkspaceValue };
 		if ( asanaTagValue.startsWith(PREFIX_CREATE_TAG) ) {
@@ -132,8 +139,8 @@ export default function WorkspaceSettings() {
 						__nextHasNoMarginBottom
 						label='Asana Tag'
 						help='The tag applied to Asana tasks which are managed on this WordPress website.'
-						placeholder='Choose a tag or type to search...'
-						options={asanaTagOptions}
+						placeholder={ asanaWorkspaceValue ? 'Choose a tag or type to search...' : 'Select a workspace above' }
+						options={asanaTagOptionsByWorkspace?.[ asanaWorkspaceValue ] || []}
 						value={asanaTagValue}
 						onChange={setAsanaTagValue}
 						onFilterValueChange={handleAsanaTagFilterValueChange}
@@ -154,7 +161,7 @@ export default function WorkspaceSettings() {
 			<CardDivider style={{ marginTop: '16px' }} />
 			<CardBody style={{ display: 'block' }}>
 				<h3 style={{ marginBottom: 0 }}>Collaborators</h3>
-				<p style={{ color: 'rgb(117, 117, 117)' }}>The table below shows WordPress users that have connected their Asana account or were found with the same email address in the Asana Workspace.</p>
+				<p style={{ color: 'rgb(117, 117, 117)' }}>The table below shows WordPress users that have connected their Asana account or that were found with the same email address in the saved Asana Workspace.</p>
 			</CardBody>
 			<CardMedia>
 				<CollaboratorsTable collaborators={getWorkspaceCollaborators()} />

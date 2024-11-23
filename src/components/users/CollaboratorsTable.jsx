@@ -2,8 +2,6 @@ import { Flex, FlexItem, FlexBlock } from "@wordpress/components";
 
 export default function CollaboratorsTable({ collaborators }) {
 
-	window.console.log( collaborators );
-
 	const styleCollaboratorTH = { background: 'rgb(245, 245, 245)', padding: '8px 24px' };
 	const styleCollaboratorTR = { borderTop: '1px solid rgb(229 229 229)' };
 	const styleCollaboratorTD = { verticalAlign: 'middle', padding: '16px 24px' };
@@ -12,7 +10,7 @@ export default function CollaboratorsTable({ collaborators }) {
 	for ( const asana_gid in collaborators ) {
 		const collaborator = collaborators[ asana_gid ];
 		tableRows.push((
-			<tr style={styleCollaboratorTR}>
+			<tr style={styleCollaboratorTR} key={asana_gid}>
 				<td style={styleCollaboratorTD}>
 					<Flex>
 						<FlexItem>
