@@ -41,7 +41,7 @@ export default function FrontendSettings() {
 	}
 
 	return (
-		<Card>
+		<Card className='ptc-FrontendSettings'>
 			<CardHeader style={{ marginBottom: '16px' }}>
 				<h2 style={{ margin: 0 }}>Frontend</h2>
 			</CardHeader>

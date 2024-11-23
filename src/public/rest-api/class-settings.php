@@ -91,14 +91,37 @@ class Settings {
 
 			$settings_for_user = Options::get_settings_for_user( get_current_user_id() );
 
-			if ( ! empty( $settings_for_user['workspace']['connected_workspace_users'] ) ) {
-				foreach ( $settings_for_user['workspace']['connected_workspace_users'] as $asana_gid => &$wp_user ) {
-					$settings_for_user['workspace']['connected_workspace_users'][ $asana_gid ] = array(
-						'ID'           => $wp_user->ID,
-						'display_name' => $wp_user->display_name,
-						'user_email'   => $wp_user->user_email,
-					);
+			// Clean up user output to only what's needed.
+			$compact_user_data = function ( array &$wp_users ) {
+				$avatar_args = array(
+					'size'    => '40',
+					'default' => 'mystery',
+				);
+				foreach ( $wp_users as $key => $wp_user ) {
+					if ( is_a( $wp_user, '\WP_User' ) ) {
+						$wp_users[ $key ] = array(
+							'ID'           => $wp_user->ID,
+							'display_name' => $wp_user->display_name,
+							'user_email'   => $wp_user->user_email,
+							'roles'        => $wp_user->roles,
+							'avatar_url'   => get_avatar_url( $wp_user, $avatar_args ),
+						);
+					}
 				}
+			};
+
+			if (
+				! empty( $settings_for_user['workspace']['found_workspace_users'] ) &&
+				is_array( $settings_for_user['workspace']['found_workspace_users'] )
+			) {
+				$compact_user_data( $settings_for_user['workspace']['found_workspace_users'] );
+			}
+
+			if (
+				! empty( $settings_for_user['workspace']['connected_workspace_users'] ) &&
+				is_array( $settings_for_user['workspace']['connected_workspace_users'] )
+			) {
+				$compact_user_data( $settings_for_user['workspace']['connected_workspace_users'] );
 			}
 
 			$res = array(

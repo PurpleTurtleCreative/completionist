@@ -94,6 +94,10 @@ export function SettingsContextProvider({children}) {
 		});
 	}
 
+	//
+	// Current user.
+	//
+
 	function isFrontendAuthUser() {
 		return ( settings?.frontend?.auth_user_id === settings?.user?.id );
 	}
@@ -106,6 +110,33 @@ export function SettingsContextProvider({children}) {
 		return ( !! settings?.user?.asana_profile?.gid );
 	}
 
+	//
+	// Generic data.
+	//
+
+	function getWorkspaceCollaborators() {
+		const collaborators = {};
+		for ( const user_gid in settings?.workspace?.connected_workspace_users ) {
+			collaborators[ user_gid ] = {
+				...settings.workspace.connected_workspace_users[ user_gid ],
+				"hasConnectedAsana": true,
+			}
+		}
+		for ( const user_gid in settings?.workspace?.found_workspace_users ) {
+			if ( ! collaborators?.[ user_gid ] ) {
+				collaborators[ user_gid ] = {
+					...settings.workspace.found_workspace_users[ user_gid ],
+					"hasConnectedAsana": false,
+				}
+			}
+		}
+		return collaborators;
+	}
+
+	//
+	// Notices.
+	//
+
 	function addNotice(notice) {
 		setNotices(prevState => [
 			...prevState.filter(({id}) => id !== notice.id), // Prevent duplicate IDs.
@@ -117,6 +148,8 @@ export function SettingsContextProvider({children}) {
 		setNotices(prevState => [ ...prevState.filter((notice) => id !== notice.id)]);
 	}
 
+	//////////////////////////////////////////////
+
 	const context = {
 		status,
 		settings,
@@ -126,6 +159,7 @@ export function SettingsContextProvider({children}) {
 		isFrontendAuthUser,
 		userCan,
 		hasConnectedAsana,
+		getWorkspaceCollaborators,
 		addNotice,
 		removeNotice,
 	};

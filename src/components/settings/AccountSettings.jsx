@@ -23,7 +23,7 @@ export default function AccountSettings() {
 	}
 
 	return (
-		<Card>
+		<Card className='ptc-AccountSettings'>
 			<CardHeader style={{ marginBottom: '16px' }}>
 				<h2 style={{ margin: 0 }}>Asana Account</h2>
 			</CardHeader>
