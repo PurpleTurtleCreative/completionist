@@ -9,11 +9,21 @@ import { useContext, useEffect, useState } from '@wordpress/element';
 
 export default function AdminSettingsScreen() {
 	const { loadSettings, status, settings, notices, removeNotice } = useContext(SettingsContext);
-	const [currentScreen, setCurrentScreen] = useState('account');
+	const [currentScreen, setCurrentScreen] = useState(() => {
+		const params = new URLSearchParams(window.location.search);
+		return params.get('tab') || 'account';
+	});
 
 	useEffect(() => {
 		loadSettings();
 	}, []);
+
+	useEffect(() => {
+		// Update the query parameter in the URL when `currentScreen` changes.
+		const url = new URL(window.location.href);
+		url.searchParams.set('tab', currentScreen);
+		window.history.replaceState({}, '', url.toString());
+	}, [currentScreen]);
 
 	const menuItems = [
 		{ value: 'account', label: 'Asana Account' },
