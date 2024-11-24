@@ -8,7 +8,7 @@ import { Button, Card, CardBody, Flex, FlexBlock, FlexItem, MenuGroup, MenuItem,
 import { useContext, useEffect, useState } from '@wordpress/element';
 
 export default function AdminSettingsScreen() {
-	const { loadSettings, status, settings, notices, removeNotice } = useContext(SettingsContext);
+	const { loadSettings, status, settings, notices, removeNotice, hasConnectedAsana } = useContext(SettingsContext);
 	const [currentScreen, setCurrentScreen] = useState(() => {
 		const params = new URLSearchParams(window.location.search);
 		return params.get('tab') || 'account';
@@ -37,7 +37,23 @@ export default function AdminSettingsScreen() {
 				case 'account':
 					return <AccountSettings />;
 				case 'workspace':
-					return <WorkspaceSettings />;
+					return (
+						hasConnectedAsana() ?
+						<WorkspaceSettings /> :
+						<Card style={{ textAlign: 'center', padding: '64px' }}>
+							<CardBody>
+								<h2 style={{ margin: 0, fontSize: '20px' }}>Track relevant Asana tasks</h2>
+								<p style={{ margin: '2em auto', maxWidth: '40em' }}>Completionist uses the Asana workspace and associated site tag to determine relevant tasks to display in wp-admin on this site.</p>
+								<Button
+									__next40pxDefaultSize
+									variant='primary'
+									text='Connect Asana'
+									onClick={() => { setCurrentScreen('account'); }}
+									style={{ paddingLeft: '2em', paddingRight: '2em' }}
+								/>
+							</CardBody>
+						</Card>
+					);
 				case 'frontend':
 					return <FrontendSettings />;
 				default:
@@ -108,11 +124,6 @@ export default function AdminSettingsScreen() {
 				</FlexItem>
 				<FlexBlock style={{ maxWidth: '850px' }}>
 					{renderScreenContent()}
-					<Card isBorderless={true} style={{ margin: '8px 0' }}>
-						<CardBody>
-							<p style={{ color: 'rgb(117, 117, 117)', margin: 0, fontSize: '0.8em', fontStyle: 'italic' }}>**Completionist by Purple Turtle Creative is not associated with Asana. Asana is a trademark and service mark of Asana, Inc., registered in the U.S. and in other countries.</p>
-						</CardBody>
-					</Card>
 				</FlexBlock>
 				<FlexItem style={{ flexBasis: '230px' }}></FlexItem>
 			</Flex>
