@@ -53,6 +53,10 @@ export default function FrontendSettings() {
 				<h2 style={{ margin: 0 }}>Frontend</h2>
 			</CardHeader>
 			<CardBody>
+				<h3 style={{ margin: 0 }}>Shortcodes</h3>
+				<p style={{ color: 'rgb(117, 117, 117)', marginBottom: 0 }}>Display Asana projects and tasks on your website by using Completionist's shortcodes. <ExternalLink href='https://docs.purpleturtlecreative.com/completionist/shortcodes/'>See&nbsp;available&nbsp;shortcodes</ExternalLink></p>
+			</CardBody>
+			<CardBody>
 				<form onSubmit={handleUpdateAsanaFrontendAuthUserID}>
 					<MissingPermissionsBadgeGroup
 						style={{ marginBottom: '1em' }}
@@ -100,7 +104,7 @@ export default function FrontendSettings() {
 				</form>
 			</CardBody>
 			<CardDivider style={{ marginTop: '16px' }} />
-			<CardBody style={{ display: 'block' }}>
+			<CardBody>
 				<h3 style={{ marginBottom: 0 }}>Asana Data Cache</h3>
 				<p style={{ color: 'rgb(117, 117, 117)', marginBottom: 0 }}>Completionist efficiently loads Asana projects and tasks on your website's frontend by caching the associated data for a period of time.</p>
 			</CardBody>
