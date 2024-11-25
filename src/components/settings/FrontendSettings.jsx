@@ -2,11 +2,14 @@ import { Button, Card, CardBody, CardDivider, CardHeader, ExternalLink, Flex, Fl
 
 import { humanReadableDuration } from '../generic/util';
 
+import MissingPermissionsBadge from '../users/MissingPermissionsBadge';
+
 import { useContext, useState } from '@wordpress/element';
 import { SettingsContext } from './SettingsContext';
+import MissingPermissionsBadgeGroup from '../users/MissingPermissionsBadgeGroup';
 
 export default function FrontendSettings() {
-	const { settings, updateSettings, userCan } = useContext(SettingsContext);
+	const { settings, updateSettings, userCan, hasConnectedAsana } = useContext(SettingsContext);
 	const [ asanaFrontendAuthUserID, setAsanaFrontendAuthUserID ] = useState(settings?.frontend?.auth_user_id || '');
 	const [ asanaCacheTTL, setAsanaCacheTTL ] = useState(settings?.frontend?.cache_ttl || 900);
 
@@ -24,13 +27,12 @@ export default function FrontendSettings() {
 		updateSettings('clear_asana_cache');
 	}
 
-	const frontendAuthenticationUserSelectOptions = [
-		{
+	const frontendAuthenticationUserSelectOptions = [];
+	if ( settings?.workspace?.connected_workspace_users ) {
+		frontendAuthenticationUserSelectOptions.push({
 			label: 'Choose a user...',
 			value: '',
-		},
-	];
-	if ( settings?.workspace?.connected_workspace_users ) {
+		});
 		for ( const gid in settings.workspace.connected_workspace_users ) {
 			const wp_user = settings.workspace.connected_workspace_users[ gid ];
 			frontendAuthenticationUserSelectOptions.push({
@@ -38,6 +40,11 @@ export default function FrontendSettings() {
 				value: wp_user.ID,
 			});
 		}
+	} else {
+		frontendAuthenticationUserSelectOptions.push({
+			label: '(No available options)',
+			value: '',
+		});
 	}
 
 	return (
@@ -47,6 +54,21 @@ export default function FrontendSettings() {
 			</CardHeader>
 			<CardBody>
 				<form onSubmit={handleUpdateAsanaFrontendAuthUserID}>
+					<MissingPermissionsBadgeGroup
+						style={{ marginBottom: '1em' }}
+						badges={[
+							{
+								check: ( ! hasConnectedAsana() ),
+								label: 'Requires Asana account',
+								key: 'has_connected_asana',
+							},
+							{
+								check: ( ! userCan('manage_options') ),
+								label: 'Missing permissions',
+								key: 'user_can_manage_options',
+							}
+						]}
+					/>
 					<Flex justify='start' align='top'>
 						<FlexBlock>
 							<SelectControl
@@ -58,7 +80,7 @@ export default function FrontendSettings() {
 								value={asanaFrontendAuthUserID}
 								onChange={setAsanaFrontendAuthUserID}
 								required={true}
-								disabled={!userCan('manage_options')}
+								disabled={ ! userCan('manage_options') || ! hasConnectedAsana() }
 							/>
 						</FlexBlock>
 						<FlexItem>
@@ -68,16 +90,12 @@ export default function FrontendSettings() {
 								variant='primary'
 								text='Update'
 								style={{ marginTop: '23.39px', paddingLeft: '2em', paddingRight: '2em' }}
-								disabled={!userCan('manage_options')}
+								disabled={ ! userCan('manage_options') || ! hasConnectedAsana() }
 							/>
 						</FlexItem>
 					</Flex>
 					<div style={{ marginTop: '16px' }}>
-					{
-						( ! userCan('manage_options') ) ?
-						<Notice status='warning' isDismissible={false}>You do not have permission to update this setting.</Notice> :
 						<Tip>The user should have access to all tasks and projects in Asana that you wish to display on your website, so it's best to set this to someone such as your project manager. <ExternalLink href='https://docs.purpleturtlecreative.com/completionist/getting-started/#set-a-frontend-authentication-user'>Learn more</ExternalLink></Tip>
-					}
 					</div>
 				</form>
 			</CardBody>
@@ -88,6 +106,10 @@ export default function FrontendSettings() {
 			</CardBody>
 			<CardBody>
 				<form onSubmit={handleUpdateAsanaCacheTTL}>
+					{
+						( ! userCan('manage_options') ) &&
+						<MissingPermissionsBadge label='Missing permissions' style={{ marginBottom: '1em' }} />
+					}
 					<Flex justify='start' align='top'>
 						<FlexBlock>
 							<TextControl

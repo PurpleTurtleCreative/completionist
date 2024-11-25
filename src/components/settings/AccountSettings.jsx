@@ -2,7 +2,6 @@ import { Button, Card, CardBody, CardHeader, ExternalLink, Flex, FlexBlock, Flex
 
 import completionistLogoSrc from '../../../assets/images/completionist_asana-for-wordpress_300x300.jpg';
 import asanaLogoSrc from '../../../assets/images/asana_logo-vertical-color.png';
-import { ReactComponent as ConnectIcon } from '../../../assets/icons/arrow-right-arrow-left-solid.svg';
 
 import { useContext, useState } from '@wordpress/element';
 import { SettingsContext } from './SettingsContext';

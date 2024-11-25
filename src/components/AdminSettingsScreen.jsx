@@ -6,6 +6,7 @@ import WorkspaceSettings from './settings/WorkspaceSettings';
 
 import { Button, Card, CardBody, Flex, FlexBlock, FlexItem, MenuGroup, MenuItem, SnackbarList, Spinner } from '@wordpress/components';
 import { useContext, useEffect, useState } from '@wordpress/element';
+import MissingPermissionsBadge from './users/MissingPermissionsBadge';
 
 export default function AdminSettingsScreen() {
 	const { loadSettings, status, settings, notices, removeNotice, hasConnectedAsana } = useContext(SettingsContext);
@@ -42,8 +43,9 @@ export default function AdminSettingsScreen() {
 						<WorkspaceSettings /> :
 						<Card style={{ textAlign: 'center', padding: '64px' }}>
 							<CardBody>
-								<h2 style={{ margin: 0, fontSize: '20px' }}>Track relevant Asana tasks</h2>
-								<p style={{ margin: '2em auto', maxWidth: '40em' }}>Completionist uses the Asana workspace and associated site tag to determine relevant tasks to display in wp-admin on this site.</p>
+								<MissingPermissionsBadge label='Requires Asana account' />
+								<h2 style={{ margin: '1em', fontSize: '20px' }}>Track relevant Asana tasks</h2>
+								<p style={{ margin: '0 auto 2em', maxWidth: '40em' }}>Completionist uses the Asana workspace and associated site tag to determine relevant tasks to display in wp-admin on this site.</p>
 								<Button
 									__next40pxDefaultSize
 									variant='primary'
@@ -58,7 +60,7 @@ export default function AdminSettingsScreen() {
 					return <FrontendSettings />;
 				default:
 					return (
-						<Card>
+						<Card style={{ textAlign: 'center', padding: '64px' }}>
 							<CardBody>
 								<p>Please select an option from the left-hand menu.</p>
 							</CardBody>
@@ -67,10 +69,10 @@ export default function AdminSettingsScreen() {
 			}
 		} else if ( 'error' === status ) {
 			return (
-				<Card size='large'>
+				<Card style={{ textAlign: 'center', padding: '64px' }}>
 					<CardBody>
 						<h2 style={{ margin: 0 }}>Failed to load your settings.</h2>
-						<p style={{ marginBottom: '24px' }}>{settings}</p>
+						<p style={{ margin: '1em auto 2em', maxWidth: '40em' }}>{settings}</p>
 						<Button
 							__next40pxDefaultSize
 							variant='primary'

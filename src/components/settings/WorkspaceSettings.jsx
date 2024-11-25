@@ -1,13 +1,15 @@
 import { Button, Card, CardBody, CardDivider, CardHeader, CardMedia, ComboboxControl, Flex, FlexBlock, FlexItem, SelectControl } from '@wordpress/components';
 
-import { useContext, useRef, useState } from '@wordpress/element';
+import CollaboratorsTable from '../users/CollaboratorsTable';
+import MissingPermissionsBadge from '../users/MissingPermissionsBadge';
+
 import { SettingsContext } from './SettingsContext';
 
 import apiFetch from '@wordpress/api-fetch';
-import CollaboratorsTable from '../users/CollaboratorsTable';
+import { useContext, useRef, useState } from '@wordpress/element';
 
 export default function WorkspaceSettings() {
-	const { settings, hasConnectedAsana, updateSettings, getWorkspaceCollaborators } = useContext(SettingsContext);
+	const { settings, hasConnectedAsana, updateSettings, getWorkspaceCollaborators, userCan } = useContext(SettingsContext);
 	const [ asanaWorkspaceValue, setAsanaWorkspaceValue ] = useState(settings?.workspace?.asana_site_workspace?.gid || '');
 	const [ asanaTagValue, setAsanaTagValue ] = useState(settings?.workspace?.asana_site_tag?.gid || '');
 	const [ asanaTagOptionsByWorkspace, setAsanaTagOptionsByWorkspace ] = useState(() => {
@@ -122,16 +124,21 @@ export default function WorkspaceSettings() {
 			</CardHeader>
 			<form onSubmit={handleUpdateWorkspaceTagSubmit}>
 				<CardBody>
-						<SelectControl
-							__next40pxDefaultSize
-							__nextHasNoMarginBottom
-							label='Asana Workspace'
-							help='The workspace associated with this WordPress website.'
-							options={asanaWorkspaceOptions}
-							value={asanaWorkspaceValue}
-							required={true}
-							onChange={setAsanaWorkspaceValue}
-						/>
+					{
+						( ! userCan('manage_options') ) &&
+						<MissingPermissionsBadge label='Missing permissions' style={{ marginBottom: '28px' }} />
+					}
+					<SelectControl
+						__next40pxDefaultSize
+						__nextHasNoMarginBottom
+						label='Asana Workspace'
+						help='The workspace associated with this WordPress website.'
+						options={asanaWorkspaceOptions}
+						value={asanaWorkspaceValue}
+						required={true}
+						onChange={setAsanaWorkspaceValue}
+						disabled={ ! hasConnectedAsana() || ! userCan('manage_options') }
+					/>
 				</CardBody>
 				<CardBody>
 					<ComboboxControl
@@ -145,7 +152,7 @@ export default function WorkspaceSettings() {
 						onChange={setAsanaTagValue}
 						onFilterValueChange={handleAsanaTagFilterValueChange}
 						required={true}
-						disabled={ ! asanaWorkspaceValue || ! hasConnectedAsana() }
+						disabled={ ! asanaWorkspaceValue || ! hasConnectedAsana() || ! userCan('manage_options') }
 					/>
 				</CardBody>
 				<CardBody>
@@ -155,6 +162,7 @@ export default function WorkspaceSettings() {
 						variant='primary'
 						text='Update'
 						style={{ paddingLeft: '2em', paddingRight: '2em' }}
+						disabled={ ! hasConnectedAsana() || ! userCan('manage_options') }
 					/>
 				</CardBody>
 			</form>
