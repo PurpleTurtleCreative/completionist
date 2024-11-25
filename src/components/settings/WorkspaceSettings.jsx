@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardDivider, CardHeader, CardMedia, ComboboxControl, Flex, FlexBlock, FlexItem, SelectControl } from '@wordpress/components';
+import { Button, Card, CardBody, CardDivider, CardHeader, CardMedia, ComboboxControl, Flex, FlexBlock, FlexItem, Notice, SelectControl } from '@wordpress/components';
 
 import CollaboratorsTable from '../users/CollaboratorsTable';
 import MissingPermissionsBadge from '../users/MissingPermissionsBadge';
@@ -6,7 +6,7 @@ import MissingPermissionsBadge from '../users/MissingPermissionsBadge';
 import { SettingsContext } from './SettingsContext';
 
 import apiFetch from '@wordpress/api-fetch';
-import { useContext, useRef, useState } from '@wordpress/element';
+import { useContext, useEffect, useRef, useState } from '@wordpress/element';
 
 export default function WorkspaceSettings() {
 	const { settings, hasConnectedAsana, updateSettings, getWorkspaceCollaborators, userCan } = useContext(SettingsContext);
@@ -28,6 +28,12 @@ export default function WorkspaceSettings() {
 	});
 	const tagTypeaheadAbortControllerRef = useRef(null);
 	const PREFIX_CREATE_TAG = '__create__';
+
+	useEffect(() => {
+		if ( ! asanaTagOptionsByWorkspace[ asanaWorkspaceValue ]?.some(option => asanaTagValue === option?.value) ) {
+			setAsanaTagValue(''); // The current site tag value is invalid since there is no matching option.
+		}
+	}, [asanaTagOptionsByWorkspace, asanaWorkspaceValue, asanaTagValue, setAsanaTagValue]);
 
 	function handleAsanaTagFilterValueChange(value) {
 
@@ -139,6 +145,10 @@ export default function WorkspaceSettings() {
 						onChange={setAsanaWorkspaceValue}
 						disabled={ ! hasConnectedAsana() || ! userCan('manage_options') }
 					/>
+					{
+						( settings?.workspace?.asana_site_workspace?.gid && asanaWorkspaceValue !== settings?.workspace?.asana_site_workspace?.gid ) &&
+						<Notice status='warning' isDismissible={false} style={{ margin: '8px 0 0' }}>{`Changing workspaces will remove all ${settings?.workspace?.total_pinned_tasks || '(unknown count)'} currently pinned tasks from this site.`}</Notice>
+					}
 				</CardBody>
 				<CardBody>
 					<ComboboxControl
@@ -154,6 +164,10 @@ export default function WorkspaceSettings() {
 						required={true}
 						disabled={ ! asanaWorkspaceValue || ! hasConnectedAsana() || ! userCan('manage_options') }
 					/>
+					{
+						( settings?.workspace?.asana_site_tag?.gid && asanaTagValue !== settings?.workspace?.asana_site_tag?.gid ) &&
+						<Notice status='warning' isDismissible={false} style={{ margin: '8px 0 0' }}>Changing the site's tag will remove any pinned tasks that do not have the new tag.</Notice>
+					}
 				</CardBody>
 				<CardBody>
 					<Button
