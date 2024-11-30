@@ -98,6 +98,10 @@ export function SettingsContextProvider({children}) {
 	// Current user.
 	//
 
+	function isWorkspaceMember() {
+		return ( true === settings?.user?.is_site_workspace_member );
+	}
+
 	function isFrontendAuthUser() {
 		return ( settings?.frontend?.auth_user_id === settings?.user?.id );
 	}
@@ -156,6 +160,7 @@ export function SettingsContextProvider({children}) {
 		notices,
 		loadSettings,
 		updateSettings,
+		isWorkspaceMember,
 		isFrontendAuthUser,
 		userCan,
 		hasConnectedAsana,

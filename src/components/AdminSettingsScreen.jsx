@@ -9,7 +9,7 @@ import { useContext, useEffect, useState } from '@wordpress/element';
 import MissingPermissionsBadge from './users/MissingPermissionsBadge';
 
 export default function AdminSettingsScreen() {
-	const { loadSettings, status, settings, notices, removeNotice, hasConnectedAsana } = useContext(SettingsContext);
+	const { loadSettings, status, settings, notices, removeNotice, hasConnectedAsana, isWorkspaceMember, userCan } = useContext(SettingsContext);
 	const [currentScreen, setCurrentScreen] = useState(() => {
 		const params = new URLSearchParams(window.location.search);
 		return params.get('tab') || 'account';
@@ -40,7 +40,17 @@ export default function AdminSettingsScreen() {
 				case 'workspace':
 					return (
 						hasConnectedAsana() ?
-						<WorkspaceSettings /> :
+						(
+							( isWorkspaceMember() || userCan('manage_options') ) ?
+							<WorkspaceSettings /> :
+							<Card style={{ textAlign: 'center', padding: '64px' }}>
+								<CardBody>
+									<MissingPermissionsBadge label='Missing permissions' />
+									<h2 style={{ margin: '1em', fontSize: '20px' }}>You are not a member of this site's Asana workspace</h2>
+									<p style={{ margin: '0 auto 2em', maxWidth: '40em' }}>To view workspace details, you must be a member of the designated Asana workspace or have administrative capabilities to manage options.</p>
+								</CardBody>
+							</Card>
+						) :
 						<Card style={{ textAlign: 'center', padding: '64px' }}>
 							<CardBody>
 								<MissingPermissionsBadge label='Requires Asana account' />

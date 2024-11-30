@@ -910,9 +910,17 @@ class Options {
 			$asana = Asana_Interface::get_client( $user_id );
 
 			// Get Asana user data.
-			$asana_profile             = Asana_Interface::get_me();
-			$found_workspace_users     = Asana_Interface::find_workspace_users();
-			$connected_workspace_users = Asana_Interface::get_connected_workspace_users();
+			$asana_profile = Asana_Interface::get_me();
+
+			try {
+				$found_workspace_users     = Asana_Interface::find_workspace_users();
+				$connected_workspace_users = Asana_Interface::get_connected_workspace_users();
+			} catch ( \Exception $err ) {
+				// Probably not a member of the saved workspace,
+				// so user is not allowed to see users within it.
+				$found_workspace_users     = null;
+				$connected_workspace_users = null;
+			}
 
 			// Get workspace information.
 			foreach ( $asana_profile->workspaces as $workspace ) {
