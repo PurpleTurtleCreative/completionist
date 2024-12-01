@@ -104,7 +104,7 @@
 
 		> *:empty {
 
-			@include breakpoint-down(large) {
+			@include responsive.breakpoint-down(large) {
 				// Remove empty height caused by empty elements.
 				display: none !important;
 			}
@@ -112,7 +112,7 @@
 
 		> *:not(:empty) {
 
-			@include breakpoint-down(large) {
+			@include responsive.breakpoint-down(large) {
 				margin-right: 10px;
 			}
 		}
