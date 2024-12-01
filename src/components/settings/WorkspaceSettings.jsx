@@ -147,7 +147,7 @@ export default function WorkspaceSettings() {
 					/>
 					{
 						( settings?.workspace?.asana_site_workspace?.gid && asanaWorkspaceValue !== settings?.workspace?.asana_site_workspace?.gid ) &&
-						<Notice status='warning' isDismissible={false} style={{ margin: '8px 0 0' }}>{`Changing workspaces will remove all ${settings?.workspace?.total_pinned_tasks || '(unknown count)'} currently pinned tasks from this site.`}</Notice>
+						<Notice status='warning' isDismissible={false} style={{ margin: '8px 0 0' }}>{`Changing workspaces will remove all ${settings?.workspace?.total_pinned_tasks ?? '(unknown count)'} currently pinned tasks from this site.`}</Notice>
 					}
 				</CardBody>
 				<CardBody>

@@ -11,6 +11,7 @@
     "url": "https://github.com/PurpleTurtleCreative/completionist/issues"
   },
   "devDependencies": {
+    "@wordpress/components": "^28.9.0",
     "@wordpress/env": "^10.0.0",
     "@wordpress/scripts": "^30.0.0",
     "sass": "^1.79.3"
@@ -22,8 +23,5 @@
     "bundle": "npm run build && bash bundle.sh",
     "styles": "sass --style=compressed assets/styles/scss:assets/styles",
     "watch:styles": "sass --style=expanded --watch assets/styles/scss:assets/styles"
-  },
-  "dependencies": {
-    "@wordpress/components": "^28.9.0"
   }
 }

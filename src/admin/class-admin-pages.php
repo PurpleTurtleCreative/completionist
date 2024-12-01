@@ -281,7 +281,7 @@ class Admin_Pages {
 					'ptc-completionist_AdminSettings',
 					PLUGIN_URL . '/build/index_AdminSettings.jsx.js',
 					$asset_file['dependencies'],
-					PLUGIN_VERSION,
+					$asset_file['version'],
 					true
 				);
 				wp_enqueue_style( 'wp-components' );
