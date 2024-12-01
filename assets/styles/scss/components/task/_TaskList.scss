@@ -1,5 +1,5 @@
-@import '../../abstracts/colors';
-@import '../../abstracts/elements';
+@use '../../abstracts/colors';
+@use '../../abstracts/elements';
 
 //----------------------
 
@@ -7,7 +7,7 @@
 
 	.ptc-no-results {
 		padding: 2em 1em;
-		color: color(grey);
+		color: colors.color(grey);
 		text-align: center;
 		margin: 0;
 		font-size: 1.15em;

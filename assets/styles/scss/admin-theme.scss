@@ -1,20 +1,20 @@
-@import 'abstracts/colors';
+@use 'abstracts/colors';
 
 //----------------------
 
 html, body {
-	background: color(grey-lightest);
+	background: colors.color(grey-lightest);
 }
 
 #wpcontent {
 	padding: 5px 30px 35px;
-	color: color(grey-darkest);
+	color: colors.color(grey-darkest);
 }
 
 h1, h2, h3, h4, h5, h6 {
 	font-weight: 800;
 	letter-spacing: 0.03em;
-	color: color(grey-darkest);
+	color: colors.color(grey-darkest);
 	margin-bottom: 0.3em;
 }
 
@@ -29,13 +29,13 @@ p.help-link {
 
 p.footnote {
 	font-size: 0.8em;
-	color: color(grey);
+	color: colors.color(grey);
 	margin-top: 2em;
 }
 
 a,
 a:visited {
-	color: color(brand-primary);
+	color: colors.color(brand-primary);
 	text-decoration: solid underline;
 	text-underline-offset: 2px;
 }
@@ -43,14 +43,14 @@ a:visited {
 a:focus,
 a:hover,
 a:active {
-	color: color(brand-primary);
+	color: colors.color(brand-primary);
 }
 
 .notice {
 	padding: 0.5em 1.3em 0.6em;
 	margin: 7px 0;
-	background: color(white);
-	color: color(grey-darkest);
+	background: colors.color(white);
+	color: colors.color(grey-darkest);
 }
 
 .ptc-asana-error {
@@ -70,8 +70,8 @@ a:active {
 }
 
 section[id^="ptc-"] {
-	background: color(white);
-	border: 2px solid color(grey-lighter);
+	background: colors.color(white);
+	border: 2px solid colors.color(grey-lighter);
 	border-radius: 7px;
 	max-width: 700px;
 	padding: 80px 80px 100px;
@@ -83,7 +83,7 @@ section[id^="ptc-"] {
 label {
 	display: block;
 	font-weight: 600;
-	color: color(grey-darkest);
+	color: colors.color(grey-darkest);
 	margin-bottom: 0.3em;
 }
 
@@ -95,13 +95,13 @@ form textarea {
 	outline: none;
 	box-shadow: none;
 	border-radius: 5px;
-	border: 1px solid color(brand-primary);
+	border: 1px solid colors.color(brand-primary);
 	margin: 0;
 	background: #edf1f7;
 
 	&:focus {
 		background: #FFF;
-		box-shadow: 0 0 7px 0 color(brand-primary) !important;
+		box-shadow: 0 0 7px 0 colors.color(brand-primary) !important;
 	}
 }
 
@@ -182,14 +182,14 @@ form p.error-note {
 	justify-content: center;
 	padding: 0 1em;
 	border-radius: 5px;
-	border: 1px solid color(grey-dark);
+	border: 1px solid colors.color(grey-dark);
 
 	&:hover,
 	&:focus,
 	&:active {
 		border-color: #f75a78;
 		background: #f75a78;
-		color: color(white);
+		color: colors.color(white);
 
 		img {
 			filter: grayscale(100%) brightness(999%);
@@ -210,15 +210,15 @@ form p.error-note {
 	gap: 0.5em;
 	padding: 0.5em 1em;
 	border-radius: 5px;
-	border: 1px solid color(info);
-	color: color(info);
+	border: 1px solid colors.color(info);
+	color: colors.color(info);
 	text-decoration: none;
 
 	&:hover,
 	&:focus,
 	&:active {
-		background: color(info);
-		color: color(white);
+		background: colors.color(info);
+		color: colors.color(white);
 	}
 
 	i {

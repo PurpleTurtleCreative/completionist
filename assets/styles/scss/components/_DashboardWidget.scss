@@ -1,4 +1,4 @@
-@import '../abstracts/colors';
+@use '../abstracts/colors';
 
 //----------------------
 
@@ -9,12 +9,12 @@
 	.note-box-error {
 		/* Error from PHP. */
 		padding: 1em 1em 1.3em;
-		background: color(danger-lightest);
-		color: color(danger);
-		border: 1px solid color(danger);
+		background: colors.color(danger-lightest);
+		color: colors.color(danger);
+		border: 1px solid colors.color(danger);
 
 		i {
-			background: color(danger);
+			background: colors.color(danger);
 		}
 
 		p {
@@ -23,8 +23,8 @@
 
 		.note-box-cta {
 			display: inline-block;
-			background: color(danger);
-			color: color(white);
+			background: colors.color(danger);
+			color: colors.color(white);
 			font-size: 1em;
 			padding: 0.5em 1em;
 			text-decoration: none;
@@ -45,10 +45,10 @@
 		justify-content: center;
 		text-align: center;
 		font-size: 1em;
-		color: color(grey);
+		color: colors.color(grey);
 
 		i.fas {
-			color: color(brand-primary);
+			color: colors.color(brand-primary);
 			font-size: 1.2em;
 			margin: 0.4em;
 		}
@@ -60,7 +60,7 @@
 				border-top: none;
 			}
 			&:last-child {
-				border-bottom: 1px solid color(grey-light);
+				border-bottom: 1px solid colors.color(grey-light);
 			}
 		}
 	}

@@ -9,6 +9,7 @@
 #### Changed
 
 - Tested up to WordPress 6.7.1.
+- Migrated deprecated `@import` rules to `@use` namespaced modules in SCSS stylesheets to prepare for Dart Sass v3.0.0.
 - Settings are loaded asynchronously on the new settings screen which results in a faster initial page load.
 - Asana data cache settings are now accessible without needing to connect an Asana account via the new settings screen.
 - Asana Personal Access Token can now be updated without first needing to disconnect via the new settings screen.

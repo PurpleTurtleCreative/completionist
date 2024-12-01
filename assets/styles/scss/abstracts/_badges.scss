@@ -1,4 +1,4 @@
-@import 'colors';
+@use "./colors";
 
 //----------------------
 
@@ -6,15 +6,15 @@
 	margin: 0;
 	padding: 0.3em 1em;
 	border-radius: 7px;
-	border: 2px solid color(grey-lighter);
-	background: color(white);
-	color: color(grey-darker);
+	border: 2px solid colors.color(grey-lighter);
+	background: colors.color(white);
+	color: colors.color(grey-darker);
 
 	span {
 		text-transform: uppercase;
 		font-size: 0.8em;
 		letter-spacing: 0.05em;
-		color: color(grey-dark);
+		color: colors.color(grey-dark);
 		margin-right: 1em;
 	}
 }
@@ -28,9 +28,9 @@
 	margin: 1.5em 0 2em;
 	padding: 0.5em 1em;
 	border-radius: 7px;
-	border: 2px solid color(grey-lighter);
-	background: color(white);
-	color: color(grey-dark);
+	border: 2px solid colors.color(grey-lighter);
+	background: colors.color(white);
+	color: colors.color(grey-dark);
 	text-transform: uppercase;
 	font-size: 0.8em;
 	letter-spacing: 0.05em;
@@ -40,7 +40,7 @@
 		height: 1.15em;
 		margin: 0;
 		overflow: visible;
-		color: color(grey);
+		color: colors.color(grey);
 
 		path {
 			fill: currentColor;
@@ -48,12 +48,12 @@
 	}
 
 	&:hover {
-		border-color: color(grey-light);
-		background: color(grey-lightest);
-		color: color(grey-darker);
+		border-color: colors.color(grey-light);
+		background: colors.color(grey-lightest);
+		color: colors.color(grey-darker);
 
 		svg {
-			color: color(grey-dark);
+			color: colors.color(grey-dark);
 		}
 	}
 }
@@ -65,7 +65,7 @@
 	gap: 0.25em;
 	margin: 0;
 	padding: 0;
-	color: color(grey-dark);
+	color: colors.color(grey-dark);
 	text-transform: uppercase;
 	font-size: 1em;
 	letter-spacing: 0.05em;
@@ -75,7 +75,7 @@
 		height: 0.9em;
 		margin: 0;
 		overflow: visible;
-		color: color(grey);
+		color: colors.color(grey);
 
 		path {
 			fill: currentColor;

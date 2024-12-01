@@ -1,5 +1,5 @@
-@import '../../abstracts/elements';
-@import '../../abstracts/colors';
+@use '../../abstracts/colors';
+@use '../../abstracts/elements';
 
 //----------------------
 
@@ -14,8 +14,8 @@
 
 		&[disabled] {
 			cursor: not-allowed !important;
-			background: color(grey-lightest) !important;
-			border-color: color(grey) !important;
+			background: colors.color(grey-lightest) !important;
+			border-color: colors.color(grey) !important;
 		}
 	}
 
@@ -42,8 +42,8 @@
 
 			&[disabled] {
 				cursor: not-allowed !important;
-				background: color(grey-lightest) !important;
-				border-color: color(grey) !important;
+				background: colors.color(grey-lightest) !important;
+				border-color: colors.color(grey) !important;
 			}
 		}
 
@@ -61,23 +61,23 @@
 	}
 
 	button[type="submit"] {
-		@include btn-pill-outline(white, success);
-		border-color: color(success);
+		@include elements.btn-pill-outline(white, success);
+		border-color: colors.color(success);
 		margin-right: 0;
 		font-size: 1.07em;
 		padding: 0 1em 0 0.3em;
 
 		&.--is-active,
 		&:hover {
-			background: color(success);
-			color: color(success-dark);
+			background: colors.color(success);
+			color: colors.color(success-dark);
 		}
 
 		&[disabled] {
 			cursor: not-allowed !important;
-			background: color(grey-light) !important;
-			border-color: color(grey) !important;
-			color: color(grey) !important;
+			background: colors.color(grey-light) !important;
+			border-color: colors.color(grey) !important;
+			color: colors.color(grey) !important;
 		}
 
 		i.fas {

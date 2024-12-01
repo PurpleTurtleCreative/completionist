@@ -1,4 +1,4 @@
-@import '../../abstracts/colors';
+@use '../../abstracts/colors';
 
 //----------------------
 
@@ -10,19 +10,19 @@
 		font-size: 13px;
 		padding: 8px 10px;
 		margin: 0;
-		background-color: color(white);
-		border-left: 4px solid color(info);
-		border-top: 1px solid color(grey-light);
+		background-color: colors.color(white);
+		border-left: 4px solid colors.color(info);
+		border-top: 1px solid colors.color(grey-light);
 
 		&.is-info {
-			color: color(info-dark);
-			border-left-color: color(info);
-			background-color: color(white);
+			color: colors.color(info-dark);
+			border-left-color: colors.color(info);
+			background-color: colors.color(white);
 		}
 		&.is-error {
-			color: color(danger);
-			border-left-color: color(danger);
-			background-color: color(danger-lightest);
+			color: colors.color(danger);
+			border-left-color: colors.color(danger);
+			background-color: colors.color(danger-lightest);
 		}
 
 		&.is-dismissible {
@@ -35,7 +35,7 @@
 			align-self: flex-start;
 
 			&.has-icon {
-				color: color(grey-dark);
+				color: colors.color(grey-dark);
 				padding: 0;
 				min-width: auto;
 				background: none;
@@ -44,7 +44,7 @@
 				&:hover,
 				&:active,
 				&:focus {
-					color: color(black);
+					color: colors.color(black);
 				}
 
 				svg {

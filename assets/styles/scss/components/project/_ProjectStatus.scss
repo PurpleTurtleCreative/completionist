@@ -1,12 +1,12 @@
-@import '../../abstracts/colors';
-@import '../../abstracts/badges';
+@use '../../abstracts/badges';
+@use '../../abstracts/colors';
 
 //----------------------
 
 .ptc-ProjectStatus {
 	margin: 2rem auto;
 	padding: 20px;
-	border: 2px solid color(grey-lighter);
+	border: 2px solid colors.color(grey-lighter);
 	border-radius: 1rem;
 	overflow: hidden;
 
@@ -36,7 +36,7 @@
 			height: 0.7em;
 			margin: 0 0.5em 0 0;
 			border-radius: 50%;
-			background: color(grey);
+			background: colors.color(grey);
 		}
 
 		svg {
@@ -48,40 +48,40 @@
 		}
 
 		&.--is-complete {
-			background: color(asana-status-green);
-			border-color: color(asana-status-green);
-			color: color(white);
+			background: colors.color(asana-status-green);
+			border-color: colors.color(asana-status-green);
+			color: colors.color(white);
 
 			&::before {
 				display: none;
 			}
 		}
 		&.--is-green {
-			border-color: color(asana-status-green);
+			border-color: colors.color(asana-status-green);
 
 			&::before {
-				background: color(asana-status-green);
+				background: colors.color(asana-status-green);
 			}
 		}
 		&.--is-yellow {
-			border-color: color(asana-status-yellow);
+			border-color: colors.color(asana-status-yellow);
 
 			&::before {
-				background: color(asana-status-yellow);
+				background: colors.color(asana-status-yellow);
 			}
 		}
 		&.--is-red {
-			border-color: color(asana-status-red);
+			border-color: colors.color(asana-status-red);
 
 			&::before {
-				background: color(asana-status-red);
+				background: colors.color(asana-status-red);
 			}
 		}
 		&.--is-blue {
-			border-color: color(asana-status-blue);
+			border-color: colors.color(asana-status-blue);
 
 			&::before {
-				background: color(asana-status-blue);
+				background: colors.color(asana-status-blue);
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-@import '../../abstracts/elements';
+@use '../../abstracts/elements';
 
 //----------------------
 
@@ -10,13 +10,13 @@
 		$btn-size: 2em;
 
 		&.view {
-			@include btn-circle-icon($btn-size, grey);
+			@include elements.btn-circle-icon($btn-size, grey);
 		}
 		&.unpin {
-			@include btn-circle-icon($btn-size, info);
+			@include elements.btn-circle-icon($btn-size, info);
 		}
 		&.delete {
-			@include btn-circle-icon($btn-size, danger);
+			@include elements.btn-circle-icon($btn-size, danger);
 		}
 	}
 }//end .ptc-TaskActions

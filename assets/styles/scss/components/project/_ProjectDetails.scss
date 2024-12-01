@@ -1,5 +1,5 @@
-@import '../../abstracts/colors';
-@import '../../abstracts/badges';
+@use '../../abstracts/badges';
+@use '../../abstracts/colors';
 
 //----------------------
 
@@ -21,12 +21,12 @@
 			@extend %metadata-badge;
 
 			&.completed {
-				border-color: color(asana-status-green);
-				background: color(asana-status-green);
-				color: color(white);
+				border-color: colors.color(asana-status-green);
+				background: colors.color(asana-status-green);
+				color: colors.color(white);
 
 				span {
-					color: color(grey-lightest);
+					color: colors.color(grey-lightest);
 				}
 			}
 		}

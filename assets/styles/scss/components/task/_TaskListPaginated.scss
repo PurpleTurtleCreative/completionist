@@ -1,5 +1,5 @@
-@import '../../abstracts/colors';
-@import '../../abstracts/elements';
+@use '../../abstracts/colors';
+@use '../../abstracts/elements';
 
 //----------------------
 
@@ -18,37 +18,37 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: color(grey-lightest);
-		border-top: 1px solid color(grey-light);
+		background: colors.color(grey-lightest);
+		border-top: 1px solid colors.color(grey-light);
 		flex-wrap: wrap;
 		min-height: 2.3em;
 
 		button {
 			cursor: pointer;
 			font-size: 1em;
-			color: color(grey);
+			color: colors.color(grey);
 			border-radius: 0;
 			border: none;
-			border-top: 1px solid color(grey-light);
-			border-bottom: 1px solid color(grey-light);
+			border-top: 1px solid colors.color(grey-light);
+			border-bottom: 1px solid colors.color(grey-light);
 			line-height: 1;
 			padding: 0.5em 0.7em;
-			background: color(white);
+			background: colors.color(white);
 
 			&:hover {
-				background: color(grey-lightest);
-				color: color(grey-dark);
+				background: colors.color(grey-lightest);
+				color: colors.color(grey-dark);
 			}
 
 			&[disabled] {
 				cursor: not-allowed;
-				background: color(grey-lighter);
-				color: color(grey-darker);
+				background: colors.color(grey-lighter);
+				color: colors.color(grey-darker);
 			}
 
 			&.prev,
 			&.next {
-				border: 1px solid color(grey-light);
+				border: 1px solid colors.color(grey-light);
 			}
 
 			&.prev {
@@ -69,7 +69,7 @@
 
 		button {
 			margin: 0.3em;
-			@include btn-circle-icon(2em, grey);
+			@include elements.btn-circle-icon(2em, grey);
 		}
 	}
 }//end .ptc-TaskListPaginated

@@ -1,4 +1,4 @@
-@import 'abstracts/colors';
+@use 'abstracts/colors';
 
 //----------------------
 
@@ -11,21 +11,21 @@ section#ptc-asana-user {
 	padding: 80px 14px 60px;
 
 	div.asana-connected-profile-photo {
-		background: color(grey-lightest);
-		border-bottom: 1px solid color(grey-lighter);
+		background: colors.color(grey-lightest);
+		border-bottom: 1px solid colors.color(grey-lighter);
 		margin: -80px -14px 70px;
 		border-radius: 7px 7px 0 0;
 		position: relative;
 
 		img {
-			background: color(white);
+			background: colors.color(white);
 			margin: 60px 0 -50px;
 			border-radius: 50%;
-			border: 5px solid color(grey-lighter);
+			border: 5px solid colors.color(grey-lighter);
 		}
 
 		i {
-			color: color(white);
+			color: colors.color(white);
 			background: #51ca58;
 			border-radius: 50%;
 			padding: 7px;
@@ -46,7 +46,7 @@ section#ptc-asana-user {
 /* CHOSEN WORKSPACE */
 section#ptc-asana-workspace {
 	padding: 0;
-	background: color(grey-lightest);
+	background: colors.color(grey-lightest);
 
 	&-unauthorized,
 	&-error {
@@ -54,11 +54,11 @@ section#ptc-asana-workspace {
 	}
 
 	p.nothing-to-see {
-		background: color(white);
+		background: colors.color(white);
 		margin: 0;
 		padding: 2em 2em 2.3em;
 		font-style: italic;
-		color: color(grey-darker);
+		color: colors.color(grey-darker);
 	}
 
 	form {
@@ -103,8 +103,8 @@ section#ptc-asana-workspace {
 		align-items: center;
 		align-content: center;
 		padding: 14px 14px 21px;
-		border-top: 1px solid color(grey-lighter);
-		background: color(white);
+		border-top: 1px solid colors.color(grey-lighter);
+		background: colors.color(white);
 
 		&:last-of-type {
 			border-radius: 0 0 7px 7px;
@@ -141,7 +141,7 @@ section#ptc-asana-workspace {
 
 			img {
 				border-radius: 50%;
-				border: 1px solid color(grey-light);
+				border: 1px solid colors.color(grey-light);
 				margin-right: 0.5em;
 			}
 		}//end .user
@@ -168,7 +168,7 @@ section#ptc-asana-workspace {
 			&[data-status=no] {
 
 				p {
-					color: color(grey);
+					color: colors.color(grey);
 				}
 			}
 		}//end .connection-status
@@ -178,7 +178,7 @@ section#ptc-asana-workspace {
 /* FRONTEND AUTH USER */
 section#ptc-frontend-auth-user {
 	padding: 0;
-	background: color(grey-lightest);
+	background: colors.color(grey-lightest);
 
 	label {
 		margin: 0;
@@ -187,8 +187,8 @@ section#ptc-frontend-auth-user {
 
 	form {
 		padding: 14px;
-		background: color(white);
-		border-top: 1px solid color(grey-lighter);
+		background: colors.color(white);
+		border-top: 1px solid colors.color(grey-lighter);
 
 		.field-group {
 			display: flex;
@@ -214,7 +214,7 @@ section#ptc-frontend-auth-user {
 	}
 
 	.help-notes {
-		background: color(white);
+		background: colors.color(white);
 		padding: 1px 21px 21px;
 	}
 }
@@ -226,8 +226,8 @@ section#ptc-asana-data-cache {
 	.section-title {
 		margin: 0;
 		padding: 7px 21px;
-		background: color(grey-lightest);
-		border-bottom: 1px solid color(grey-lighter);
+		background: colors.color(grey-lightest);
+		border-bottom: 1px solid colors.color(grey-lighter);
 		font-weight: 600;
 	}
 
@@ -266,10 +266,10 @@ section#ptc-asana-data-cache {
 					display: block;
 					padding: 5px 10px;
 					border-radius: 0 4px 4px 0;
-					background: color(grey-lightest);
+					background: colors.color(grey-lightest);
 					border: 1px solid #8c8f94;
 					border-left: none;
-					color: color(grey-darker);
+					color: colors.color(grey-darker);
 				}
 			}
 		}
@@ -302,7 +302,7 @@ section#ptc-asana-data-cache {
 /* DEAUTHORIZE ACCOUNT */
 section#ptc-disconnect-asana {
 	padding: 0;
-	border-color: color(danger);
+	border-color: colors.color(danger);
 
 	form {
 		margin: 0;

@@ -1,4 +1,4 @@
-@import '../../abstracts/colors';
+@use '../../abstracts/colors';
 
 //----------------------
 
@@ -11,7 +11,7 @@
 
 	.feature {
 		width: 30%;
-		color: color(brand-primary);
+		color: colors.color(brand-primary);
 		text-align: center;
 
 		.large {
@@ -38,7 +38,7 @@
 
 	.details {
 		flex: 1;
-		color: color(grey-dark);
+		color: colors.color(grey-dark);
 		padding: 0 3em;
 
 		.incomplete {
@@ -60,7 +60,7 @@
 
 			.progress-bar-wrapper {
 				flex: 1;
-				background: color(grey-lighter);
+				background: colors.color(grey-lighter);
 				height: 10px;
 				border-radius: 999px;
 				margin-right: 0.3em;
@@ -68,7 +68,7 @@
 
 				.progress-bar {
 					height: inherit;
-					background: color(brand-primary);
+					background: colors.color(brand-primary);
 				}
 			}
 
@@ -78,7 +78,7 @@
 				line-height: 1.3rem;
 
 				.completed {
-					color: color(brand-primary);
+					color: colors.color(brand-primary);
 				}
 			}
 		}
