@@ -1,13 +1,13 @@
-@import '../../abstracts/elements';
-@import '../../abstracts/colors';
+@use '../../abstracts/elements';
+@use '../../abstracts/colors';
 
 //----------------------
 
 .ptc-TaskPinToPostBar {
 	padding: 10px;
-	background: color(grey-lightest);
-	border-top: 1px solid color(grey-light);
-	border-bottom: 1px solid color(grey-light);
+	background: colors.color(grey-lightest);
+	border-top: 1px solid colors.color(grey-light);
+	border-bottom: 1px solid colors.color(grey-light);
 
 	.toolbar {
 		display: flex;
@@ -21,25 +21,25 @@
 	}
 
 	button.creation-form-toggle {
-		@include btn-circle-icon(2.15em, success);
-		background: color(success);
-		color: color(white);
+		@include elements.btn-circle-icon(2.15em, success);
+		background: colors.color(success);
+		color: colors.color(white);
 
 		&.--is-active,
 		&:hover {
-			color: color(success-dark);
+			color: colors.color(success-dark);
 		}
 	}
 
 	&.--is-showing-creation-form {
 
 		button.creation-form-toggle {
-			border-color: color(danger);
-			background: color(danger);
+			border-color: colors.color(danger);
+			background: colors.color(danger);
 
 			&.--is-active,
 			&:hover {
-				color: color(danger-dark);
+				color: colors.color(danger-dark);
 			}
 		}
 	}

@@ -1,3 +1,5 @@
+@use "sass:map";
+
 // Measurements
 
 $px: (
@@ -8,9 +10,9 @@ $px: (
 
 @function px($key) {
 
-	@if map-has-key($px, $key) {
+	@if map.has-key($px, $key) {
 
-		@return map-get($px, $key);
+		@return map.get($px, $key);
 	}
 
 	@warn "Unknown `#{$key}` in $px.";
@@ -27,9 +29,9 @@ $em: (
 
 @function em($key) {
 
-	@if map-has-key($em, $key) {
+	@if map.has-key($em, $key) {
 
-		@return map-get($em, $key);
+		@return map.get($em, $key);
 	}
 
 	@warn "Unknown `#{$key}` in $em.";
@@ -49,9 +51,9 @@ $padding: (
 
 @function padding($key) {
 
-	@if map-has-key($padding, $key) {
+	@if map.has-key($padding, $key) {
 
-		@return map-get($padding, $key);
+		@return map.get($padding, $key);
 	}
 
 	@warn "Unknown `#{$key}` in $padding.";

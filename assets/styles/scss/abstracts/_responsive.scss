@@ -1,3 +1,5 @@
+@use "sass:map";
+
 $breakpoints: (
 	xsmall: 320px,
 	small: 425px,
@@ -9,9 +11,9 @@ $breakpoints: (
 // mobile-first breakpoint, content for breakpoint and up
 @mixin breakpoint($breakpoint) {
 
-	@if map-has-key($breakpoints, $breakpoint) {
+	@if map.has-key($breakpoints, $breakpoint) {
 
-		@media (min-width: map-get($breakpoints, $breakpoint)) {
+		@media (min-width: map.get($breakpoints, $breakpoint)) {
 			@content;
 		}
 
@@ -26,9 +28,9 @@ $breakpoints: (
 // TIP: This is useful for style overrides!
 @mixin breakpoint-down($breakpoint) {
 
-	@if map-has-key($breakpoints, $breakpoint) {
+	@if map.has-key($breakpoints, $breakpoint) {
 
-		@media (max-width: ( map-get($breakpoints, $breakpoint) - 1px )) {
+		@media (max-width: ( map.get($breakpoints, $breakpoint) - 1px )) {
 			@content;
 		}
 
@@ -41,9 +43,9 @@ $breakpoints: (
 
 @mixin breakpoint-between($breakpoint-upper, $brekpoint-lower) {
 
-	@if map-has-key($breakpoints, $breakpoint-upper) and map-has-key($breakpoints, $brekpoint-lower) {
+	@if map.has-key($breakpoints, $breakpoint-upper) and map.has-key($breakpoints, $brekpoint-lower) {
 
-		@media (max-width: ( map-get($breakpoints, $breakpoint-upper) - 1px )) and (min-width: map-get($breakpoints, $brekpoint-lower)) {
+		@media (max-width: ( map.get($breakpoints, $breakpoint-upper) - 1px )) and (min-width: map.get($breakpoints, $brekpoint-lower)) {
 			@content;
 		}
 

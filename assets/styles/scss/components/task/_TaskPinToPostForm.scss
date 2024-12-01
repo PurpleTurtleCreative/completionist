@@ -1,5 +1,5 @@
-@import '../../abstracts/elements';
-@import '../../abstracts/colors';
+@use '../../abstracts/colors';
+@use '../../abstracts/elements';
 
 //----------------------
 
@@ -11,7 +11,7 @@
 
 	input[type="url"] {
 		flex: 1;
-		border: 1px solid color(info);
+		border: 1px solid colors.color(info);
 		font-size: 1em;
 		line-height: 2.3em;
 		height: 2.3em;
@@ -21,7 +21,7 @@
 		padding-right: 1.5em;
 
 		&::placeholder {
-			color: color(grey);
+			color: colors.color(grey);
 		}
 
 		&:active,
@@ -32,19 +32,19 @@
 
 		&[disabled] {
 			cursor: not-allowed !important;
-			background: color(grey-lightest) !important;
-			border-color: color(grey) !important;
+			background: colors.color(grey-lightest) !important;
+			border-color: colors.color(grey) !important;
 		}
 	}
 
 	button[type="submit"] {
-		@include btn-circle-icon(2.15em, info);
-		background: color(info);
-		color: color(white);
+		@include elements.btn-circle-icon(2.15em, info);
+		background: colors.color(info);
+		color: colors.color(white);
 		margin-left: -1.07em;
 
 		&:hover {
-			color: color(info-dark);
+			color: colors.color(info-dark);
 		}
 	}
 }//end ptc-TaskFilters

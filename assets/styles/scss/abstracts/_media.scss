@@ -1,5 +1,7 @@
 @use "sass:math";
 
+@use "./colors";
+
 // Responsive iframes.
 
 @mixin responsive-iframe-wrapper($width-units: 16, $height-units: 9) {
@@ -37,8 +39,8 @@
 }
 
 %is-loading-media:not(.load-monitoring-disabled) {
-	border: 1px solid color(grey-lighter);
-	background: linear-gradient(-45deg, color(white), color(grey-lighter), color(white), color(grey-lighter), color(white));
+	border: 1px solid colors.color(grey-lighter);
+	background: linear-gradient(-45deg, colors.color(white), colors.color(grey-lighter), colors.color(white), colors.color(grey-lighter), colors.color(white));
 	background-blend-mode: multiply;
 	background-size: 400% 400%;
 	animation: ptc-loader-gradient 3s linear alternate infinite;
@@ -52,8 +54,8 @@
 }
 
 %is-error-media:not(.load-monitoring-disabled) {
-	border-color: color(danger);
-	background-color: color(danger-lightest);
+	border-color: colors.color(danger);
+	background-color: colors.color(danger-lightest);
 
 	&[width] {
 		width: fit-content; // max-width doesn't work for broken media.

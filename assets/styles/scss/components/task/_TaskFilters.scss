@@ -1,5 +1,5 @@
-@import '../../abstracts/colors';
-@import '../../abstracts/elements';
+@use '../../abstracts/colors';
+@use '../../abstracts/elements';
 
 //----------------------
 
@@ -8,27 +8,27 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-evenly;
-	background: color(grey-lightest);
-	border-top: 1px solid color(grey-light);
-	border-bottom: 1px solid color(grey-light);
+	background: colors.color(grey-lightest);
+	border-top: 1px solid colors.color(grey-light);
+	border-bottom: 1px solid colors.color(grey-light);
 	flex-wrap: wrap;
 
 	button {
 
 		&.filter-none {
-			@include btn-pill-outline();
+			@include elements.btn-pill-outline();
 		}
 		&.filter-pinned {
-			@include btn-pill-outline(info);
+			@include elements.btn-pill-outline(info);
 		}
 		&.filter-general {
-			@include btn-pill-outline(grey);
+			@include elements.btn-pill-outline(grey);
 		}
 		&.filter-myTasks {
-			@include btn-pill-outline(warning);
+			@include elements.btn-pill-outline(warning);
 		}
 		&.filter-critical {
-			@include btn-pill-outline(danger);
+			@include elements.btn-pill-outline(danger);
 		}
 	}
 }//end ptc-TaskFilters

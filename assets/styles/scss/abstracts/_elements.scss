@@ -1,7 +1,7 @@
 @use "sass:math";
 
-@import 'colors';
-@import 'layout';
+@use "./colors";
+@use "./layout";
 
 //----------------------
 
@@ -14,98 +14,98 @@
 	border-radius: 999px;
 	text-decoration: none;
 	font-size: .9em;
-	padding: padding(full-sm);
+	padding: layout.padding(full-sm);
 	font-weight: 600;
 	margin: .3em .15em;
 	cursor: pointer;
-	border: 1px solid color(grey-dark);
+	border: 1px solid colors.color(grey-dark);
 	outline: none;
 	box-shadow: none;
 
 	&[disabled], &[disabled]:hover {
-		background: color(grey-lighter) !important;
-		border-color: color(grey-dark) !important;
-		color: color(grey-dark) !important;
+		background: colors.color(grey-lighter) !important;
+		border-color: colors.color(grey-dark) !important;
+		color: colors.color(grey-dark) !important;
 		text-shadow: none !important;
 	}
 }
 
 %button-sm-brand-primary {
 	@extend %button-sm;
-	background: color(brand-primary);
-	border: 1px solid color(brand-primary-dark);
-	color: color(brand-primary-dark);
+	background: colors.color(brand-primary);
+	border: 1px solid colors.color(brand-primary-dark);
+	color: colors.color(brand-primary-dark);
 
 	&:hover {
-		background: color(brand-primary-light);
+		background: colors.color(brand-primary-light);
 	}
 }
 
 %button-sm-grey {
 	@extend %button-sm;
-	color: color(black);
-	background: color(grey);
-	border-color: color(black);
+	color: colors.color(black);
+	background: colors.color(grey);
+	border-color: colors.color(black);
 
 	&:hover {
-		background: color(grey-light);
+		background: colors.color(grey-light);
 	}
 }
 
 %button-sm-grey-dark {
 	@extend %button-sm;
-	color: color(white);
-	background: color(grey-dark);
-	border-color: color(grey-darker);
-	text-shadow: 1px 1px 3px #{color(grey-darkest)}99;
+	color: colors.color(white);
+	background: colors.color(grey-dark);
+	border-color: colors.color(grey-darker);
+	text-shadow: 1px 1px 3px #{colors.color(grey-darkest)}99;
 	letter-spacing: .03em;
 
 	&:hover {
-		background: color(grey);
+		background: colors.color(grey);
 	}
 }
 
 %button-sm-info {
 	@extend %button-sm;
-	background: color(info);
-	border: 1px solid color(info-dark);
-	color: color(info-dark);
+	background: colors.color(info);
+	border: 1px solid colors.color(info-dark);
+	color: colors.color(info-dark);
 
 	&:hover {
-		background: color(info-light);
+		background: colors.color(info-light);
 	}
 }
 
 %button-sm-success {
 	@extend %button-sm;
-	background: color(success);
-	border: 1px solid color(success-dark);
-	color: color(success-dark);
+	background: colors.color(success);
+	border: 1px solid colors.color(success-dark);
+	color: colors.color(success-dark);
 
 	&:hover {
-		background: color(success-light);
+		background: colors.color(success-light);
 	}
 }
 
 %button-sm-warning {
 	@extend %button-sm;
-	background: color(warning);
-	border: 1px solid color(warning-dark);
-	color: color(warning-dark);
+	background: colors.color(warning);
+	border: 1px solid colors.color(warning-dark);
+	color: colors.color(warning-dark);
 
 	&:hover {
-		background: color(warning-light);
+		background: colors.color(warning-light);
 	}
 }
 
 %button-sm-danger {
 	@extend %button-sm;
-	background: color(danger);
-	border: 1px solid color(danger-dark);
-	color: color(danger-dark);
+	background: colors.color(danger);
+	border: 1px solid colors.color(danger-dark);
+	color: colors.color(danger-dark);
 
 	&:hover {
-		background: color(danger-light);
+		background: colors.color(danger-light);
 	}
 }
 
@@ -113,9 +113,9 @@
 
 @mixin btn-pill-outline($color-key: brand-primary, $secondary-color: white) {
 	cursor: pointer;
-	border: 1px solid color($color-key);
-	background: color($secondary-color);
-	color: color($color-key);
+	border: 1px solid colors.color($color-key);
+	background: colors.color($secondary-color);
+	color: colors.color($color-key);
 	border-radius: 999px;
 	padding: 0.3em 0.6em;
 	font-weight: 500;
@@ -127,16 +127,16 @@
 
 	&.--is-active,
 	&:hover {
-		background: color($color-key);
-		color: color($secondary-color);
+		background: colors.color($color-key);
+		color: colors.color($secondary-color);
 	}
 }
 
 @mixin btn-circle-icon($size, $color-key: brand-primary, $secondary-color: white) {
 	cursor: pointer;
-	border: 1px solid color($color-key);
-	background: color($secondary-color);
-	color: color($color-key);
+	border: 1px solid colors.color($color-key);
+	background: colors.color($secondary-color);
+	color: colors.color($color-key);
 	border-radius: 999px;
 	font-size: math.div($size, 2);
 	line-height: 1;
@@ -149,14 +149,14 @@
 
 	&.--is-active,
 	&:hover {
-		background: color($color-key);
-		color: color($secondary-color);
+		background: colors.color($color-key);
+		color: colors.color($secondary-color);
 	}
 
 	&[disabled] {
 		cursor: not-allowed !important;
-		background: color(grey-lighter) !important;
-		border-color: color(grey) !important;
-		color: color(grey-dark) !important;
+		background: colors.color(grey-lighter) !important;
+		border-color: colors.color(grey) !important;
+		color: colors.color(grey-dark) !important;
 	}
 }

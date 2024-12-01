@@ -1,5 +1,5 @@
-@import 'abstracts/colors';
-@import 'abstracts/responsive';
+@use 'abstracts/colors';
+@use 'abstracts/responsive';
 
 //----------------------
 
@@ -25,7 +25,7 @@
 		gap: 2em;
 
 		.connect-icon {
-			color: color(grey-darker);
+			color: colors.color(grey-darker);
 
 			svg {
 				height: 30px;
@@ -38,8 +38,8 @@
 			overflow: hidden;
 			box-sizing: border-box;
 			border-radius: 50%;
-			border: 2px solid color(grey-light);
-			background: color(white);
+			border: 2px solid colors.color(grey-light);
+			background: colors.color(white);
 		}
 
 		.service-completionist {
@@ -71,12 +71,12 @@
 	.content {
 		padding: 3rem 1rem;
 		margin: 2rem auto;
-		background: color(white);
-		color: color(black);
-		border: 2px solid color(grey-lighter);
+		background: colors.color(white);
+		color: colors.color(black);
+		border: 2px solid colors.color(grey-lighter);
 		border-radius: 1rem;
 
-		@include breakpoint(medium) {
+		@include responsive.breakpoint(medium) {
 			padding: 4rem 3rem;
 		}
 	}
@@ -87,7 +87,7 @@
 		font-size: 24px;
 		margin: 0 0 1em;
 
-		@include breakpoint(medium) {
+		@include responsive.breakpoint(medium) {
 			font-size: 30px;
 		}
 	}
@@ -132,7 +132,7 @@
 					flex-wrap: nowrap;
 					align-items: stretch;
 					width: 100%;
-					filter: drop-shadow(0 1px 7px rgba(color(brand-primary-light), 0.5));
+					filter: drop-shadow(0 1px 7px rgba(colors.color(brand-primary-light), 0.5));
 
 					> :first-child {
 						flex: 1;
@@ -149,7 +149,7 @@
 						font-size: 1.15em;
 						letter-spacing: 0.05em;
 
-						@include breakpoint(medium) {
+						@include responsive.breakpoint(medium) {
 							padding: 0.7em 1.5em;
 						}
 					}
@@ -159,18 +159,18 @@
 					display: flex;
 					flex-wrap: nowrap;
 					align-items: center;
-					background: color(white);
-					border: 1px solid color(brand-primary);
+					background: colors.color(white);
+					border: 1px solid colors.color(brand-primary);
 					gap: 0.5em;
 					padding: 0 0.5em;
 
-					@include breakpoint(medium) {
+					@include responsive.breakpoint(medium) {
 						gap: 1em;
 						padding: 0 1em;
 					}
 
 					svg {
-						color: color(brand-primary);
+						color: colors.color(brand-primary);
 						flex: none;
 					}
 

@@ -1,5 +1,5 @@
-@import '../../abstracts/colors';
-@import '../../abstracts/animated';
+@use '../../abstracts/animated';
+@use '../../abstracts/colors';
 
 //----------------------
 
@@ -8,19 +8,19 @@
 	.ptc-loader {
 		padding: 2em;
 		border-radius: 10px;
-		border: 2px dashed color(grey-light);
-		background: color(white);
-		color: color(grey-dark);
+		border: 2px dashed colors.color(grey-light);
+		background: colors.color(white);
+		color: colors.color(grey-dark);
 
-		@include loader;
+		@include animated.loader;
 	}
 
 	.ptc-error {
 		padding: 1em 2em;
 		text-align: center;
 		border-radius: 10px;
-		border: 2px solid color(danger-light);
-		background: color(danger-lightest);
+		border: 2px solid colors.color(danger-light);
+		background: colors.color(danger-lightest);
 		color: #b20000;
 	}
 

@@ -1,5 +1,5 @@
-@import '../../abstracts/colors';
-@import '../../abstracts/responsive';
+@use '../../abstracts/colors';
+@use '../../abstracts/responsive';
 
 //----------------------
 
@@ -9,31 +9,31 @@
 	margin: 0;
 	padding: 10px;
 	min-height: 28px;
-	border-top: 1px solid color(grey-lighter);
+	border-top: 1px solid colors.color(grey-lighter);
 	line-height: 1.3;
 	word-break: break-word;
 
-	@include breakpoint(large) {
+	@include responsive.breakpoint(large) {
 		align-items: center;
 		min-height: 36px;
 	}
 
 	&:last-of-type {
-		border-bottom: 1px solid color(grey-lighter);
+		border-bottom: 1px solid colors.color(grey-lighter);
 	}
 
 	&:hover {
-		background: color(grey-lightest);
-		border-top-color: color(grey-light);
-		border-bottom-color: color(grey-light);
+		background: colors.color(grey-lightest);
+		border-top-color: colors.color(grey-light);
+		border-bottom-color: colors.color(grey-light);
 
 		+ .ptc-TaskListItem {
-			border-top-color: color(grey-light);
+			border-top-color: colors.color(grey-light);
 		}
 	}
 
 	&.--is-completed {
-		color: color(grey-darker);
+		color: colors.color(grey-darker);
 
 		.task-name {
 			text-decoration: line-through;
@@ -69,9 +69,9 @@
 		width: 1.15em;
 		height: 1.15em;
 		border-radius: 999px;
-		border: 1px solid color(grey);
-		background: color(white);
-		color: color(grey-dark);
+		border: 1px solid colors.color(grey);
+		background: colors.color(white);
+		color: colors.color(grey-dark);
 
 		svg {
 			width: 66.66666%;
@@ -84,9 +84,9 @@
 		}
 
 		&[data-completed="true"] {
-			background: color(asana-status-green);
-			border-color: color(asana-status-green);
-			color: color(white);
+			background: colors.color(asana-status-green);
+			border-color: colors.color(asana-status-green);
+			color: colors.color(white);
 		}
 	}
 
@@ -98,7 +98,7 @@
 		min-width: 0;
 		min-height: 0;
 
-		@include breakpoint(large) {
+		@include responsive.breakpoint(large) {
 			flex-wrap: nowrap;
 		}
 
@@ -119,7 +119,7 @@
 
 		> * {
 
-			@include breakpoint(large) {
+			@include responsive.breakpoint(large) {
 				margin-right: 10px;
 			}
 		}
@@ -127,7 +127,7 @@
 		> *:not(:first-child) {
 			margin-top: 10px;
 
-			@include breakpoint(large) {
+			@include responsive.breakpoint(large) {
 				margin-top: 0;
 			}
 		}
@@ -139,7 +139,7 @@
 		word-break: break-word;
 		white-space: pre-wrap;
 
-		@include breakpoint(large) {
+		@include responsive.breakpoint(large) {
 			flex: 4;
 		}
 	}//.main
@@ -148,9 +148,9 @@
 		display: flex;
 		flex-wrap: nowrap;
 		align-items: center;
-		color: color(grey-dark);
+		color: colors.color(grey-dark);
 
-		@include breakpoint(large) {
+		@include responsive.breakpoint(large) {
 			min-width: 2em;
 		}
 
@@ -171,7 +171,7 @@
 		height: 26px;
 		border-radius: 50%;
 
-		@include breakpoint(large) {
+		@include responsive.breakpoint(large) {
 			width: 30px;
 			height: 30px;
 		}
@@ -181,7 +181,7 @@
 		max-width: 5em;
 		text-align: center;
 
-		@include breakpoint(large) {
+		@include responsive.breakpoint(large) {
 			flex: 1;
 		}
 	}

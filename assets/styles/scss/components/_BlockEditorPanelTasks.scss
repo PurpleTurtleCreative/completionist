@@ -1,4 +1,4 @@
-@import '../abstracts/colors';
+@use '../abstracts/colors';
 
 //----------------------
 
@@ -12,7 +12,7 @@
 	&.is-opened {
 
 		.components-panel__icon {
-			fill: color(brand-primary);
+			fill: colors.color(brand-primary);
 		}
 	}
 }
