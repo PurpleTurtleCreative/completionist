@@ -886,7 +886,7 @@ class Options {
 	/**
 	 * Gets all plugin settings for the specified user.
 	 *
-	 * @since [unreleased]
+	 * @since 4.5.0
 	 *
 	 * @param int $user_id The WordPress user's ID.
 	 */

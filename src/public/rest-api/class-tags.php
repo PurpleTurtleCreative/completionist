@@ -198,7 +198,7 @@ class Tags {
 	/**
 	 * Handles a request to get Asana tags via typeahead search.
 	 *
-	 * @since [unreleased]
+	 * @since 4.5.0
 	 *
 	 * @link https://developers.asana.com/reference/typeaheadforworkspace
 	 *

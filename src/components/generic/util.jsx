@@ -48,7 +48,7 @@ export function areOnSameDate( date1, date2 ) {
 /**
  * Returns a human-readable duration string.
  *
- * @since [unreleased]
+ * @since 4.5.0
  *
  * @param {integer} seconds The duration in seconds.
  * @returns The duration string.

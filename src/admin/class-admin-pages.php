@@ -74,7 +74,7 @@ class Admin_Pages {
 	/**
 	 * Adds the admin pages.
 	 *
-	 * @since [unreleased] Redesigned the Settings screen and deprecated the old screen.
+	 * @since 4.5.0 Redesigned the Settings screen and deprecated the old screen.
 	 * @since 3.0.0 Moved to Admin_Pages class.
 	 * @since 1.0.0
 	 */
@@ -124,7 +124,7 @@ class Admin_Pages {
 	/**
 	 * Checks the current screen for further customizations.
 	 *
-	 * @since [unreleased]
+	 * @since 4.5.0
 	 *
 	 * @param \WP_Screen $current_screen The current WordPress screen.
 	 */
@@ -1197,7 +1197,7 @@ class Admin_Pages {
 	/**
 	 * Displays the new Settings admin page.
 	 *
-	 * @since [unreleased]
+	 * @since 4.5.0
 	 */
 	public static function display_settings_screen() {
 		?>

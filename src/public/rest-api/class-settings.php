@@ -2,7 +2,7 @@
 /**
  * REST API: Settings class
  *
- * @since [unreleased]
+ * @since 4.5.0
  */
 
 namespace PTC_Completionist\REST_API;
@@ -19,14 +19,14 @@ use PTC_Completionist\Request_Token;
 /**
  * Class to register and handle custom REST API endpoints which manage this plugin's settings.
  *
- * @since [unreleased]
+ * @since 4.5.0
  */
 class Settings {
 
 	/**
 	 * Registers the custom REST API endpoints.
 	 *
-	 * @since [unreleased]
+	 * @since 4.5.0
 	 */
 	public static function register_routes() {
 		register_rest_route(
@@ -70,7 +70,7 @@ class Settings {
 	/**
 	 * Handles a GET request to retrieve plugin settings data for the current user.
 	 *
-	 * @since [unreleased]
+	 * @since 4.5.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *
@@ -145,7 +145,7 @@ class Settings {
 	/**
 	 * Handles a PUT request to update plugin settings data for the current user.
 	 *
-	 * @since [unreleased]
+	 * @since 4.5.0
 	 *
 	 * @param \WP_REST_Request $request The API request.
 	 *
