@@ -68,9 +68,9 @@ In Completionist's *Settings* screen, there is a *Clear Cache* button available 
 
 ### Advanced Usage For Developers
 
-Frontend caching and security is managed by the `Request_Token` PHP class within Completionist. You can think of request tokens as WordPress nonces. All related data is stored within the `wp_ptc_completionist_request_tokens` database table.
+Frontend caching and security is managed by the `Request_Token` PHP class within Completionist. You can think of request tokens as WordPress nonces. All related data is stored within the `{$wpdb->prefix}ptc_completionist_request_tokens` database table.
 
-Request tokens are created in PHP as they are needed, including their associated cache records. Feel free to truncate the table at any time, but note that any frontend HTML caching of your WordPress website might become out-of-sync. For this reason, you should also clear the PHP/HTML cache for each page that contains a Completionist shortcode.
+Request tokens are created in secure contexts as they are needed, including their associated cache records. Feel free to truncate the table at any time, but note that any frontend HTML caching of your WordPress website might become out-of-sync. For example, shortcodes may reference old request tokens which no longer exist and result in HTTP 400 errors. For this reason, you should also clear the PHP/HTML cache for each page that contains a Completionist shortcode.
 
 You can clear the request tokens database table by using PHP:
 
@@ -85,7 +85,14 @@ if (
     // Attempt to delete all request token data, including cache records.
     if ( PTC_Completionist\Request_Token::delete_all() ) {
         // Successfully deleted all request tokens.
-        // @TODO - Clear HTML cache records.
+        // @TODO - Clear HTML page cache records.
     }
 }
 ```
+
+To keep all generated request tokens and simply clear their associated caches, use this method in PHP instead:
+
+```php
+$rows_affected = Request_Token::clear_cache_data();
+```
+
