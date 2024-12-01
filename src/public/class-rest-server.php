@@ -37,6 +37,7 @@ class REST_Server {
 		REST_API\Automations::register_routes();
 		REST_API\Tags::register_routes();
 		REST_API\Posts::register_routes();
+		REST_API\Settings::register_routes();
 		Admin_Notices::register_routes();
 	}
 

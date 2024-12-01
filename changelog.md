@@ -1,8 +1,32 @@
+### [unreleased]
+
+#### Added
+
+- New plugin settings screen using native WordPress components. The old settings screen has not been removed and remains accessible via a button in the top-right of the new settings screen.
+- More documentation throughout the new settings screen compared to the old screen.
+- New REST API endpoints to support the new plugin settings screen.
+
+#### Changed
+
+- Tested up to WordPress 6.7.1.
+- Settings are loaded asynchronously on the new settings screen which results in a faster initial page load.
+- Asana data cache settings are now accessible without needing to connect an Asana account via the new settings screen.
+- Asana Personal Access Token can now be updated without first needing to disconnect via the new settings screen.
+- Disconnecting Asana now shows a confirmation window with helpful warnings in the new settings screen to prevent accidental disruptions.
+- Choosing an Asana site tag is now easier by using Asana's Typeahead search in the new settings screen.
+- Improved error handling in the new settings screen by providing "Retry" and "Refresh" actions along with clearer messaging.
+
+#### Fixed
+
+- Workspace collaborators found in Asana by their WordPress user email would be listed as "Not Connected" when their Asana account was connected to a WordPress user profile that has an unmatching email address. This is fixed in the new settings screen only.
+- Asana data cache duration (TTL) settings value would not be translated to the correct human readable duration at 24 hours or more. This is fixed in the new settings screen only.
+- Decrypted values are now confirmed to properly result in UTF-8 characters which may prevent some Asana authentication errors on certain systems.
+
 ### 4.4.1 - 2024-10-09
 
 #### Fixed
 
-- Updated minimum required PHP version to `8.1` to prevent plugin installation on incompatible systems. An unrecoverable fatal error would occur, caused by Composer dependencies in the Asana PHP SDK updated in Completionist v4.3.0.
+- Updated minimum required PHP version to `8.1` to prevent plugin installation on incompatible systems. An unrecoverable fatal error would occur, caused by Composer dependencies in the Asana PHP SDK which was updated in Completionist v4.3.0.
 
 ### 4.4.0 - 2024-09-27
 

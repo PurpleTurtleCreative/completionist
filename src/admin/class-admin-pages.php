@@ -56,6 +56,7 @@ class Admin_Pages {
 	 */
 	public static function register() {
 		add_action( 'admin_menu', array( __CLASS__, 'add_admin_pages' ) );
+		add_action( 'current_screen', array( __CLASS__, 'check_current_screen' ) );
 		add_filter( 'plugin_action_links_' . PLUGIN_BASENAME, array( __CLASS__, 'filter_plugin_action_links' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_scripts' ) );
 		add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'register_block_editor_assets' ) );
@@ -73,6 +74,7 @@ class Admin_Pages {
 	/**
 	 * Adds the admin pages.
 	 *
+	 * @since [unreleased] Redesigned the Settings screen and deprecated the old screen.
 	 * @since 3.0.0 Moved to Admin_Pages class.
 	 * @since 1.0.0
 	 */
@@ -83,7 +85,7 @@ class Admin_Pages {
 			'Completionist',
 			'edit_posts',
 			static::PARENT_PAGE_SLUG,
-			array( __CLASS__, 'display_admin_dashboard' ),
+			array( __CLASS__, 'display_settings_screen' ),
 			'data:image/svg+xml;base64,' . base64_encode( '<svg width="20" height="20" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="clipboard-check" class="svg-inline--fa fa-clipboard-check fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="white" d="M336 64h-80c0-35.3-28.7-64-64-64s-64 28.7-64 64H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM192 40c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm121.2 231.8l-143 141.8c-4.7 4.7-12.3 4.6-17-.1l-82.6-83.3c-4.7-4.7-4.6-12.3.1-17L99.1 285c4.7-4.7 12.3-4.6 17 .1l46 46.4 106-105.2c4.7-4.7 12.3-4.6 17 .1l28.2 28.4c4.7 4.8 4.6 12.3-.1 17z"></path></svg>' ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 			100 /* For default priorities, see https://developer.wordpress.org/reference/functions/add_menu_page/#default-bottom-of-menu-structure */
 		);
@@ -94,6 +96,16 @@ class Admin_Pages {
 			'Settings', // parent page submenu title override.
 			'edit_posts',
 			static::PARENT_PAGE_SLUG,
+			array( __CLASS__, 'display_settings_screen' ),
+			null
+		);
+
+		add_submenu_page(
+			static::PARENT_PAGE_SLUG,
+			'Completionist &ndash; Settings (Deprecated)',
+			'Settings (Old)',
+			'edit_posts',
+			'ptc-completionist-deprecated',
 			array( __CLASS__, 'display_admin_dashboard' ),
 			null
 		);
@@ -103,11 +115,25 @@ class Admin_Pages {
 			'Completionist &ndash; Automations',
 			'Automations',
 			'edit_posts',
-			static::PARENT_PAGE_SLUG . '-automations',
+			'ptc-completionist-automations',
 			array( __CLASS__, 'display_automations_dashboard' ),
 			null
 		);
 	}//end add_admin_pages()
+
+	/**
+	 * Checks the current screen for further customizations.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param \WP_Screen $current_screen The current WordPress screen.
+	 */
+	public static function check_current_screen( \WP_Screen $current_screen ) {
+		if ( ! empty( $current_screen->id ) && 'completionist_page_ptc-completionist-deprecated' !== $current_screen->id ) {
+			// Only show the deprecated settings screen if it's the current screen.
+			remove_submenu_page( static::PARENT_PAGE_SLUG, 'ptc-completionist-deprecated' );
+		}
+	}
 
 	/**
 	 * Edits the plugin row's action links.
@@ -209,7 +235,7 @@ class Admin_Pages {
 				);
 				break;
 
-			case 'toplevel_page_ptc-completionist':
+			case 'completionist_page_ptc-completionist-deprecated':
 				wp_enqueue_style(
 					'ptc-completionist_connect-asana-css',
 					PLUGIN_URL . '/assets/styles/connect-asana.css',
@@ -242,6 +268,37 @@ class Admin_Pages {
 								'auth_nonce'     => true,
 								'nonce_get_tags' => true,
 								'v1'             => true,
+							)
+						),
+					)
+				);
+				break;
+
+			case 'toplevel_page_ptc-completionist':
+			case 'completionist_page_ptc-completionist':
+				$asset_file = require_once PLUGIN_PATH . 'build/index_AdminSettings.jsx.asset.php';
+				wp_enqueue_script(
+					'ptc-completionist_AdminSettings',
+					PLUGIN_URL . '/build/index_AdminSettings.jsx.js',
+					$asset_file['dependencies'],
+					$asset_file['version'],
+					true
+				);
+				wp_enqueue_style( 'wp-components' );
+				wp_localize_script(
+					'ptc-completionist_AdminSettings',
+					'ptc_completionist_settings',
+					array(
+						'deprecated_url' => admin_url( 'admin.php?page=ptc-completionist-deprecated' ),
+						'auth'           => array_intersect_key(
+							static::get_frontend_api_data(),
+							array(
+								'nonce_connect_asana'     => true,
+								'nonce_disconnect_asana'  => true,
+								'nonce_update_frontend_auth_user' => true,
+								'nonce_update_asana_cache_ttl' => true,
+								'nonce_clear_asana_cache' => true,
+								'nonce_update_asana_workspace_tag' => true,
 							)
 						),
 					)
@@ -440,21 +497,31 @@ class Admin_Pages {
 		}
 
 		$api_data = array(
-			'auth_nonce'              => wp_create_nonce( 'wp_rest' ),
-			'nonce'                   => wp_create_nonce( 'ptc_completionist' ),
-			'nonce_create_automation' => wp_create_nonce( 'ptc_completionist_create_automation' ),
-			'nonce_create_task'       => wp_create_nonce( 'ptc_completionist_create_task' ),
-			'nonce_delete_automation' => wp_create_nonce( 'ptc_completionist_delete_automation' ),
-			'nonce_delete_task'       => wp_create_nonce( 'ptc_completionist_delete_task' ),
-			'nonce_get_automation'    => wp_create_nonce( 'ptc_completionist_get_automation' ),
-			'nonce_get_post'          => wp_create_nonce( 'ptc_completionist_get_post' ),
-			'nonce_get_tags'          => wp_create_nonce( 'ptc_completionist_get_tags' ),
-			'nonce_pin_task'          => wp_create_nonce( 'ptc_completionist_pin_task' ),
-			'nonce_unpin_task'        => wp_create_nonce( 'ptc_completionist_unpin_task' ),
-			'nonce_update_automation' => wp_create_nonce( 'ptc_completionist_update_automation' ),
-			'nonce_update_task'       => wp_create_nonce( 'ptc_completionist_update_task' ),
-			'url'                     => rest_url(),
-			'v1'                      => rest_url( REST_API_NAMESPACE_V1 ),
+			// Generic.
+			'auth_nonce'                       => wp_create_nonce( 'wp_rest' ),
+			'nonce'                            => wp_create_nonce( 'ptc_completionist' ),
+			// Automations.
+			'nonce_create_automation'          => wp_create_nonce( 'ptc_completionist_create_automation' ),
+			'nonce_create_task'                => wp_create_nonce( 'ptc_completionist_create_task' ),
+			'nonce_delete_automation'          => wp_create_nonce( 'ptc_completionist_delete_automation' ),
+			'nonce_delete_task'                => wp_create_nonce( 'ptc_completionist_delete_task' ),
+			'nonce_get_automation'             => wp_create_nonce( 'ptc_completionist_get_automation' ),
+			'nonce_get_post'                   => wp_create_nonce( 'ptc_completionist_get_post' ),
+			'nonce_get_tags'                   => wp_create_nonce( 'ptc_completionist_get_tags' ),
+			'nonce_pin_task'                   => wp_create_nonce( 'ptc_completionist_pin_task' ),
+			'nonce_unpin_task'                 => wp_create_nonce( 'ptc_completionist_unpin_task' ),
+			'nonce_update_automation'          => wp_create_nonce( 'ptc_completionist_update_automation' ),
+			'nonce_update_task'                => wp_create_nonce( 'ptc_completionist_update_task' ),
+			// Settings - nonce format MUST be "nonce_{action}" => "ptc_completionist_{action}".
+			'nonce_connect_asana'              => wp_create_nonce( 'ptc_completionist_connect_asana' ),
+			'nonce_disconnect_asana'           => wp_create_nonce( 'ptc_completionist_disconnect_asana' ),
+			'nonce_update_frontend_auth_user'  => wp_create_nonce( 'ptc_completionist_update_frontend_auth_user' ),
+			'nonce_update_asana_cache_ttl'     => wp_create_nonce( 'ptc_completionist_update_asana_cache_ttl' ),
+			'nonce_clear_asana_cache'          => wp_create_nonce( 'ptc_completionist_clear_asana_cache' ),
+			'nonce_update_asana_workspace_tag' => wp_create_nonce( 'ptc_completionist_update_asana_workspace_tag' ),
+			// REST API.
+			'url'                              => rest_url(),
+			'v1'                               => rest_url( REST_API_NAMESPACE_V1 ),
 		);
 
 		static::$frontend_api_data = $api_data;
@@ -1124,5 +1191,22 @@ class Admin_Pages {
 			</div>
 			<?php
 		}
+	}
+
+	/**
+	 * Displays the new Settings admin page.
+	 *
+	 * @since [unreleased]
+	 */
+	public static function display_settings_screen() {
+		?>
+		<style>
+			body { background: #fff; }
+			#wpcontent { padding-left: 0; }
+		</style>
+		<div id="ptc-AdminSettings-root">
+			<p class="ptc-loading"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>Loading...</p>
+		</div>
+		<?php
 	}
 }//end class

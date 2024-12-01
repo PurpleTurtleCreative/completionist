@@ -712,7 +712,7 @@ class Options {
 			return base64_encode( $encrypted );// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 		} elseif ( 'd' === $mode ) {
 			$decrypted = openssl_decrypt( base64_decode( $value ), $method, $key, 0, $iv );// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
-			if ( false === $decrypted ) {
+			if ( false === $decrypted || ! mb_check_encoding( $decrypted, 'UTF-8' ) ) {
 				trigger_error( 'OpenSSL decryption failed.', \E_USER_WARNING );
 				return '';
 			}
@@ -880,6 +880,112 @@ class Options {
 				",
 				self::PINNED_TASK_GID
 			)
+		);
+	}
+
+	/**
+	 * Gets all plugin settings for the specified user.
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param int $user_id The WordPress user's ID.
+	 */
+	public static function get_settings_for_user( $user_id ) {
+
+		// Basic settings.
+		$site_workspace_gid = self::get( self::ASANA_WORKSPACE_GID );
+		$site_tag_gid       = self::get( self::ASANA_TAG_GID );
+
+		// Assume user hasn't authenticated Asana.
+		$asana_profile             = null;
+		$found_workspace_users     = null;
+		$connected_workspace_users = null;
+		$site_workspace            = null;
+		$site_tag                  = null;
+		$is_site_workspace_member  = false;
+
+		try {
+
+			// Authenticate Asana API client.
+			$asana = Asana_Interface::get_client( $user_id );
+
+			// Get Asana user data.
+			$asana_profile = Asana_Interface::get_me();
+
+			try {
+				$found_workspace_users     = Asana_Interface::find_workspace_users();
+				$connected_workspace_users = Asana_Interface::get_connected_workspace_users();
+			} catch ( \Exception $err ) {
+				// Probably not a member of the saved workspace,
+				// so user is not allowed to see users within it.
+				$found_workspace_users     = null;
+				$connected_workspace_users = null;
+			}
+
+			// Get workspace information.
+			foreach ( $asana_profile->workspaces as $workspace ) {
+				if ( $site_workspace_gid === $workspace->gid ) {
+					$site_workspace           = $workspace;
+					$is_site_workspace_member = true;
+				}
+			}
+
+			if ( $site_workspace_gid && ! $is_site_workspace_member ) {
+				$site_workspace       = new \stdClass();
+				$site_workspace->name = '(Unauthorized)';
+			}
+
+			// Get tag information.
+			if ( $site_tag_gid ) {
+				if ( $is_site_workspace_member ) {
+					try {
+						$site_tag = $asana->tags->getTag(
+							$site_tag_gid,
+							array( 'opt_fields' => 'gid,name,resource_type' )
+						);
+					} catch ( \Exception $error ) {
+						$site_tag       = new \stdClass();
+						$site_tag->name = '(Error: ' . $error->getMessage() . ')';
+					}
+				} else {
+					$site_tag       = new \stdClass();
+					$site_tag->name = '(Unauthorized)';
+				}
+			}
+		} catch ( Errors\No_Authorization $e ) {
+			// User is NOT authenticated for API usage.
+			$asana_profile = null;
+		} catch ( \Exception $e ) {
+			// Unknown error.
+			$asana_profile = array(
+				'status'  => 'error',
+				'code'    => $e->getCode(),
+				'message' => $e->getMessage(),
+			);
+		}
+
+		return array(
+			'user'      => array(
+				'id'                          => $user_id,
+				'capabilities'                => array(
+					'manage_options' => user_can( $user_id, 'manage_options' ),
+					'edit_posts'     => user_can( $user_id, 'edit_posts' ),
+				),
+				'is_site_workspace_member'    => $is_site_workspace_member,
+				'asana_personal_access_token' => self::get( self::ASANA_PAT, $user_id ),
+				'asana_profile'               => $asana_profile,
+			),
+			'frontend'  => array(
+				'auth_user_id' => self::get( self::FRONTEND_AUTH_USER_ID ),
+				'cache_ttl'    => self::get( self::CACHE_TTL_SECONDS ),
+			),
+			'workspace' => array(
+				'asana_site_workspace'      => $site_workspace,
+				'asana_site_tag'            => $site_tag,
+				'total_pinned_tasks'        => self::count_all_pinned_tasks(),
+				'found_workspace_users'     => $found_workspace_users,
+				'connected_workspace_users' => $connected_workspace_users,
+			),
 		);
 	}
 }//end class

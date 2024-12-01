@@ -11,14 +11,15 @@
     "url": "https://github.com/PurpleTurtleCreative/completionist/issues"
   },
   "devDependencies": {
+    "@wordpress/components": "^28.9.0",
     "@wordpress/env": "^10.0.0",
     "@wordpress/scripts": "^30.0.0",
     "sass": "^1.79.3"
   },
   "scripts": {
     "wp-env": "wp-env",
-    "build": "wp-scripts build src/index_DashboardWidget.jsx src/index_Automations.jsx src/index_BlockEditor.jsx src/index_ShortcodeAsanaProject.jsx src/index_ShortcodeAsanaTask.jsx src/index_PinnedTasksMetabox.jsx --output-path=build && npm run styles",
-    "start": "wp-scripts start src/index_DashboardWidget.jsx src/index_Automations.jsx src/index_BlockEditor.jsx src/index_ShortcodeAsanaProject.jsx src/index_ShortcodeAsanaTask.jsx src/index_PinnedTasksMetabox.jsx --output-path=build",
+    "build": "wp-scripts build src/index_*.jsx --output-path=build && npm run styles",
+    "start": "wp-scripts start src/index_*.jsx --output-path=build",
     "bundle": "npm run build && bash bundle.sh",
     "styles": "sass --style=compressed assets/styles/scss:assets/styles",
     "watch:styles": "sass --style=expanded --watch assets/styles/scss:assets/styles"
