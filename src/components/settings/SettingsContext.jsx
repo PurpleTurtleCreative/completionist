@@ -11,7 +11,7 @@ export function SettingsContextProvider({children}) {
 	async function loadSettings() {
 		setStatus('loading');
 		apiFetch({
-			path: '/completionist/v1/settings',
+			url: `${window.ptc_completionist_settings.api.v1}/settings`,
 			method: 'GET',
 		}).then((data) => {
 
@@ -52,11 +52,11 @@ export function SettingsContextProvider({children}) {
 	async function updateSettings( action = '', args = {} ) {
 		setStatus('loading');
 		apiFetch({
-			path: '/completionist/v1/settings',
+			url: `${window.ptc_completionist_settings.api.v1}/settings`,
 			method: 'PUT',
 			data: {
 				action,
-				action_nonce: window?.ptc_completionist_settings?.auth?.[`nonce_${action}`],
+				action_nonce: window?.ptc_completionist_settings?.api?.[`nonce_${action}`],
 				...args,
 			},
 		}).then((data) => {

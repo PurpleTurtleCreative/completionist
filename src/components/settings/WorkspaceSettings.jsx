@@ -51,7 +51,7 @@ export default function WorkspaceSettings() {
 
 		// Perform the request.
 		apiFetch({
-			path: `/completionist/v1/tags/typeahead?workspace_gid=${asanaWorkspaceValue}&query=${value}&count=100`,
+			url: `${window.ptc_completionist_settings.api.v1}/tags/typeahead?workspace_gid=${asanaWorkspaceValue}&query=${value}&count=100`,
 			method: 'GET',
 			signal: tagTypeaheadAbortControllerRef.current?.signal,
 		}).then( res => {
