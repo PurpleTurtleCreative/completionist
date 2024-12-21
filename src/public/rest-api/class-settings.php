@@ -462,7 +462,7 @@ class Settings {
 					 * - 'data' (mixed): Any additional data related to the response, can be null or any other type.
 					 * @param \WP_REST_Request $request The API request.
 					 */
-					$res = apply_filters( "ptc_completionist_update_settings_{$request['action']}", $res, $request );
+					$res = apply_filters( "ptc_completionist_update_settings_{$request['action']}_response", $res, $request );
 			}
 		} catch ( \Exception $err ) {
 			$res = array(
