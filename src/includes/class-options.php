@@ -315,7 +315,7 @@ class Options {
 	 * loaded when WordPress starts up. Default false.
 	 * @return bool If the option value was updated.
 	 */
-	private static function maybe_update_option( string $key, string $value, bool $autoload = false ) : bool {
+	public static function maybe_update_option( string $key, string $value, bool $autoload = false ) : bool {
 
 		if ( get_option( $key, '' ) === $value ) {
 			return false;
@@ -889,8 +889,9 @@ class Options {
 	 * @since 4.5.0
 	 *
 	 * @param int $user_id The WordPress user's ID.
+	 * @return array An associative array of the user's settings.
 	 */
-	public static function get_settings_for_user( $user_id ) {
+	public static function get_settings_for_user( int $user_id ) : array {
 
 		// Basic settings.
 		$site_workspace_gid = self::get( self::ASANA_WORKSPACE_GID );
@@ -964,7 +965,7 @@ class Options {
 			);
 		}
 
-		return array(
+		$settings_for_user = array(
 			'user'      => array(
 				'id'                          => $user_id,
 				'capabilities'                => array(
@@ -987,5 +988,15 @@ class Options {
 				'connected_workspace_users' => $connected_workspace_users,
 			),
 		);
+
+		/**
+		 * Filters retrieved plugin settings data for the user.
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param array $settings_for_user The associative array of settings data.
+		 * @param int   $user_id The WordPress user's ID.
+		 */
+		return apply_filters( 'ptc_completionist_settings_for_user', $settings_for_user, $user_id );
 	}
 }//end class
