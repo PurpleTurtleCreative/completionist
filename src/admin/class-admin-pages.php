@@ -366,8 +366,6 @@ class Admin_Pages {
 	/**
 	 * Gets the data for frontend script use relating to tasks.
 	 *
-	 * @see $frontend_task_data
-	 *
 	 * @since 4.0.0
 	 *
 	 * @return array The data. Remember to JSON encode for use
@@ -444,8 +442,6 @@ class Admin_Pages {
 	/**
 	 * Gets the data for frontend script use relating to API requests.
 	 *
-	 * @see $frontend_task_data
-	 *
 	 * @since 4.0.0
 	 *
 	 * @return array The data. Remember to JSON encode for use
@@ -487,14 +483,14 @@ class Admin_Pages {
 			);
 
 			/**
-			 * Filters the actions for which nonces will
+			 * Filters the API actions for which nonces will
 			 * be created for frontend scripts to use.
 			 *
 			 * @since [unreleased]
 			 *
 			 * @param string[] $nonce_actions An array of frontend action names.
 			 */
-			$nonce_actions = apply_filters( 'ptc_completionist_frontend_nonce_actions', $nonce_actions );
+			$nonce_actions = apply_filters( 'ptc_completionist_frontend_api_nonce_actions', $nonce_actions );
 
 			foreach ( $nonce_actions as $action ) {
 				$api_data[ "nonce_{$action}" ] = wp_create_nonce( "ptc_completionist_{$action}" );
@@ -506,6 +502,16 @@ class Admin_Pages {
 		return static::$frontend_api_data;
 	}
 
+	/**
+	 * Gets the frontend API data for the specified context.
+	 *
+	 * @see get_frontend_api_data()
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param string $context The context to select.
+	 * @return array The selected frontend API data.
+	 */
 	public static function get_frontend_api_data_for_context( string $context ) : array {
 
 		$context_to_keys = array(
