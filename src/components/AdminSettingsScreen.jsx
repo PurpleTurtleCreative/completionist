@@ -75,6 +75,7 @@ export default function AdminSettingsScreen() {
 	 *   - `value`: The unique identifier for the menu item.
 	 *   - `label`: The label displayed for the menu item.
 	 *   - `render`: The function that returns the ReactNode content for the menu item.
+	 * @param {React.Context} context The SettingsContext instance for `useContext()`.
 	 */
 	const menuItems = window.Completionist.hooks.applyFilters(
 		'AdminSettingsScreen_menu_items',
@@ -82,7 +83,8 @@ export default function AdminSettingsScreen() {
 			{ value: 'account', label: 'Asana Account', render: getAccountScreen },
 			{ value: 'workspace', label: 'Workspace', render: getWorkspaceScreen },
 			{ value: 'frontend', label: 'Frontend', render: getFrontendScreen },
-		]
+		],
+		SettingsContext
 	);
 
 	const renderScreenContent = () => {
