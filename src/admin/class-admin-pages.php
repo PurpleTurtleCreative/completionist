@@ -550,7 +550,7 @@ class Admin_Pages {
 		);
 
 		if ( empty( $context_to_keys[ $context ] ) ) {
-			trigger_error( 'Invalid frontend API data context: ' . esc_html( $context ), \E_USER_WARNING );
+			wp_trigger_error( __FUNCTION__, 'Invalid frontend API data context: ' . esc_html( $context ), \E_USER_WARNING );
 			return array();
 		}
 
@@ -566,7 +566,7 @@ class Admin_Pages {
 		 */
 		$keys = apply_filters( "ptc_completionist_frontend_api_data_selected_keys_for_{$context}", $context_to_keys[ $context ] );
 		if ( empty( $keys ) || ! is_array( $keys ) ) {
-			trigger_error( 'Missing frontend API data for context: ' . esc_html( $context ), \E_USER_WARNING );
+			wp_trigger_error( __FUNCTION__, 'Missing frontend API data for context: ' . esc_html( $context ), \E_USER_WARNING );
 			return array();
 		}
 
