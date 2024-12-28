@@ -789,19 +789,27 @@ class Options {
 	 */
 	public static function stable_crypt( string $value, string $mode ) : string {
 
+		if ( empty( $value ) ) {
+			return '';
+		}
+
 		if ( 'd' === $mode ) {
 			$value = base64_decode( $value ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+			if ( false === $value ) {
+				wp_trigger_error( __FUNCTION__, 'Failed to decode value for decryption.', \E_USER_WARNING );
+				return '';
+			}
+		}
+
+		if ( ! is_string( $value ) ) {
+			wp_trigger_error( __FUNCTION__, 'Refused to operate on non-string value.', \E_USER_WARNING );
+			return '';
 		}
 
 		$salt        = self::get( self::STABLE_SALT );
 		$salt_length = strlen( $salt );
 		if ( 0 === $salt_length ) {
 			wp_trigger_error( __FUNCTION__, 'Refused to operate with invalid salt value.', \E_USER_WARNING );
-			return '';
-		}
-
-		if ( empty( $value ) || ! is_string( $value ) ) {
-			wp_trigger_error( __FUNCTION__, 'Refused to operate on invalid value.', \E_USER_WARNING );
 			return '';
 		}
 
