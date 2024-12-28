@@ -456,10 +456,10 @@ class Settings {
 					 *
 					 * @param array $res An associative array containing response details.
 					 * The array should have the following keys:
-					 * - 'status' (string): The status of the response (e.g., 'error', 'success').
-					 * - 'code' (int): The HTTP status code (e.g., 400, 200).
-					 * - 'message' (string): A descriptive message about the response.
-					 * - 'data' (mixed): Any additional data related to the response, can be null or any other type.
+					 * - 'status' (string): The status of the response as 'error' or 'success'.
+					 * - 'code' (int): The HTTP status code (e.g. 400, 200).
+					 * - 'message' (string): A user-facing message about the response.
+					 * - 'data' (array|null): Any additional data related to the response as an associative array or null.
 					 * @param \WP_REST_Request $request The API request.
 					 */
 					$res = apply_filters( "ptc_completionist_update_settings_{$request['action']}_response", $res, $request );

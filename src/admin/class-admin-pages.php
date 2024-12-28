@@ -490,7 +490,7 @@ class Admin_Pages {
 			 *
 			 * @param string[] $nonce_actions An array of frontend action names.
 			 */
-			$nonce_actions = apply_filters( 'ptc_completionist_frontend_api_nonce_actions', $nonce_actions );
+			$nonce_actions = apply_filters( 'ptc_completionist_frontend_api_data_nonce_actions', $nonce_actions );
 
 			foreach ( $nonce_actions as $action ) {
 				$api_data[ "nonce_{$action}" ] = wp_create_nonce( "ptc_completionist_{$action}" );
@@ -564,7 +564,7 @@ class Admin_Pages {
 		 *
 		 * @param string[] $keys The keys to select.
 		 */
-		$keys = apply_filters( "ptc_completionist_{$context}_frontend_data", $context_to_keys[ $context ] );
+		$keys = apply_filters( "ptc_completionist_frontend_api_data_selected_keys_for_{$context}", $context_to_keys[ $context ] );
 		if ( empty( $keys ) || ! is_array( $keys ) ) {
 			trigger_error( 'Missing frontend API data for context: ' . esc_html( $context ), \E_USER_WARNING );
 			return array();
