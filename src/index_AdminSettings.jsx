@@ -3,7 +3,11 @@ import { SettingsContextProvider } from './components/settings/SettingsContext.j
 
 import { Button, Card, CardBody, CardHeader, ExternalLink, Flex } from '@wordpress/components';
 
+import initGlobalNamespace from './components/GlobalNamespace.jsx';
+
 import { createRoot } from '@wordpress/element';
+
+initGlobalNamespace();
 
 document.addEventListener('DOMContentLoaded', () => {
 	const rootNode = document.getElementById('ptc-AdminSettings-root');

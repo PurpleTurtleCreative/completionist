@@ -262,14 +262,7 @@ class Admin_Pages {
 					array(
 						'saved_workspace_gid' => Options::get( Options::ASANA_WORKSPACE_GID ),
 						'saved_tag_gid'       => Options::get( Options::ASANA_TAG_GID ),
-						'api'                 => array_intersect_key(
-							static::get_frontend_api_data(),
-							array(
-								'auth_nonce'     => true,
-								'nonce_get_tags' => true,
-								'v1'             => true,
-							)
-						),
+						'api'                 => static::get_frontend_api_data_for_context( 'settings_deprecated' ),
 					)
 				);
 				break;
@@ -290,18 +283,7 @@ class Admin_Pages {
 					'ptc_completionist_settings',
 					array(
 						'deprecated_url' => admin_url( 'admin.php?page=ptc-completionist-deprecated' ),
-						'api'            => array_intersect_key(
-							static::get_frontend_api_data(),
-							array(
-								'nonce_connect_asana'     => true,
-								'nonce_disconnect_asana'  => true,
-								'nonce_update_frontend_auth_user' => true,
-								'nonce_update_asana_cache_ttl' => true,
-								'nonce_clear_asana_cache' => true,
-								'nonce_update_asana_workspace_tag' => true,
-								'v1' => true,
-							)
-						),
+						'api'            => static::get_frontend_api_data_for_context( 'settings' ),
 					)
 				);
 				break;
@@ -327,18 +309,7 @@ class Admin_Pages {
 						'ptc_completionist_automations',
 						array(
 							'action_options'            => Automations\Actions::ACTION_OPTIONS,
-							'api'                       => array_intersect_key(
-								static::get_frontend_api_data(),
-								array(
-									'auth_nonce'           => true,
-									'nonce_create_automation' => true,
-									'nonce_delete_automation' => true,
-									'nonce_get_automation' => true,
-									'nonce_get_post'       => true,
-									'nonce_update_automation' => true,
-									'v1'                   => true,
-								)
-							),
+							'api'                       => static::get_frontend_api_data_for_context( 'automations' ),
 							'automations'               => Automations\Data::get_automation_overviews( null, true ),
 							'connected_workspace_users' => Asana_Interface::get_connected_workspace_user_options(),
 							'event_custom_options'      => Automations\Events::CUSTOM_OPTIONS,
@@ -395,8 +366,6 @@ class Admin_Pages {
 	/**
 	 * Gets the data for frontend script use relating to tasks.
 	 *
-	 * @see $frontend_task_data
-	 *
 	 * @since 4.0.0
 	 *
 	 * @return array The data. Remember to JSON encode for use
@@ -450,18 +419,7 @@ class Admin_Pages {
 			}
 
 			$js_data = array(
-				'api'      => array_intersect_key(
-					static::get_frontend_api_data(),
-					array(
-						'auth_nonce'        => true,
-						'nonce_create_task' => true,
-						'nonce_delete_task' => true,
-						'nonce_pin_task'    => true,
-						'nonce_unpin_task'  => true,
-						'nonce_update_task' => true,
-						'v1'                => true,
-					)
-				),
+				'api'      => static::get_frontend_api_data_for_context( 'task_data' ),
 				'tasks'    => $display_tasks,
 				'users'    => Asana_Interface::get_connected_workspace_users(),
 				'projects' => Asana_Interface::get_workspace_project_options(),
@@ -484,8 +442,6 @@ class Admin_Pages {
 	/**
 	 * Gets the data for frontend script use relating to API requests.
 	 *
-	 * @see $frontend_task_data
-	 *
 	 * @since 4.0.0
 	 *
 	 * @return array The data. Remember to JSON encode for use
@@ -493,40 +449,131 @@ class Admin_Pages {
 	 */
 	public static function get_frontend_api_data() : array {
 
-		if ( ! empty( static::$frontend_api_data ) ) {
-			return static::$frontend_api_data;
+		if ( empty( static::$frontend_api_data ) ) {
+
+			$api_data = array(
+				// Generic.
+				'auth_nonce' => wp_create_nonce( 'wp_rest' ),
+				'nonce'      => wp_create_nonce( 'ptc_completionist' ),
+				// REST API.
+				'url'        => rest_url(),
+				'v1'         => rest_url( REST_API_NAMESPACE_V1 ),
+			);
+
+			$nonce_actions = array(
+				// Automations.
+				'create_automation',
+				'create_task',
+				'delete_automation',
+				'delete_task',
+				'get_automation',
+				'get_post',
+				'get_tags',
+				'pin_task',
+				'unpin_task',
+				'update_automation',
+				'update_task',
+				// Settings.
+				'connect_asana',
+				'disconnect_asana',
+				'update_frontend_auth_user',
+				'update_asana_cache_ttl',
+				'clear_asana_cache',
+				'update_asana_workspace_tag',
+			);
+
+			/**
+			 * Filters the API actions for which nonces will
+			 * be created for frontend scripts to use.
+			 *
+			 * @since [unreleased]
+			 *
+			 * @param string[] $nonce_actions An array of frontend action names.
+			 */
+			$nonce_actions = apply_filters( 'ptc_completionist_frontend_api_data_nonce_actions', $nonce_actions );
+
+			foreach ( $nonce_actions as $action ) {
+				$api_data[ "nonce_{$action}" ] = wp_create_nonce( "ptc_completionist_{$action}" );
+			}
+
+			static::$frontend_api_data = $api_data;
 		}
 
-		$api_data = array(
-			// Generic.
-			'auth_nonce'                       => wp_create_nonce( 'wp_rest' ),
-			'nonce'                            => wp_create_nonce( 'ptc_completionist' ),
-			// Automations.
-			'nonce_create_automation'          => wp_create_nonce( 'ptc_completionist_create_automation' ),
-			'nonce_create_task'                => wp_create_nonce( 'ptc_completionist_create_task' ),
-			'nonce_delete_automation'          => wp_create_nonce( 'ptc_completionist_delete_automation' ),
-			'nonce_delete_task'                => wp_create_nonce( 'ptc_completionist_delete_task' ),
-			'nonce_get_automation'             => wp_create_nonce( 'ptc_completionist_get_automation' ),
-			'nonce_get_post'                   => wp_create_nonce( 'ptc_completionist_get_post' ),
-			'nonce_get_tags'                   => wp_create_nonce( 'ptc_completionist_get_tags' ),
-			'nonce_pin_task'                   => wp_create_nonce( 'ptc_completionist_pin_task' ),
-			'nonce_unpin_task'                 => wp_create_nonce( 'ptc_completionist_unpin_task' ),
-			'nonce_update_automation'          => wp_create_nonce( 'ptc_completionist_update_automation' ),
-			'nonce_update_task'                => wp_create_nonce( 'ptc_completionist_update_task' ),
-			// Settings - nonce format MUST be "nonce_{action}" => "ptc_completionist_{action}".
-			'nonce_connect_asana'              => wp_create_nonce( 'ptc_completionist_connect_asana' ),
-			'nonce_disconnect_asana'           => wp_create_nonce( 'ptc_completionist_disconnect_asana' ),
-			'nonce_update_frontend_auth_user'  => wp_create_nonce( 'ptc_completionist_update_frontend_auth_user' ),
-			'nonce_update_asana_cache_ttl'     => wp_create_nonce( 'ptc_completionist_update_asana_cache_ttl' ),
-			'nonce_clear_asana_cache'          => wp_create_nonce( 'ptc_completionist_clear_asana_cache' ),
-			'nonce_update_asana_workspace_tag' => wp_create_nonce( 'ptc_completionist_update_asana_workspace_tag' ),
-			// REST API.
-			'url'                              => rest_url(),
-			'v1'                               => rest_url( REST_API_NAMESPACE_V1 ),
+		return static::$frontend_api_data;
+	}
+
+	/**
+	 * Gets the frontend API data for the specified context.
+	 *
+	 * @see get_frontend_api_data()
+	 *
+	 * @since [unreleased]
+	 *
+	 * @param string $context The context to select.
+	 * @return array The selected frontend API data.
+	 */
+	public static function get_frontend_api_data_for_context( string $context ) : array {
+
+		$context_to_keys = array(
+			'task_data'           => array(
+				'auth_nonce',
+				'nonce_create_task',
+				'nonce_delete_task',
+				'nonce_pin_task',
+				'nonce_unpin_task',
+				'nonce_update_task',
+				'v1',
+			),
+			'settings_deprecated' => array(
+				'auth_nonce',
+				'nonce_get_tags',
+				'v1',
+			),
+			'settings'            => array(
+				'nonce_connect_asana',
+				'nonce_disconnect_asana',
+				'nonce_update_frontend_auth_user',
+				'nonce_update_asana_cache_ttl',
+				'nonce_clear_asana_cache',
+				'nonce_update_asana_workspace_tag',
+				'v1',
+			),
+			'automations'         => array(
+				'auth_nonce',
+				'nonce_create_automation',
+				'nonce_delete_automation',
+				'nonce_get_automation',
+				'nonce_get_post',
+				'nonce_update_automation',
+				'v1',
+			),
 		);
 
-		static::$frontend_api_data = $api_data;
-		return $api_data;
+		if ( empty( $context_to_keys[ $context ] ) ) {
+			wp_trigger_error( __FUNCTION__, 'Invalid frontend API data context: ' . esc_html( $context ), \E_USER_WARNING );
+			return array();
+		}
+
+		/**
+		 * Filters the frontend API data keys which will be selected
+		 * and output with their values for the specified context.
+		 *
+		 * @see get_frontend_api_data()
+		 *
+		 * @since [unreleased]
+		 *
+		 * @param string[] $keys The keys to select.
+		 */
+		$keys = apply_filters( "ptc_completionist_frontend_api_data_selected_keys_for_{$context}", $context_to_keys[ $context ] );
+		if ( empty( $keys ) || ! is_array( $keys ) ) {
+			wp_trigger_error( __FUNCTION__, 'Missing frontend API data for context: ' . esc_html( $context ), \E_USER_WARNING );
+			return array();
+		}
+
+		return array_intersect_key(
+			static::get_frontend_api_data(),
+			array_flip( $keys )
+		);
 	}
 
 	/**

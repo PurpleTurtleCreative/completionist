@@ -1,3 +1,13 @@
+### [unreleased]
+
+#### Added
+
+- New PHP filter hook `ptc_completionist_frontend_api_data_nonce_actions` to register frontend actions for which to generate nonces.
+- New PHP filter hook `ptc_completionist_frontend_api_data_selected_keys_for_{$context}` for which frontend data keys should be selected for output per context.
+- New PHP filter hook `ptc_completionist_settings_for_user` to alter the plugin settings data returned for a WordPress user.
+- New PHP filter hook `ptc_completionist_update_settings_{$request['action']}_response` to handle the response of an unsupported action in the `PUT /v1/settings` endpoint.
+- New JavaScript filter hook `AdminSettingsScreen_menu_items` to add custom screens to the plugin settings admin page.
+
 ### 4.5.0 - 2024-12-01
 
 #### Added
