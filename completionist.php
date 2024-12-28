@@ -10,7 +10,7 @@
  * Plugin Name:       Completionist – Asana for WordPress
  * Plugin URI:        https://purpleturtlecreative.com/completionist/
  * Description:       Manage, pin, automate, and display Asana tasks in relevant areas of your WordPress admin and website frontend.
- * Version:           4.5.0
+ * Version:           4.5.1-beta
  * Requires PHP:      8.1
  * Requires at least: 5.0.0
  * Tested up to:      6.7.1
