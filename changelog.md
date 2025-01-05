@@ -8,6 +8,10 @@
 - New PHP filter hook `ptc_completionist_update_settings_{$request['action']}_response` to handle the response of an unsupported action in the `PUT /v1/settings` endpoint.
 - New JavaScript filter hook `AdminSettingsScreen_menu_items` to add custom screens to the plugin settings admin page.
 
+#### Fixed
+
+- Error message "[object Object]" instead of a human-readable message for some errors that can occur when loading or updating plugin settings.
+
 ### 4.5.0 - 2024-12-01
 
 #### Added
