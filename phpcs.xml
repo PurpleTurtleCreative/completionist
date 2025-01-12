@@ -68,7 +68,7 @@
 	For more information, also see:
 	https://github.com/PHPCompatibility/PHPCompatibility
 	-->
-	<config name="testVersion" value="7.2-"/>
+	<config name="testVersion" value="8.1-"/>
 	<rule ref="PHPCompatibilityWP">
 		<include-pattern>*\.php</include-pattern>
 	</rule>
