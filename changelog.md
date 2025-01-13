@@ -11,6 +11,11 @@
 #### Fixed
 
 - Error message "[object Object]" instead of a human-readable message for some errors that can occur when loading or updating plugin settings.
+- Fatal error when using the WordPress user "Roles" value in Automation Conditions for user events. It is now treated as a CSV string value instead of an array type.
+
+#### Security
+
+- Some merge fields in Automations are no longer parsed: `{user.user_pass}`, `{user.user_activation_key}`, `{user.session_tokens}`, `{user._ptc_asana_pat}`
 
 ### 4.5.0 - 2024-12-01
 

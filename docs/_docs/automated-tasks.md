@@ -77,6 +77,9 @@ If the Automation's Trigger Event is in the *Post Events* group, then the merge 
 
 The `property` can be any WordPress user or post (depending on which applies) record column name or meta key.
 
+Some merge fields will not be parsed for security reasons: `{user.user_pass}`, `{user.user_activation_key}`, `{user.session_tokens}`, `{user._ptc_asana_pat}`
+{: .banner .banner-warning}
+
 Here are two use-case examples to demonstrate:
 
 1. An Automation is triggered by the *User is Created* event.
