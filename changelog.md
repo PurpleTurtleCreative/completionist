@@ -2,6 +2,7 @@
 
 #### Added
 
+- New PHP filter hook `ptc_completionist_task_data` to alter the returned Asana task data from REST API requests for a single task.
 - New PHP filter hook `ptc_completionist_frontend_api_data_nonce_actions` to register frontend actions for which to generate nonces.
 - New PHP filter hook `ptc_completionist_frontend_api_data_selected_keys_for_{$context}` for which frontend data keys should be selected for output per context.
 - New PHP filter hook `ptc_completionist_settings_for_user` to alter the plugin settings data returned for a WordPress user.

@@ -228,8 +228,8 @@ class Tasks {
 
 			// Perform request.
 
-			Asana_Interface::get_client( (int) $args['auth_user'] );
-			$task = Asana_Interface::maybe_get_task_data(
+			$asana = Asana_Interface::get_client( (int) $args['auth_user'] );
+			$task  = Asana_Interface::maybe_get_task_data(
 				$request['task_gid'],
 				$args['opt_fields']
 			);
@@ -325,6 +325,18 @@ class Tasks {
 				// Remove extra field only used for sorting, not for display.
 				Util::deep_unset_prop( $task, $args['sort_subtasks_by'] );
 			}
+
+			/**
+			 * Filters Asana task data.
+			 *
+			 * @since [unreleased]
+			 *
+			 * @param \stdClass     $task The Asana task data.
+			 * @param array         $args The request arguments.
+			 * @param \Asana\Client $asana The authenticated Asana
+			 * client instance.
+			 */
+			$task = apply_filters( 'ptc_completionist_task_data', $task, $args, $asana );
 
 			// Remove all GIDs if desired.
 			if ( ! $args['show_gids'] ) {
