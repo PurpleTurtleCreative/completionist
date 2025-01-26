@@ -27,7 +27,7 @@
 #### Security
 
 - Some merge fields in Automations are no longer parsed: `{user.user_pass}`, `{user.user_activation_key}`, `{user.session_tokens}`, `{user._ptc_asana_pat}`
-- Removed `action_link` from frontend response when displaying the `[ptc_asana_task]` shortcode.
+- Removed unused `action_link` data from frontend response when displaying the `[ptc_asana_task]` shortcode.
 
 ### 4.5.0 - 2024-12-01
 
