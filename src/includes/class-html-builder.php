@@ -162,12 +162,19 @@ class HTML_Builder {
 	/**
 	 * Gets an Asana task URL.
 	 *
+	 * @deprecated [unreleased] Use the Asana task object's `permalink_url` field instead.
 	 * @since 1.0.0
 	 *
 	 * @param string $task_gid The GID of the task to link.
 	 * @return string The URL to the task in Asana. Default ''.
 	 */
 	public static function get_asana_task_url( string $task_gid ) : string {
+
+		_deprecated_function(
+			__FUNCTION__,
+			'[unreleased]',
+			'the Asana task object\'s `permalink_url` field'
+		);
 
 		$task_gid = Options::sanitize( 'gid', $task_gid );
 
@@ -181,12 +188,12 @@ class HTML_Builder {
 	/**
 	 * Gets the task action link information.
 	 *
-	 * @since [unreleased] Deprecated string $task_gid value. An Asana $task \stdClass
-	 * object is now preferred with `gid` and `permalink_url` field values.
+	 * @since [unreleased] The string $task_gid is deprecated. Use an Asana task \stdClass object instead,
+	 * which should contain `gid` and `permalink_url` fields.
 	 * @since 3.1.0
 	 *
-	 * @param string|\stdClass $task The Asana task GID string or task object with
-	 * `gid` and `permalink_url` field values.
+	 * @param string|\stdClass $task The Asana task GID string (deprecated) or an Asana task object
+	 * with `gid` and `permalink_url` fields.
 	 */
 	public static function get_task_action_link( string|\stdClass $task ) : array {
 

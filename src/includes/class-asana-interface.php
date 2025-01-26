@@ -1402,8 +1402,7 @@ class Asana_Interface {
 				}
 			}
 
-			// @TODO
-			$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
+			$task->action_link = HTML_Builder::get_task_action_link( $task );
 
 			return $task;
 		} catch ( \Exception $e ) {
@@ -1533,8 +1532,7 @@ class Asana_Interface {
 		$site_tasks = $asana->tasks->findByTag( $site_tag_gid, $params, $options );
 		$all_tasks = array();
 		foreach ( $site_tasks as $task ) {
-			// @TODO
-			$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
+			$task->action_link = HTML_Builder::get_task_action_link( $task );
 			$all_tasks[ $task->gid ] = $task;
 		}
 
@@ -1916,8 +1914,7 @@ class Asana_Interface {
 			throw new \Exception( 'Unrecognized API response to create task.', 409 );
 		}
 
-		// @TODO
-		$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
+		$task->action_link = HTML_Builder::get_task_action_link( $task );
 
 		// Pin the task if desired.
 		if ( isset( $params['post_id'] ) ) {
@@ -2188,8 +2185,7 @@ class Asana_Interface {
 			throw new \Exception( 'Unrecognized API response to update task.', 409 );
 		}
 
-		// @TODO
-		$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
+		$task->action_link = HTML_Builder::get_task_action_link( $task );
 
 		return $task;
 	}

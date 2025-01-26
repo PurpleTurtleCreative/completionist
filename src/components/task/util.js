@@ -2,10 +2,10 @@
  * Utility functions unrelated to application state.
  */
 
-import { isImage, isVideo, isFileType } from '../attachment/util.jsx';
+import { isImage } from '../attachment/util.jsx';
 
 export function getTaskUrl(taskGID) {
-	// @TODO - Prefer task permalink_url ..?
+	window.console.warn( 'getTaskUrl() is deprecated since v[unreleased]. Please use the task object\'s `permalink_url` field instead.' );
 	return `https://app.asana.com/0/0/${taskGID}/f`;
 }
 

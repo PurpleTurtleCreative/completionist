@@ -9,9 +9,14 @@
 - New PHP filter hook `ptc_completionist_update_settings_{$request['action']}_response` to handle the response of an unsupported action in the `PUT /v1/settings` endpoint.
 - New JavaScript filter hook `AdminSettingsScreen_menu_items` to add custom screens to the plugin settings admin page.
 
+#### Changed
+
+- Asana "view task" links are no longer guaranteed to open in focus mode due to now using Asana's provided permalink URLs for tasks.
+- The Dashboard Widget, Pinned Tasks metabox, and Automations admin script and style assets now use their respective build versions rather than the Completionist plugin's version.
+
 #### Deprecated
 
-- Passing a string `$task_gid` to `HTML_Builder::get_task_action_link()` which results in a v0 Asana task link to be returned. A `$task` object with the `permalink_url` field fetched from the Asana API is now preferred to ensure task URLs automatically follow Asana's current URL schema.
+- Various functions and arguments which result in a v0 Asana task link to be used. The `permalink_url` field fetched from the Asana API is now preferred to ensure task URLs automatically follow Asana's current URL schema.
 
 #### Fixed
 
