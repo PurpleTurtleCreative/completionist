@@ -243,6 +243,10 @@ class Tasks {
 				);
 			}
 
+			if ( 'shortcode_ptc_asana_task' === $args['_cache_key'] ) {
+				unset( $task->action_link ); // The shortcode does not need this information for display.
+			}
+
 			// Localize task.
 			Asana_Interface::localize_task( $task, false );
 

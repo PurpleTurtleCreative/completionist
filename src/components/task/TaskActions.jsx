@@ -8,7 +8,7 @@ import { useSelect } from '@wordpress/data';
 
 import { useCallback, useContext } from '@wordpress/element';
 
-export default function TaskActions({taskGID, processingStatus}) {
+export default function TaskActions({taskGID, taskPermalinkUrl, processingStatus}) {
 	const { deleteTask, unpinTask, removeTask, setTaskProcessingStatus } = useContext(TaskContext);
 	const currentPostId = useSelect(selectEditorCurrentPostId);
 
@@ -40,7 +40,7 @@ export default function TaskActions({taskGID, processingStatus}) {
 		});
 	}, [processingStatus, setTaskProcessingStatus, removeTask]);
 
-	const task_url = getTaskUrl(taskGID);
+	const task_url = taskPermalinkUrl || getTaskUrl(taskGID);
 
 	const unpinIcon = ('unpinning' === processingStatus) ? 'fa-sync-alt fa-spin' : 'fa-thumbtack';
 	const deleteIcon = ('deleting' === processingStatus) ? 'fa-sync-alt fa-spin' : 'fa-minus';

@@ -88,7 +88,7 @@ export default function TaskRow({task}) {
 
 			<div className="actions">
 				<a className="cta-button" href={task.action_link.href} target={task.action_link.target}>{task.action_link.label} <i className="fas fa-long-arrow-alt-right"></i></a>
-				<TaskActions taskGID={task.gid} processingStatus={task.processingStatus} />
+				<TaskActions taskGID={task.gid} taskPermalinkUrl={task?.permalink_url} processingStatus={task.processingStatus} />
 			</div>
 
 		</div>

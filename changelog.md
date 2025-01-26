@@ -2,12 +2,22 @@
 
 #### Added
 
+- Forward compatibility support for Asana's v1 URL schema, which is currently expected to begin gradual rollout on February 17, 2025.
 - New PHP filter hook `ptc_completionist_task_data` to alter the returned Asana task data from REST API requests for a single task.
 - New PHP filter hook `ptc_completionist_frontend_api_data_nonce_actions` to register frontend actions for which to generate nonces.
 - New PHP filter hook `ptc_completionist_frontend_api_data_selected_keys_for_{$context}` for which frontend data keys should be selected for output per context.
 - New PHP filter hook `ptc_completionist_settings_for_user` to alter the plugin settings data returned for a WordPress user.
 - New PHP filter hook `ptc_completionist_update_settings_{$request['action']}_response` to handle the response of an unsupported action in the `PUT /v1/settings` endpoint.
 - New JavaScript filter hook `AdminSettingsScreen_menu_items` to add custom screens to the plugin settings admin page.
+
+#### Changed
+
+- Asana "view task" links are no longer guaranteed to open in focus mode due to now using Asana's provided permalink URLs for tasks.
+- The Dashboard Widget, Pinned Tasks metabox, and Automations admin script and style assets now use their respective build versions rather than the Completionist plugin's version.
+
+#### Deprecated
+
+- Various functions and arguments which result in a v0 Asana task link to be used. The `permalink_url` field fetched from the Asana API is now preferred to ensure task URLs automatically follow Asana's current URL schema.
 
 #### Fixed
 
@@ -17,6 +27,7 @@
 #### Security
 
 - Some merge fields in Automations are no longer parsed: `{user.user_pass}`, `{user.user_activation_key}`, `{user.session_tokens}`, `{user._ptc_asana_pat}`
+- Removed `action_link` from frontend response when displaying the `[ptc_asana_task]` shortcode.
 
 ### 4.5.0 - 2024-12-01
 

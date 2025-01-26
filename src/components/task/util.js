@@ -2,16 +2,28 @@
  * Utility functions unrelated to application state.
  */
 
-import { isImage, isVideo, isFileType } from '../attachment/util.jsx';
+import { isImage } from '../attachment/util.jsx';
 
 export function getTaskUrl(taskGID) {
+	window.console.warn( 'getTaskUrl() is deprecated since v[unreleased]. Please use the task object\'s `permalink_url` field instead.' );
 	return `https://app.asana.com/0/0/${taskGID}/f`;
 }
 
-export function getTaskGIDFromTaskUrl(url) {
+export function getTaskGIDFromTaskUrl(taskLink) {
 
-	const matches = url.trim().match(/\/(\d+)\/.$/);
-	if ( matches && matches[1] ) {
+	let matches;
+
+	if (
+		( matches = taskLink.match(/\/task\/([0-9]+)/) ) &&
+		matches[1]
+	) {
+		// Task link in URL schema v1 (eg. https://app.asana.com/1/<workspace_id>/project/<project_id>/task/<task_id>)
+		return matches[1];
+	} else if (
+		( matches = taskLink.match(/\/([0-9]+)\/.$/) ) &&
+		matches[1]
+	) {
+		// Task link in URL schema v0 (eg. https://app.asana.com/0/<project_id>/<task_id>/f)
 		return matches[1];
 	}
 
