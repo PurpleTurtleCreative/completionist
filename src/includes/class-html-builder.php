@@ -162,12 +162,19 @@ class HTML_Builder {
 	/**
 	 * Gets an Asana task URL.
 	 *
+	 * @deprecated 4.6.0 Use the Asana task object's `permalink_url` field instead.
 	 * @since 1.0.0
 	 *
 	 * @param string $task_gid The GID of the task to link.
 	 * @return string The URL to the task in Asana. Default ''.
 	 */
 	public static function get_asana_task_url( string $task_gid ) : string {
+
+		_deprecated_function(
+			__FUNCTION__,
+			'4.6.0',
+			'the Asana task object\'s `permalink_url` field'
+		);
 
 		$task_gid = Options::sanitize( 'gid', $task_gid );
 
@@ -181,11 +188,14 @@ class HTML_Builder {
 	/**
 	 * Gets the task action link information.
 	 *
+	 * @since 4.6.0 The string $task_gid is deprecated. Use an Asana task \stdClass object instead,
+	 * which should contain `gid` and `permalink_url` fields.
 	 * @since 3.1.0
 	 *
-	 * @param string $task_gid The Asana task GID.
+	 * @param string|\stdClass $task The Asana task GID string (deprecated) or an Asana task object
+	 * with `gid` and `permalink_url` fields.
 	 */
-	public static function get_task_action_link( string $task_gid ) : array {
+	public static function get_task_action_link( string|\stdClass $task ) : array {
 
 		$task_action_link = array(
 			'href'    => '',
@@ -193,6 +203,27 @@ class HTML_Builder {
 			'target'  => '_self',
 			'post_id' => 0,
 		);
+
+		if ( is_string( $task ) ) {
+			_deprecated_argument(
+				__FUNCTION__,
+				'4.6.0',
+				'Passing a task GID string is deprecated. Please pass an Asana task object with the permalink_url field instead.'
+			);
+			$task_gid = $task;
+		} elseif ( ! empty( $task->gid ) ) {
+			$task_gid = $task->gid;
+			if ( empty( $task->permalink_url ) ) {
+				_deprecated_argument(
+					__FUNCTION__,
+					'4.6.0',
+					'Asana v0 task URLs are deprecated. Please pass an Asana task object with the permalink_url field.'
+				);
+			}
+		} else {
+			wp_trigger_error( __FUNCTION__, 'Could not identify task GID.' );
+			return $task_action_link;
+		}
 
 		// Get first pinned post, if applicable.
 		$post_id = Options::get_task_pin_post_id( $task_gid );
@@ -220,7 +251,7 @@ class HTML_Builder {
 		// Use Asana task link if no pinned post.
 		if ( empty( $task_action_link['href'] ) || empty( $task_action_link['label'] ) ) {
 			$task_action_link = array(
-				'href'   => self::get_asana_task_url( $task_gid ),
+				'href'   => ( empty( $task->permalink_url ) ? self::get_asana_task_url( $task_gid ) : $task->permalink_url ),
 				'label'  => 'View in Asana',
 				'target' => '_asana',
 			);

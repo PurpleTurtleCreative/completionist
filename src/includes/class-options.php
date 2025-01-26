@@ -94,6 +94,17 @@ class Options {
 	public const CACHE_TTL_SECONDS = '_ptc_asana_cache_ttl_seconds';
 
 	/**
+	 * The option key name for the randomly generated salt value.
+	 *
+	 * This key's value should be of type string.
+	 *
+	 * @since 4.6.0
+	 *
+	 * @var string STABLE_SALT
+	 */
+	public const STABLE_SALT = '_ptc_completionist_stable_salt';
+
+	/**
 	 * Gets a sanitized value for an option of this class returned in the key's
 	 * format as documented on this class's constants.
 	 *
@@ -214,6 +225,21 @@ class Options {
 					}
 				}
 				return (int) $frontend_auth_user_id;
+
+			case self::STABLE_SALT:
+				$stable_salt = get_option( $key, false );
+				if ( empty( $stable_salt ) ) {
+					// Generate and save the salt value if it doesn't
+					// already exist. There should ALWAYS be a value.
+					$new_stable_salt = bin2hex( random_bytes( 256 ) );
+					update_option( $key, $new_stable_salt, false );
+					$stable_salt = get_option( $key, false );
+					if ( empty( $stable_salt ) ) {
+						wp_trigger_error( __FUNCTION__, 'Failed to save stable salt value.', \E_USER_WARNING );
+						return '';
+					}
+				}
+				return $stable_salt;
 		}
 
 		trigger_error(
@@ -294,6 +320,10 @@ class Options {
 					throw new \Exception( 'ERROR: Refused to save different value for option: ' . esc_html( $key ) );
 				}
 				return self::maybe_update_option( $key, $sanitized_user_id, true );
+
+			case self::STABLE_SALT:
+				wp_trigger_error( __FUNCTION__, 'Refused to save stable salt value. It is automatically generated and saved as-needed whenever retrieved with \PTC_Completionist\Options::get().', \E_USER_NOTICE );
+				return false;
 		}
 
 		trigger_error(
@@ -315,7 +345,7 @@ class Options {
 	 * loaded when WordPress starts up. Default false.
 	 * @return bool If the option value was updated.
 	 */
-	private static function maybe_update_option( string $key, string $value, bool $autoload = false ) : bool {
+	public static function maybe_update_option( string $key, string $value, bool $autoload = false ) : bool {
 
 		if ( get_option( $key, '' ) === $value ) {
 			return false;
@@ -569,6 +599,7 @@ class Options {
 			case self::ASANA_TAG_GID:
 			case self::FRONTEND_AUTH_USER_ID:
 			case self::CACHE_TTL_SECONDS:
+			case self::STABLE_SALT:
 				return delete_option( $key );
 		}
 
@@ -677,6 +708,10 @@ class Options {
 
 			case 'html':
 				return wp_kses_post( $value );
+
+			case self::STABLE_SALT:
+				wp_trigger_error( __FUNCTION__, 'Refused to sanitize stable salt value. It should not be saved or altered. Simply retrieve the value with \PTC_Completionist\Options::get().', \E_USER_NOTICE );
+				return $value;
 		}
 
 		trigger_error(
@@ -689,6 +724,23 @@ class Options {
 
 	/**
 	 * Encrypts or decrypts a string.
+	 *
+	 * Note that this uses the defined AUTH_SALT and NONCE_SALT
+	 * values which may differ across environments of the same
+	 * website. Any values encrypted on one environment and
+	 * then synced to a different environment will be invalid in
+	 * such situations.
+	 *
+	 * This makes most sense for values like Asana PATs which
+	 * automatically authenticate requests. If synced to a different
+	 * environment, then all authentication should fail until the
+	 * user explicitly opts-in again by storing their Asana PAT in
+	 * the new environment. This helps to avoid unexpected consequences
+	 * of running both production and staging environments connected
+	 * to the same Asana workspace and retains security.
+	 *
+	 * !! THIS SHOULD NOT BE USED FOR DATA WHICH MUST BE STABLE ACROSS
+	 * ALL ENVIRONMENTS/INSTANCES OF THE SAME WordPress APPLICATION !!
 	 *
 	 * @since 1.0.0
 	 *
@@ -721,6 +773,64 @@ class Options {
 
 		trigger_error( 'Invalid crypt mode. Accepted values are "e" and "d".', \E_USER_WARNING );
 		return '';
+	}
+
+	/**
+	 * Encrypts or decrypts a string without using dependencies
+	 * or environment-specific values.
+	 *
+	 * @since 4.6.0
+	 *
+	 * @param string $value The value to encrypt or decrypt.
+	 * @param string $mode The action to take on the provided value.
+	 * 'e' to encrypt or 'd' to decrypt.
+	 *
+	 * @return string The encrypted or decrypted result. Default '' if failure.
+	 */
+	public static function stable_crypt( string $value, string $mode ) : string {
+
+		if ( empty( $value ) ) {
+			return '';
+		}
+
+		if ( 'd' === $mode ) {
+			$value = base64_decode( $value ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+			if ( false === $value ) {
+				wp_trigger_error( __FUNCTION__, 'Failed to decode value for decryption.', \E_USER_WARNING );
+				return '';
+			}
+		}
+
+		if ( ! is_string( $value ) ) {
+			wp_trigger_error( __FUNCTION__, 'Refused to operate on non-string value.', \E_USER_WARNING );
+			return '';
+		}
+
+		$salt        = self::get( self::STABLE_SALT );
+		$salt_length = strlen( $salt );
+		if ( 0 === $salt_length ) {
+			wp_trigger_error( __FUNCTION__, 'Refused to operate with invalid salt value.', \E_USER_WARNING );
+			return '';
+		}
+
+		$value_length = strlen( $value );
+
+		// Loop through the value and XOR each character with the salt.
+		$result = '';
+		for ( $i = 0; $i < $value_length; $i++ ) {
+			$value_char = ord( $value[ $i ] );
+			// Get the corresponding salt char, looping over if necessary.
+			$salt_char  = $salt[ $i % $salt_length ];
+			$salt_value = ord( $salt_char );
+			// XOR operation between the value byte and the salt byte.
+			$result .= chr( $value_char ^ $salt_value );
+		}
+
+		if ( 'e' === $mode ) {
+			$result = base64_encode( $result ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+		}
+
+		return $result;
 	}
 
 	/**
@@ -889,8 +999,9 @@ class Options {
 	 * @since 4.5.0
 	 *
 	 * @param int $user_id The WordPress user's ID.
+	 * @return array An associative array of the user's settings.
 	 */
-	public static function get_settings_for_user( $user_id ) {
+	public static function get_settings_for_user( int $user_id ) : array {
 
 		// Basic settings.
 		$site_workspace_gid = self::get( self::ASANA_WORKSPACE_GID );
@@ -964,7 +1075,7 @@ class Options {
 			);
 		}
 
-		return array(
+		$settings_for_user = array(
 			'user'      => array(
 				'id'                          => $user_id,
 				'capabilities'                => array(
@@ -987,5 +1098,15 @@ class Options {
 				'connected_workspace_users' => $connected_workspace_users,
 			),
 		);
+
+		/**
+		 * Filters retrieved plugin settings data for the user.
+		 *
+		 * @since 4.6.0
+		 *
+		 * @param array $settings_for_user The associative array of settings data.
+		 * @param int   $user_id The WordPress user's ID.
+		 */
+		return apply_filters( 'ptc_completionist_settings_for_user', $settings_for_user, $user_id );
 	}
 }//end class

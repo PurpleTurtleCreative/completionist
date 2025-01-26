@@ -16,7 +16,7 @@ export function SettingsContextProvider({children}) {
 		}).then((data) => {
 
 			if ( 'success' !== data?.status || ! data?.data ) {
-				throw new Error(data);
+				throw new Error( data?.message || 'Failed to load settings.' );
 			}
 
 			setSettings(data.data);
@@ -26,18 +26,13 @@ export function SettingsContextProvider({children}) {
 				content: ( data?.message || 'Settings loaded successfully!' ),
 			});
 		}).catch((error) => {
-			window.console.error('Error', error);
-
-			let errorMessage = ( error?.message || error );
-			if ( 'string' !== typeof errorMessage ) {
-				errorMessage = 'Failed to load settings.';
-			}
+			window.console.error(error);
 
 			setStatus('error');
-			setSettings(errorMessage);
+			setSettings(error.message);
 			addNotice({
 				id: 'LOAD_SETTINGS',
-				content: errorMessage,
+				content: error.message,
 				explicitDismiss: true,
 				actions: [
 					{
@@ -62,7 +57,7 @@ export function SettingsContextProvider({children}) {
 		}).then((data) => {
 
 			if ( 'success' !== data?.status ) {
-				throw new Error(data);
+				throw new Error( data?.message || 'Failed to update settings.' );
 			}
 
 			addNotice({
@@ -71,18 +66,13 @@ export function SettingsContextProvider({children}) {
 			});
 			loadSettings(); // Reload settings with the latest changes.
 		}).catch((error) => {
-			window.console.error('Error', error);
-
-			let errorMessage = ( error?.message || error );
-			if ( 'string' !== typeof errorMessage ) {
-				errorMessage = 'Failed to update settings.';
-			}
+			window.console.error(error);
 
 			setStatus('error');
-			setSettings(errorMessage);
+			setSettings(error.message);
 			addNotice({
 				id: 'UPDATE_SETTINGS',
-				content: errorMessage,
+				content: error.message,
 				explicitDismiss: true,
 				actions: [
 					{

@@ -29,7 +29,7 @@ class Fields {
 		'user.user_login'   => 'Username',
 		'user.user_email'   => 'Email',
 		'user.display_name' => 'Display Name',
-		'user.roles'        => 'Roles',
+		'user.roles'        => 'Roles (as CSV)',
 		'user.first_name'   => 'First Name',
 		'user.last_name'    => 'Last Name',
 	);
@@ -90,6 +90,10 @@ class Fields {
 		if ( $property_value == $condition->property ) {
 			error_log( 'Failed to evaluate automation condition with property error.' );
 			return false;
+		}
+
+		if ( is_array( $property_value ) ) {
+			$property_value = implode( ',', $property_value );
 		}
 
 		switch ( $condition->comparison_method ) {
@@ -193,21 +197,36 @@ class Fields {
 				throw new \Exception( 'Invalid field accessor format. Should follow form: object_key.property_key' );
 			}
 
+			if (
+				in_array(
+					$field_accessor,
+					array(
+						'user.user_pass',
+						'user.user_activation_key',
+						'user.session_tokens',
+						'user._ptc_asana_pat',
+					),
+					true
+				)
+			) {
+				throw new \Exception( 'This field is not permitted for security reasons.' );
+			}
+
 			$field = explode( '.', $field_accessor );
 
 			if ( ! isset( $translation_objects[ $field[0] ] ) ) {
-				throw new \Exception( "Missing object param key, {$field[0]}" );
+				throw new \Exception( "Missing translation object for key {$field[0]}" );
 			}
 
 			$object = $translation_objects[ $field[0] ];
 
-			if ( 'user' == $field[0] ) {
+			if ( 'user' === $field[0] ) {
 				if ( ! is_a( $object, '\WP_User' ) ) {
 					throw new \Exception( 'Provided object was not \WP_User instance' );
 				}
-			} elseif ( 'post' == $field[0] ) {
+			} elseif ( 'post' === $field[0] ) {
 				if ( ! is_a( $object, '\WP_Post' ) ) {
-					throw new \Exception( 'Provided object was not \WP_User instance' );
+					throw new \Exception( 'Provided object was not \WP_Post instance' );
 				}
 				$actual_post_id = wp_is_post_revision( $object );
 				if ( $actual_post_id ) {
@@ -219,7 +238,6 @@ class Fields {
 
 			$value = $object->{$field[1]};
 			return ( null === $value ) ? $field_accessor : $value;
-
 		} catch ( \Exception $e ) {
 			error_log( "[PTC Completionist] Failed to process automation template field: {$field_accessor} <-- " . $e->getMessage() );
 			return $field_accessor;

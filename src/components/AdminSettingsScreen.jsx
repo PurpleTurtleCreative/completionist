@@ -26,57 +26,79 @@ export default function AdminSettingsScreen() {
 		window.history.replaceState({}, '', url.toString());
 	}, [currentScreen]);
 
-	const menuItems = [
-		{ value: 'account', label: 'Asana Account' },
-		{ value: 'workspace', label: 'Workspace' },
-		{ value: 'frontend', label: 'Frontend' },
-	];
+	const getAccountScreen = () => {
+		return <AccountSettings />;
+	};
+
+	const getWorkspaceScreen = () => {
+		return (
+			hasConnectedAsana() ?
+			(
+				( isWorkspaceMember() || userCan('manage_options') ) ?
+				<WorkspaceSettings /> :
+				<Card style={{ textAlign: 'center', padding: '64px' }}>
+					<CardBody>
+						<MissingPermissionsBadge label='Missing permissions' />
+						<h2 style={{ margin: '1em', fontSize: '20px' }}>You are not a member of this site's Asana workspace</h2>
+						<p style={{ margin: '0 auto 2em', maxWidth: '40em' }}>To view workspace details, you must be a member of the designated Asana workspace or have administrative capabilities to manage options.</p>
+					</CardBody>
+				</Card>
+			) :
+			<Card style={{ textAlign: 'center', padding: '64px' }}>
+				<CardBody>
+					<MissingPermissionsBadge label='Requires Asana account' />
+					<h2 style={{ margin: '1em', fontSize: '20px' }}>Track relevant Asana tasks</h2>
+					<p style={{ margin: '0 auto 2em', maxWidth: '40em' }}>Completionist uses the Asana workspace and associated site tag to determine relevant tasks to display in wp-admin on this site.</p>
+					<Button
+						__next40pxDefaultSize
+						variant='primary'
+						text='Connect Asana'
+						onClick={() => { setCurrentScreen('account'); }}
+						style={{ paddingLeft: '2em', paddingRight: '2em' }}
+					/>
+				</CardBody>
+			</Card>
+		);
+	};
+
+	const getFrontendScreen = () => {
+		return <FrontendSettings />;
+	};
+
+	/**
+	 * Filters menu items of the plugin's settings screen.
+	 *
+	 * @since 4.6.0
+	 *
+	 * @param {Array<{value: string, label: string, render: Function}>} menuItems
+	 * The list of menu items to render.
+	 *   - `value`: The unique identifier for the menu item.
+	 *   - `label`: The label displayed for the menu item.
+	 *   - `render`: The function that returns the ReactNode content for the menu item.
+	 * @param {React.Context} context The SettingsContext instance for `useContext()`.
+	 */
+	const menuItems = window.Completionist.hooks.applyFilters(
+		'AdminSettingsScreen_menu_items',
+		[
+			{ value: 'account', label: 'Asana Account', render: getAccountScreen },
+			{ value: 'workspace', label: 'Workspace', render: getWorkspaceScreen },
+			{ value: 'frontend', label: 'Frontend', render: getFrontendScreen },
+		],
+		SettingsContext
+	);
 
 	const renderScreenContent = () => {
 		if ( 'success' === status ) {
-			switch (currentScreen) {
-				case 'account':
-					return <AccountSettings />;
-				case 'workspace':
-					return (
-						hasConnectedAsana() ?
-						(
-							( isWorkspaceMember() || userCan('manage_options') ) ?
-							<WorkspaceSettings /> :
-							<Card style={{ textAlign: 'center', padding: '64px' }}>
-								<CardBody>
-									<MissingPermissionsBadge label='Missing permissions' />
-									<h2 style={{ margin: '1em', fontSize: '20px' }}>You are not a member of this site's Asana workspace</h2>
-									<p style={{ margin: '0 auto 2em', maxWidth: '40em' }}>To view workspace details, you must be a member of the designated Asana workspace or have administrative capabilities to manage options.</p>
-								</CardBody>
-							</Card>
-						) :
-						<Card style={{ textAlign: 'center', padding: '64px' }}>
-							<CardBody>
-								<MissingPermissionsBadge label='Requires Asana account' />
-								<h2 style={{ margin: '1em', fontSize: '20px' }}>Track relevant Asana tasks</h2>
-								<p style={{ margin: '0 auto 2em', maxWidth: '40em' }}>Completionist uses the Asana workspace and associated site tag to determine relevant tasks to display in wp-admin on this site.</p>
-								<Button
-									__next40pxDefaultSize
-									variant='primary'
-									text='Connect Asana'
-									onClick={() => { setCurrentScreen('account'); }}
-									style={{ paddingLeft: '2em', paddingRight: '2em' }}
-								/>
-							</CardBody>
-						</Card>
-					);
-				case 'frontend':
-					return <FrontendSettings />;
-				default:
-					return (
-						<Card style={{ textAlign: 'center', padding: '64px' }}>
-							<CardBody>
-								<p>Please select an option from the left-hand menu.</p>
-							</CardBody>
-						</Card>
-					);
-			}
+			const currentMenuItem = menuItems.find(item => item.value === currentScreen);
+			return currentMenuItem ?
+				currentMenuItem.render() :
+				(
+					<Card style={{ textAlign: 'center', padding: '64px' }}>
+						<CardBody>
+							<p>Please select an option from the left-hand menu.</p>
+						</CardBody>
+					</Card>
+				);
 		} else if ( 'error' === status ) {
 			return (
 				<Card style={{ textAlign: 'center', padding: '64px' }}>

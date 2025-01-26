@@ -431,7 +431,38 @@ class Settings {
 					break;
 				// . ////////////////////////////////////////////////// .
 				default:
-					throw new \Exception( 'Unsupported action.', 400 );
+					$res = array(
+						'status'  => 'error',
+						'code'    => 400,
+						'message' => 'Unsupported action.',
+						'data'    => null,
+					);
+
+					/**
+					 * Filters the REST API response for an unsupported
+					 * settings update action.
+					 *
+					 * This allows third-parties to add custom plugin settings.
+					 * Actions already used by Completionist cannot be overridden with this hook.
+					 *
+					 * Exceptions can be safely thrown to escape further execution
+					 * and generate an error response like:
+					 * `throw new \Exception( 'Invalid tag identifier.', 400 );`
+					 *
+					 * Filter hook 'ptc_completionist_frontend_nonce_actions' must be used
+					 * to register your custom action name for nonce verification.
+					 *
+					 * @since 4.6.0
+					 *
+					 * @param array $res An associative array containing response details.
+					 * The array should have the following keys:
+					 * - 'status' (string): The status of the response as 'error' or 'success'.
+					 * - 'code' (int): The HTTP status code (e.g. 400, 200).
+					 * - 'message' (string): A user-facing message about the response.
+					 * - 'data' (array|null): Any additional data related to the response as an associative array or null.
+					 * @param \WP_REST_Request $request The API request.
+					 */
+					$res = apply_filters( "ptc_completionist_update_settings_{$request['action']}_response", $res, $request );
 			}
 		} catch ( \Exception $err ) {
 			$res = array(
