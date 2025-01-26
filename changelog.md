@@ -9,6 +9,10 @@
 - New PHP filter hook `ptc_completionist_update_settings_{$request['action']}_response` to handle the response of an unsupported action in the `PUT /v1/settings` endpoint.
 - New JavaScript filter hook `AdminSettingsScreen_menu_items` to add custom screens to the plugin settings admin page.
 
+#### Deprecated
+
+- Passing a string `$task_gid` to `HTML_Builder::get_task_action_link()` which results in a v0 Asana task link to be returned. A `$task` object with the `permalink_url` field fetched from the Asana API is now preferred to ensure task URLs automatically follow Asana's current URL schema.
+
 #### Fixed
 
 - Error message "[object Object]" instead of a human-readable message for some errors that can occur when loading or updating plugin settings.
@@ -17,6 +21,7 @@
 #### Security
 
 - Some merge fields in Automations are no longer parsed: `{user.user_pass}`, `{user.user_activation_key}`, `{user.session_tokens}`, `{user._ptc_asana_pat}`
+- Removed `action_link` from frontend response when displaying the `[ptc_asana_task]` shortcode.
 
 ### 4.5.0 - 2024-12-01
 

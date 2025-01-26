@@ -168,7 +168,6 @@ class HTML_Builder {
 	 * @return string The URL to the task in Asana. Default ''.
 	 */
 	public static function get_asana_task_url( string $task_gid ) : string {
-		// @TODO - Prefer task permalink_url ..?
 
 		$task_gid = Options::sanitize( 'gid', $task_gid );
 
@@ -182,11 +181,14 @@ class HTML_Builder {
 	/**
 	 * Gets the task action link information.
 	 *
+	 * @since [unreleased] Deprecated string $task_gid value. An Asana $task \stdClass
+	 * object is now preferred with `gid` and `permalink_url` field values.
 	 * @since 3.1.0
 	 *
-	 * @param string $task_gid The Asana task GID.
+	 * @param string|\stdClass $task The Asana task GID string or task object with
+	 * `gid` and `permalink_url` field values.
 	 */
-	public static function get_task_action_link( string $task_gid ) : array {
+	public static function get_task_action_link( string|\stdClass $task ) : array {
 
 		$task_action_link = array(
 			'href'    => '',
@@ -194,6 +196,27 @@ class HTML_Builder {
 			'target'  => '_self',
 			'post_id' => 0,
 		);
+
+		if ( is_string( $task ) ) {
+			_deprecated_argument(
+				__FUNCTION__,
+				'[unreleased]',
+				'Passing a task GID string is deprecated. Please pass an Asana task object with the permalink_url field instead.'
+			);
+			$task_gid = $task;
+		} elseif ( ! empty( $task->gid ) ) {
+			$task_gid = $task->gid;
+			if ( empty( $task->permalink_url ) ) {
+				_deprecated_argument(
+					__FUNCTION__,
+					'[unreleased]',
+					'Asana v0 task URLs are deprecated. Please pass an Asana task object with the permalink_url field.'
+				);
+			}
+		} else {
+			wp_trigger_error( __FUNCTION__, 'Could not identify task GID.' );
+			return $task_action_link;
+		}
 
 		// Get first pinned post, if applicable.
 		$post_id = Options::get_task_pin_post_id( $task_gid );
@@ -221,7 +244,7 @@ class HTML_Builder {
 		// Use Asana task link if no pinned post.
 		if ( empty( $task_action_link['href'] ) || empty( $task_action_link['label'] ) ) {
 			$task_action_link = array(
-				'href'   => self::get_asana_task_url( $task_gid ), // @TODO - Prefer task permalink_url ..?
+				'href'   => ( empty( $task->permalink_url ) ? self::get_asana_task_url( $task_gid ) : $task->permalink_url ),
 				'label'  => 'View in Asana',
 				'target' => '_asana',
 			);

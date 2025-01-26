@@ -26,11 +26,12 @@ class Asana_Interface {
 	/**
 	 * The ?opt_fields csv for Asana API requests.
 	 *
+	 * @since [unreleased] Added `permalink_url`.
 	 * @since 3.1.0
 	 *
 	 * @var string TASK_OPT_FIELDS
 	 */
-	public const TASK_OPT_FIELDS = 'name,completed,notes,due_on,assignee,assignee.name,workspace,tags';
+	public const TASK_OPT_FIELDS = 'name,completed,notes,due_on,assignee,assignee.name,workspace,tags,permalink_url';
 
 	/**
 	 * The $options array for \Asana\Client instantiation.
@@ -1401,6 +1402,7 @@ class Asana_Interface {
 				}
 			}
 
+			// @TODO
 			$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
 
 			return $task;
@@ -1531,6 +1533,7 @@ class Asana_Interface {
 		$site_tasks = $asana->tasks->findByTag( $site_tag_gid, $params, $options );
 		$all_tasks = array();
 		foreach ( $site_tasks as $task ) {
+			// @TODO
 			$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
 			$all_tasks[ $task->gid ] = $task;
 		}
@@ -1913,6 +1916,7 @@ class Asana_Interface {
 			throw new \Exception( 'Unrecognized API response to create task.', 409 );
 		}
 
+		// @TODO
 		$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
 
 		// Pin the task if desired.
@@ -2184,6 +2188,7 @@ class Asana_Interface {
 			throw new \Exception( 'Unrecognized API response to update task.', 409 );
 		}
 
+		// @TODO
 		$task->action_link = HTML_Builder::get_task_action_link( $task->gid );
 
 		return $task;
