@@ -511,6 +511,10 @@ class Asana_Interface {
 	 * Gets the external link to a user's task list in Asana for the chosen
 	 * workspace.
 	 *
+	 * Note that this is only useful to retrieve the currently authenticated
+	 * Asana user's task list. Retrieving the task list for another Asana user
+	 * results in a 403 Forbidden error from the Asana API.
+	 *
 	 * @since 1.0.0
 	 *
 	 * @param int $user_id Optional. The WordPress user's ID. Default 0 to use
@@ -519,7 +523,7 @@ class Asana_Interface {
 	 */
 	public static function get_task_list_external_link( int $user_id = 0 ) : string {
 
-		$user_gid = Options::get( Options::ASANA_USER_GID, $user_id );
+		$user_gid      = Options::get( Options::ASANA_USER_GID, $user_id );
 		$workspace_gid = Options::get( Options::ASANA_WORKSPACE_GID );
 		if ( '' === $workspace_gid || '' === $user_gid ) {
 			return '';
@@ -527,13 +531,13 @@ class Asana_Interface {
 
 		try {
 
-			$asana = self::get_client();
+			$asana  = self::get_client();
 			$params = array(
-				'workspace' => $workspace_gid,
+				'workspace'  => $workspace_gid,
 				'opt_fields' => 'gid',
 			);
 
-			$user_task_list = $asana->usertasklists->findByUser( $user_gid, $params );
+			$user_task_list     = $asana->usertasklists->findByUser( $user_gid, $params );
 			$user_task_list_gid = Options::sanitize( 'gid', $user_task_list->gid );
 			if ( empty( $user_task_list_gid ) ) {
 				return '';
@@ -541,7 +545,7 @@ class Asana_Interface {
 
 			return 'https://app.asana.com/0/' . $user_task_list_gid . '/list';
 		} catch ( \Exception $e ) {
-			error_log( 'Failed to retrieve user\'s task list link. Error ' . $e->getCode() . ': ' . $e->getMessage() );
+			wp_trigger_error( __FUNCTION__, HTML_Builder::format_error_string( $e, 'Failed to retrieve user\'s task list link.' ) );
 		}
 
 		return '';
@@ -550,6 +554,9 @@ class Asana_Interface {
 	/**
 	 * Extracts a task gid from a copied task link.
 	 *
+	 * @link https://forum.asana.com/t/upcoming-new-v1-asana-url-format-in-the-browser/1011489
+	 *
+	 * @since [unreleased] Support v1 Asana link schema.
 	 * @since 1.0.0
 	 *
 	 * @param string $task_link The task link provided by clicking the chainlink
@@ -562,9 +569,22 @@ class Asana_Interface {
 		$task_link = filter_var( wp_unslash( $task_link ), FILTER_SANITIZE_URL );
 
 		if (
+			preg_match( '/\/task\/([0-9]+)/', $task_link, $matches ) === 1
+			&& ! empty( $matches[1] )
+		) {
+			/*
+			 * Any link in URL schema v1.
+			 * eg. https://app.asana.com/1/<workspace_id>/project/<project_id>/task/<task_id>
+			 */
+			return Options::sanitize( 'gid', $matches[1] );
+		} elseif (
 			preg_match( '/\/([0-9]+)\/.$/', $task_link, $matches ) === 1
 			&& ! empty( $matches[1] )
 		) {
+			/*
+			 * Task link in URL schema v0.
+			 * eg. https://app.asana.com/0/<project_id>/<task_id>/f
+			 */
 			return Options::sanitize( 'gid', $matches[1] );
 		}
 
@@ -574,6 +594,9 @@ class Asana_Interface {
 	/**
 	 * Parses project view information from an Asana project link.
 	 *
+	 * @link https://forum.asana.com/t/upcoming-new-v1-asana-url-format-in-the-browser/1011489
+	 *
+	 * @since [unreleased] Support v1 Asana link schema.
 	 * @since 3.4.0
 	 *
 	 * @param string $project_link An Asana project URL.
@@ -585,9 +608,17 @@ class Asana_Interface {
 
 		$project_link = esc_url_raw( $project_link );
 
-		if ( preg_match( '/\/([0-9]+)\/([a-z]+)$/', $project_link, $matches ) ) {
+		if ( preg_match( '/\/project\/([0-9]+)/', $project_link, $matches ) ) {
 			/*
-			 * Copied project URL from web browser address bar.
+			 * Any link in URL schema v1.
+			 * eg. https://app.asana.com/1/<workspace_id>/project/<project_id>
+			 */
+			if ( ! empty( $matches[1] ) ) {
+				$parsed_project_data['gid'] = Options::sanitize( 'gid', $matches[1] );
+			}
+		} elseif ( preg_match( '/\/([0-9]+)\/([a-z]+)$/', $project_link, $matches ) ) {
+			/*
+			 * Copied project URL v0 from web browser address bar.
 			 * ex. https://app.asana.com/0/1234567890/list
 			 */
 			if ( ! empty( $matches[1] ) ) {
@@ -598,12 +629,12 @@ class Asana_Interface {
 			}
 		} elseif ( preg_match( '/\/([0-9]+)\/[0-9]+$/', $project_link, $matches ) ) {
 			/*
-			 * Copied project URL from project details dropdown in Asana.
+			 * Copied project URL v0 from project details dropdown in Asana.
 			 * ex. https://app.asana.com/0/1234567890/1234567890
-				 *
-				 * Or new project URL from the web browser address bar
-				 * with a project view GID.
-				 * ex. https://app.asana.com/0/1234567890/2345678901
+			 *
+			 * Or new project URL v0 from the web browser address bar
+			 * with a project view GID.
+			 * ex. https://app.asana.com/0/1234567890/2345678901
 			 */
 			if ( ! empty( $matches[1] ) ) {
 				$parsed_project_data['gid'] = Options::sanitize( 'gid', $matches[1] );

@@ -168,6 +168,7 @@ class HTML_Builder {
 	 * @return string The URL to the task in Asana. Default ''.
 	 */
 	public static function get_asana_task_url( string $task_gid ) : string {
+		// @TODO - Prefer task permalink_url ..?
 
 		$task_gid = Options::sanitize( 'gid', $task_gid );
 
@@ -220,7 +221,7 @@ class HTML_Builder {
 		// Use Asana task link if no pinned post.
 		if ( empty( $task_action_link['href'] ) || empty( $task_action_link['label'] ) ) {
 			$task_action_link = array(
-				'href'   => self::get_asana_task_url( $task_gid ),
+				'href'   => self::get_asana_task_url( $task_gid ), // @TODO - Prefer task permalink_url ..?
 				'label'  => 'View in Asana',
 				'target' => '_asana',
 			);
