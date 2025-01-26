@@ -5,7 +5,7 @@
 import { isImage } from '../attachment/util.jsx';
 
 export function getTaskUrl(taskGID) {
-	window.console.warn( 'getTaskUrl() is deprecated since v[unreleased]. Please use the task object\'s `permalink_url` field instead.' );
+	window.console.warn( 'getTaskUrl() is deprecated since v4.6.0. Please use the task object\'s `permalink_url` field instead.' );
 	return `https://app.asana.com/0/0/${taskGID}/f`;
 }
 

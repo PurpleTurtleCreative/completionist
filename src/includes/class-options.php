@@ -98,7 +98,7 @@ class Options {
 	 *
 	 * This key's value should be of type string.
 	 *
-	 * @since [unreleased]
+	 * @since 4.6.0
 	 *
 	 * @var string STABLE_SALT
 	 */
@@ -779,7 +779,7 @@ class Options {
 	 * Encrypts or decrypts a string without using dependencies
 	 * or environment-specific values.
 	 *
-	 * @since [unreleased]
+	 * @since 4.6.0
 	 *
 	 * @param string $value The value to encrypt or decrypt.
 	 * @param string $mode The action to take on the provided value.
@@ -1102,7 +1102,7 @@ class Options {
 		/**
 		 * Filters retrieved plugin settings data for the user.
 		 *
-		 * @since [unreleased]
+		 * @since 4.6.0
 		 *
 		 * @param array $settings_for_user The associative array of settings data.
 		 * @param int   $user_id The WordPress user's ID.

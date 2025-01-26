@@ -333,7 +333,7 @@ class Tasks {
 			/**
 			 * Filters Asana task data.
 			 *
-			 * @since [unreleased]
+			 * @since 4.6.0
 			 *
 			 * @param \stdClass     $task The Asana task data.
 			 * @param array         $args The request arguments.

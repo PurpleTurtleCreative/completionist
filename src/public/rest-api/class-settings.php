@@ -452,7 +452,7 @@ class Settings {
 					 * Filter hook 'ptc_completionist_frontend_nonce_actions' must be used
 					 * to register your custom action name for nonce verification.
 					 *
-					 * @since [unreleased]
+					 * @since 4.6.0
 					 *
 					 * @param array $res An associative array containing response details.
 					 * The array should have the following keys:

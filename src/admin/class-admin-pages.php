@@ -486,7 +486,7 @@ class Admin_Pages {
 			 * Filters the API actions for which nonces will
 			 * be created for frontend scripts to use.
 			 *
-			 * @since [unreleased]
+			 * @since 4.6.0
 			 *
 			 * @param string[] $nonce_actions An array of frontend action names.
 			 */
@@ -507,7 +507,7 @@ class Admin_Pages {
 	 *
 	 * @see get_frontend_api_data()
 	 *
-	 * @since [unreleased]
+	 * @since 4.6.0
 	 *
 	 * @param string $context The context to select.
 	 * @return array The selected frontend API data.
@@ -560,7 +560,7 @@ class Admin_Pages {
 		 *
 		 * @see get_frontend_api_data()
 		 *
-		 * @since [unreleased]
+		 * @since 4.6.0
 		 *
 		 * @param string[] $keys The keys to select.
 		 */

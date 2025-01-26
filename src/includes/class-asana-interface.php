@@ -26,7 +26,7 @@ class Asana_Interface {
 	/**
 	 * The ?opt_fields csv for Asana API requests.
 	 *
-	 * @since [unreleased] Added `permalink_url`.
+	 * @since 4.6.0 Added `permalink_url`.
 	 * @since 3.1.0
 	 *
 	 * @var string TASK_OPT_FIELDS
@@ -557,7 +557,7 @@ class Asana_Interface {
 	 *
 	 * @link https://forum.asana.com/t/upcoming-new-v1-asana-url-format-in-the-browser/1011489
 	 *
-	 * @since [unreleased] Support v1 Asana link schema.
+	 * @since 4.6.0 Support v1 Asana link schema.
 	 * @since 1.0.0
 	 *
 	 * @param string $task_link The task link provided by clicking the chainlink
@@ -597,7 +597,7 @@ class Asana_Interface {
 	 *
 	 * @link https://forum.asana.com/t/upcoming-new-v1-asana-url-format-in-the-browser/1011489
 	 *
-	 * @since [unreleased] Support v1 Asana link schema.
+	 * @since 4.6.0 Support v1 Asana link schema.
 	 * @since 3.4.0
 	 *
 	 * @param string $project_link An Asana project URL.

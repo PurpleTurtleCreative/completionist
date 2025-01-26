@@ -68,7 +68,7 @@ export default function AdminSettingsScreen() {
 	/**
 	 * Filters menu items of the plugin's settings screen.
 	 *
-	 * @since [unreleased]
+	 * @since 4.6.0
 	 *
 	 * @param {Array<{value: string, label: string, render: Function}>} menuItems
 	 * The list of menu items to render.

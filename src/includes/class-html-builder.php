@@ -162,7 +162,7 @@ class HTML_Builder {
 	/**
 	 * Gets an Asana task URL.
 	 *
-	 * @deprecated [unreleased] Use the Asana task object's `permalink_url` field instead.
+	 * @deprecated 4.6.0 Use the Asana task object's `permalink_url` field instead.
 	 * @since 1.0.0
 	 *
 	 * @param string $task_gid The GID of the task to link.
@@ -172,7 +172,7 @@ class HTML_Builder {
 
 		_deprecated_function(
 			__FUNCTION__,
-			'[unreleased]',
+			'4.6.0',
 			'the Asana task object\'s `permalink_url` field'
 		);
 
@@ -188,7 +188,7 @@ class HTML_Builder {
 	/**
 	 * Gets the task action link information.
 	 *
-	 * @since [unreleased] The string $task_gid is deprecated. Use an Asana task \stdClass object instead,
+	 * @since 4.6.0 The string $task_gid is deprecated. Use an Asana task \stdClass object instead,
 	 * which should contain `gid` and `permalink_url` fields.
 	 * @since 3.1.0
 	 *
@@ -207,7 +207,7 @@ class HTML_Builder {
 		if ( is_string( $task ) ) {
 			_deprecated_argument(
 				__FUNCTION__,
-				'[unreleased]',
+				'4.6.0',
 				'Passing a task GID string is deprecated. Please pass an Asana task object with the permalink_url field instead.'
 			);
 			$task_gid = $task;
@@ -216,7 +216,7 @@ class HTML_Builder {
 			if ( empty( $task->permalink_url ) ) {
 				_deprecated_argument(
 					__FUNCTION__,
-					'[unreleased]',
+					'4.6.0',
 					'Asana v0 task URLs are deprecated. Please pass an Asana task object with the permalink_url field.'
 				);
 			}
