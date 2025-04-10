@@ -47,7 +47,7 @@ export default function TaskListItem({ task, rowNumber = null, tagName: Element 
 	if ( 'completed' in task ) {
 		const [ isCompleted, label ] = getTaskCompleted(task);
 		maybeCompleted = (
-			<div className="completed" data-completed={isCompleted}>
+			<div key="task-completed" className="completed" data-completed={isCompleted}>
 				<CheckmarkIcon aria-label={label} preserveAspectRatio="xMidYMid meet" />
 			</div>
 		);
@@ -70,7 +70,7 @@ export default function TaskListItem({ task, rowNumber = null, tagName: Element 
 				</>
 			);
 			maybeSubtaskList = (
-				<div className="subtasks">
+				<div key="task-subtasks" className="subtasks">
 					<p className="small-label">Subtasks</p>
 					<ol className="tasks">
 						{
@@ -85,19 +85,19 @@ export default function TaskListItem({ task, rowNumber = null, tagName: Element 
 			);
 		}
 
-		maybeSubtaskCount = <p className="subtask-count">{maybeSubtaskCountContent}</p>;
+		maybeSubtaskCount = <p key="task-subtask-count" className="subtask-count">{maybeSubtaskCountContent}</p>;
 	}
 
 	let maybeName = null;
 	if ( 'name' in task ) {
-		maybeName = <p className="task-name">{task.name ?? ''}</p>;
+		maybeName = <p key="task-name" className="task-name">{task.name ?? ''}</p>;
 	}
 
 	let maybeAssignee = null;
 	if ( 'assignee' in task ) {
 		const [ maybeAssigneeName, maybeAssigneeImg ] = getTaskAssignee(task);
 		maybeAssignee = (
-			<p className="assignee">
+			<p key="task-assignee" className="assignee">
 				{ maybeAssigneeImg && <img className="load-monitoring-disabled" src={maybeAssigneeImg} width="36" height="36" /> }
 				{ maybeAssigneeName && <span className="assignee-name">{maybeAssigneeName}</span> }
 			</p>
@@ -107,7 +107,7 @@ export default function TaskListItem({ task, rowNumber = null, tagName: Element 
 	let maybeDueDate = null;
 	if ( 'due_on' in task ) {
 		const taskDueOn = getTaskDueOn(task);
-		maybeDueDate = <p className="due">{taskDueOn && getLocaleString(taskDueOn)}</p>;
+		maybeDueDate = <p key="task-due" className="due">{taskDueOn && getLocaleString(taskDueOn)}</p>;
 	}
 
 	let maybeDescription = null;
@@ -117,7 +117,7 @@ export default function TaskListItem({ task, rowNumber = null, tagName: Element 
 		if ( taskHtmlNotes ) {
 			allowToggle = true;
 			maybeDescription = (
-				<div className="task-notes">
+				<div key="task-notes" className="task-notes">
 					<p className="small-label">Description</p>
 					<div
 						className="description"
@@ -136,7 +136,7 @@ export default function TaskListItem({ task, rowNumber = null, tagName: Element 
 		if ( taskAttachments.length > 0 ) {
 			allowToggle = true;
 			maybeAttachments = (
-				<div className="task-attachments">
+				<div key="task-attachments" className="task-attachments">
 					<p className="small-label">Attachments</p>
 					<ul className="attachments-list">
 						{
@@ -157,7 +157,7 @@ export default function TaskListItem({ task, rowNumber = null, tagName: Element 
 		if ( taskTags.length > 0 ) {
 			allowToggle = true;
 			maybeTags = (
-				<div className="task-tags">
+				<div key="task-tags" className="task-tags">
 					<p className="small-label">Tags</p>
 					<ol className="tags-list">
 						{

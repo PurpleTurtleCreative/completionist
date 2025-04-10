@@ -1,3 +1,9 @@
+### [unreleased]
+
+#### Fixed
+
+- React debug errors about missing "key" prop.
+
 ### 4.6.0 - 2025-01-26
 
 #### Added
