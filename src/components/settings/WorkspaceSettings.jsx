@@ -26,6 +26,7 @@ export default function WorkspaceSettings() {
 		}
 		return optionsByWorkspace;
 	});
+	const [ isLoadingAsanaTagOptions, setIsLoadingAsanaTagOptions ] = useState(false);
 	const tagTypeaheadAbortControllerRef = useRef(null);
 	const PREFIX_CREATE_TAG = '__create__';
 
@@ -45,6 +46,8 @@ export default function WorkspaceSettings() {
 		if ( ! value ) {
 			return; // Avoid useless requests.
 		}
+
+		setIsLoadingAsanaTagOptions(true);
 
 		// Create new AbortController for this request.
 		tagTypeaheadAbortControllerRef.current = new AbortController();
@@ -81,17 +84,27 @@ export default function WorkspaceSettings() {
 							seenTags.add(tag?.gid);
 						}
 					}
+					setIsLoadingAsanaTagOptions(false);
 					return {
 						...prevState,
 						[ asanaWorkspaceValue ]: newTagOptions,
 					};
 				});
+			} else {
+				setIsLoadingAsanaTagOptions(false);
 			}
 		}).catch( error => {
 			if ( 'AbortError' !== error?.name ) {
+				setIsLoadingAsanaTagOptions(false);
 				window.console.error(error);
 			}
 		});
+		/*
+		NOTE: Not using `.finally()` for `setIsLoadingAsanaTagOptions(false)` because
+		the quick and repetitive aborts as the user continues typing causes the rendering
+		to not be updated properly back to `true`. Instead, we just maintain the loading
+		state until a successful response is received or non-aborted error is thrown.
+		*/
 	}
 
 	function handleUpdateWorkspaceTagSubmit(submitEvent) {
@@ -162,6 +175,7 @@ export default function WorkspaceSettings() {
 						onChange={setAsanaTagValue}
 						onFilterValueChange={handleAsanaTagFilterValueChange}
 						required={true}
+						isLoading={isLoadingAsanaTagOptions}
 						disabled={ ! asanaWorkspaceValue || ! hasConnectedAsana() || ! userCan('manage_options') }
 					/>
 					{

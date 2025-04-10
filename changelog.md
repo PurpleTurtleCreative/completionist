@@ -1,5 +1,9 @@
 ### [unreleased]
 
+#### Changed
+
+- A loading indicator is now displayed when searching for Asana tag options to set as the site tag in Settings > Workspace.
+
 #### Fixed
 
 - React debug errors about missing "key" prop.
