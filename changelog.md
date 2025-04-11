@@ -1,5 +1,9 @@
 ### [unreleased]
 
+#### Added
+
+- Clearer error messaging when trying to update Settings > Workspace without a chosen site tag, which is a required field.
+
 #### Changed
 
 - A loading indicator is now displayed when searching for Asana tag options to set as the site tag in Settings > Workspace.

@@ -27,6 +27,7 @@ export default function WorkspaceSettings() {
 		return optionsByWorkspace;
 	});
 	const [ isLoadingAsanaTagOptions, setIsLoadingAsanaTagOptions ] = useState(false);
+	const [ updateWorkspaceTagError, setUpdateWorkspaceTagError ] = useState(null);
 	const tagTypeaheadAbortControllerRef = useRef(null);
 	const PREFIX_CREATE_TAG = '__create__';
 
@@ -110,6 +111,11 @@ export default function WorkspaceSettings() {
 	function handleUpdateWorkspaceTagSubmit(submitEvent) {
 		submitEvent?.preventDefault();
 
+		if ( ! asanaTagValue ) {
+			setUpdateWorkspaceTagError('Asana tag is required. Start typing to search, then select a tag from the suggested options.');
+			return;
+		}
+
 		const data = { workspace_gid: asanaWorkspaceValue };
 		if ( asanaTagValue.startsWith(PREFIX_CREATE_TAG) ) {
 			data.tag_name = asanaTagValue.substr(PREFIX_CREATE_TAG.length);
@@ -160,7 +166,7 @@ export default function WorkspaceSettings() {
 					/>
 					{
 						( settings?.workspace?.asana_site_workspace?.gid && asanaWorkspaceValue !== settings?.workspace?.asana_site_workspace?.gid ) &&
-						<Notice status='warning' isDismissible={false} style={{ margin: '8px 0 0' }}>{`Changing workspaces will remove all ${settings?.workspace?.total_pinned_tasks ?? '(unknown count)'} currently pinned tasks from this site.`}</Notice>
+						<Notice status='warning' isDismissible={false}>{`Changing workspaces will remove all ${settings?.workspace?.total_pinned_tasks ?? '(unknown count)'} currently pinned tasks from this site.`}</Notice>
 					}
 				</CardBody>
 				<CardBody>
@@ -180,7 +186,11 @@ export default function WorkspaceSettings() {
 					/>
 					{
 						( settings?.workspace?.asana_site_tag?.gid && asanaTagValue !== settings?.workspace?.asana_site_tag?.gid ) &&
-						<Notice status='warning' isDismissible={false} style={{ margin: '8px 0 0' }}>Changing the site's tag will remove any pinned tasks that do not have the new tag.</Notice>
+						<Notice status='warning' isDismissible={false}>Changing the site's tag will remove any pinned tasks that do not have the new tag.</Notice>
+					}
+					{
+						( updateWorkspaceTagError ) &&
+						<Notice status='error' isDismissible={true} onDismiss={() => { setUpdateWorkspaceTagError(null); }}>{updateWorkspaceTagError}</Notice>
 					}
 				</CardBody>
 				<CardBody>
