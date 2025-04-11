@@ -1,5 +1,5 @@
 import { registerPlugin } from '@wordpress/plugins';
-import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
+import { PluginDocumentSettingPanel } from '@wordpress/editor';
 
 import BlockEditorPanelTasks from './components/BlockEditorPanelTasks.jsx';
 import NoteBox from './components/notice/NoteBox.jsx';

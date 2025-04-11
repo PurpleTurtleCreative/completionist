@@ -11,6 +11,8 @@
 #### Fixed
 
 - React debug errors about missing "key" prop.
+- Corrected "Requires at least" constraint to WordPress version `6.6.0`.
+- Resolved "wp.editPost.PluginDocumentSettingPanel is deprecated since version 6.6" console warning in the block editor.
 
 ### 4.6.0 - 2025-01-26
 
