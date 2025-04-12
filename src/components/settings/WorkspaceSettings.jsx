@@ -6,6 +6,7 @@ import MissingPermissionsBadge from '../users/MissingPermissionsBadge';
 import { SettingsContext } from './SettingsContext';
 
 import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 import { useContext, useEffect, useRef, useState } from '@wordpress/element';
 
 export default function WorkspaceSettings() {
@@ -55,7 +56,7 @@ export default function WorkspaceSettings() {
 
 		// Perform the request.
 		apiFetch({
-			url: `${window.ptc_completionist_settings.api.v1}/tags/typeahead?workspace_gid=${asanaWorkspaceValue}&query=${value}&count=100`,
+			url: addQueryArgs(`${window.ptc_completionist_settings.api.v1}/tags/typeahead`, { workspace_gid: asanaWorkspaceValue, query: value, count: 100 }),
 			method: 'GET',
 			signal: tagTypeaheadAbortControllerRef.current?.signal,
 		}).then( res => {
@@ -180,9 +181,9 @@ export default function WorkspaceSettings() {
 						value={asanaTagValue}
 						onChange={setAsanaTagValue}
 						onFilterValueChange={handleAsanaTagFilterValueChange}
-						required={true}
 						isLoading={isLoadingAsanaTagOptions}
-						disabled={ ! asanaWorkspaceValue || ! hasConnectedAsana() || ! userCan('manage_options') }
+						required={true} // This isn't actually supported.
+						disabled={ ! asanaWorkspaceValue || ! hasConnectedAsana() || ! userCan('manage_options') } // This isn't actually supported.
 					/>
 					{
 						( settings?.workspace?.asana_site_tag?.gid && asanaTagValue !== settings?.workspace?.asana_site_tag?.gid ) &&
