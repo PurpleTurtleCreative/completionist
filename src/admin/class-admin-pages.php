@@ -79,7 +79,6 @@ class Admin_Pages {
 	 */
 	public static function remove_admin_notices() {
 		$current_screen = get_current_screen();
-		trigger_error( 'Current screen: ' . esc_html( $current_screen->id ), E_USER_NOTICE );
 		if (
 			$current_screen &&
 			in_array(
