@@ -492,7 +492,7 @@ class AutomationActionsInputs extends Component {
   }
 
   getActionMetaFields(action, index) {
-    // TODO: Allow create_tasks to be dynamically pinned to created/updated/delete post if relevent: {post.ID}
+    window.console.trace(action, index, this.props.event);
     switch(action.action) {
       case 'create_task':
         return (
@@ -543,23 +543,27 @@ class AutomationActionsInputs extends Component {
               <label htmlFor={"ptc-new-task_post_id_"+index} style={{ marginTop: '0.33em' }}>Pin to Post</label>
               <PostSearchSelectInput
                 id={"ptc-new-task_post_id_"+index}
-                suggestedOptions={[
-                  {
-                    "value": "{post.ID}",
-                    "label": "{post.ID} - Dynamically pin to associated post"
-                  },
-                  {
-                    /*
-                    Note that Classic Editor creates the draft post after the post title
-                    has been provided, which is often before the user has selected a
-                    Parent post value. This makes it where using the "Post is Created"
-                    trigger for posts created in Classic Editor has unexpected behavior.
-                    So I say to you... Switch to the Block Editor already! Hahaha!
-                    */
-                    "value": "{post.post_parent}",
-                    "label": "{post.post_parent} - Dynamically pin to associated post's parent post"
-                  }
-                ]}
+                suggestedOptions={
+                  (Object.keys(window.ptc_completionist_automations.event_post_options).includes(this.props.event)) ?
+                  [
+                    {
+                      "value": "{post.ID}",
+                      "label": "{post.ID} - Dynamically pin to associated post"
+                    },
+                    {
+                      /*
+                      Note that Classic Editor creates the draft post after the post title
+                      has been provided, which is often before the user has selected a
+                      Parent post value. This makes it where using the "Post is Created"
+                      trigger for posts created in Classic Editor has unexpected behavior.
+                      So I say to you... Switch to the Block Editor already! Hahaha!
+                      */
+                      "value": "{post.post_parent}",
+                      "label": "{post.post_parent} - Dynamically pin to associated post's parent post"
+                    }
+                  ] :
+                  []
+                }
                 initialValue={action.meta.post_id}
                 onSelectOption={(value) => this.props.changeActionMeta(action.ID, 'post_id', value)}
               />

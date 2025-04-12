@@ -32,10 +32,6 @@ export class PostSearchSelectInput extends Component {
       this.state.currentLabel = props.initialLabel;
     }
 
-    if ( 'suggestedOptions' in props && props.suggestedOptions ) {
-      this.state.suggestedOptions = props.suggestedOptions;
-    }
-
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handleOptionChange = this.handleOptionChange.bind(this);
     this.createSelectOptions = this.createSelectOptions.bind(this);
@@ -125,13 +121,13 @@ export class PostSearchSelectInput extends Component {
       if ( this.state.isLoading === true ) {
         return <li><i className="fas fa-spinner fa-pulse"></i> Searching for posts...</li>;
       } else if ( this.state.currentLabel.trim().length >= 3 ) {
-        return <li>No post results. { ( this.state?.suggestedOptions?.length > 0 ) && "Clear your search to see suggested options." }</li>;
-      } else if ( this.state?.suggestedOptions?.length > 0 ) {
+        return <li>No post results. { ( this.props?.suggestedOptions?.length > 0 ) && "Clear your search to see suggested options." }</li>;
+      } else if ( this.props?.suggestedOptions?.length > 0 ) {
         return (
           <>
             <li>Choose an option below or enter at least 3 characters to search...</li>
             {
-              this.state.suggestedOptions.map((option) => (
+              this.props.suggestedOptions.map((option) => (
                 <li className='post-option' data-value={option.value} key={option.value} onMouseDown={() => this.handleOptionChange(option.value, option.label)}>{option.label}</li>
               ))
             }
@@ -186,6 +182,21 @@ export class PostSearchSelectInput extends Component {
   componentDidUpdate(prevProps, prevState) {
     if ( this.state.currentValue !== prevState.currentValue ) {
       this.props.onSelectOption(this.state.currentValue);
+    }
+    if (
+      prevProps.suggestedOptions !== this.props.suggestedOptions &&
+      (
+        Number.isNaN( parseFloat( this.state.currentValue ) ) ||
+        ! Number.isFinite( this.state.currentValue )
+      ) &&
+      ! this.props.suggestedOptions.some((option) => option.value === this.state.currentValue)
+    ) {
+      window.console.trace( prevState, this.state );
+      // The suggested options changed and
+      // the current value is not a valid post ID and
+      // the current value is not in the suggested options
+      // so clear the current value and label.
+      this.setState({ currentValue: '', currentLabel: '' });
     }
   }//end componentDidUpdate()
 
