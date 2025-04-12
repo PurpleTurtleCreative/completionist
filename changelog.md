@@ -1,9 +1,5 @@
 ### [unreleased]
 
-#### Added
-
-- Clearer error messaging when trying to update Settings > Workspace without a chosen site tag, which is a required field.
-
 #### Changed
 
 - A loading indicator is now displayed when searching for Asana tag options to set as the site tag in Settings > Workspace.
@@ -15,6 +11,7 @@
 - Corrected "Requires at least" constraint to WordPress version `6.6.0`.
 - Resolved "wp.editPost.PluginDocumentSettingPanel is deprecated since version 6.6" console warning in the block editor.
 - Asana tag options would not load in Settings > Workspace when using the "Plain" permalink structure.
+- Unclear error messaging when trying to update Settings > Workspace without a chosen site tag, which is a required field.
 
 ### 4.6.0 - 2025-01-26
 
