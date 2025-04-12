@@ -55,6 +55,7 @@ class Admin_Pages {
 	 * @since 3.0.0
 	 */
 	public static function register() {
+		add_action( 'admin_head', array( __CLASS__, 'remove_admin_notices' ), 1 );
 		add_action( 'admin_menu', array( __CLASS__, 'add_admin_pages' ) );
 		add_action( 'current_screen', array( __CLASS__, 'check_current_screen' ) );
 		add_filter( 'plugin_action_links_' . PLUGIN_BASENAME, array( __CLASS__, 'filter_plugin_action_links' ) );
@@ -69,6 +70,32 @@ class Admin_Pages {
 	 */
 	public static function get_settings_url() {
 		return admin_url( 'admin.php?page=' . static::PARENT_PAGE_SLUG );
+	}
+
+	/**
+	 * Removes admin notices from Completionist's admin pages.
+	 *
+	 * @since [unreleased]
+	 */
+	public static function remove_admin_notices() {
+		$current_screen = get_current_screen();
+		trigger_error( 'Current screen: ' . esc_html( $current_screen->id ), E_USER_NOTICE );
+		if (
+			$current_screen &&
+			in_array(
+				$current_screen->id,
+				array(
+					'toplevel_page_ptc-completionist',
+					'completionist_page_ptc-completionist',
+					'completionist_page_ptc-completionist-deprecated',
+					'completionist_page_ptc-completionist-automations',
+				),
+				true
+			)
+		) {
+			remove_all_actions( 'admin_notices' );
+			remove_all_actions( 'all_admin_notices' );
+		}
 	}
 
 	/**

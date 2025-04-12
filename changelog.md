@@ -7,6 +7,7 @@
 #### Changed
 
 - A loading indicator is now displayed when searching for Asana tag options to set as the site tag in Settings > Workspace.
+- Admin notices (such as from WordPress, themes, or other plugins) are no longer displayed on Completionist's admin pages.
 
 #### Fixed
 
