@@ -75,7 +75,7 @@ class Admin_Pages {
 	/**
 	 * Removes admin notices from Completionist's admin pages.
 	 *
-	 * @since [unreleased]
+	 * @since 4.6.1
 	 */
 	public static function remove_admin_notices() {
 		$current_screen = get_current_screen();
