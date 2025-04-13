@@ -3,7 +3,7 @@
  * Completionist
  *
  * @author            Michelle Blanchette <michelle@purpleturtlecreative.com>
- * @copyright         2024 Purple Turtle Creative, LLC
+ * @copyright         2025 Purple Turtle Creative, LLC
  * @license           GPL-3.0-or-later
  *
  * @wordpress-plugin
@@ -12,8 +12,8 @@
  * Description:       Manage, pin, automate, and display Asana tasks in relevant areas of your WordPress admin and website frontend.
  * Version:           [unreleased]
  * Requires PHP:      8.1
- * Requires at least: 6.6.0
- * Tested up to:      6.7.1
+ * Requires at least: 6.6
+ * Tested up to:      6.8
  * Author:            Purple Turtle Creative
  * Author URI:        https://purpleturtlecreative.com/
  * License:           GPL-3.0-or-later

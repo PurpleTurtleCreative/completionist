@@ -1,8 +1,8 @@
 === Completionist – Asana Integration Suite ===
 Contributors: michelleblanchette
 Tags: asana, project, task, management, integration
-Requires at least: 6.6.0
-Tested up to: 6.7.1
+Requires at least: 6.6
+Tested up to: 6.8
 Stable tag: 4.6.0
 Requires PHP: 8.1
 License: GPL-3.0-or-later
