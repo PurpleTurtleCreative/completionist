@@ -1,3 +1,19 @@
+### 4.6.1 - 2025-04-12
+
+#### Changed
+
+- Tested up to WordPress 6.8.
+- A loading indicator is now displayed when searching for Asana tag options to set as the site tag in Settings > Workspace.
+- Admin notices (such as from WordPress, themes, or other plugins) are no longer displayed on Completionist's admin pages.
+
+#### Fixed
+
+- React debug errors about missing "key" prop.
+- Corrected "Requires at least" constraint to WordPress version `6.6.0`.
+- Resolved "wp.editPost.PluginDocumentSettingPanel is deprecated since version 6.6" console warning in the block editor.
+- Asana tag options would not load in Settings > Workspace when using the "Plain" permalink structure.
+- Unclear error messaging when trying to update Settings > Workspace without a chosen site tag, which is a required field.
+
 ### 4.6.0 - 2025-01-26
 
 #### Added

@@ -6,6 +6,7 @@ import MissingPermissionsBadge from '../users/MissingPermissionsBadge';
 import { SettingsContext } from './SettingsContext';
 
 import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 import { useContext, useEffect, useRef, useState } from '@wordpress/element';
 
 export default function WorkspaceSettings() {
@@ -26,6 +27,8 @@ export default function WorkspaceSettings() {
 		}
 		return optionsByWorkspace;
 	});
+	const [ isLoadingAsanaTagOptions, setIsLoadingAsanaTagOptions ] = useState(false);
+	const [ updateWorkspaceTagError, setUpdateWorkspaceTagError ] = useState(null);
 	const tagTypeaheadAbortControllerRef = useRef(null);
 	const PREFIX_CREATE_TAG = '__create__';
 
@@ -46,12 +49,14 @@ export default function WorkspaceSettings() {
 			return; // Avoid useless requests.
 		}
 
+		setIsLoadingAsanaTagOptions(true);
+
 		// Create new AbortController for this request.
 		tagTypeaheadAbortControllerRef.current = new AbortController();
 
 		// Perform the request.
 		apiFetch({
-			url: `${window.ptc_completionist_settings.api.v1}/tags/typeahead?workspace_gid=${asanaWorkspaceValue}&query=${value}&count=100`,
+			url: addQueryArgs(`${window.ptc_completionist_settings.api.v1}/tags/typeahead`, { workspace_gid: asanaWorkspaceValue, query: value, count: 100 }),
 			method: 'GET',
 			signal: tagTypeaheadAbortControllerRef.current?.signal,
 		}).then( res => {
@@ -81,21 +86,36 @@ export default function WorkspaceSettings() {
 							seenTags.add(tag?.gid);
 						}
 					}
+					setIsLoadingAsanaTagOptions(false);
 					return {
 						...prevState,
 						[ asanaWorkspaceValue ]: newTagOptions,
 					};
 				});
+			} else {
+				setIsLoadingAsanaTagOptions(false);
 			}
 		}).catch( error => {
 			if ( 'AbortError' !== error?.name ) {
+				setIsLoadingAsanaTagOptions(false);
 				window.console.error(error);
 			}
 		});
+		/*
+		NOTE: Not using `.finally()` for `setIsLoadingAsanaTagOptions(false)` because
+		the quick and repetitive aborts as the user continues typing causes the rendering
+		to not be updated properly back to `true`. Instead, we just maintain the loading
+		state until a successful response is received or non-aborted error is thrown.
+		*/
 	}
 
 	function handleUpdateWorkspaceTagSubmit(submitEvent) {
 		submitEvent?.preventDefault();
+
+		if ( ! asanaTagValue ) {
+			setUpdateWorkspaceTagError('Asana tag is required. Start typing to search, then select a tag from the suggested options.');
+			return;
+		}
 
 		const data = { workspace_gid: asanaWorkspaceValue };
 		if ( asanaTagValue.startsWith(PREFIX_CREATE_TAG) ) {
@@ -147,7 +167,7 @@ export default function WorkspaceSettings() {
 					/>
 					{
 						( settings?.workspace?.asana_site_workspace?.gid && asanaWorkspaceValue !== settings?.workspace?.asana_site_workspace?.gid ) &&
-						<Notice status='warning' isDismissible={false} style={{ margin: '8px 0 0' }}>{`Changing workspaces will remove all ${settings?.workspace?.total_pinned_tasks ?? '(unknown count)'} currently pinned tasks from this site.`}</Notice>
+						<Notice status='warning' isDismissible={false}>{`Changing workspaces will remove all ${settings?.workspace?.total_pinned_tasks ?? '(unknown count)'} currently pinned tasks from this site.`}</Notice>
 					}
 				</CardBody>
 				<CardBody>
@@ -161,12 +181,17 @@ export default function WorkspaceSettings() {
 						value={asanaTagValue}
 						onChange={setAsanaTagValue}
 						onFilterValueChange={handleAsanaTagFilterValueChange}
-						required={true}
-						disabled={ ! asanaWorkspaceValue || ! hasConnectedAsana() || ! userCan('manage_options') }
+						isLoading={isLoadingAsanaTagOptions}
+						required={true} // This isn't actually supported.
+						disabled={ ! asanaWorkspaceValue || ! hasConnectedAsana() || ! userCan('manage_options') } // This isn't actually supported.
 					/>
 					{
 						( settings?.workspace?.asana_site_tag?.gid && asanaTagValue !== settings?.workspace?.asana_site_tag?.gid ) &&
-						<Notice status='warning' isDismissible={false} style={{ margin: '8px 0 0' }}>Changing the site's tag will remove any pinned tasks that do not have the new tag.</Notice>
+						<Notice status='warning' isDismissible={false}>Changing the site's tag will remove any pinned tasks that do not have the new tag.</Notice>
+					}
+					{
+						( updateWorkspaceTagError ) &&
+						<Notice status='error' isDismissible={true} onDismiss={() => { setUpdateWorkspaceTagError(null); }}>{updateWorkspaceTagError}</Notice>
 					}
 				</CardBody>
 				<CardBody>
